@@ -4,6 +4,7 @@ import ExperienceSection from "@/components/experience-section";
 import PackagesSection from "@/components/packages-section";
 import MenuSection from "@/components/menu-section";
 import GallerySection from "@/components/gallery-section";
+import SeoulTourSection from "@/components/seoul-tour-section";
 import FAQSection from "@/components/faq-section";
 import BookingSection from "@/components/booking-section";
 import ContactSection from "@/components/contact-section";
@@ -18,6 +19,7 @@ export default function Home() {
       <MenuSection />
       <PackagesSection />
       <GallerySection />
+      <SeoulTourSection />
       <FAQSection />
       <BookingSection />
       <ContactSection />

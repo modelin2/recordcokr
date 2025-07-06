@@ -60,6 +60,12 @@ export default function Navigation() {
             Gallery
           </button>
           <button 
+            onClick={() => scrollToSection('tours')}
+            className="hover:text-[hsl(var(--k-pink))] transition-colors"
+          >
+            Tours
+          </button>
+          <button 
             onClick={() => scrollToSection('faq')}
             className="hover:text-[hsl(var(--k-pink))] transition-colors"
           >
