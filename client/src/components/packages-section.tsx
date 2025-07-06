@@ -63,7 +63,7 @@ export default function PackagesSection() {
                   <th className="text-xl font-bold text-white pb-4 pr-4 border-r border-white/20">Songs</th>
                   <th className="text-lg font-bold text-[hsl(var(--k-pink))] pb-4 px-4 border-r border-white/20">
                     10:00~13:00<br/>
-                    <span className="text-sm font-normal">(-20%)</span>
+                    <span className="text-sm font-normal">(-20% D.C)</span>
                   </th>
                   <th className="text-lg font-bold text-[hsl(var(--k-gold))] pb-4 px-4 border-r border-white/20">
                     13:00~18:00<br/>
