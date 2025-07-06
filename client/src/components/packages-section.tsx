@@ -100,6 +100,79 @@ export default function PackagesSection() {
           
           <div className="mt-8 text-center">
             <p className="text-gray-300 mb-4">All packages include: Premium drink + Recording session + Raw files + Free self-photography</p>
+          </div>
+        </div>
+
+        {/* Add-ons Section */}
+        <div className="glass p-8 rounded-3xl mb-8 max-w-5xl mx-auto">
+          <h3 className="text-3xl font-bold text-center mb-8 gradient-text">🎧 Optional Add-ons</h3>
+          
+          <div className="mb-6 p-4 bg-green-500/20 border border-green-500/40 rounded-2xl">
+            <p className="text-green-200 font-semibold">✅ Raw Recording File – Provided free of charge</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+              <h4 className="text-xl font-bold text-[hsl(var(--k-pink))] mb-3">🎵 Full Track Mixing</h4>
+              <p className="text-gray-300 text-sm mb-4">
+                Includes pitch and timing correction, plus mixing your vocal with the instrumental to complete the track
+              </p>
+              <p className="text-2xl font-bold text-white">₩100,000</p>
+            </div>
+
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+              <h4 className="text-xl font-bold text-[hsl(var(--k-purple))] mb-3">🎥 Recording Video</h4>
+              <p className="text-gray-300 text-sm mb-4">
+                Professional videographer captures your recording session naturally
+              </p>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-300">Raw footage only</span>
+                  <span className="font-bold text-white">₩50,000</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-300">Edited with song</span>
+                  <span className="font-bold text-white">₩100,000</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+              <h4 className="text-xl font-bold text-[hsl(var(--k-blue))] mb-3">🌍 Global Distribution</h4>
+              <p className="text-gray-300 text-sm mb-4">
+                Release your music on Youtube, Instagram, Apple Music, Spotify, Melon and more
+              </p>
+              <p className="text-2xl font-bold text-white">₩300,000</p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 p-6 rounded-2xl border border-yellow-500/40">
+              <h4 className="text-xl font-bold text-[hsl(var(--k-gold))] mb-3">📈 Billboard Marketing Package</h4>
+              <p className="text-gray-300 text-sm mb-4">
+                Includes ISRC code issuance, social media promotion, and distributor coordination
+              </p>
+              <p className="text-lg font-bold text-yellow-200">Custom quote required</p>
+            </div>
+
+            <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 p-6 rounded-2xl border border-purple-500/40">
+              <h4 className="text-xl font-bold text-[hsl(var(--k-coral))] mb-3">📌 Billboard Album Chart Eligibility</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-300">Single</span>
+                  <span className="text-white">1–2 tracks</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-300">EP (Extended Play)</span>
+                  <span className="text-white">Min 4 tracks or 30 min</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="glass p-8 rounded-3xl mb-16 max-w-4xl mx-auto">
+          <div className="text-center">
             <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-2xl p-4 max-w-2xl mx-auto mb-6">
               <p className="text-yellow-200 font-semibold mb-2">⚠️ Please Note:</p>
               <p className="text-yellow-100 text-sm leading-relaxed">
