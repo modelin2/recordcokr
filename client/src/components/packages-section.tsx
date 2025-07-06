@@ -122,23 +122,7 @@ export default function PackagesSection() {
           </div>
         </div>
 
-        {/* Upgrade Options */}
-        {upgradeAddons.length > 0 && (
-          <div className="mb-16">
-            <h3 className="text-3xl font-bold text-center mb-8">Upgrade Your Recording</h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              {upgradeAddons.map((addon) => (
-                <div key={addon.id} className="glass p-6 rounded-2xl text-center">
-                  <h4 className="text-xl font-bold mb-2">{addon.name}</h4>
-                  <div className="text-2xl font-bold text-[hsl(var(--k-coral))] mb-4">
-                    +₩{addon.price.toLocaleString()}
-                  </div>
-                  <p className="text-sm text-gray-300">{addon.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+
 
         {/* Optional Add-ons */}
         <div className="mb-16">
