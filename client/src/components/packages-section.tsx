@@ -148,7 +148,7 @@ export default function PackagesSection() {
             <p className="text-green-200 font-semibold">✅ Raw Recording File – Provided free of charge</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
               <h4 className="text-xl font-bold text-[hsl(var(--k-pink))] mb-3">🎵 Full Track Mixing</h4>
               <p className="text-gray-300 text-sm mb-4">
@@ -180,6 +180,14 @@ export default function PackagesSection() {
                 Release your music on Youtube, Instagram, Apple Music, Spotify, Melon and more
               </p>
               <p className="text-2xl font-bold text-white">₩300,000</p>
+            </div>
+
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+              <h4 className="text-xl font-bold text-[hsl(var(--k-coral))] mb-3">💄 Makeup Service</h4>
+              <p className="text-gray-300 text-sm mb-4">
+                Professional full-face makeup before your recording or video shoot
+              </p>
+              <p className="text-2xl font-bold text-white">₩100,000</p>
             </div>
           </div>
 
