@@ -10,7 +10,7 @@ export default function ContactSection() {
         
         <div className="grid lg:grid-cols-3 gap-12 items-start">
           <div>
-            <h3 className="text-3xl font-bold mb-6">Studio Vibes Location</h3>
+            <h3 className="text-3xl font-bold mb-6">Location</h3>
             <div className="space-y-4 text-lg">
               <div className="flex items-center">
                 <MapPin className="text-[hsl(var(--k-pink))] mr-4" size={20} />
