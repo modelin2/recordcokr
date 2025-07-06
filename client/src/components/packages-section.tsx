@@ -71,7 +71,7 @@ export default function PackagesSection() {
                   </th>
                   <th className="text-lg font-bold text-[hsl(var(--k-purple))] pb-4 pl-4">
                     18:00~22:00<br/>
-                    <span className="text-sm font-normal">(-10%)</span>
+                    <span className="text-sm font-normal">(-10% D.C)</span>
                   </th>
                 </tr>
               </thead>
