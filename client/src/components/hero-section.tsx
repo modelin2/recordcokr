@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import heroImage from "@assets/K-Recording Cafe_1751777707836.png";
 
 export default function HeroSection() {
   const scrollToBooking = () => {
@@ -14,16 +15,16 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900"></div>
       {/* Background image overlay */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-30"
+        className="absolute inset-0 bg-cover bg-center opacity-40"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')`
+          backgroundImage: `url(${heroImage})`
         }}
       ></div>
       <div className="relative z-10 text-center px-6">
         <div className="animate-float">
           <h1 className="text-6xl md:text-8xl font-bold mb-6">
             <span className="gradient-text">Recording</span><br />
-            <span className="text-white">Cafe</span>
+            <span className="text-white">VIBES</span>
           </h1>
         </div>
         
