@@ -27,15 +27,14 @@ export default function Navigation() {
       }`}
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="text-2xl font-bold gradient-text">K-Recording Cafe</div>
+        <button 
+          onClick={() => scrollToSection('home')}
+          className="text-2xl font-bold gradient-text hover:scale-105 transition-transform"
+        >
+          K-Recording Cafe
+        </button>
         
         <div className="hidden md:flex space-x-8">
-          <button 
-            onClick={() => scrollToSection('home')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            Home
-          </button>
           <button 
             onClick={() => scrollToSection('experience')}
             className="hover:text-[hsl(var(--k-pink))] transition-colors"
