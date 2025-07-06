@@ -1,4 +1,5 @@
 import { Coffee, Tablet, Mic, Check } from "lucide-react";
+import cafeImage from "@assets/recording cafe2_1751780941116.jpg";
 
 export default function ExperienceSection() {
   return (
@@ -64,7 +65,7 @@ export default function ExperienceSection() {
           </div>
           <div className="relative">
             <img 
-              src="/attached_assets/recording cafe2_1751780941116.jpg" 
+              src={cafeImage} 
               alt="Recording cafe interior with seating and audio equipment" 
               className="rounded-3xl shadow-2xl"
             />
