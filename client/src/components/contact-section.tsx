@@ -14,7 +14,7 @@ export default function ContactSection() {
             <div className="space-y-4 text-lg">
               <div className="flex items-center">
                 <MapPin className="text-[hsl(var(--k-pink))] mr-4" size={20} />
-                <span>서울 강남구 신사동 542-13</span>
+                <span>서울 서초구 강남대로 107길 21. 대능빌딩 2층</span>
               </div>
               <div className="flex items-center">
                 <Train className="text-[hsl(var(--k-purple))] mr-4" size={20} />
