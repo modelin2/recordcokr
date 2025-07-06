@@ -64,8 +64,8 @@ export default function ExperienceSection() {
           </div>
           <div className="relative">
             <img 
-              src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2047&q=80" 
-              alt="Modern cafe interior" 
+              src="/attached_assets/recording cafe2_1751780941116.jpg" 
+              alt="Recording cafe interior with seating and audio equipment" 
               className="rounded-3xl shadow-2xl"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--k-pink))]/20 to-transparent rounded-3xl"></div>
