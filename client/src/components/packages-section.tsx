@@ -57,42 +57,42 @@ export default function PackagesSection() {
         {/* Pricing Table */}
         <div className="glass p-8 rounded-3xl mb-16 max-w-4xl mx-auto">
           <div className="overflow-x-auto">
-            <table className="w-full text-center border-separate border-spacing-4">
+            <table className="w-full text-center border-collapse">
               <thead>
                 <tr>
-                  <th className="text-xl font-bold text-white pb-4">Songs</th>
-                  <th className="text-lg font-bold text-[hsl(var(--k-pink))]">
+                  <th className="text-xl font-bold text-white pb-4 pr-4 border-r border-white/20">Songs</th>
+                  <th className="text-lg font-bold text-[hsl(var(--k-pink))] pb-4 px-4 border-r border-white/20">
                     10:00~13:00<br/>
                     <span className="text-sm font-normal">(-20%)</span>
                   </th>
-                  <th className="text-lg font-bold text-[hsl(var(--k-gold))]">
+                  <th className="text-lg font-bold text-[hsl(var(--k-gold))] pb-4 px-4 border-r border-white/20">
                     13:00~18:00<br/>
                     <span className="text-sm font-normal">(Base Price)</span>
                   </th>
-                  <th className="text-lg font-bold text-[hsl(var(--k-purple))]">
+                  <th className="text-lg font-bold text-[hsl(var(--k-purple))] pb-4 pl-4">
                     18:00~22:00<br/>
                     <span className="text-sm font-normal">(-10%)</span>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="text-lg font-semibold text-white">1 Song</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-pink))]">₩30,000</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-gold))]">₩37,500</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-purple))]">₩33,000</td>
+                <tr className="border-t border-white/20">
+                  <td className="text-lg font-semibold text-white py-4 pr-4 border-r border-white/20">1 Song</td>
+                  <td className="text-2xl font-bold text-[hsl(var(--k-pink))] py-4 px-4 border-r border-white/20">₩30,000</td>
+                  <td className="text-2xl font-bold text-[hsl(var(--k-gold))] py-4 px-4 border-r border-white/20">₩37,500</td>
+                  <td className="text-2xl font-bold text-[hsl(var(--k-purple))] py-4 pl-4">₩33,000</td>
                 </tr>
-                <tr className="bg-white/5 rounded-lg">
-                  <td className="text-lg font-semibold text-white">2 Songs</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-pink))]">₩60,000</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-gold))]">₩75,000</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-purple))]">₩66,000</td>
+                <tr className="bg-white/5 border-t border-white/20">
+                  <td className="text-lg font-semibold text-white py-4 pr-4 border-r border-white/20">2 Songs</td>
+                  <td className="text-2xl font-bold text-[hsl(var(--k-pink))] py-4 px-4 border-r border-white/20">₩60,000</td>
+                  <td className="text-2xl font-bold text-[hsl(var(--k-gold))] py-4 px-4 border-r border-white/20">₩75,000</td>
+                  <td className="text-2xl font-bold text-[hsl(var(--k-purple))] py-4 pl-4">₩66,000</td>
                 </tr>
-                <tr>
-                  <td className="text-lg font-semibold text-white">4 Songs</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-pink))]">₩120,000</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-gold))]">₩150,000</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-purple))]">₩132,000</td>
+                <tr className="border-t border-white/20">
+                  <td className="text-lg font-semibold text-white py-4 pr-4 border-r border-white/20">4 Songs</td>
+                  <td className="text-2xl font-bold text-[hsl(var(--k-pink))] py-4 px-4 border-r border-white/20">₩120,000</td>
+                  <td className="text-2xl font-bold text-[hsl(var(--k-gold))] py-4 px-4 border-r border-white/20">₩150,000</td>
+                  <td className="text-2xl font-bold text-[hsl(var(--k-purple))] py-4 pl-4">₩132,000</td>
                 </tr>
               </tbody>
             </table>
