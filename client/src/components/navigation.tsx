@@ -48,6 +48,12 @@ export default function Navigation() {
             Packages
           </button>
           <button 
+            onClick={() => scrollToSection('menu')}
+            className="hover:text-[hsl(var(--k-pink))] transition-colors"
+          >
+            Menu
+          </button>
+          <button 
             onClick={() => scrollToSection('gallery')}
             className="hover:text-[hsl(var(--k-pink))] transition-colors"
           >
