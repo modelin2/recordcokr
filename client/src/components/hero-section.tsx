@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import heroImage from "@assets/K-Recording Cafe_1751777707836.png";
+import heroImage from "@assets/K-RecordingCafe_1751778566542.png";
 
 export default function HeroSection() {
   const scrollToBooking = () => {
@@ -10,7 +10,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section id="home" className="min-h-screen flex items-end justify-center relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900"></div>
       
@@ -33,7 +33,7 @@ export default function HeroSection() {
            }}
       ></div>
       
-      <div className="relative z-10 text-center px-6">
+      <div className="relative z-10 text-center px-6 pb-20 md:pb-32">
         <p className="text-xl md:text-2xl mb-8 text-gray-300 max-w-3xl mx-auto">
           Record your K-pop dreams in Seoul's most exclusive recording cafe. Professional studio meets trendy cafe experience near Sinsa Station.
         </p>
