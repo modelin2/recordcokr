@@ -38,18 +38,12 @@ export default function HeroSection() {
           Record your K-pop dreams in Seoul's most exclusive recording cafe. Professional studio meets trendy cafe experience near Sinsa Station.
         </p>
         
-        <div className="flex flex-col md:flex-row gap-4 justify-center">
+        <div className="flex justify-center">
           <Button 
             onClick={scrollToBooking}
             className="k-gradient-pink-purple px-8 py-4 rounded-full text-lg font-semibold hover:scale-105 transition-transform animate-glow text-white border-0"
           >
             Start Recording Journey
-          </Button>
-          <Button 
-            variant="outline"
-            className="glass px-8 py-4 rounded-full text-lg font-semibold hover:scale-105 transition-transform text-white border-white/30"
-          >
-            Watch Experience Video
           </Button>
         </div>
       </div>
