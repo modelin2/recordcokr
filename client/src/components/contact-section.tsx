@@ -18,7 +18,7 @@ export default function ContactSection() {
               </div>
               <div className="flex items-center">
                 <Train className="text-[hsl(var(--k-purple))] mr-4" size={20} />
-                <span>2 mins walk from Sinsa Station (Line 3)</span>
+                <span>4 mins walk from Sinsa Station (Line 3)</span>
               </div>
               <div className="flex items-center">
                 <Clock className="text-[hsl(var(--k-blue))] mr-4" size={20} />
