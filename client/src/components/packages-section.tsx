@@ -103,8 +103,45 @@ export default function PackagesSection() {
           </div>
         </div>
 
-        {/* Add-ons Section */}
-        <div className="glass p-8 rounded-3xl mb-8 max-w-5xl mx-auto">
+        <div className="glass p-8 rounded-3xl mb-16 max-w-4xl mx-auto">
+          <div className="text-center">
+            <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-2xl p-4 max-w-2xl mx-auto mb-6">
+              <p className="text-yellow-200 font-semibold mb-2">⚠️ Please Note:</p>
+              <p className="text-yellow-100 text-sm leading-relaxed">
+                Each session is for one person only.<br/>
+                If two people wish to enter together, please book two consecutive sessions.<br/>
+                This allows both participants to enter at the same time and take turns recording.
+              </p>
+            </div>
+            <Button 
+              onClick={scrollToBooking}
+              className="k-gradient-pink-purple px-8 py-3 rounded-full font-semibold hover:scale-105 transition-transform text-white border-0"
+            >
+              Book Your Session
+            </Button>
+          </div>
+        </div>
+
+        {/* Upgrade Options */}
+        {upgradeAddons.length > 0 && (
+          <div className="mb-16">
+            <h3 className="text-3xl font-bold text-center mb-8">Upgrade Your Recording</h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              {upgradeAddons.map((addon) => (
+                <div key={addon.id} className="glass p-6 rounded-2xl text-center">
+                  <h4 className="text-xl font-bold mb-2">{addon.name}</h4>
+                  <div className="text-2xl font-bold text-[hsl(var(--k-coral))] mb-4">
+                    +₩{addon.price.toLocaleString()}
+                  </div>
+                  <p className="text-sm text-gray-300">{addon.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Optional Add-ons */}
+        <div className="mb-16">
           <h3 className="text-3xl font-bold text-center mb-8 gradient-text">🎧 Optional Add-ons</h3>
           
           <div className="mb-6 p-4 bg-green-500/20 border border-green-500/40 rounded-2xl">
@@ -114,7 +151,9 @@ export default function PackagesSection() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
               <h4 className="text-xl font-bold text-[hsl(var(--k-pink))] mb-3">🎵 Full Track Mixing</h4>
-              <p className="text-gray-300 text-sm mb-4">We will correct the pitch and timing of your singing, so your voice sounds on-key and in perfect rhythm. Then we will mix your voice with the instrumental to create a finished song.</p>
+              <p className="text-gray-300 text-sm mb-4">
+                Includes pitch and timing correction, plus mixing your vocal with the instrumental to complete the track
+              </p>
               <p className="text-2xl font-bold text-white">₩100,000</p>
             </div>
 
@@ -168,61 +207,6 @@ export default function PackagesSection() {
             </div>
           </div>
         </div>
-
-        <div className="glass p-8 rounded-3xl mb-16 max-w-4xl mx-auto">
-          <div className="text-center">
-            <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-2xl p-4 max-w-2xl mx-auto mb-6">
-              <p className="text-yellow-200 font-semibold mb-2">⚠️ Please Note:</p>
-              <p className="text-yellow-100 text-sm leading-relaxed">
-                Each session is for one person only.<br/>
-                If two people wish to enter together, please book two consecutive sessions.<br/>
-                This allows both participants to enter at the same time and take turns recording.
-              </p>
-            </div>
-            <Button 
-              onClick={scrollToBooking}
-              className="k-gradient-pink-purple px-8 py-3 rounded-full font-semibold hover:scale-105 transition-transform text-white border-0"
-            >
-              Book Your Session
-            </Button>
-          </div>
-        </div>
-
-        {/* Upgrade Options */}
-        {upgradeAddons.length > 0 && (
-          <div className="mb-16">
-            <h3 className="text-3xl font-bold text-center mb-8">Upgrade Your Recording</h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              {upgradeAddons.map((addon) => (
-                <div key={addon.id} className="glass p-6 rounded-2xl text-center">
-                  <h4 className="text-xl font-bold mb-2">{addon.name}</h4>
-                  <div className="text-2xl font-bold text-[hsl(var(--k-coral))] mb-4">
-                    +₩{addon.price.toLocaleString()}
-                  </div>
-                  <p className="text-sm text-gray-300">{addon.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Premium Add-ons */}
-        {premiumAddons.length > 0 && (
-          <div>
-            <h3 className="text-3xl font-bold text-center mb-8">Premium Add-ons</h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {premiumAddons.map((addon) => (
-                <div key={addon.id} className="glass p-6 rounded-2xl text-center hover:scale-105 transition-transform">
-                  {getIconForAddon(addon.icon)}
-                  <h4 className="text-lg font-bold mb-2">{addon.name}</h4>
-                  <div className="text-xl font-bold text-[hsl(var(--k-pink))]">
-                    ₩{addon.price.toLocaleString()}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );
