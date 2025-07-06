@@ -15,7 +15,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900"></div>
       {/* Background image overlay */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-40"
+        className="absolute inset-0 opacity-40 bg-no-repeat bg-cover bg-[center_15%] md:bg-[center_25%]"
         style={{
           backgroundImage: `url(${heroImage})`
         }}
