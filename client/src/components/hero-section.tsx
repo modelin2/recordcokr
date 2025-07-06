@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import heroImage from "@assets/recordingcafe_1751779005883.png";
+import heroImage from "@assets/k-recording-cafe_1751779360025.png";
 
 export default function HeroSection() {
   const scrollToBooking = () => {
