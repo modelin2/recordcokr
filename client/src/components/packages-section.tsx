@@ -100,6 +100,14 @@ export default function PackagesSection() {
           
           <div className="mt-8 text-center">
             <p className="text-gray-300 mb-4">All packages include: Premium drink + Recording session + Raw files + Free self-photography</p>
+            <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-2xl p-4 max-w-2xl mx-auto mb-6">
+              <p className="text-yellow-200 font-semibold mb-2">⚠️ Please Note:</p>
+              <p className="text-yellow-100 text-sm leading-relaxed">
+                Each session is for one person only.<br/>
+                If two people wish to enter together, please book two consecutive sessions.<br/>
+                This allows both participants to enter at the same time and take turns recording.
+              </p>
+            </div>
             <Button 
               onClick={scrollToBooking}
               className="k-gradient-pink-purple px-8 py-3 rounded-full font-semibold hover:scale-105 transition-transform text-white border-0"
