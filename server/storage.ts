@@ -88,9 +88,31 @@ export class MemStorage implements IStorage {
       isPopular: false,
     };
 
+    const hangangTourPackage: Package = {
+      id: this.currentPackageId++,
+      name: "Hangang Park Tour + Recording",
+      price: 85000,
+      description: "Recording session + authentic Korean riverside experience",
+      features: ["1 Song Recording", "Premium Drink", "Hangang Park Walking Tour", "Choose: K-Drama Ramyeon Experience OR Han River Cruise OR Floating Starbucks Visit", "Professional Photos at Scenic Spots", "Local Guide Included"],
+      songCount: 1,
+      isPopular: true,
+    };
+
+    const garosugilTourPackage: Package = {
+      id: this.currentPackageId++,
+      name: "Garosu-gil Tour + Recording", 
+      price: 75000,
+      description: "Recording session + trendy Gangnam district exploration",
+      features: ["1 Song Recording", "Premium Drink", "Garosu-gil Walking Tour", "K-Fashion Boutique Visits", "Trendy Cafe Photo Spots", "Street Art & Culture Guide", "Shopping Recommendations"],
+      songCount: 1,
+      isPopular: false,
+    };
+
     this.packages.set(singleSongPackage.id, singleSongPackage);
     this.packages.set(doubleSongPackage.id, doubleSongPackage);
     this.packages.set(quadrupleSongPackage.id, quadrupleSongPackage);
+    this.packages.set(hangangTourPackage.id, hangangTourPackage);
+    this.packages.set(garosugilTourPackage.id, garosugilTourPackage);
 
     // Initialize addons
     const memoryPack: Addon = {
