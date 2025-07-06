@@ -27,7 +27,7 @@ export default function Navigation() {
       }`}
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="text-2xl font-bold gradient-text">STUDIO VIBES</div>
+        <div className="text-2xl font-bold gradient-text">K-Recording Cafe</div>
         
         <div className="hidden md:flex space-x-8">
           <button 
