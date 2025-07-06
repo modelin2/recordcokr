@@ -114,9 +114,7 @@ export default function PackagesSection() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
               <h4 className="text-xl font-bold text-[hsl(var(--k-pink))] mb-3">🎵 Full Track Mixing</h4>
-              <p className="text-gray-300 text-sm mb-4">
-                Includes pitch and timing correction, plus mixing your vocal with the instrumental to complete the track
-              </p>
+              <p className="text-gray-300 text-sm mb-4">We will correct the pitch and timing of your singing, so your voice sounds on-key and in perfect rhythm. Then we will mix your voice with the instrumental to create a finished song.</p>
               <p className="text-2xl font-bold text-white">₩100,000</p>
             </div>
 
