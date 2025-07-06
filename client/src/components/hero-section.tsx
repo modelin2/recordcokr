@@ -51,7 +51,7 @@ export default function HeroSection() {
             <img 
               src={heroImage} 
               alt="Recording studio with professional microphone and equipment"
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-contain"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
           </div>
