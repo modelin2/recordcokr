@@ -29,7 +29,7 @@ export default function MenuSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Menu Content */}
           <div>
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed">You are welcome to visit and order drinks only. However, if you book a recording package, you will receive one premium drink for free.  Please note: If you visit for drinks only, use of the recording booth may not be available depending on existing reservations.</p>
+            <p className="text-xl text-gray-300 mb-8 leading-relaxed">You are welcome to visit and order drinks only</p>
             
             <div className="grid md:grid-cols-2 gap-8">
               {/* Hot Drinks */}
