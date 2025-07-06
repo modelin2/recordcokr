@@ -24,7 +24,7 @@ export default function HeroSection() {
       <div className="relative z-10 text-center px-6">
         <div className="animate-float">
           <h1 className="text-6xl md:text-8xl font-bold mb-6">
-            <span className="gradient-text">Recording Cafe</span><br />
+            <span className="gradient-text">Recording</span><br />
             <span className="text-white">VIBES</span>
           </h1>
         </div>
