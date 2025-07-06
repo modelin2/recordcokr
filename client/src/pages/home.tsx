@@ -15,8 +15,8 @@ export default function Home() {
       <Navigation />
       <HeroSection />
       <ExperienceSection />
-      <PackagesSection />
       <MenuSection />
+      <PackagesSection />
       <GallerySection />
       <FAQSection />
       <BookingSection />
