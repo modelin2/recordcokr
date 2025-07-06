@@ -12,7 +12,6 @@ export default function HeroSection() {
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900"></div>
-      
       {/* Background image overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center opacity-30"
@@ -20,12 +19,11 @@ export default function HeroSection() {
           backgroundImage: `url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')`
         }}
       ></div>
-      
       <div className="relative z-10 text-center px-6">
         <div className="animate-float">
           <h1 className="text-6xl md:text-8xl font-bold mb-6">
             <span className="gradient-text">Recording</span><br />
-            <span className="text-white">VIBES</span>
+            <span className="text-white">Cafe</span>
           </h1>
         </div>
         
@@ -48,7 +46,6 @@ export default function HeroSection() {
           </Button>
         </div>
       </div>
-
       {/* Floating elements */}
       <div className="absolute top-20 left-10 w-20 h-20 bg-[hsl(var(--k-pink))] rounded-full opacity-20 animate-float"></div>
       <div className="absolute bottom-20 right-10 w-16 h-16 bg-[hsl(var(--k-purple))] rounded-full opacity-20 animate-float" style={{ animationDelay: '-2s' }}></div>
