@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Play, Heart, Star, ChevronLeft, ChevronRight, ZoomIn, X } from "lucide-react";
 
+// Import featured images for "See The Magic Happen" section
+import recordingcafe0_1 from "@assets/recordingcafe0 (1)_1751872328126.jpg";
+import recordingcafe0_3 from "@assets/recordingcafe0 (3)_1751872328126.jpg";
+import recordingcafe0_4 from "@assets/recordingcafe0(4)_1751872328126.jpg";
+import recordingcafe0_5 from "@assets/recordingcafe0(5)_1751872328127.png";
+
 // Import all images in numerical order
 import recordingcafe1 from "@assets/Recordingcafe1_1751872328127.png";
 import recordingcafe2 from "@assets/Recordingcafe2_1751872328127.png";
@@ -28,11 +34,50 @@ import recordingcafe22 from "@assets/Recordingcafe22_1751877203474.png";
 import recordingcafe23 from "@assets/Recordingcafe23_1751877203475.png";
 import recordingcafe24 from "@assets/Recordingcafe24_1751877203475.png";
 import recordingcafe25 from "@assets/Recordingcafe25_1751877203475.png";
+import recordingcafe26 from "@assets/Recordingcafe26_1751879234411.png";
+import recordingcafe27 from "@assets/Recordingcafe27_1751879234411.png";
+import recordingcafe29 from "@assets/Recordingcafe29_1751879234412.png";
+import recordingcafe30 from "@assets/Recordingcafe30_1751879234412.png";
+import recordingcafe31 from "@assets/Recordingcafe31_1751879234412.png";
+import recordingcafe32 from "@assets/Recordingcafe32_1751879234412.png";
+import recordingcafe35 from "@assets/Recordingcafe35_1751879234412.png";
+import recordingcafe36 from "@assets/Recordingcafe36_1751879234413.png";
+import recordingcafe38 from "@assets/Recordingcafe38_1751879234413.png";
+import recordingcafe39 from "@assets/Recordingcafe39_1751879234413.png";
+import recordingcafe40 from "@assets/Recordingcafe40_1751879234413.png";
 
 export default function GallerySection() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [liked, setLiked] = useState<Set<number>>(new Set());
+
+  // Featured images for "See The Magic Happen" carousel
+  const featuredImages = [
+    {
+      src: recordingcafe0_1,
+      title: "Professional Studio Environment",
+      description: "State-of-the-art recording facility with premium equipment",
+      category: "Studio Environment"
+    },
+    {
+      src: recordingcafe0_3,
+      title: "Modern Recording Setup",
+      description: "Professional mixing console and monitoring equipment",
+      category: "Studio Equipment"
+    },
+    {
+      src: recordingcafe0_4,
+      title: "Recording Booth",
+      description: "Acoustically treated recording space with professional microphones",
+      category: "Studio Equipment"
+    },
+    {
+      src: recordingcafe0_5,
+      title: "Studio Atmosphere",
+      description: "Comfortable and inspiring environment for K-pop recording",
+      category: "Studio Environment"
+    }
+  ];
 
   // Gallery images in numerical order
   const galleryImages = [
@@ -40,167 +85,208 @@ export default function GallerySection() {
       src: recordingcafe1,
       title: "Professional Recording Studio",
       description: "Recording booth with professional microphone setup",
-      category: "Studio Equipment",
-      featured: true
+      category: "Studio Equipment"
     },
     {
       src: recordingcafe2,
       title: "Mixing Console Setup",
       description: "State-of-the-art digital mixing board",
-      category: "Studio Equipment",
-      featured: false
+      category: "Studio Equipment"
     },
     {
       src: recordingcafe3,
       title: "Recording Session",
       description: "Artist recording in our professional booth",
-      category: "Recording Sessions",
-      featured: false
+      category: "Recording Sessions"
     },
     {
       src: recordingcafe4,
       title: "Studio Atmosphere",
       description: "Comfortable recording environment with modern design",
-      category: "Studio Environment",
-      featured: false
+      category: "Studio Environment"
     },
     {
       src: recordingcafe5,
       title: "Customer Recording",
       description: "International visitor enjoying K-pop recording experience",
-      category: "Customer Experience",
-      featured: true
+      category: "Customer Experience"
     },
     {
       src: recordingcafe6,
       title: "Professional Equipment",
       description: "High-end microphones and audio equipment",
-      category: "Studio Equipment",
-      featured: false
+      category: "Studio Equipment"
     },
     {
       src: recordingcafe7,
       title: "Recording Session in Progress",
       description: "Artist performing with professional headphones",
-      category: "Recording Sessions",
-      featured: false
+      category: "Recording Sessions"
     },
     {
       src: recordingcafe8,
       title: "Studio Interior",
       description: "Modern studio design with premium acoustics",
-      category: "Studio Environment",
-      featured: false
+      category: "Studio Environment"
     },
     {
       src: recordingcafe9,
       title: "Happy Customer",
       description: "International artist enjoying K-pop recording experience",
-      category: "Customer Experience",
-      featured: true
+      category: "Customer Experience"
     },
     {
       src: recordingcafe10,
       title: "Recording Session",
       description: "Professional recording with studio headphones",
-      category: "Recording Sessions",
-      featured: false
+      category: "Recording Sessions"
     },
     {
       src: recordingcafe11,
       title: "Studio Performance",
       description: "Artist recording with professional microphone setup",
-      category: "Recording Sessions",
-      featured: false
+      category: "Recording Sessions"
     },
     {
       src: recordingcafe12,
       title: "Studio Team",
       description: "Professional recording staff and customers",
-      category: "Customer Experience",
-      featured: false
+      category: "Customer Experience"
     },
     {
       src: recordingcafe15,
       title: "Cafe Area",
       description: "Studio staff in the beautiful cafe environment",
-      category: "Cafe Experience",
-      featured: false
+      category: "Cafe Experience"
     },
     {
       src: recordingcafe16,
       title: "International Customer",
       description: "Foreign visitor enjoying the recording cafe experience",
-      category: "Customer Experience",
-      featured: true
+      category: "Customer Experience"
     },
     {
       src: recordingcafe17,
       title: "Cafe Staff",
       description: "Friendly staff member in the cafe area",
-      category: "Cafe Experience",
-      featured: false
+      category: "Cafe Experience"
     },
     {
       src: recordingcafe18,
       title: "Professional Portrait",
       description: "Studio customer in professional recording environment",
-      category: "Customer Experience",
-      featured: false
+      category: "Customer Experience"
     },
     {
       src: recordingcafe19,
       title: "Happy Customer",
       description: "International visitor enjoying the K-pop experience",
-      category: "Customer Experience",
-      featured: false
+      category: "Customer Experience"
     },
     {
       src: recordingcafe20,
       title: "Cafe Experience",
       description: "Customer enjoying the cafe atmosphere",
-      category: "Cafe Experience",
-      featured: false
+      category: "Cafe Experience"
     },
     {
       src: recordingcafe21,
       title: "International Visitor",
       description: "Foreign customer at the recording cafe",
-      category: "Customer Experience",
-      featured: false
+      category: "Customer Experience"
     },
     {
       src: recordingcafe22,
       title: "Studio Recording",
       description: "Professional recording session in progress",
-      category: "Recording Sessions",
-      featured: false
+      category: "Recording Sessions"
     },
     {
       src: recordingcafe23,
       title: "Customer Experience",
       description: "Happy customer in the studio environment",
-      category: "Customer Experience",
-      featured: false
+      category: "Customer Experience"
     },
     {
       src: recordingcafe24,
       title: "Professional Session",
       description: "Recording artist with studio equipment",
-      category: "Recording Sessions",
-      featured: false
+      category: "Recording Sessions"
     },
     {
       src: recordingcafe25,
       title: "Studio Recording",
       description: "Customer enjoying K-pop recording experience",
-      category: "Customer Experience",
-      featured: false
+      category: "Customer Experience"
+    },
+    {
+      src: recordingcafe26,
+      title: "Professional Customer",
+      description: "Elegant customer in the cafe recording environment",
+      category: "Customer Experience"
+    },
+    {
+      src: recordingcafe27,
+      title: "Control Room Session",
+      description: "International customer in professional control room",
+      category: "Recording Sessions"
+    },
+    {
+      src: recordingcafe29,
+      title: "Studio Engineer",
+      description: "Professional audio engineer in control room",
+      category: "Studio Staff"
+    },
+    {
+      src: recordingcafe30,
+      title: "Recording Artist",
+      description: "International artist in professional studio environment",
+      category: "Customer Experience"
+    },
+    {
+      src: recordingcafe31,
+      title: "Happy Recording Session",
+      description: "Joyful customer enjoying the recording experience",
+      category: "Customer Experience"
+    },
+    {
+      src: recordingcafe32,
+      title: "Studio Portrait",
+      description: "Beautiful portrait in professional recording environment",
+      category: "Customer Experience"
+    },
+    {
+      src: recordingcafe35,
+      title: "Professional Recording",
+      description: "International customer in state-of-the-art studio",
+      category: "Recording Sessions"
+    },
+    {
+      src: recordingcafe36,
+      title: "Studio Experience",
+      description: "Customer enjoying professional recording session",
+      category: "Customer Experience"
+    },
+    {
+      src: recordingcafe38,
+      title: "Creative Session",
+      description: "Artist in professional recording environment",
+      category: "Recording Sessions"
+    },
+    {
+      src: recordingcafe39,
+      title: "International Recording",
+      description: "Foreign visitor in professional studio setup",
+      category: "Customer Experience"
+    },
+    {
+      src: recordingcafe40,
+      title: "Studio Professional",
+      description: "Happy customer in premium recording facility",
+      category: "Customer Experience"
     }
   ];
-
-  const featuredImages = galleryImages.filter(img => img.featured);
-  const categories = ["All", "Studio Equipment", "Recording Sessions", "Customer Experience", "Cafe Experience"];
+  const categories = ["All", "Studio Equipment", "Recording Sessions", "Customer Experience", "Cafe Experience", "Studio Staff"];
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const filteredImages = selectedCategory === "All" 
