@@ -17,11 +17,11 @@ export default function Home() {
       <Navigation />
       <HeroSection />
       <ExperienceSection />
-      <HowToUseSection />
       <MenuSection />
       <PackagesSection />
       <GallerySection />
       <SeoulTourSection />
+      <HowToUseSection />
       <FAQSection />
       <BookingSection />
       <ContactSection />
