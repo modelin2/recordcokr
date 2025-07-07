@@ -1,36 +1,78 @@
 import { Card } from "@/components/ui/card";
+import recordingcafe0_1 from "@assets/recordingcafe0 (1)_1751872328126.jpg";
+import recordingcafe0_3 from "@assets/recordingcafe0 (3)_1751872328126.jpg";
+import recordingcafe0_4 from "@assets/recordingcafe0(4)_1751872328126.jpg";
+import recordingcafe0_5 from "@assets/recordingcafe0(5)_1751872328127.png";
+import recordingcafe1 from "@assets/Recordingcafe1_1751872328127.png";
+import recordingcafe2 from "@assets/Recordingcafe2_1751872328127.png";
+import recordingcafe3 from "@assets/Recordingcafe3_1751872328127.png";
+import recordingcafe4 from "@assets/Recordingcafe4_1751872328128.png";
+import recordingcafe5 from "@assets/Recordingcafe5_1751872328128.png";
+import recordingcafe6 from "@assets/Recordingcafe6_1751872328128.png";
+import recordingcafe7 from "@assets/Recordingcafe7_1751872328128.png";
+import recordingcafe8 from "@assets/Recordingcafe8_1751872328129.png";
 
 export default function GallerySection() {
   const galleryImages = [
     {
-      src: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2065&q=80",
-      title: "Professional Studio",
+      src: recordingcafe0_1,
+      title: "Professional Recording Studio",
       gradient: "from-[hsl(var(--k-pink))]/50"
     },
     {
-      src: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2047&q=80",
-      title: "Trendy Cafe Space",
+      src: recordingcafe0_3,
+      title: "Recording in Progress",
       gradient: "from-[hsl(var(--k-purple))]/50"
     },
     {
-      src: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      title: "Happy Memories",
+      src: recordingcafe0_4,
+      title: "K-pop Artist Experience",
       gradient: "from-[hsl(var(--k-blue))]/50"
     },
     {
-      src: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      title: "Recording Booth",
+      src: recordingcafe0_5,
+      title: "Professional Microphone Setup",
       gradient: "from-[hsl(var(--k-coral))]/50"
     },
     {
-      src: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      title: "Mixing Console",
+      src: recordingcafe1,
+      title: "Young Artist Recording",
       gradient: "from-[hsl(var(--k-gold))]/50"
     },
     {
-      src: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      title: "K-Culture Experience",
+      src: recordingcafe2,
+      title: "Stylish Recording Session",
       gradient: "from-[hsl(var(--k-pink))]/50"
+    },
+    {
+      src: recordingcafe3,
+      title: "Professional K-pop Experience",
+      gradient: "from-[hsl(var(--k-purple))]/50"
+    },
+    {
+      src: recordingcafe4,
+      title: "International Visitors Welcome",
+      gradient: "from-[hsl(var(--k-blue))]/50"
+    },
+    {
+      src: recordingcafe5,
+      title: "Inclusive Recording Environment",
+      gradient: "from-[hsl(var(--k-coral))]/50"
+    },
+    {
+      src: recordingcafe6,
+      title: "Global Music Community",
+      gradient: "from-[hsl(var(--k-gold))]/50"
+    },
+    {
+      src: recordingcafe7,
+      title: "K-pop Culture Experience",
+      gradient: "from-[hsl(var(--k-pink))]/50"
+    },
+    {
+      src: recordingcafe8,
+      title: "Professional Studio Sessions",
+      gradient: "from-[hsl(var(--k-purple))]/50"
     }
   ];
 
