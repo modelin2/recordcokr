@@ -47,7 +47,7 @@ export default function ExperienceSection() {
               </li>
               <li className="flex items-center">
                 <Check className="text-[hsl(var(--k-pink))] mr-3" size={20} />
-                English-speaking staff support
+                Walking distance to Hangang Park riverside
               </li>
               <li className="flex items-center">
                 <Check className="text-[hsl(var(--k-pink))] mr-3" size={20} />
