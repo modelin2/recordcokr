@@ -18,8 +18,8 @@ export default function Home() {
       <HeroSection />
       <ExperienceSection />
       <MenuSection />
-      <PackagesSection />
       <GallerySection />
+      <PackagesSection />
       <SeoulTourSection />
       <HowToUseSection />
       <FAQSection />

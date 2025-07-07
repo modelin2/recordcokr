@@ -42,18 +42,6 @@ export default function Navigation() {
             Experience
           </button>
           <button 
-            onClick={() => scrollToSection('how-to-use')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            How to Use
-          </button>
-          <button 
-            onClick={() => scrollToSection('packages')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            Packages
-          </button>
-          <button 
             onClick={() => scrollToSection('menu')}
             className="hover:text-[hsl(var(--k-pink))] transition-colors"
           >
@@ -66,10 +54,22 @@ export default function Navigation() {
             Gallery
           </button>
           <button 
+            onClick={() => scrollToSection('packages')}
+            className="hover:text-[hsl(var(--k-pink))] transition-colors"
+          >
+            Packages
+          </button>
+          <button 
             onClick={() => scrollToSection('tours')}
             className="hover:text-[hsl(var(--k-pink))] transition-colors"
           >
             Tours
+          </button>
+          <button 
+            onClick={() => scrollToSection('how-to-use')}
+            className="hover:text-[hsl(var(--k-pink))] transition-colors"
+          >
+            How to Use
           </button>
           <button 
             onClick={() => scrollToSection('faq')}
