@@ -286,12 +286,7 @@ export default function GallerySection() {
       category: "Customer Experience"
     }
   ];
-  const categories = ["All", "Studio Equipment", "Recording Sessions", "Customer Experience", "Cafe Experience", "Studio Staff"];
-  const [selectedCategory, setSelectedCategory] = useState("All");
-
-  const filteredImages = selectedCategory === "All" 
-    ? galleryImages 
-    : galleryImages.filter(img => img.category === selectedCategory);
+  const filteredImages = galleryImages;
 
   const testimonials = [
     {
@@ -407,24 +402,6 @@ export default function GallerySection() {
               ))}
             </div>
           </div>
-        </div>
-
-        {/* Category Filter */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {categories.map((category) => (
-            <Button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              variant={selectedCategory === category ? "default" : "outline"}
-              className={`px-6 py-2 rounded-full transition-all ${
-                selectedCategory === category
-                  ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
-                  : 'border-white/30 text-white hover:bg-white/10'
-              }`}
-            >
-              {category}
-            </Button>
-          ))}
         </div>
 
         {/* Gallery Grid */}
