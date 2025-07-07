@@ -1,6 +1,7 @@
 import Navigation from "@/components/navigation";
 import HeroSection from "@/components/hero-section";
 import ExperienceSection from "@/components/experience-section";
+import HowToUseSection from "@/components/how-to-use-section";
 import PackagesSection from "@/components/packages-section";
 import MenuSection from "@/components/menu-section";
 import GallerySection from "@/components/gallery-section";
@@ -16,6 +17,7 @@ export default function Home() {
       <Navigation />
       <HeroSection />
       <ExperienceSection />
+      <HowToUseSection />
       <MenuSection />
       <PackagesSection />
       <GallerySection />

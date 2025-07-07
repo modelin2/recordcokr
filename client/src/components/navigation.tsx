@@ -42,6 +42,12 @@ export default function Navigation() {
             Experience
           </button>
           <button 
+            onClick={() => scrollToSection('how-to-use')}
+            className="hover:text-[hsl(var(--k-pink))] transition-colors"
+          >
+            How to Use
+          </button>
+          <button 
             onClick={() => scrollToSection('packages')}
             className="hover:text-[hsl(var(--k-pink))] transition-colors"
           >
