@@ -72,8 +72,8 @@ export default function HowToUseSection() {
           <div className="bg-blue-500/20 border border-blue-500/40 rounded-2xl p-6 max-w-2xl mx-auto">
             <p className="text-blue-200 font-semibold mb-2">💡 Pro Tip</p>
             <p className="text-blue-100 text-sm leading-relaxed">
-              Prepare your song choice in advance and practice a bit! The clearer the instrumental track, 
-              the better your recording will sound. We recommend choosing popular K-pop songs for the best experience.
+              Each session is 10 minutes time-based, not song-based. Plan your time wisely to make the most of your recording experience. 
+              You can record multiple takes or even parts of different songs within your 10-minute slot.
             </p>
           </div>
         </div>
