@@ -10,9 +10,7 @@ export default function BookingSection() {
     <section id="booking" className="py-20 bg-gradient-to-br from-[hsl(var(--k-pink))] via-[hsl(var(--k-purple))] to-[hsl(var(--k-blue))]">
       <div className="container mx-auto px-6 text-center">
         <h2 className="text-5xl font-bold mb-8 text-white">Ready to Record Your K-pop Dream?</h2>
-        <p className="text-xl mb-12 max-w-2xl mx-auto text-white">
-          Join thousands of international visitors who've created their K-pop memories at Studio Vibes
-        </p>
+        <p className="text-xl mb-12 max-w-2xl mx-auto text-white">Join thousands of international visitors who've created their K-pop memories at K-Recording Cafe</p>
         
         <Button 
           onClick={handleBookingClick}
