@@ -476,16 +476,30 @@ export default function GallerySection() {
 
         {/* Lightbox Modal */}
         {selectedImage !== null && (
-          <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-            <div className="relative max-w-4xl max-h-[90vh] w-full">
-              <img
-                src={filteredImages[selectedImage].src}
-                alt={filteredImages[selectedImage].title}
-                className="w-full h-full object-contain rounded-lg"
-              />
+          <div 
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 overflow-auto"
+            onClick={() => setSelectedImage(null)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setSelectedImage(null);
+              if (e.key === 'ArrowLeft') setSelectedImage((selectedImage - 1 + filteredImages.length) % filteredImages.length);
+              if (e.key === 'ArrowRight') setSelectedImage((selectedImage + 1) % filteredImages.length);
+            }}
+            tabIndex={0}
+          >
+            <div 
+              className="relative max-w-4xl w-full flex flex-col max-h-[95vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex-1 min-h-0 flex items-center justify-center">
+                <img
+                  src={filteredImages[selectedImage].src}
+                  alt={filteredImages[selectedImage].title}
+                  className="max-w-full max-h-full object-contain rounded-lg"
+                />
+              </div>
               
               {/* Image Info */}
-              <div className="absolute bottom-4 left-4 right-4 bg-black/80 rounded-lg p-4 text-white">
+              <div className="mt-4 bg-black/80 rounded-lg p-4 text-white flex-shrink-0">
                 <div className="flex items-start justify-between">
                   <div>
                     <Badge className="mb-2 bg-pink-500/90">
@@ -497,7 +511,7 @@ export default function GallerySection() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className={`border-white/30 text-white transition-colors ${
+                    className={`border-white/30 text-white transition-colors flex-shrink-0 ${
                       liked.has(selectedImage) 
                         ? 'bg-pink-500/80 hover:bg-pink-600/80' 
                         : 'bg-black/50 hover:bg-pink-500/80'
@@ -515,7 +529,7 @@ export default function GallerySection() {
                 onClick={() => setSelectedImage(null)}
                 variant="outline"
                 size="sm"
-                className="absolute top-4 right-4 bg-black/50 border-white/30 text-white hover:bg-black/70"
+                className="absolute top-4 right-4 bg-black/50 border-white/30 text-white hover:bg-black/70 z-10"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -527,7 +541,7 @@ export default function GallerySection() {
                     onClick={() => setSelectedImage((selectedImage - 1 + filteredImages.length) % filteredImages.length)}
                     variant="outline"
                     size="sm"
-                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 border-white/30 text-white hover:bg-black/70"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 border-white/30 text-white hover:bg-black/70 z-10"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </Button>
@@ -535,7 +549,7 @@ export default function GallerySection() {
                     onClick={() => setSelectedImage((selectedImage + 1) % filteredImages.length)}
                     variant="outline"
                     size="sm"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 border-white/30 text-white hover:bg-black/70"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 border-white/30 text-white hover:bg-black/70 z-10"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </Button>
