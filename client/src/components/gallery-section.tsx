@@ -487,14 +487,14 @@ export default function GallerySection() {
             tabIndex={0}
           >
             <div 
-              className="relative max-w-4xl w-full flex flex-col max-h-[95vh]"
+              className="relative max-w-2xl w-full flex flex-col max-h-[90vh]"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex-1 min-h-0 flex items-center justify-center">
                 <img
                   src={filteredImages[selectedImage].src}
                   alt={filteredImages[selectedImage].title}
-                  className="max-w-full max-h-full object-contain rounded-lg"
+                  className="max-w-[80vw] max-h-[60vh] object-contain rounded-lg"
                 />
               </div>
               
