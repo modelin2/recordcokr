@@ -348,12 +348,12 @@ export default function GallerySection() {
         {/* Featured Carousel */}
         <div className="mb-16">
           <h3 className="text-3xl font-bold text-white mb-8 text-center">Featured Moments</h3>
-          <div className="relative max-w-4xl mx-auto">
-            <div className="relative h-[500px] rounded-3xl overflow-hidden">
+          <div className="relative max-w-xl mx-auto">
+            <div className="relative h-[300px] rounded-3xl overflow-hidden">
               <img
                 src={featuredImages[currentSlide].src}
                 alt={featuredImages[currentSlide].title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain bg-gray-900"
               />
               
               {/* Overlay */}
