@@ -149,8 +149,8 @@ export default function GallerySection() {
     },
     {
       src: recordingcafe12,
-      title: "Studio Team",
-      description: "Professional recording staff and customers",
+      title: "Movie Filming Location",
+      description: "Lee Kwang Soo (李光洙), Kwone Sang Woo (权相佑), Sung Dong Il (成东日)",
       category: "Customer Experience"
     },
     {
