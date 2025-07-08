@@ -63,7 +63,7 @@ export default function Navigation() {
             onClick={() => scrollToSection('tours')}
             className="hover:text-[hsl(var(--k-pink))] transition-colors"
           >
-            Tours
+            Walking Guide
           </button>
           <button 
             onClick={() => scrollToSection('how-to-use')}
