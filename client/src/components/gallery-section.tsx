@@ -58,7 +58,11 @@ export default function GallerySection() {
       title: "Professional Studio Environment",
       description: "State-of-the-art recording facility with premium equipment",
       category: "Studio Environment"
-    },
+    }
+  ];
+
+  // Gallery images in numerical order
+  const galleryImages = [
     {
       src: recordingcafe0_3,
       title: "Modern Recording Setup",
@@ -76,11 +80,7 @@ export default function GallerySection() {
       title: "Studio Atmosphere",
       description: "Comfortable and inspiring environment for K-pop recording",
       category: "Studio Environment"
-    }
-  ];
-
-  // Gallery images in numerical order
-  const galleryImages = [
+    },
     {
       src: recordingcafe1,
       title: "Professional Recording Studio",
