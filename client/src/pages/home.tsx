@@ -13,7 +13,7 @@ import Footer from "@/components/footer";
 
 export default function Home() {
   return (
-    <div className="bg-gray-900 text-white min-h-screen w-full max-w-screen-2xl mx-auto">
+    <div className="bg-gray-900 text-white min-h-screen w-full overflow-x-hidden">
       <Navigation />
       <HeroSection />
       <ExperienceSection />
