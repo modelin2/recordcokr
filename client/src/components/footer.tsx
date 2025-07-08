@@ -13,7 +13,7 @@ export default function Footer() {
           <a href="#" className="hover:text-[hsl(var(--k-pink))] transition-colors">Support</a>
         </div>
         
-        <div className="text-gray-500">© 2025 Korea Crowdfunding Association. All rights reserved.  © 2025 Korea Crowdfunding Association. All rights reserved.</div>
+        <div className="text-gray-500">© 2025 Korea Crowdfunding Association. All rights reserved.  The trademark and service model (BM) are patents protected.</div>
       </div>
     </footer>
   );
