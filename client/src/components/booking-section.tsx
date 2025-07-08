@@ -20,8 +20,6 @@ export default function BookingSection() {
         >
           Book Now
         </Button>
-        
-        
       </div>
     </section>
   );
