@@ -21,9 +21,7 @@ export default function BookingSection() {
           Book Now
         </Button>
         
-        <p className="text-lg mt-6 text-white/90">
-          Call us at <span className="font-bold">+82-10-1234-5678</span>
-        </p>
+        
       </div>
     </section>
   );
