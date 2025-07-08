@@ -477,7 +477,7 @@ export default function GallerySection() {
         {/* Lightbox Modal */}
         {selectedImage !== null && (
           <div 
-            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 overflow-auto"
+            className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-4 overflow-auto"
             onClick={() => setSelectedImage(null)}
             onKeyDown={(e) => {
               if (e.key === 'Escape') setSelectedImage(null);
@@ -528,10 +528,10 @@ export default function GallerySection() {
               <Button
                 onClick={() => setSelectedImage(null)}
                 variant="outline"
-                size="sm"
-                className="absolute top-4 right-4 bg-black/50 border-white/30 text-white hover:bg-black/70 z-10"
+                size="default"
+                className="absolute top-6 right-6 bg-black/80 border-white/50 text-white hover:bg-black/90 z-[110] shadow-xl h-12 w-12 rounded-full"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </Button>
 
               {/* Navigation */}
@@ -541,7 +541,7 @@ export default function GallerySection() {
                     onClick={() => setSelectedImage((selectedImage - 1 + filteredImages.length) % filteredImages.length)}
                     variant="outline"
                     size="sm"
-                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 border-white/30 text-white hover:bg-black/70 z-10"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/80 border-white/30 text-white hover:bg-black/90 z-[60] shadow-lg"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </Button>
@@ -549,7 +549,7 @@ export default function GallerySection() {
                     onClick={() => setSelectedImage((selectedImage + 1) % filteredImages.length)}
                     variant="outline"
                     size="sm"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 border-white/30 text-white hover:bg-black/70 z-10"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/80 border-white/30 text-white hover:bg-black/90 z-[60] shadow-lg"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </Button>
