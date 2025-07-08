@@ -29,7 +29,7 @@ export default function ContactSection() {
             </div>
             <div className="flex items-center justify-center">
               <Mail className="text-[hsl(var(--k-gold))] mr-4" size={20} />
-              <span>hello@studiovibes.kr</span>
+              <span>contact@crowdfunding.or.kr</span>
             </div>
           </div>
           
