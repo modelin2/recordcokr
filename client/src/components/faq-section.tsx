@@ -95,25 +95,7 @@ export default function FAQSection() {
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <p className="text-xl text-gray-300 mb-6">
-            Still have questions? We're here to help!
-          </p>
-          <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <a 
-              href="tel:+82-2-123-4567"
-              className="k-gradient-pink-purple px-8 py-3 rounded-full font-semibold hover:scale-105 transition-transform text-white border-0 inline-block"
-            >
-              Call Us: +82-2-123-4567
-            </a>
-            <a 
-              href="mailto:hello@studiovibes.kr"
-              className="glass px-8 py-3 rounded-full font-semibold hover:scale-105 transition-transform text-white border-white/30 inline-block"
-            >
-              Email: hello@studiovibes.kr
-            </a>
-          </div>
-        </div>
+        
       </div>
     </section>
   );
