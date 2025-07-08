@@ -3,7 +3,7 @@ import { Calendar, Clock, Music, Play } from "lucide-react";
 export default function HowToUseSection() {
   return (
     <section id="how-to-use" className="py-20 bg-gray-900">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 lg:px-8 xl:px-12 max-w-7xl">
         <h2 className="text-5xl font-bold text-center mb-16 gradient-text">How to Use Our Service</h2>
         <p className="text-xl text-center text-gray-300 mb-12 max-w-3xl mx-auto">
           Follow these simple steps to enjoy your K-pop recording experience

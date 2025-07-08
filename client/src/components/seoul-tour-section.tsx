@@ -10,7 +10,7 @@ export default function SeoulTourSection() {
 
   return (
     <section id="tours" className="py-20 bg-gray-800">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 lg:px-8 xl:px-12 max-w-7xl">
         <h2 className="text-5xl font-bold text-center mb-16 gradient-text">🗺️ Seoul Walking Guide</h2>
         <p className="text-xl text-center text-gray-300 mb-12 max-w-3xl mx-auto">
           Effective travel routes from our studio in Sinsa! Explore Seoul's best spots just minutes away on foot.

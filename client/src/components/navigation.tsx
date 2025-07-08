@@ -26,7 +26,7 @@ export default function Navigation() {
         scrolled ? 'bg-black/90' : 'glass'
       }`}
     >
-      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="container mx-auto px-6 lg:px-8 xl:px-12 py-4 flex items-center justify-between max-w-7xl">
         <button 
           onClick={() => scrollToSection('home')}
           className="text-2xl font-bold gradient-text hover:scale-105 transition-transform"

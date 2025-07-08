@@ -34,7 +34,7 @@ export default function PackagesSection() {
   if (addonsLoading) {
     return (
       <section id="packages" className="py-20 bg-gradient-to-br from-gray-900 to-purple-900">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 lg:px-8 xl:px-12 max-w-7xl">
           <h2 className="text-5xl font-bold text-center mb-16 gradient-text">Loading Packages...</h2>
         </div>
       </section>

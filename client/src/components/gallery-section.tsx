@@ -331,7 +331,7 @@ export default function GallerySection() {
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-3xl"></div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-6 lg:px-8 xl:px-12 relative z-10 max-w-7xl">
         {/* Section Header */}
         <div className="text-center mb-16">
           <Badge className="mb-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-2">
@@ -405,7 +405,7 @@ export default function GallerySection() {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16 w-full">
           {filteredImages.map((image, index) => (
             <Card 
               key={index} 

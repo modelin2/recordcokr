@@ -5,7 +5,7 @@ import { SiInstagram, SiYoutube, SiTiktok, SiSpotify } from "react-icons/si";
 export default function ContactSection() {
   return (
     <section id="contact" className="py-20 bg-gray-900">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 lg:px-8 xl:px-12 max-w-7xl">
         <h2 className="text-5xl font-bold text-center mb-16 gradient-text">Visit Us in Sinsa</h2>
         
         <div className="max-w-2xl mx-auto text-center">

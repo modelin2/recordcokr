@@ -4,7 +4,7 @@ import cafeImage from "@assets/recording cafe2_1751780941116.jpg";
 export default function ExperienceSection() {
   return (
     <section id="experience" className="py-20 bg-gray-800">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 lg:px-8 xl:px-12 max-w-7xl">
         <h2 className="text-5xl font-bold text-center mb-16 gradient-text">The K-pop Experience</h2>
         
         <div className="grid md:grid-cols-3 gap-8 mb-16">

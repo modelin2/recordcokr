@@ -33,7 +33,7 @@ export default function HeroSection() {
            }}
       ></div>
       
-      <div className="relative z-10 text-center px-6 pb-20 md:pb-32">
+      <div className="container mx-auto max-w-7xl relative z-10 text-center px-6 lg:px-8 xl:px-12 pb-20 md:pb-32">
         <p className="text-xl md:text-2xl mb-8 text-gray-300 max-w-3xl mx-auto">
           Record your K-pop dreams in Seoul's most exclusive recording cafe. Professional studio meets trendy cafe experience near Sinsa Station.
         </p>
