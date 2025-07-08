@@ -25,7 +25,7 @@ export default function ContactSection() {
             </div>
             <div className="flex items-center justify-center">
               <Phone className="text-[hsl(var(--k-coral))] mr-4" size={20} />
-              <span>+82-2-123-4567</span>
+              <span>+82-2-6959-9338</span>
             </div>
             <div className="flex items-center justify-center">
               <Mail className="text-[hsl(var(--k-gold))] mr-4" size={20} />
