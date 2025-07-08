@@ -13,7 +13,7 @@ export default function ContactSection() {
           <div className="space-y-4 text-lg">
             <div className="flex items-center justify-center">
               <MapPin className="text-[hsl(var(--k-pink))] mr-4" size={20} />
-              <span>서울 서초구 강남대로 107길 21. 대능빌딩 2층</span>
+              <span>2F. 21, Gangnam-daero 107-gil, Seocho-gu, Seoul, Republic of Korea</span>
             </div>
             <div className="flex items-center justify-center">
               <Train className="text-[hsl(var(--k-purple))] mr-4" size={20} />
