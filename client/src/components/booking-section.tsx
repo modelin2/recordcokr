@@ -16,10 +16,14 @@ export default function BookingSection() {
         
         <Button 
           onClick={handleBookingClick}
-          className="bg-white text-[hsl(var(--k-purple))] px-12 py-6 rounded-full text-xl font-bold hover:scale-105 transition-transform border-0 shadow-2xl"
+          className="k-gradient-pink-purple px-12 py-6 rounded-full text-xl font-bold hover:scale-105 transition-transform text-white border-0 shadow-2xl"
         >
-          Book Now - Call +82-10-1234-5678
+          Book Now
         </Button>
+        
+        <p className="text-lg mt-6 text-white/90">
+          Call us at <span className="font-bold">+82-10-1234-5678</span>
+        </p>
       </div>
     </section>
   );
