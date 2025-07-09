@@ -356,10 +356,10 @@ export default function GallerySection() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-3xl"></div>
             <div className="absolute bottom-2 left-2 right-2 sm:bottom-8 sm:left-8 sm:right-8 text-white text-right">
-              <Badge className="mb-1 sm:mb-3 bg-pink-500/90 px-2 py-0.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
+              <Badge className="mb-1 sm:mb-3 bg-pink-500/90 px-1.5 py-0.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
                 Studio Environment
               </Badge>
-              <h4 className="text-base sm:text-2xl font-bold mb-0.5 sm:mb-2">Professional Studio Environment</h4>
+              <h4 className="text-sm sm:text-2xl font-bold mb-0.5 sm:mb-2">Professional Studio Environment</h4>
               <p className="text-gray-300 text-xs sm:text-base hidden sm:block">State-of-the-art recording facility with premium equipment</p>
             </div>
           </div>
@@ -381,10 +381,10 @@ export default function GallerySection() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-3xl"></div>
             <div className="absolute bottom-2 left-2 right-2 sm:bottom-8 sm:left-8 sm:right-8 text-white">
-              <Badge className="mb-1 sm:mb-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-2 py-0.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
+              <Badge className="mb-1 sm:mb-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-1.5 py-0.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
                 Live Recording Session
               </Badge>
-              <h4 className="text-base sm:text-3xl font-bold mb-0.5 sm:mb-2 line-clamp-2">Experience Professional K-pop Recording</h4>
+              <h4 className="text-sm sm:text-3xl font-bold mb-0.5 sm:mb-2 line-clamp-2">Experience Professional K-pop Recording</h4>
               <p className="text-gray-300 text-xs sm:text-lg line-clamp-2 hidden sm:block">Watch our customers live their K-pop dreams in our state-of-the-art recording studio</p>
             </div>
           </div>
