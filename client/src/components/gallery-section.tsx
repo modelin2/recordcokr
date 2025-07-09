@@ -407,19 +407,25 @@ export default function GallerySection() {
 
         {/* Studio Recording Experience */}
         <div className="mb-16">
-          <div className="relative max-w-4xl mx-auto">
+          <div className="relative max-w-4xl mx-auto px-4 sm:px-0">
             <img
               src={studioRecordingGif}
               alt="Professional recording studio experience - customer recording K-pop music"
-              className="w-full h-auto rounded-3xl shadow-2xl"
+              className="w-full h-auto rounded-3xl shadow-2xl object-cover max-w-full"
+              style={{ 
+                minHeight: '200px', 
+                maxHeight: '500px',
+                display: 'block'
+              }}
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-3xl"></div>
-            <div className="absolute bottom-8 left-8 right-8 text-white">
-              <Badge className="mb-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2">
+            <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8 text-white">
+              <Badge className="mb-2 sm:mb-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-3 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm">
                 Live Recording Session
               </Badge>
-              <h4 className="text-3xl font-bold mb-2">Experience Professional K-pop Recording</h4>
-              <p className="text-gray-300 text-lg">Watch our customers live their K-pop dreams in our state-of-the-art recording studio</p>
+              <h4 className="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">Experience Professional K-pop Recording</h4>
+              <p className="text-gray-300 text-sm sm:text-lg">Watch our customers live their K-pop dreams in our state-of-the-art recording studio</p>
             </div>
           </div>
         </div>
