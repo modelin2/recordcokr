@@ -263,6 +263,21 @@ export default function PackagesSection() {
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
                 </div>
+                
+                {/* Sixth Album */}
+                <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
+                  <iframe 
+                    style={{borderRadius: '12px', pointerEvents: 'auto'}} 
+                    src="https://open.spotify.com/embed/album/6Nj37Cyd17JVbwmk0rnaxq?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="152" 
+                    frameBorder="0" 
+                    allowFullScreen={false}
+                    allow="autoplay; clipboard-write; encrypted-media" 
+                    loading="lazy"
+                    sandbox="allow-scripts allow-same-origin"
+                  ></iframe>
+                </div>
               </div>
               
               <div className="text-center mt-6">
