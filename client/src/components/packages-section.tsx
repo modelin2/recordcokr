@@ -286,11 +286,7 @@ export default function PackagesSection() {
                 </div>
               </div>
               
-              <div className="text-center mt-6">
-                <p className="text-sm text-gray-400">
-                  Professional recording, mixing, and global distribution - all done at K-Recording Cafe
-                </p>
-              </div>
+
             </div>
           </div>
 
