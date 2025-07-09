@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Play, Heart, Star, ChevronLeft, ChevronRight, ZoomIn, X } from "lucide-react";
-import studioRecordingGif from "@assets/0709_1752024967198.gif";
+import studioRecordingGif from "@assets/0709_final.gif";
 
 // Import featured images for "See The Magic Happen" section
 import recordingcafe0_1 from "@assets/recordingcafe0 (1)_1751872328126.jpg";
