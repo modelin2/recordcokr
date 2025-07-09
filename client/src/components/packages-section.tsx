@@ -234,7 +234,7 @@ export default function PackagesSection() {
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
-                  <p className="text-center text-gray-400 text-sm mt-3">Original by TWICE</p>
+                  <p className="text-center text-gray-400 text-sm mt-3">Original by BTS</p>
                 </div>
                 
                 {/* Fourth Album */}
@@ -250,7 +250,7 @@ export default function PackagesSection() {
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
-                  <p className="text-center text-gray-400 text-sm mt-3">Original by Wiz Khalifa</p>
+                  <p className="text-center text-gray-400 text-sm mt-3">Original by Glen Hansard, Marketa Irglova</p>
                 </div>
                 
                 {/* Fifth Album */}
