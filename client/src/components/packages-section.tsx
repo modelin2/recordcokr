@@ -189,15 +189,18 @@ export default function PackagesSection() {
               </div>
               
               <div className="grid md:grid-cols-1 gap-6">
-                {/* First Album - Apple Music */}
-                <div className="rounded-xl overflow-hidden shadow-lg">
+                {/* First Album */}
+                <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
                   <iframe 
-                    allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" 
+                    style={{borderRadius: '12px', pointerEvents: 'auto'}} 
+                    src="https://open.spotify.com/embed/album/2tcxqXIboZSjfKDwfB1Nfe?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="152" 
                     frameBorder="0" 
-                    height="450" 
-                    style={{width: '100%', maxWidth: '660px', overflow: 'hidden', borderRadius: '10px'}} 
-                    sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
-                    src="https://embed.music.apple.com/us/album/butter-single/1631655126"
+                    allowFullScreen={false}
+                    allow="autoplay; clipboard-write; encrypted-media" 
+                    loading="lazy"
+                    sandbox="allow-scripts allow-same-origin"
                   ></iframe>
                 </div>
                 
