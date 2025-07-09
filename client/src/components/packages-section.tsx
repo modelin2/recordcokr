@@ -161,19 +161,19 @@ export default function PackagesSection() {
             </div>
 
             <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-              <h4 className="text-xl font-bold text-[hsl(var(--k-blue))] mb-3">🌍 Global Distribution</h4>
-              <p className="text-gray-300 text-sm mb-4">
-                Release your music on Youtube, Instagram, Apple Music, Spotify, Melon and more
-              </p>
-              <p className="text-2xl font-bold text-white">₩300,000</p>
-            </div>
-
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
               <h4 className="text-xl font-bold text-[hsl(var(--k-coral))] mb-3">💄 Makeup Service</h4>
               <p className="text-gray-300 text-sm mb-4">
                 Professional full-face makeup before your recording or video shoot
               </p>
               <p className="text-2xl font-bold text-white">₩100,000</p>
+            </div>
+
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+              <h4 className="text-xl font-bold text-[hsl(var(--k-blue))] mb-3">🌍 Global Distribution</h4>
+              <p className="text-gray-300 text-sm mb-4">
+                Release your music on Youtube, Instagram, Apple Music, Spotify, Melon and more
+              </p>
+              <p className="text-2xl font-bold text-white">₩300,000</p>
             </div>
           </div>
 
