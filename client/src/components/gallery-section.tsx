@@ -405,46 +405,9 @@ export default function GallerySection() {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 
-                {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <Badge className="mb-2 bg-pink-500/90 text-xs">
-                      {image.category}
-                    </Badge>
-                    <h4 className="text-white font-semibold text-sm mb-1">{image.title}</h4>
-                    <p className="text-gray-300 text-xs">{image.description}</p>
-                  </div>
-                </div>
 
-                {/* Action Buttons */}
-                <div className="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="w-8 h-8 p-0 bg-black/50 border-white/30 text-white hover:bg-pink-500/80"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedImage(index);
-                    }}
-                  >
-                    <ZoomIn className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className={`w-8 h-8 p-0 border-white/30 text-white transition-colors ${
-                      liked.has(index) 
-                        ? 'bg-pink-500/80 hover:bg-pink-600/80' 
-                        : 'bg-black/50 hover:bg-pink-500/80'
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLike(index);
-                    }}
-                  >
-                    <Heart className={`w-4 h-4 ${liked.has(index) ? 'fill-current' : ''}`} />
-                  </Button>
-                </div>
+
+
 
                 {/* Featured Badge */}
                 {image.featured && (
