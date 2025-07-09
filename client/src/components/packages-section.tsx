@@ -190,44 +190,47 @@ export default function PackagesSection() {
               
               <div className="grid md:grid-cols-1 gap-6">
                 {/* First Album */}
-                <div className="rounded-xl overflow-hidden shadow-lg">
+                <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
                   <iframe 
-                    style={{borderRadius: '12px'}} 
-                    src="https://open.spotify.com/embed/album/00KYWt8M3AKjgVGh5gqpjK?utm_source=generator" 
+                    style={{borderRadius: '12px', pointerEvents: 'auto'}} 
+                    src="https://open.spotify.com/embed/album/00KYWt8M3AKjgVGh5gqpjK?utm_source=generator&theme=0" 
                     width="100%" 
                     height="152" 
                     frameBorder="0" 
-                    allowFullScreen={true}
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    allowFullScreen={false}
+                    allow="autoplay; clipboard-write; encrypted-media" 
                     loading="lazy"
+                    sandbox="allow-scripts allow-same-origin"
                   ></iframe>
                 </div>
                 
                 {/* Second Album */}
-                <div className="rounded-xl overflow-hidden shadow-lg">
+                <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
                   <iframe 
-                    style={{borderRadius: '12px'}} 
+                    style={{borderRadius: '12px', pointerEvents: 'auto'}} 
                     src="https://open.spotify.com/embed/album/1ejP5R7daB3J1tERADOeO5?utm_source=generator&theme=0" 
                     width="100%" 
                     height="152" 
                     frameBorder="0" 
-                    allowFullScreen={true}
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    allowFullScreen={false}
+                    allow="autoplay; clipboard-write; encrypted-media" 
                     loading="lazy"
+                    sandbox="allow-scripts allow-same-origin"
                   ></iframe>
                 </div>
                 
                 {/* Third Album */}
-                <div className="rounded-xl overflow-hidden shadow-lg">
+                <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
                   <iframe 
-                    style={{borderRadius: '12px'}} 
+                    style={{borderRadius: '12px', pointerEvents: 'auto'}} 
                     src="https://open.spotify.com/embed/album/0MFEVLwo8p3raviwqgIzDq?utm_source=generator&theme=0" 
                     width="100%" 
                     height="152" 
                     frameBorder="0" 
-                    allowFullScreen={true}
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    allowFullScreen={false}
+                    allow="autoplay; clipboard-write; encrypted-media" 
                     loading="lazy"
+                    sandbox="allow-scripts allow-same-origin"
                   ></iframe>
                 </div>
               </div>
