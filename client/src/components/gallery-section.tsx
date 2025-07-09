@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Play, Heart, Star, ChevronLeft, ChevronRight, ZoomIn, X } from "lucide-react";
+import studioRecordingGif from "@assets/0709_1752024967198.gif";
 
 // Import featured images for "See The Magic Happen" section
 import recordingcafe0_1 from "@assets/recordingcafe0 (1)_1751872328126.jpg";
@@ -400,6 +401,25 @@ export default function GallerySection() {
                   }`}
                 />
               ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Studio Recording Experience */}
+        <div className="mb-16">
+          <div className="relative max-w-4xl mx-auto">
+            <img
+              src={studioRecordingGif}
+              alt="Professional recording studio experience - customer recording K-pop music"
+              className="w-full h-auto rounded-3xl shadow-2xl"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-3xl"></div>
+            <div className="absolute bottom-8 left-8 right-8 text-white">
+              <Badge className="mb-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2">
+                Live Recording Session
+              </Badge>
+              <h4 className="text-3xl font-bold mb-2">Experience Professional K-pop Recording</h4>
+              <p className="text-gray-300 text-lg">Watch our customers live their K-pop dreams in our state-of-the-art recording studio</p>
             </div>
           </div>
         </div>
