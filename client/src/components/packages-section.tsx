@@ -250,7 +250,7 @@ export default function PackagesSection() {
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
-                  <p className="text-center text-gray-400 text-sm mt-3">Original by aespa</p>
+                  <p className="text-center text-gray-400 text-sm mt-3">Original by Wiz Khalifa</p>
                 </div>
                 
                 {/* Fifth Album */}
