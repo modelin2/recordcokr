@@ -190,7 +190,7 @@ export default function PackagesSection() {
               <div className="rounded-xl overflow-hidden shadow-lg">
                 <iframe 
                   style={{borderRadius: '12px'}} 
-                  src="https://open.spotify.com/embed/album/0MFEVLwo8p3raviwqgIzDq?utm_source=generator&theme=0" 
+                  src="https://open.spotify.com/embed/album/00KYWt8M3AKjgVGh5gqpjK?utm_source=generator" 
                   width="100%" 
                   height="152" 
                   frameBorder="0" 
