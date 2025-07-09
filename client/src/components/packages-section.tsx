@@ -290,6 +290,79 @@ export default function PackagesSection() {
             </div>
           </div>
 
+          {/* Royalty Income Section */}
+          <div className="mb-16">
+            <h3 className="text-3xl font-bold text-center mb-8 gradient-text">💰 Lifetime Royalty Income</h3>
+            <div className="bg-gradient-to-br from-yellow-500/10 via-orange-500/10 to-red-500/10 p-8 rounded-3xl border border-yellow-500/30 max-w-5xl mx-auto">
+              <div className="text-center mb-8">
+                <h4 className="text-2xl font-bold text-[hsl(var(--k-gold))] mb-4">Your Music, Your Income - Forever</h4>
+                <p className="text-lg text-gray-200 leading-relaxed">
+                  When you choose our Global Distribution service, you're not just releasing music - you're creating a lifetime income stream that follows you anywhere in the world.
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-8 mb-8">
+                <div className="bg-white/5 p-6 rounded-2xl border border-yellow-500/20">
+                  <div className="flex items-center mb-4">
+                    <span className="text-3xl mr-3">🌍</span>
+                    <h5 className="text-xl font-bold text-[hsl(var(--k-gold))]">Global Royalty Collection</h5>
+                  </div>
+                  <p className="text-gray-300 leading-relaxed">
+                    Receive monthly royalty payments from streaming platforms worldwide - Spotify, Apple Music, YouTube Music, and more. Your music earns money while you sleep, whether you're in Seoul or back home.
+                  </p>
+                </div>
+                
+                <div className="bg-white/5 p-6 rounded-2xl border border-orange-500/20">
+                  <div className="flex items-center mb-4">
+                    <span className="text-3xl mr-3">⏰</span>
+                    <h5 className="text-xl font-bold text-[hsl(var(--k-coral))]">70 Years of Income</h5>
+                  </div>
+                  <p className="text-gray-300 leading-relaxed">
+                    Copyright protection lasts for 70 years after creation, meaning decades of potential income from a single recording session. Your Korean travel memory becomes a lifelong investment.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 p-6 rounded-2xl border border-purple-500/30 mb-8">
+                <div className="flex items-center mb-4">
+                  <span className="text-3xl mr-3">🎵</span>
+                  <h5 className="text-xl font-bold text-[hsl(var(--k-purple))]">Professional K-Pop Distribution Network</h5>
+                </div>
+                <p className="text-gray-200 leading-relaxed mb-4">
+                  Our distribution system is identical to what major K-pop artists use. Your music enters the same professional ecosystem as BTS, BLACKPINK, and NewJeans - giving you access to:
+                </p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex items-center">
+                    <span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>
+                    <span className="text-gray-300">Official ISRC codes for tracking</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="w-2 h-2 bg-pink-400 rounded-full mr-3"></span>
+                    <span className="text-gray-300">Billboard chart eligibility</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>
+                    <span className="text-gray-300">Global streaming analytics</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="w-2 h-2 bg-pink-400 rounded-full mr-3"></span>
+                    <span className="text-gray-300">Professional metadata management</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <div className="inline-block bg-gradient-to-r from-yellow-400 to-orange-400 text-black px-6 py-3 rounded-full font-bold text-lg mb-4">
+                  The Most Meaningful Souvenir from Korea
+                </div>
+                <p className="text-gray-300 leading-relaxed max-w-3xl mx-auto">
+                  Unlike traditional souvenirs that fade or break, your music lives forever. Every stream, every play, every discovery of your song generates income that finds you anywhere in the world. 
+                  Transform your Korean adventure into a lasting legacy that pays dividends for decades to come.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 p-6 rounded-2xl border border-yellow-500/40">
               <h4 className="text-xl font-bold text-[hsl(var(--k-gold))] mb-3">📈 Billboard Marketing Package</h4>
