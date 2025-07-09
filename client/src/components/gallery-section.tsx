@@ -473,42 +473,14 @@ export default function GallerySection() {
             tabIndex={0}
           >
             <div 
-              className="relative max-w-2xl w-full flex flex-col max-h-[90vh]"
+              className="relative max-w-6xl w-full flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex-1 min-h-0 flex items-center justify-center">
-                <img
-                  src={filteredImages[selectedImage].src}
-                  alt={filteredImages[selectedImage].title}
-                  className="max-w-[80vw] max-h-[60vh] object-contain rounded-lg"
-                />
-              </div>
-              
-              {/* Image Info */}
-              <div className="mt-4 bg-black/80 rounded-lg p-4 text-white flex-shrink-0">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <Badge className="mb-2 bg-pink-500/90">
-                      {filteredImages[selectedImage].category}
-                    </Badge>
-                    <h3 className="font-bold text-xl mb-2">{filteredImages[selectedImage].title}</h3>
-                    <p className="text-gray-300">{filteredImages[selectedImage].description}</p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className={`border-white/30 text-white transition-colors flex-shrink-0 ${
-                      liked.has(selectedImage) 
-                        ? 'bg-pink-500/80 hover:bg-pink-600/80' 
-                        : 'bg-black/50 hover:bg-pink-500/80'
-                    }`}
-                    onClick={() => toggleLike(selectedImage)}
-                  >
-                    <Heart className={`w-4 h-4 mr-2 ${liked.has(selectedImage) ? 'fill-current' : ''}`} />
-                    {liked.has(selectedImage) ? 'Liked' : 'Like'}
-                  </Button>
-                </div>
-              </div>
+              <img
+                src={filteredImages[selectedImage].src}
+                alt={filteredImages[selectedImage].title}
+                className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+              />
 
               {/* Close Button */}
               <Button
