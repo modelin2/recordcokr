@@ -49,7 +49,6 @@ import recordingcafe40 from "@assets/Recordingcafe40_1751879234413.png";
 
 export default function GallerySection() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [liked, setLiked] = useState<Set<number>>(new Set());
 
   // Featured images for "See The Magic Happen" carousel
@@ -317,13 +316,7 @@ export default function GallerySection() {
     setLiked(newLiked);
   };
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % featuredImages.length);
-  };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + featuredImages.length) % featuredImages.length);
-  };
 
   return (
     <section id="gallery" className="py-20 relative overflow-hidden w-full">
@@ -346,61 +339,28 @@ export default function GallerySection() {
           </p>
         </div>
 
-        {/* Featured Carousel */}
+        {/* Featured Studio Image */}
         <div className="mb-16">
           <h3 className="text-3xl font-bold text-white mb-8 text-center">Featured Moments</h3>
-          <div className="relative max-w-4xl mx-auto">
-            <div className="relative h-[500px] rounded-3xl overflow-hidden">
-              <img
-                src={featuredImages[currentSlide].src}
-                alt={featuredImages[currentSlide].title}
-                className="w-full h-full object-cover"
-              />
-              
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-              
-              {/* Content */}
-              <div className="absolute bottom-8 left-8 right-8 text-white">
-                <Badge className="mb-3 bg-pink-500/90">
-                  {featuredImages[currentSlide].category}
-                </Badge>
-                <h4 className="text-2xl font-bold mb-2">{featuredImages[currentSlide].title}</h4>
-                <p className="text-gray-300">{featuredImages[currentSlide].description}</p>
-              </div>
-
-              {/* Navigation */}
-              <Button
-                onClick={prevSlide}
-                variant="outline"
-                size="sm"
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 border-white/30 text-white hover:bg-black/70"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <Button
-                onClick={nextSlide}
-                variant="outline"
-                size="sm"
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 border-white/30 text-white hover:bg-black/70"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* Carousel Indicators */}
-            <div className="flex justify-center mt-6 space-x-2">
-              {featuredImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-all ${
-                    index === currentSlide 
-                      ? 'bg-pink-500 scale-125' 
-                      : 'bg-gray-600 hover:bg-gray-500'
-                  }`}
-                />
-              ))}
+          <div className="relative max-w-4xl mx-auto px-4 sm:px-0">
+            <img
+              src={featuredImages[0].src}
+              alt="Professional Studio Environment"
+              className="w-full h-auto rounded-3xl shadow-2xl object-cover"
+              style={{ 
+                minHeight: '200px', 
+                maxHeight: '500px',
+                display: 'block'
+              }}
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-3xl"></div>
+            <div className="absolute bottom-2 left-2 right-2 sm:bottom-8 sm:left-8 sm:right-8 text-white">
+              <Badge className="mb-1 sm:mb-3 bg-pink-500/90 px-2 py-0.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
+                Studio Environment
+              </Badge>
+              <h4 className="text-base sm:text-2xl font-bold mb-0.5 sm:mb-2">Professional Studio Environment</h4>
+              <p className="text-gray-300 text-xs sm:text-base hidden sm:block">State-of-the-art recording facility with premium equipment</p>
             </div>
           </div>
         </div>
