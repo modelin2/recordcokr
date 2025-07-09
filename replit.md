@@ -115,6 +115,10 @@ Studio Vibes is a modern web application for a K-pop recording studio and cafe i
 ```
 Changelog:
 - July 02, 2025. Initial setup
+- July 08, 2025. Added SEO meta tags with Open Graph and Twitter cards for social media previews
+- July 08, 2025. Added music note favicon for browser tab icon
+- July 08, 2025. Updated experience section with new cafe interior image
+- July 08, 2025. Fixed footer copyright text with patent protection notice
 ```
 
 ## User Preferences

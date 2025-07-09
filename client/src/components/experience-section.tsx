@@ -1,5 +1,5 @@
 import { Coffee, Tablet, Mic, Check } from "lucide-react";
-import cafeImage from "@assets/recording cafe2_1751780941116.jpg";
+import cafeImage from "@assets/k-recordingcafe100_1752023653335.png";
 
 export default function ExperienceSection() {
   return (
