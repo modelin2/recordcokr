@@ -208,7 +208,7 @@ export default function PackagesSection() {
                 <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
                   <iframe 
                     style={{borderRadius: '12px', pointerEvents: 'auto'}} 
-                    src="https://open.spotify.com/embed/album/1ejP5R7daB3J1tERADOeO5?utm_source=generator&theme=0" 
+                    src="https://open.spotify.com/embed/album/5w8H7uZ5xcHLxlHwaZXxNx?utm_source=generator&theme=0" 
                     width="100%" 
                     height="152" 
                     frameBorder="0" 
@@ -220,6 +220,21 @@ export default function PackagesSection() {
                 </div>
                 
                 {/* Third Album */}
+                <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
+                  <iframe 
+                    style={{borderRadius: '12px', pointerEvents: 'auto'}} 
+                    src="https://open.spotify.com/embed/album/1ejP5R7daB3J1tERADOeO5?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="152" 
+                    frameBorder="0" 
+                    allowFullScreen={false}
+                    allow="autoplay; clipboard-write; encrypted-media" 
+                    loading="lazy"
+                    sandbox="allow-scripts allow-same-origin"
+                  ></iframe>
+                </div>
+                
+                {/* Fourth Album */}
                 <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
                   <iframe 
                     style={{borderRadius: '12px', pointerEvents: 'auto'}} 
