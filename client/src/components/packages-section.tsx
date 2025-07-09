@@ -189,7 +189,19 @@ export default function PackagesSection() {
               </div>
               
               <div className="grid md:grid-cols-1 gap-6">
-                {/* First Album */}
+                {/* First Album - Apple Music */}
+                <div className="rounded-xl overflow-hidden shadow-lg">
+                  <iframe 
+                    allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" 
+                    frameBorder="0" 
+                    height="450" 
+                    style={{width: '100%', maxWidth: '660px', overflow: 'hidden', borderRadius: '10px'}} 
+                    sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
+                    src="https://embed.music.apple.com/us/album/butter-single/1631655126"
+                  ></iframe>
+                </div>
+                
+                {/* Second Album */}
                 <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
                   <iframe 
                     style={{borderRadius: '12px', pointerEvents: 'auto'}} 
@@ -204,7 +216,7 @@ export default function PackagesSection() {
                   ></iframe>
                 </div>
                 
-                {/* Second Album */}
+                {/* Third Album */}
                 <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
                   <iframe 
                     style={{borderRadius: '12px', pointerEvents: 'auto'}} 
@@ -219,7 +231,7 @@ export default function PackagesSection() {
                   ></iframe>
                 </div>
                 
-                {/* Third Album */}
+                {/* Fourth Album */}
                 <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
                   <iframe 
                     style={{borderRadius: '12px', pointerEvents: 'auto'}} 
@@ -234,7 +246,7 @@ export default function PackagesSection() {
                   ></iframe>
                 </div>
                 
-                {/* Fourth Album */}
+                {/* Fifth Album */}
                 <div className="rounded-xl overflow-hidden shadow-lg pointer-events-none">
                   <iframe 
                     style={{borderRadius: '12px', pointerEvents: 'auto'}} 
