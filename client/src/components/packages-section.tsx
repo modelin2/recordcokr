@@ -282,7 +282,7 @@ export default function PackagesSection() {
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
-                  <p className="text-center text-gray-400 text-sm mt-3">Original by Adele</p>
+                  <p className="text-center text-gray-400 text-sm mt-3">Original by Glen Hansard, Marketa Irglova</p>
                 </div>
               </div>
               
