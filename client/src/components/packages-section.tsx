@@ -173,7 +173,7 @@ export default function PackagesSection() {
               <p className="text-gray-300 text-sm mb-4">
                 Original licensing + backing track production + mixing, mastering. Release your music on Youtube, Instagram, Apple Music, Spotify, Melon and more
               </p>
-              <p className="text-2xl font-bold text-white">₩300,000</p>
+              <p className="text-2xl font-bold text-white">₩1,300,000</p>
             </div>
           </div>
 
