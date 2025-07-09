@@ -1,8 +1,8 @@
-# STUDIO VIBES - K-pop Recording Experience Platform
+# K-RECORDING CAFE - K-pop Recording Experience Platform
 
 ## Overview
 
-Studio Vibes is a modern web application for a K-pop recording studio and cafe in Seoul's Sinsa district. The platform allows international visitors to book recording sessions, browse packages, and experience professional K-pop recording in a trendy cafe atmosphere. The application features a React frontend with a Node.js/Express backend, using PostgreSQL for data persistence.
+K-Recording Cafe is a modern web application for a K-pop recording studio and cafe in Seoul's Sinsa district. The platform allows international visitors to book recording sessions, browse packages, and experience professional K-pop recording in a trendy cafe atmosphere. The application features a React frontend with a Node.js/Express backend, using PostgreSQL for data persistence.
 
 ## System Architecture
 
