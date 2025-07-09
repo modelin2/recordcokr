@@ -180,26 +180,59 @@ export default function PackagesSection() {
           {/* Portfolio Section */}
           <div className="mb-12">
             <h3 className="text-3xl font-bold text-center mb-8 gradient-text">🎵 Our Portfolio</h3>
-            <div className="bg-white/5 p-8 rounded-3xl border border-white/10 max-w-2xl mx-auto">
-              <div className="text-center mb-6">
-                <h4 className="text-xl font-bold text-white mb-2">Featured Release</h4>
+            <div className="bg-white/5 p-8 rounded-3xl border border-white/10 max-w-4xl mx-auto">
+              <div className="text-center mb-8">
+                <h4 className="text-xl font-bold text-white mb-2">Featured Releases</h4>
                 <p className="text-gray-300 text-sm">
                   Listen to music created and distributed through our Global Distribution service
                 </p>
               </div>
-              <div className="rounded-xl overflow-hidden shadow-lg">
-                <iframe 
-                  style={{borderRadius: '12px'}} 
-                  src="https://open.spotify.com/embed/album/00KYWt8M3AKjgVGh5gqpjK?utm_source=generator" 
-                  width="100%" 
-                  height="152" 
-                  frameBorder="0" 
-                  allowFullScreen={true}
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                  loading="lazy"
-                ></iframe>
+              
+              <div className="grid md:grid-cols-1 gap-6">
+                {/* First Album */}
+                <div className="rounded-xl overflow-hidden shadow-lg">
+                  <iframe 
+                    style={{borderRadius: '12px'}} 
+                    src="https://open.spotify.com/embed/album/00KYWt8M3AKjgVGh5gqpjK?utm_source=generator" 
+                    width="100%" 
+                    height="152" 
+                    frameBorder="0" 
+                    allowFullScreen={true}
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"
+                  ></iframe>
+                </div>
+                
+                {/* Second Album */}
+                <div className="rounded-xl overflow-hidden shadow-lg">
+                  <iframe 
+                    style={{borderRadius: '12px'}} 
+                    src="https://open.spotify.com/embed/album/1ejP5R7daB3J1tERADOeO5?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="152" 
+                    frameBorder="0" 
+                    allowFullScreen={true}
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"
+                  ></iframe>
+                </div>
+                
+                {/* Third Album */}
+                <div className="rounded-xl overflow-hidden shadow-lg">
+                  <iframe 
+                    style={{borderRadius: '12px'}} 
+                    src="https://open.spotify.com/embed/album/0MFEVLwo8p3raviwqgIzDq?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="152" 
+                    frameBorder="0" 
+                    allowFullScreen={true}
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"
+                  ></iframe>
+                </div>
               </div>
-              <div className="text-center mt-4">
+              
+              <div className="text-center mt-6">
                 <p className="text-sm text-gray-400">
                   Professional recording, mixing, and global distribution - all done at K-Recording Cafe
                 </p>
