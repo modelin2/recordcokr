@@ -419,13 +419,13 @@ export default function GallerySection() {
               }}
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-3xl"></div>
-            <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8 text-white">
-              <Badge className="mb-2 sm:mb-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-3 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-3xl"></div>
+            <div className="absolute bottom-2 left-2 right-2 sm:bottom-8 sm:left-8 sm:right-8 text-white">
+              <Badge className="mb-1 sm:mb-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-2 py-0.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
                 Live Recording Session
               </Badge>
-              <h4 className="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">Experience Professional K-pop Recording</h4>
-              <p className="text-gray-300 text-sm sm:text-lg">Watch our customers live their K-pop dreams in our state-of-the-art recording studio</p>
+              <h4 className="text-base sm:text-3xl font-bold mb-0.5 sm:mb-2 line-clamp-2">Experience Professional K-pop Recording</h4>
+              <p className="text-gray-300 text-xs sm:text-lg line-clamp-2 hidden sm:block">Watch our customers live their K-pop dreams in our state-of-the-art recording studio</p>
             </div>
           </div>
         </div>
