@@ -202,6 +202,7 @@ export default function PackagesSection() {
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
+                  <p className="text-center text-gray-400 text-sm mt-3">Original by BTS</p>
                 </div>
                 
                 {/* Second Album */}
@@ -217,6 +218,7 @@ export default function PackagesSection() {
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
+                  <p className="text-center text-gray-400 text-sm mt-3">Original by BLACKPINK</p>
                 </div>
                 
                 {/* Third Album */}
@@ -232,6 +234,7 @@ export default function PackagesSection() {
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
+                  <p className="text-center text-gray-400 text-sm mt-3">Original by TWICE</p>
                 </div>
                 
                 {/* Fourth Album */}
@@ -247,6 +250,7 @@ export default function PackagesSection() {
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
+                  <p className="text-center text-gray-400 text-sm mt-3">Original by aespa</p>
                 </div>
                 
                 {/* Fifth Album */}
@@ -262,6 +266,7 @@ export default function PackagesSection() {
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
+                  <p className="text-center text-gray-400 text-sm mt-3">Original by ITZY</p>
                 </div>
                 
                 {/* Sixth Album */}
@@ -277,6 +282,7 @@ export default function PackagesSection() {
                     loading="lazy"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
+                  <p className="text-center text-gray-400 text-sm mt-3">Original by NewJeans</p>
                 </div>
               </div>
               
