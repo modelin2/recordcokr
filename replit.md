@@ -50,6 +50,11 @@ K-Recording Cafe is a modern web application for a K-pop recording studio and ca
 - **Gallery Section**: Studio photos and customer testimonials
 - **Booking Section**: Interactive booking form with date/time selection
 - **Contact Section**: Studio location and contact information
+- **Franchise Page**: Comprehensive business opportunity page in English
+  - Dual package structure (New Business vs. Remodeling)
+  - Per-pyeong interior cost breakdown
+  - Target customer analysis and revenue projections
+  - Global expansion roadmap and success metrics
 
 ### UI Components
 - **Navigation**: Sticky header with smooth scrolling
@@ -119,6 +124,9 @@ Changelog:
 - July 08, 2025. Added music note favicon for browser tab icon
 - July 08, 2025. Updated experience section with new cafe interior image
 - July 08, 2025. Fixed footer copyright text with patent protection notice
+- July 15, 2025. Added comprehensive franchise page in English with dual package structure (new business vs. remodeling)
+- July 15, 2025. Updated portfolio section with corrected artist credits (Wiz Khalifa, Glen Hansard & Marketa Irglova)
+- July 15, 2025. Added new international group photo to gallery section
 ```
 
 ## User Preferences

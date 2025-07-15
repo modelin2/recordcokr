@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
@@ -83,6 +84,9 @@ export default function Navigation() {
           >
             Contact
           </button>
+          <Link href="/franchise" className="hover:text-[hsl(var(--k-pink))] transition-colors">
+            Franchise
+          </Link>
         </div>
         
         <Button 
