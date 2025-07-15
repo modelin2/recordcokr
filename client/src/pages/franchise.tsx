@@ -183,28 +183,21 @@ export default function FranchisePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-black/90 backdrop-blur-sm z-50 border-b border-white/10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-4 hover:opacity-80 transition-opacity">
-              <Music className="h-8 w-8 text-pink-400" />
-              <span className="text-xl font-bold text-white">K-Recording Cafe</span>
+      <nav className="fixed top-0 w-full z-50 transition-all duration-300 glass">
+        <div className="container mx-auto px-6 lg:px-8 xl:px-12 py-4 flex items-center justify-between max-w-7xl">
+          <Link href="/" className="text-2xl font-bold gradient-text hover:scale-105 transition-transform">
+            K-Recording Cafe
+          </Link>
+          
+          <div className="hidden md:flex space-x-8">
+            <Link href="/franchise" className="hover:text-[hsl(var(--k-pink))] transition-colors">
+              Franchise
             </Link>
-            <div className="flex items-center space-x-6">
-              <Button variant="ghost" className="text-white hover:text-pink-400">
-                About
-              </Button>
-              <Button variant="ghost" className="text-white hover:text-pink-400">
-                Packages
-              </Button>
-              <Button variant="ghost" className="text-white hover:text-pink-400">
-                Success Stories
-              </Button>
-              <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
-                Apply Now
-              </Button>
-            </div>
           </div>
+          
+          <Button className="k-gradient-pink-purple px-6 py-2 rounded-full hover:scale-105 transition-transform text-white border-0">
+            Apply Now
+          </Button>
         </div>
       </nav>
 
@@ -583,48 +576,20 @@ export default function FranchisePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-black/50 py-12 px-4">
-        <div className="container mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Music className="h-8 w-8 text-pink-400" />
-                <span className="text-xl font-bold text-white">K-Recording Cafe</span>
-              </div>
-              <p className="text-gray-300">
-                Transforming music dreams into reality through proven entertainment industry systems.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-4">Franchise Info</h4>
-              <ul className="space-y-2 text-gray-300">
-                <li>New Business Package</li>
-                <li>Remodeling Package</li>
-                <li>Training Programs</li>
-                <li>Marketing Support</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-4">Contact</h4>
-              <div className="space-y-2 text-gray-300">
-                <div className="flex items-center">
-                  <Phone className="h-4 w-4 mr-2" />
-                  02-555-KPOP (5767)
-                </div>
-                <div className="flex items-center">
-                  <Mail className="h-4 w-4 mr-2" />
-                  franchise@record.co.kr
-                </div>
-                <div className="flex items-center">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  Sinsa-dong, Gangnam-gu, Seoul
-                </div>
-              </div>
-            </div>
+      <footer className="bg-black py-12">
+        <div className="container mx-auto px-6 lg:px-8 xl:px-12 text-center max-w-7xl">
+          <div className="text-3xl font-bold gradient-text mb-4">Crowdfunding Center</div>
+          <p className="text-gray-400 mb-8">Creating K-pop memories in the heart of Seoul</p>
+          
+          <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-400 mb-8">
+            <a href="#" className="hover:text-[hsl(var(--k-pink))] transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-[hsl(var(--k-pink))] transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-[hsl(var(--k-pink))] transition-colors">Cancellation Policy</a>
+            <a href="#" className="hover:text-[hsl(var(--k-pink))] transition-colors">FAQ</a>
+            <a href="#" className="hover:text-[hsl(var(--k-pink))] transition-colors">Support</a>
           </div>
-          <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-300">
-            <p>&copy; 2025 K-Recording Cafe. All rights reserved. Patent protected under Korean law.</p>
-          </div>
+          
+          <div className="text-gray-500">© 2025 Korea Crowdfunding Association. All rights reserved.  The trademark and service model (BM) are patents protected.</div>
         </div>
       </footer>
     </div>

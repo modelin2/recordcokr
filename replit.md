@@ -129,6 +129,8 @@ Changelog:
 - July 15, 2025. Added new international group photo to gallery section
 - July 15, 2025. Updated franchise page design to match main page styling with consistent colors and layouts
 - July 15, 2025. Simplified navigation to show only Franchise menu, removing all other menu items
+- July 15, 2025. Reverted franchise page design to original styling while keeping navigation menu simplified
+- July 15, 2025. Updated franchise page navigation and footer to match main page styling exactly
 ```
 
 ## User Preferences
