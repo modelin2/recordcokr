@@ -127,6 +127,8 @@ Changelog:
 - July 15, 2025. Added comprehensive franchise page in English with dual package structure (new business vs. remodeling)
 - July 15, 2025. Updated portfolio section with corrected artist credits (Wiz Khalifa, Glen Hansard & Marketa Irglova)
 - July 15, 2025. Added new international group photo to gallery section
+- July 15, 2025. Updated franchise page design to match main page styling with consistent colors and layouts
+- July 15, 2025. Simplified navigation to show only Franchise menu, removing all other menu items
 ```
 
 ## User Preferences

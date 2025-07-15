@@ -181,69 +181,78 @@ export default function FranchisePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900">
+    <div className="bg-gray-900 text-white min-h-screen w-full overflow-x-hidden">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-black/90 backdrop-blur-sm z-50 border-b border-white/10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-4 hover:opacity-80 transition-opacity">
-              <Music className="h-8 w-8 text-pink-400" />
-              <span className="text-xl font-bold text-white">K-Recording Cafe</span>
+      <nav className="fixed top-0 w-full z-50 transition-all duration-300 glass">
+        <div className="container mx-auto px-6 lg:px-8 xl:px-12 py-4 flex items-center justify-between max-w-7xl">
+          <Link href="/" className="text-2xl font-bold gradient-text hover:scale-105 transition-transform">
+            K-Recording Cafe
+          </Link>
+          
+          <div className="hidden md:flex space-x-8">
+            <Link href="/franchise" className="hover:text-[hsl(var(--k-pink))] transition-colors">
+              Franchise
             </Link>
-            <div className="flex items-center space-x-6">
-              <Button variant="ghost" className="text-white hover:text-pink-400">
-                About
-              </Button>
-              <Button variant="ghost" className="text-white hover:text-pink-400">
-                Packages
-              </Button>
-              <Button variant="ghost" className="text-white hover:text-pink-400">
-                Success Stories
-              </Button>
-              <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
-                Apply Now
-              </Button>
-            </div>
           </div>
+          
+          <Button className="k-gradient-pink-purple px-6 py-2 rounded-full hover:scale-105 transition-transform text-white border-0">
+            Apply Now
+          </Button>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4">
-        <div className="container mx-auto text-center">
-          <Badge className="mb-4 bg-pink-500/20 text-pink-300 border-pink-500/30">
-            Global Franchise Opportunity
-          </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            K-Recording Cafe
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-              Franchise
+      <section id="home" className="min-h-screen relative flex items-center justify-center overflow-hidden">
+        <div className="hero-bg"></div>
+        <div className="hero-overlay"></div>
+        
+        <div className="relative z-10 container mx-auto px-6 lg:px-8 xl:px-12 text-center max-w-6xl">
+          <div className="mb-6">
+            <span className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-sm font-medium text-white/90 mb-4">
+              Global Franchise Opportunity
             </span>
+          </div>
+          
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+            <span className="gradient-text">K-Recording Cafe</span>
+            <br />
+            <span className="text-white">Franchise</span>
           </h1>
-          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+          
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
             Bring 10 years of proven entertainment industry systems to your city. 
             Transform ordinary cafe visits into extraordinary music creation experiences.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Button size="lg" className="k-gradient-pink-purple px-8 py-4 text-lg rounded-full hover:scale-105 transition-transform">
               <Calendar className="mr-2 h-5 w-5" />
               Book Info Session
             </Button>
-            <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10">
+            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg rounded-full">
               <Phone className="mr-2 h-5 w-5" />
               Call: 02-555-KPOP
             </Button>
           </div>
         </div>
+        
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/60 animate-bounce">
+          <div className="flex flex-col items-center">
+            <span className="text-sm mb-2">Scroll to explore</span>
+            <div className="w-6 h-10 border-2 border-white/40 rounded-full flex justify-center">
+              <div className="w-1 h-3 bg-white/60 rounded-full mt-2 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Success Metrics */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
+      <section className="py-20 px-6 lg:px-8 xl:px-12 bg-gray-900/50">
+        <div className="container mx-auto max-w-7xl">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {successMetrics.map((metric, index) => (
               <div key={index} className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full k-gradient-pink-purple mb-4">
                   <metric.icon className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-2">{metric.title}</h3>
@@ -255,14 +264,14 @@ export default function FranchisePage() {
       </section>
 
       {/* Brand Story */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
+      <section className="py-20 px-6 lg:px-8 xl:px-12">
+        <div className="container mx-auto max-w-7xl">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold text-white mb-8">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
               From Entertainment Industry to
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400"> Global Platform</span>
+              <span className="gradient-text"> Global Platform</span>
             </h2>
-            <div className="bg-white/5 p-8 rounded-3xl border border-white/10">
+            <div className="glass-card p-8 rounded-3xl">
               <p className="text-lg text-gray-300 leading-relaxed mb-6">
                 For over 10 years, our system has been the secret behind training 50+ artists and managing 
                 successful entertainment projects worth billions. What was once exclusive to industry insiders 
@@ -273,15 +282,15 @@ export default function FranchisePage() {
                 through the right combination of technology, environment, and guidance.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <div className="flex items-center text-pink-400">
+                <div className="flex items-center text-[hsl(var(--k-pink))]">
                   <CheckCircle className="mr-2 h-5 w-5" />
                   Real entertainment company infrastructure
                 </div>
-                <div className="flex items-center text-purple-400">
+                <div className="flex items-center text-[hsl(var(--k-purple))]">
                   <CheckCircle className="mr-2 h-5 w-5" />
                   10+ years of proven results
                 </div>
-                <div className="flex items-center text-blue-400">
+                <div className="flex items-center text-[hsl(var(--k-blue))]">
                   <CheckCircle className="mr-2 h-5 w-5" />
                   Global distribution network
                 </div>
@@ -292,25 +301,25 @@ export default function FranchisePage() {
       </section>
 
       {/* Franchise Packages */}
-      <section className="py-16 px-4" id="packages">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+      <section className="py-20 px-6 lg:px-8 xl:px-12 bg-gray-900/50" id="packages">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Choose Your
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400"> Franchise Package</span>
+              <span className="gradient-text"> Franchise Package</span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
               Whether you're starting fresh or transforming an existing business, we have the perfect solution
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {franchisePackages.map((pkg) => (
-              <Card key={pkg.id} className="bg-white/5 border-white/10 hover:border-pink-500/50 transition-all duration-300">
+              <Card key={pkg.id} className="glass-card hover:border-[hsl(var(--k-pink))]/50 transition-all duration-300 h-full">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between mb-2">
                     <CardTitle className="text-2xl font-bold text-white">{pkg.title}</CardTitle>
-                    <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30">
+                    <Badge className="bg-[hsl(var(--k-pink))]/20 text-[hsl(var(--k-pink))] border-[hsl(var(--k-pink))]/30">
                       {pkg.id === 'new-business' ? 'Most Popular' : 'Cost Effective'}
                     </Badge>
                   </div>
@@ -361,7 +370,7 @@ export default function FranchisePage() {
                   </div>
 
                   <Button 
-                    className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+                    className="w-full k-gradient-pink-purple hover:scale-105 transition-transform"
                     onClick={() => setSelectedPackage(pkg.id)}
                   >
                     Choose This Package
@@ -375,18 +384,18 @@ export default function FranchisePage() {
       </section>
 
       {/* Key Differentiators */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+      <section className="py-20 px-6 lg:px-8 xl:px-12">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Why K-Recording Cafe
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400"> Dominates</span>
+              <span className="gradient-text"> Dominates</span>
             </h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {differentiators.map((diff, index) => (
               <div key={index} className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full k-gradient-pink-purple mb-4">
                   <diff.icon className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">{diff.title}</h3>
@@ -398,20 +407,20 @@ export default function FranchisePage() {
       </section>
 
       {/* Target Customer Analysis */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+      <section className="py-20 px-6 lg:px-8 xl:px-12 bg-gray-900/50">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Know Your
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400"> Target Customers</span>
+              <span className="gradient-text"> Target Customers</span>
             </h2>
           </div>
           <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {targetCustomers.map((customer, index) => (
-              <Card key={index} className="bg-white/5 border-white/10">
+              <Card key={index} className="glass-card">
                 <CardHeader>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full k-gradient-pink-purple flex items-center justify-center">
                       <Users className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -447,23 +456,23 @@ export default function FranchisePage() {
       </section>
 
       {/* Revenue Model */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+      <section className="py-20 px-6 lg:px-8 xl:px-12">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Triple Revenue
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400"> Stream Model</span>
+              <span className="gradient-text"> Stream Model</span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
               Average monthly revenue: ₩75,000,000 per location
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {revenueStreams.map((stream, index) => (
-              <Card key={index} className="bg-white/5 border-white/10">
+              <Card key={index} className="glass-card">
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl text-white">{stream.category}</CardTitle>
-                  <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+                  <div className="text-3xl font-bold gradient-text">
                     {stream.monthly}
                   </div>
                 </CardHeader>
@@ -484,25 +493,25 @@ export default function FranchisePage() {
       </section>
 
       {/* Global Expansion Plan */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+      <section className="py-20 px-6 lg:px-8 xl:px-12 bg-gray-900/50">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Global Expansion
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400"> Roadmap</span>
+              <span className="gradient-text"> Roadmap</span>
             </h2>
           </div>
           <div className="max-w-4xl mx-auto">
             <div className="space-y-8">
               {expansionPlan.map((phase, index) => (
                 <div key={index} className="flex items-start gap-6">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full k-gradient-pink-purple flex items-center justify-center">
                     <span className="text-white font-bold">{index + 1}</span>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-4 mb-2">
                       <h3 className="text-xl font-bold text-white">{phase.phase}</h3>
-                      <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30">
+                      <Badge className="bg-[hsl(var(--k-pink))]/20 text-[hsl(var(--k-pink))] border-[hsl(var(--k-pink))]/30">
                         {phase.timeline}
                       </Badge>
                     </div>
@@ -523,12 +532,12 @@ export default function FranchisePage() {
       </section>
 
       {/* Application Process */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+      <section className="py-20 px-6 lg:px-8 xl:px-12">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Application
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400"> Process</span>
+              <span className="gradient-text"> Process</span>
             </h2>
           </div>
           <div className="max-w-4xl mx-auto">
@@ -540,7 +549,7 @@ export default function FranchisePage() {
                 { step: '04', title: 'Launch', desc: 'Setup, training & grand opening' }
               ].map((item, index) => (
                 <div key={index} className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded-full k-gradient-pink-purple flex items-center justify-center mx-auto mb-4">
                     <span className="text-white font-bold text-lg">{item.step}</span>
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
@@ -553,45 +562,45 @@ export default function FranchisePage() {
       </section>
 
       {/* Contact CTA */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="bg-gradient-to-r from-pink-500/20 to-purple-600/20 rounded-3xl p-8 text-center border border-pink-500/30">
-            <h2 className="text-4xl font-bold text-white mb-4">
+      <section className="py-20 px-6 lg:px-8 xl:px-12">
+        <div className="container mx-auto max-w-7xl">
+          <div className="glass-card p-12 text-center rounded-3xl border border-[hsl(var(--k-pink))]/30">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Ready to Start Your
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400"> Music Empire?</span>
+              <span className="gradient-text"> Music Empire?</span>
             </h2>
-            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
               Join the revolution that's transforming how people experience music creation. 
               Limited franchise opportunities available.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <Button size="lg" className="k-gradient-pink-purple px-8 py-4 text-lg rounded-full hover:scale-105 transition-transform">
                 <Calendar className="mr-2 h-5 w-5" />
                 Schedule Info Session
               </Button>
-              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10">
+              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg rounded-full">
                 <Mail className="mr-2 h-5 w-5" />
                 franchise@record.co.kr
               </Button>
             </div>
-            <div className="mt-8 text-center">
+            <div className="text-center">
               <p className="text-gray-300 mb-2">Direct Line:</p>
-              <p className="text-2xl font-bold text-white">02-555-KPOP (5767)</p>
+              <p className="text-2xl font-bold gradient-text">02-555-KPOP (5767)</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-black/50 py-12 px-4">
-        <div className="container mx-auto">
+      <footer className="bg-gray-950 py-16 px-6 lg:px-8 xl:px-12">
+        <div className="container mx-auto max-w-7xl">
           <div className="grid md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <Music className="h-8 w-8 text-pink-400" />
-                <span className="text-xl font-bold text-white">K-Recording Cafe</span>
+                <Music className="h-8 w-8 text-[hsl(var(--k-pink))]" />
+                <span className="text-xl font-bold gradient-text">K-Recording Cafe</span>
               </div>
-              <p className="text-gray-300">
+              <p className="text-gray-300 leading-relaxed">
                 Transforming music dreams into reality through proven entertainment industry systems.
               </p>
             </div>
@@ -622,7 +631,7 @@ export default function FranchisePage() {
               </div>
             </div>
           </div>
-          <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-300">
+          <div className="border-t border-white/10 mt-12 pt-8 text-center text-gray-300">
             <p>&copy; 2025 K-Recording Cafe. All rights reserved. Patent protected under Korean law.</p>
           </div>
         </div>

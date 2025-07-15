@@ -36,54 +36,6 @@ export default function Navigation() {
         </button>
         
         <div className="hidden md:flex space-x-8">
-          <button 
-            onClick={() => scrollToSection('experience')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            Experience
-          </button>
-          <button 
-            onClick={() => scrollToSection('menu')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            Menu
-          </button>
-          <button 
-            onClick={() => scrollToSection('gallery')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            Gallery
-          </button>
-          <button 
-            onClick={() => scrollToSection('packages')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            Packages
-          </button>
-          <button 
-            onClick={() => scrollToSection('tours')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            Walking Guide
-          </button>
-          <button 
-            onClick={() => scrollToSection('how-to-use')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            How to Use
-          </button>
-          <button 
-            onClick={() => scrollToSection('faq')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            FAQ
-          </button>
-          <button 
-            onClick={() => scrollToSection('contact')}
-            className="hover:text-[hsl(var(--k-pink))] transition-colors"
-          >
-            Contact
-          </button>
           <Link href="/franchise" className="hover:text-[hsl(var(--k-pink))] transition-colors">
             Franchise
           </Link>
