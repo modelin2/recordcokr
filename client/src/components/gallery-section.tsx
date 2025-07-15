@@ -46,6 +46,7 @@ import recordingcafe36 from "@assets/Recordingcafe36_1751879234413.png";
 import recordingcafe38 from "@assets/Recordingcafe38_1751879234413.png";
 import recordingcafe39 from "@assets/Recordingcafe39_1751879234413.png";
 import recordingcafe40 from "@assets/Recordingcafe40_1751879234413.png";
+import newRecordingcafe from "@assets/recordingcafe_1752541211119.jpg";
 
 export default function GallerySection() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -283,6 +284,12 @@ export default function GallerySection() {
       src: recordingcafe40,
       title: "Studio Professional",
       description: "Happy customer in premium recording facility",
+      category: "Customer Experience"
+    },
+    {
+      src: newRecordingcafe,
+      title: "International Group Recording",
+      description: "Happy international visitors enjoying K-pop recording experience together",
       category: "Customer Experience"
     }
   ];
