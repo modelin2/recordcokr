@@ -52,59 +52,6 @@ export default function PackagesSection() {
   return (
     <section id="packages" className="py-20 bg-gradient-to-br from-gray-900 to-purple-900">
       <div className="container mx-auto px-6">
-        <h2 className="text-5xl font-bold text-center mb-16 gradient-text">Choose Your Package</h2>
-        
-        {/* Pricing Table */}
-        <div className="glass p-8 rounded-3xl mb-16 max-w-4xl mx-auto">
-          <div className="overflow-x-auto">
-            <table className="w-full text-center border-collapse">
-              <thead>
-                <tr>
-                  <th className="text-xl font-bold text-white pb-4 pr-4 border-r border-white/20">Songs</th>
-                  <th className="text-lg font-bold text-[hsl(var(--k-pink))] pb-4 px-4 border-r border-white/20">
-                    10:00~13:00<br/>
-                    <span className="text-sm font-normal">(-20% D.C)</span>
-                  </th>
-                  <th className="text-lg font-bold text-[hsl(var(--k-gold))] pb-4 px-4 border-r border-white/20">
-                    13:00~18:00<br/>
-                    <span className="text-sm font-normal">(Base Price)</span>
-                  </th>
-                  <th className="text-lg font-bold text-[hsl(var(--k-purple))] pb-4 pl-4">
-                    18:00~22:00<br/>
-                    <span className="text-sm font-normal">(-12% D.C)</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-t border-white/20">
-                  <td className="text-lg font-semibold text-white py-4 pr-4 border-r border-white/20">1 Song</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-pink))] py-4 px-4 border-r border-white/20">₩30,000</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-gold))] py-4 px-4 border-r border-white/20">₩37,500</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-purple))] py-4 pl-4">₩33,000</td>
-                </tr>
-                <tr className="bg-white/5 border-t border-white/20">
-                  <td className="text-lg font-semibold text-white py-4 pr-4 border-r border-white/20">2 Songs</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-pink))] py-4 px-4 border-r border-white/20">₩60,000</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-gold))] py-4 px-4 border-r border-white/20">₩75,000</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-purple))] py-4 pl-4">₩66,000</td>
-                </tr>
-                <tr className="border-t border-white/20">
-                  <td className="text-lg font-semibold text-white py-4 pr-4 border-r border-white/20">4 Songs</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-pink))] py-4 px-4 border-r border-white/20">₩120,000</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-gold))] py-4 px-4 border-r border-white/20">₩150,000</td>
-                  <td className="text-2xl font-bold text-[hsl(var(--k-purple))] py-4 pl-4">₩132,000</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <div className="mt-8 text-center">
-            <p className="text-gray-300 mb-4">All packages include: Premium drink + Recording session + Raw files + Free self-photography</p>
-          </div>
-        </div>
-
-
-
         <div className="glass p-8 rounded-3xl mb-16 max-w-4xl mx-auto">
           <div className="text-center">
             <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-2xl p-4 max-w-2xl mx-auto mb-6">
@@ -112,7 +59,8 @@ export default function PackagesSection() {
               <p className="text-yellow-100 text-sm leading-relaxed">
                 Each session is for one person only.<br/>
                 If two people wish to enter together, please book two consecutive sessions.<br/>
-                This allows both participants to enter at the same time and take turns recording.
+                This allows both participants to enter at the same time and take turns recording.<br/>
+                Please prepare your backing track in advance and provide the YouTube link upon arrival.
               </p>
             </div>
             <Button 

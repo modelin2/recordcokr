@@ -131,6 +131,8 @@ Changelog:
 - July 15, 2025. Simplified navigation to show only Franchise menu, removing all other menu items
 - July 15, 2025. Reverted franchise page design to original styling while keeping navigation menu simplified
 - July 15, 2025. Updated franchise page navigation and footer to match main page styling exactly
+- August 05, 2025. Removed "Choose Your Package" section and pricing table from main page
+- August 05, 2025. Added backing track preparation note to "Please Note" section on both main and franchise pages
 ```
 
 ## User Preferences
