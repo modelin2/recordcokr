@@ -64,6 +64,51 @@ export class MemStorage implements IStorage {
   }
 
   private initializeData() {
+    // Initialize admin users
+    const superAdmin: User = {
+      id: this.currentUserId++,
+      username: "super_admin",
+      password: "admin123",
+      email: "admin@k-recording-cafe.com",
+      role: "super_admin",
+      isActive: true,
+      createdAt: new Date("2025-08-01T09:00:00Z"),
+    };
+    this.users.set(superAdmin.id, superAdmin);
+
+    const staffAdmin1: User = {
+      id: this.currentUserId++,
+      username: "staff_minsu",
+      password: "staff123",
+      email: "minsu.kim@k-recording-cafe.com",
+      role: "admin",
+      isActive: true,
+      createdAt: new Date("2025-08-02T10:30:00Z"),
+    };
+    this.users.set(staffAdmin1.id, staffAdmin1);
+
+    const staffAdmin2: User = {
+      id: this.currentUserId++,
+      username: "staff_jiyoung",
+      password: "staff456",
+      email: "jiyoung.park@k-recording-cafe.com",
+      role: "admin",
+      isActive: true,
+      createdAt: new Date("2025-08-03T14:15:00Z"),
+    };
+    this.users.set(staffAdmin2.id, staffAdmin2);
+
+    const inactiveStaff: User = {
+      id: this.currentUserId++,
+      username: "staff_suhyun",
+      password: "staff789",
+      email: "suhyun.lee@k-recording-cafe.com",
+      role: "admin",
+      isActive: false,
+      createdAt: new Date("2025-07-20T11:00:00Z"),
+    };
+    this.users.set(inactiveStaff.id, inactiveStaff);
+
     // Initialize packages with time-based pricing (using base price for regular hours)
     const singleSongPackage: Package = {
       id: this.currentPackageId++,
