@@ -114,11 +114,11 @@ export class MemStorage implements IStorage {
     this.packages.set(hangangTourPackage.id, hangangTourPackage);
     this.packages.set(garosugilTourPackage.id, garosugilTourPackage);
 
-    // Initialize addons with USD pricing
+    // Initialize addons with Korean won pricing
     const fullTrackMixing: Addon = {
       id: this.currentAddonId++,
       name: "Full Track Mixing",
-      price: 100, // $100
+      price: 130000, // ₩130,000
       description: "Professional mixing and mastering of your recording",
       icon: "fas fa-music",
     };
@@ -126,7 +126,7 @@ export class MemStorage implements IStorage {
     const recordingVideo50k: Addon = {
       id: this.currentAddonId++,
       name: "Recording Video (Basic)",
-      price: 50, // $50
+      price: 65000, // ₩65,000
       description: "Basic recording video with single camera angle",
       icon: "fas fa-video",
     };
@@ -134,7 +134,7 @@ export class MemStorage implements IStorage {
     const recordingVideo100k: Addon = {
       id: this.currentAddonId++,
       name: "Recording Video (Premium)",
-      price: 75, // $75
+      price: 100000, // ₩100,000
       description: "Premium recording video with multiple camera angles",
       icon: "fas fa-video",
     };
@@ -142,7 +142,7 @@ export class MemStorage implements IStorage {
     const makeup: Addon = {
       id: this.currentAddonId++,
       name: "Makeup",
-      price: 50, // $50
+      price: 65000, // ₩65,000
       description: "Professional K-pop makeup styling",
       icon: "fas fa-palette",
     };
@@ -150,7 +150,7 @@ export class MemStorage implements IStorage {
     const globalDistribution: Addon = {
       id: this.currentAddonId++,
       name: "Global Distribution",
-      price: 200, // $200
+      price: 260000, // ₩260,000
       description: "Worldwide distribution to Spotify, Apple Music, YouTube Music and more",
       icon: "fas fa-globe",
     };

@@ -99,7 +99,7 @@ export default function EnhancedBookingSection() {
       const bookingData = {
         ...data,
         bookingDate: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
-        totalPrice: Math.round(totalPrice * 100), // Convert to cents for backend
+        totalPrice: Math.round(totalPrice), // Korean won
       };
 
       return apiRequest("POST", "/api/bookings", bookingData);
@@ -131,17 +131,17 @@ export default function EnhancedBookingSection() {
     const minute = parseInt(time.split(':')[1]);
     const timeInMinutes = hour * 60 + minute;
     
-    // AM10:00~PM12:50 (10:00-12:50) - $28.89
+    // AM10:00~PM12:50 (10:00-12:50) - ₩40,000
     if (timeInMinutes >= 600 && timeInMinutes <= 770) {
-      return 28.89;
+      return 40000;
     }
-    // PM01:00~PM05:50 (13:00-17:50) - $36.15  
+    // PM01:00~PM05:50 (13:00-17:50) - ₩50,000  
     else if (timeInMinutes >= 780 && timeInMinutes <= 1070) {
-      return 36.15;
+      return 50000;
     }
-    // PM06:00~PM10:00 (18:00-22:00) - $31.79
+    // PM06:00~PM10:00 (18:00-22:00) - ₩44,000
     else if (timeInMinutes >= 1080 && timeInMinutes <= 1320) {
-      return 31.79;
+      return 44000;
     }
     
     return 0;
@@ -412,7 +412,7 @@ export default function EnhancedBookingSection() {
                           <FormLabel className="text-white">
                             Booking Time * 
                             <div className="text-sm text-gray-300 mt-1">
-                              AM10:00-PM12:50: $28.89 | PM01:00-PM05:50: $36.15 | PM06:00-PM10:00: $31.79
+                              AM10:00-PM12:50: ₩40,000 | PM01:00-PM05:50: ₩50,000 | PM06:00-PM10:00: ₩44,000
                             </div>
                           </FormLabel>
                           <Select 
@@ -500,7 +500,7 @@ export default function EnhancedBookingSection() {
                                           {addon.description}
                                         </p>
                                         <p className="text-lg font-bold text-yellow-400">
-                                          ${addon.price}
+                                          ₩{addon.price.toLocaleString()}
                                         </p>
                                       </div>
                                     </FormItem>
@@ -520,7 +520,7 @@ export default function EnhancedBookingSection() {
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-semibold text-white">Total Price:</span>
                       <span className="text-2xl font-bold text-yellow-400">
-                        ${calculateTotalPrice(form.watch("selectedAddons"), form.watch("bookingTime")).toFixed(2)}
+                        ₩{calculateTotalPrice(form.watch("selectedAddons"), form.watch("bookingTime")).toLocaleString()}
                       </span>
                     </div>
                   </div>
