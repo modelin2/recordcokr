@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,11 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
-import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon } from "lucide-react";
+import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut } from "lucide-react";
 import type { Booking } from "@shared/schema";
 import { format } from "date-fns";
 import { Copy } from "lucide-react";
+import { useLocation } from "wouter";
 
 const statusColors = {
   pending: "bg-yellow-500/20 text-yellow-300 border-yellow-500/50",
@@ -40,9 +42,46 @@ export default function AdminPage() {
   const [emailMessage, setEmailMessage] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
+  const { user, isLoading: authLoading, isAdmin } = useAuth();
+
+  // Redirect to login if not authenticated or not admin
+  useEffect(() => {
+    if (!authLoading && (!user || !isAdmin)) {
+      toast({
+        title: "Access Denied",
+        description: "Admin access required. Please log in.",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        setLocation("/login");
+      }, 1000);
+    }
+  }, [authLoading, user, isAdmin, setLocation, toast]);
+
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", "/api/auth/logout", {});
+    },
+    onSuccess: () => {
+      toast({
+        title: "Logged Out",
+        description: "You have been logged out successfully.",
+      });
+      setLocation("/login");
+    },
+    onError: () => {
+      toast({
+        title: "Logout Failed",
+        description: "Failed to logout. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   // Fetch all bookings and addons for better display
-  const { data: bookings = [], isLoading } = useQuery<Booking[]>({
+  const { data: bookings = [], isLoading: bookingsLoading } = useQuery<Booking[]>({
     queryKey: ['/api/admin/bookings'],
   });
 
@@ -70,6 +109,22 @@ export default function AdminPage() {
       });
     },
   });
+
+  // Show loading or redirect if not authenticated
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || !isAdmin) {
+    return null; // Will redirect via useEffect
+  }
 
   // Send email mutation
   const sendEmailMutation = useMutation({
@@ -219,7 +274,7 @@ K-Recording Cafe Team`
     setEmailMessage(processedMessage);
   };
 
-  if (isLoading) {
+  if (bookingsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
@@ -233,15 +288,24 @@ K-Recording Cafe Team`
         <div className="mb-8 flex justify-between items-center">
           <div>
             <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
-            <p className="text-gray-300">Manage bookings and communicate with customers</p>
+            <p className="text-gray-300">Welcome back, {user.username} ({user.role})</p>
           </div>
-          <div className="flex gap-4">
+          <div className="flex items-center gap-4">
             <Button 
               onClick={() => window.location.href = '/admin/users'}
               className="k-gradient-pink-purple text-white"
             >
               <UserIcon className="h-4 w-4 mr-2" />
               사용자 관리
+            </Button>
+            <Button 
+              onClick={() => logoutMutation.mutate()}
+              disabled={logoutMutation.isPending}
+              variant="outline"
+              className="border-white/40 text-white hover:bg-white/20"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              {logoutMutation.isPending ? "Logging out..." : "Logout"}
             </Button>
           </div>
         </div>

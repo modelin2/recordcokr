@@ -6,7 +6,89 @@ import { unlink } from "fs/promises";
 import { insertBookingSchema } from "@shared/schema";
 import { z } from "zod";
 
+// Simple session middleware for demo purposes
+declare module 'express-session' {
+  interface SessionData {
+    userId?: number;
+  }
+}
+
+// Middleware to check if user is authenticated
+const requireAuth = (req: any, res: any, next: any) => {
+  if (!req.session?.userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  next();
+};
+
+// Middleware to check if user is admin or super_admin
+const requireAdmin = async (req: any, res: any, next: any) => {
+  if (!req.session?.userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  
+  try {
+    const user = await storage.getUser(req.session.userId);
+    if (!user || (user.role !== 'admin' && user.role !== 'super_admin')) {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+    req.user = user;
+    next();
+  } catch (error) {
+    return res.status(500).json({ message: "Authentication error" });
+  }
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Simple login endpoint (for demo - in production use proper authentication)
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password required" });
+      }
+
+      const user = await storage.getUserByUsername(username);
+      
+      if (!user || user.password !== password) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      if (!user.isActive) {
+        return res.status(401).json({ message: "Account is disabled" });
+      }
+
+      req.session.userId = user.id;
+      res.json({ message: "Login successful", user: { ...user, password: undefined } });
+    } catch (error) {
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Get current user
+  app.get("/api/auth/user", requireAuth, async (req, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId!);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json({ ...user, password: undefined });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get user" });
+    }
+  });
+
+  // Logout
+  app.post("/api/auth/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      res.json({ message: "Logout successful" });
+    });
+  });
+
   // Get all packages
   app.get("/api/packages", async (req, res) => {
     try {
@@ -85,8 +167,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin routes
-  app.get("/api/admin/bookings", async (req, res) => {
+  // Admin routes (require admin access)
+  app.get("/api/admin/bookings", requireAdmin, async (req, res) => {
     try {
       const bookings = await storage.getAllBookings();
       res.json(bookings);
@@ -96,7 +178,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/admin/bookings/:id/status", async (req, res) => {
+  app.patch("/api/admin/bookings/:id/status", requireAdmin, async (req, res) => {
     try {
       const bookingId = parseInt(req.params.id);
       const { status } = req.body;
@@ -118,8 +200,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin management routes
-  app.get("/api/admin/users", async (req, res) => {
+  // Admin management routes (require admin access)
+  app.get("/api/admin/users", requireAdmin, async (req, res) => {
     try {
       const admins = await storage.getAllAdmins();
       res.json(admins);
@@ -129,7 +211,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/users", async (req, res) => {
+  app.post("/api/admin/users", requireAdmin, async (req, res) => {
     try {
       const { email, username, role } = req.body;
       
@@ -148,7 +230,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/admin/users/:id/status", async (req, res) => {
+  app.patch("/api/admin/users/:id/status", requireAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
       const { isActive } = req.body;
@@ -166,7 +248,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/admin/users/:id", async (req, res) => {
+  app.delete("/api/admin/users/:id", requireAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
       
@@ -183,7 +265,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/bookings/:id/send-email", async (req, res) => {
+  app.post("/api/admin/bookings/:id/send-email", requireAdmin, async (req, res) => {
     try {
       const bookingId = parseInt(req.params.id);
       const { subject, message } = req.body;
@@ -219,7 +301,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // YouTube audio download endpoint
-  app.post("/api/admin/download-youtube-audio", async (req, res) => {
+  app.post("/api/admin/download-youtube-audio", requireAdmin, async (req, res) => {
     try {
       const { youtubeUrl, bookingId } = req.body;
       
