@@ -29,6 +29,7 @@ const bookingFormSchema = z.object({
   drinkTemperature: z.string().optional(),
   youtubeTrackUrl: z.string().url("Please enter a valid YouTube URL"),
   selectedAddons: z.array(z.number()).default([]),
+  lpDeliveryAddress: z.string().optional(),
   bookingDate: z.string().optional(),
   bookingTime: z.string().optional(),
 }).superRefine((data, ctx) => {
@@ -55,6 +56,14 @@ const bookingFormSchema = z.object({
       code: z.ZodIssueCode.custom,
       message: "Please enter your Klook booking ID",
       path: ["klookBookingId"],
+    });
+  }
+  // If LP Record Production is selected, delivery address is required
+  if (data.selectedAddons.includes(6) && (!data.lpDeliveryAddress || data.lpDeliveryAddress.trim() === "")) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "LP delivery address is required for LP Record Production",
+      path: ["lpDeliveryAddress"],
     });
   }
 });
@@ -630,6 +639,36 @@ export default function EnhancedBookingSection() {
                       )}
                     />
                   </div>
+
+                  {/* LP Delivery Address - only show if LP Record Production is selected */}
+                  {form.watch("selectedAddons")?.includes(6) && (
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                        <Music className="h-5 w-5" />
+                        LP Delivery Information
+                      </h3>
+                      <FormField
+                        control={form.control}
+                        name="lpDeliveryAddress"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-white">Delivery Address *</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Enter your full delivery address for LP vinyl record..."
+                                className="bg-white/10 border-white/20 text-white placeholder-gray-400"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                            <p className="text-sm text-gray-400">
+                              Your vinyl LP record will be shipped to this address within 2-3 weeks after production.
+                            </p>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
 
                   {/* Total Price */}
                   <div className="bg-white/5 p-4 rounded-lg">

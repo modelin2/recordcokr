@@ -202,8 +202,8 @@ export class MemStorage implements IStorage {
     const lpProduction: Addon = {
       id: this.currentAddonId++,
       name: "LP Record Production",
-      price: 150000, // ₩150,000
-      description: "Create your own physical LP vinyl record. Production takes 2-3 weeks.",
+      price: 300000, // ₩300,000
+      description: "Create your own physical LP vinyl record. Includes Full Track Mixing. Production takes 2-3 weeks.",
       icon: "fas fa-compact-disc",
     };
 
