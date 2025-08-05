@@ -23,6 +23,7 @@ export interface IStorage {
   getAllBookings(): Promise<Booking[]>;
   getBooking(id: number): Promise<Booking | undefined>;
   createBooking(booking: InsertBooking): Promise<Booking>;
+  updateBookingStatus(id: number, status: string): Promise<Booking | undefined>;
   
   getAvailableTimeSlots(date: string): Promise<TimeSlot[]>;
   createTimeSlot(timeSlot: InsertTimeSlot): Promise<TimeSlot>;
@@ -265,7 +266,7 @@ export class MemStorage implements IStorage {
       bookingDate: insertBooking.bookingDate || null,
       bookingTime: insertBooking.bookingTime || null,
       totalPrice: insertBooking.totalPrice,
-      status: insertBooking.status || "confirmed",
+      status: insertBooking.status || "pending",
       createdAt: new Date(),
     };
     this.bookings.set(id, booking);
@@ -280,6 +281,14 @@ export class MemStorage implements IStorage {
       }
     }
 
+    return booking;
+  }
+
+  async updateBookingStatus(id: number, status: string): Promise<Booking | undefined> {
+    const booking = this.bookings.get(id);
+    if (booking) {
+      booking.status = status;
+    }
     return booking;
   }
 

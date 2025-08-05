@@ -39,6 +39,9 @@ export default function Navigation() {
           <Link href="/franchise" className="hover:text-[hsl(var(--k-pink))] transition-colors">
             Franchise
           </Link>
+          <Link href="/admin" className="hover:text-[hsl(var(--k-pink))] transition-colors">
+            Admin
+          </Link>
         </div>
         
         <Button 

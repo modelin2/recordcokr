@@ -84,6 +84,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin routes
+  app.get("/api/admin/bookings", async (req, res) => {
+    try {
+      const bookings = await storage.getAllBookings();
+      res.json(bookings);
+    } catch (error: any) {
+      console.error("Error fetching bookings:", error);
+      res.status(500).json({ message: "Failed to fetch bookings" });
+    }
+  });
+
+  app.patch("/api/admin/bookings/:id/status", async (req, res) => {
+    try {
+      const bookingId = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (!status) {
+        return res.status(400).json({ message: "Status is required" });
+      }
+
+      const booking = await storage.updateBookingStatus(bookingId, status);
+      
+      if (!booking) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+
+      res.json(booking);
+    } catch (error: any) {
+      console.error("Error updating booking status:", error);
+      res.status(500).json({ message: "Failed to update booking status" });
+    }
+  });
+
+  app.post("/api/admin/bookings/:id/send-email", async (req, res) => {
+    try {
+      const bookingId = parseInt(req.params.id);
+      const { subject, message } = req.body;
+      
+      if (!subject || !message) {
+        return res.status(400).json({ message: "Subject and message are required" });
+      }
+
+      const booking = await storage.getBooking(bookingId);
+      
+      if (!booking) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+
+      // For now, we'll just simulate email sending
+      // In a real app, you would integrate with SendGrid or another email service
+      console.log(`Sending email to ${booking.email}:`);
+      console.log(`Subject: ${subject}`);
+      console.log(`Message: ${message}`);
+      
+      // Simulate email sending delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      res.json({ 
+        message: "Email sent successfully",
+        recipient: booking.email,
+        subject,
+      });
+    } catch (error: any) {
+      console.error("Error sending email:", error);
+      res.status(500).json({ message: "Failed to send email" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
