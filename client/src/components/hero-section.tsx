@@ -1,7 +1,20 @@
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import heroImage from "@assets/k-recording-cafe_1751779914043.png";
 
+// Create a lightweight base64 placeholder for instant loading
+const placeholderImage = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM1NzFkZGIiLz48c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iI2RkMjU5MiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzI1NjNlYiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ1cmwoI2cpIiBvcGFjaXR5PSIwLjMiLz48L3N2Zz4=";
+
 export default function HeroSection() {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    // Preload the hero image
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.src = heroImage;
+  }, []);
+
   const scrollToBooking = () => {
     const element = document.getElementById('booking');
     if (element) {
@@ -14,9 +27,21 @@ export default function HeroSection() {
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900"></div>
       
-      {/* Background image */}
+      {/* Placeholder background for instant loading */}
       <div 
-        className="absolute inset-0 opacity-50"
+        className="absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: `url(${placeholderImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(20px)',
+          transform: 'scale(1.1)'
+        }}
+      ></div>
+      
+      {/* High-quality background image - fade in when loaded */}
+      <div 
+        className={`absolute inset-0 transition-opacity duration-700 ${imageLoaded ? 'opacity-50' : 'opacity-0'}`}
         style={{
           backgroundImage: `url(${heroImage})`,
           backgroundSize: 'cover',
@@ -26,11 +51,12 @@ export default function HeroSection() {
       ></div>
       
       {/* Mobile-specific background positioning */}
-      <div className="md:hidden absolute inset-0 opacity-50 bg-cover bg-no-repeat bg-center"
-           style={{
-             backgroundImage: `url(${heroImage})`,
-             backgroundPosition: 'center 30%'
-           }}
+      <div 
+        className={`md:hidden absolute inset-0 bg-cover bg-no-repeat bg-center transition-opacity duration-700 ${imageLoaded ? 'opacity-50' : 'opacity-0'}`}
+        style={{
+          backgroundImage: `url(${heroImage})`,
+          backgroundPosition: 'center 30%'
+        }}
       ></div>
       
       <div className="container mx-auto max-w-7xl relative z-10 text-center px-6 lg:px-8 xl:px-12 pb-20 md:pb-32">
