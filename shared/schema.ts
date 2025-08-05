@@ -29,9 +29,12 @@ export const addons = pgTable("addons", {
 export const bookings = pgTable("bookings", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  nickname: text("nickname"),
   email: text("email").notNull(),
-  phone: text("phone"),
-  packageId: integer("package_id").notNull(),
+  phone: text("phone").notNull(),
+  selectedDrink: text("selected_drink").notNull(),
+  drinkTemperature: text("drink_temperature"), // "hot" or "iced"
+  youtubeTrackUrl: text("youtube_track_url").notNull(),
   selectedAddons: text("selected_addons").array().default([]),
   bookingDate: text("booking_date").notNull(),
   bookingTime: text("booking_time").notNull(),
@@ -65,9 +68,12 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   createdAt: true,
 }).extend({
   name: z.string().min(1, "Name is required"),
+  nickname: z.string().optional(),
   email: z.string().email("Valid email is required"),
-  phone: z.string().optional(),
-  packageId: z.number().min(1, "Package selection is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  selectedDrink: z.string().min(1, "Drink selection is required"),
+  drinkTemperature: z.string().optional(),
+  youtubeTrackUrl: z.string().url("Valid YouTube URL is required"),
   bookingDate: z.string().min(1, "Booking date is required"),
   bookingTime: z.string().min(1, "Booking time is required"),
 });

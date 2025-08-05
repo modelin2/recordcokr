@@ -1,0 +1,463 @@
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon, Coffee, Music, ShoppingBag } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import type { Addon } from "@shared/schema";
+
+// Booking form schema
+const bookingFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  nickname: z.string().optional(),
+  email: z.string().email("Valid email is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  selectedDrink: z.string().min(1, "Please select a drink"),
+  drinkTemperature: z.string().optional(),
+  youtubeTrackUrl: z.string().url("Please enter a valid YouTube URL"),
+  selectedAddons: z.array(z.number()).default([]),
+  bookingDate: z.string().min(1, "Please select a date"),
+  bookingTime: z.string().min(1, "Please select a time"),
+});
+
+type BookingForm = z.infer<typeof bookingFormSchema>;
+
+export default function EnhancedBookingSection() {
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: addons = [] } = useQuery<Addon[]>({
+    queryKey: ['/api/addons'],
+  });
+
+  const { data: timeSlots = [] } = useQuery<string[]>({
+    queryKey: ['/api/timeslots', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : ''],
+    enabled: !!selectedDate,
+  });
+
+  const form = useForm<BookingForm>({
+    resolver: zodResolver(bookingFormSchema),
+    defaultValues: {
+      name: "",
+      nickname: "",
+      email: "",
+      phone: "",
+      selectedDrink: "",
+      drinkTemperature: "",
+      youtubeTrackUrl: "",
+      selectedAddons: [],
+      bookingDate: "",
+      bookingTime: "",
+    },
+  });
+
+  const bookingMutation = useMutation({
+    mutationFn: async (data: BookingForm) => {
+      const totalPrice = calculateTotalPrice(data.selectedAddons);
+      
+      const bookingData = {
+        ...data,
+        bookingDate: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
+        totalPrice,
+      };
+
+      return apiRequest("POST", "/api/bookings", bookingData);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Booking Successful!",
+        description: "Your recording session has been booked. We'll send confirmation details to your email.",
+      });
+      form.reset();
+      setSelectedDate(undefined);
+      queryClient.invalidateQueries({ queryKey: ['/api/timeslots'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Booking Failed",
+        description: error.message || "Please check your information and try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const calculateTotalPrice = (selectedAddonIds: number[]) => {
+    return selectedAddonIds.reduce((total, addonId) => {
+      const addon = addons.find(a => a.id === addonId);
+      return total + (addon?.price || 0);
+    }, 0);
+  };
+
+  const onSubmit = (data: BookingForm) => {
+    bookingMutation.mutate(data);
+  };
+
+  const drinkOptions = [
+    { value: "coffee", label: "Coffee", hasTemperature: true },
+    { value: "coffee-decaf", label: "Coffee (Decaffeinated)", hasTemperature: true },
+    { value: "lemonade", label: "Lemonade", hasTemperature: false },
+    { value: "strawberry-ade", label: "Strawberry Ade", hasTemperature: false },
+    { value: "orange-ade", label: "Orange Ade", hasTemperature: false },
+    { value: "grapefruit-ade", label: "Grapefruit Ade", hasTemperature: false },
+    { value: "iced-tea", label: "Iced Tea", hasTemperature: false },
+    { value: "green-tea", label: "Green Tea", hasTemperature: true },
+    { value: "hibiscus", label: "Hibiscus", hasTemperature: true },
+    { value: "earl-grey", label: "Earl Grey", hasTemperature: true },
+    { value: "peppermint", label: "Peppermint", hasTemperature: true },
+    { value: "chamomile", label: "Chamomile", hasTemperature: true },
+    { value: "hot-chocolate", label: "Hot Chocolate", hasTemperature: false, hotOnly: true },
+  ];
+
+  const selectedDrinkOption = drinkOptions.find(d => d.value === form.watch("selectedDrink"));
+
+  return (
+    <section id="booking" className="py-20 bg-gradient-to-br from-gray-900 to-purple-900">
+      <div className="container mx-auto px-6 lg:px-8 xl:px-12 max-w-7xl">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold mb-8 gradient-text">Book Your K-pop Recording Session</h2>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Complete your booking with drink selection and additional services
+          </p>
+        </div>
+
+        <div className="max-w-4xl mx-auto">
+          <Card className="glass border-white/20">
+            <CardHeader>
+              <CardTitle className="text-2xl text-white flex items-center gap-2">
+                <Music className="h-6 w-6" />
+                Recording Session Booking
+              </CardTitle>
+              <CardDescription className="text-gray-300">
+                Fill in your details to book your K-pop recording experience
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  {/* Personal Information */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-white">Name *</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Your full name" 
+                              className="bg-white/10 border-white/20 text-white"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="nickname"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-white">Nickname</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Your preferred nickname" 
+                              className="bg-white/10 border-white/20 text-white"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-white">Phone Number *</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="+82-10-0000-0000" 
+                              className="bg-white/10 border-white/20 text-white"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-white">Email (for recording file delivery) *</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="your@email.com" 
+                              type="email"
+                              className="bg-white/10 border-white/20 text-white"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Drink Selection */}
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                      <Coffee className="h-5 w-5" />
+                      Drink Selection
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="selectedDrink"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-white">Choose Your Drink *</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                                  <SelectValue placeholder="Select a drink" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {drinkOptions.map((drink) => (
+                                  <SelectItem key={drink.value} value={drink.value}>
+                                    {drink.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {selectedDrinkOption?.hasTemperature && !selectedDrinkOption?.hotOnly && (
+                        <FormField
+                          control={form.control}
+                          name="drinkTemperature"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-white">Temperature</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                                    <SelectValue placeholder="Hot or Iced" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="hot">Hot</SelectItem>
+                                  <SelectItem value="iced">Iced</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* YouTube Track URL */}
+                  <FormField
+                    control={form.control}
+                    name="youtubeTrackUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-white">Backing Track YouTube URL *</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="https://www.youtube.com/watch?v=..." 
+                            className="bg-white/10 border-white/20 text-white"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Date and Time Selection */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="bookingDate"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="text-white">Booking Date *</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal bg-white/10 border-white/20 text-white",
+                                    !selectedDate && "text-gray-400"
+                                  )}
+                                >
+                                  {selectedDate ? (
+                                    format(selectedDate, "PPP")
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={(date) => {
+                                  setSelectedDate(date);
+                                  field.onChange(date ? format(date, 'yyyy-MM-dd') : '');
+                                }}
+                                disabled={(date) =>
+                                  date < new Date() || date < new Date("1900-01-01")
+                                }
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="bookingTime"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-white">Booking Time *</FormLabel>
+                          <Select 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value}
+                            disabled={!selectedDate}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                                <SelectValue placeholder="Select time" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {timeSlots.map((time) => (
+                                <SelectItem key={time} value={time}>
+                                  {time}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Additional Services */}
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                      <ShoppingBag className="h-5 w-5" />
+                      Additional Services
+                    </h3>
+                    <FormField
+                      control={form.control}
+                      name="selectedAddons"
+                      render={() => (
+                        <FormItem>
+                          <div className="grid md:grid-cols-2 gap-4">
+                            {addons.map((addon) => (
+                              <FormField
+                                key={addon.id}
+                                control={form.control}
+                                name="selectedAddons"
+                                render={({ field }) => {
+                                  return (
+                                    <FormItem
+                                      key={addon.id}
+                                      className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-white/20 p-4"
+                                    >
+                                      <FormControl>
+                                        <Checkbox
+                                          checked={field.value?.includes(addon.id)}
+                                          onCheckedChange={(checked) => {
+                                            return checked
+                                              ? field.onChange([...field.value, addon.id])
+                                              : field.onChange(
+                                                  field.value?.filter(
+                                                    (value) => value !== addon.id
+                                                  )
+                                                )
+                                          }}
+                                        />
+                                      </FormControl>
+                                      <div className="space-y-1 leading-none">
+                                        <FormLabel className="text-white font-semibold">
+                                          {addon.name}
+                                        </FormLabel>
+                                        <p className="text-sm text-gray-300">
+                                          {addon.description}
+                                        </p>
+                                        <p className="text-lg font-bold text-yellow-400">
+                                          ₩{addon.price.toLocaleString()}
+                                        </p>
+                                      </div>
+                                    </FormItem>
+                                  )
+                                }}
+                              />
+                            ))}
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Total Price */}
+                  <div className="bg-white/5 p-4 rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-semibold text-white">Total Price:</span>
+                      <span className="text-2xl font-bold text-yellow-400">
+                        ₩{calculateTotalPrice(form.watch("selectedAddons")).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full k-gradient-pink-purple text-lg py-6"
+                    disabled={bookingMutation.isPending}
+                  >
+                    {bookingMutation.isPending ? "Processing..." : "Complete Booking"}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </section>
+  );
+}

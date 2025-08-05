@@ -30,7 +30,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { date } = req.params;
       const timeSlots = await storage.getAvailableTimeSlots(date);
-      res.json(timeSlots);
+      // Return just the time strings for easier frontend handling
+      const availableTimes = timeSlots.map(slot => slot.time);
+      res.json(availableTimes);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch time slots" });
     }
@@ -41,13 +43,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertBookingSchema.parse(req.body);
       
-      // Calculate total price
-      const selectedPackage = await storage.getPackage(validatedData.packageId);
-      if (!selectedPackage) {
-        return res.status(400).json({ message: "Invalid package selected" });
-      }
-
-      let totalPrice = selectedPackage.price;
+      // Calculate total price from addons only (no base package price)
+      let totalPrice = 0;
 
       // Add addon prices
       if (validatedData.selectedAddons && validatedData.selectedAddons.length > 0) {
