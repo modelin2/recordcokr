@@ -213,13 +213,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/admin/users", requireAdmin, async (req, res) => {
     try {
-      const { email, username, role } = req.body;
+      const { email, username, password, role } = req.body;
       
-      if (!email || !username) {
-        return res.status(400).json({ message: "Email and username are required" });
+      if (!email || !username || !password) {
+        return res.status(400).json({ message: "Email, username, and password are required" });
       }
 
-      const newAdmin = await storage.createAdmin({ email, username, role: role || "admin" });
+      if (password.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters long" });
+      }
+
+      const newAdmin = await storage.createAdmin({ email, username, password, role: role || "admin" });
       res.json({ 
         message: "Admin user created successfully", 
         user: { ...newAdmin, password: undefined } // Don't send password back

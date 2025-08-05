@@ -28,6 +28,7 @@ export default function UserManagementPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserUsername, setNewUserUsername] = useState("");
+  const [newUserPassword, setNewUserPassword] = useState("");
   const [newUserRole, setNewUserRole] = useState("admin");
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -39,8 +40,8 @@ export default function UserManagementPage() {
 
   // Create admin mutation
   const createAdminMutation = useMutation({
-    mutationFn: async ({ email, username, role }: { email: string; username: string; role: string }) => {
-      return apiRequest("POST", "/api/admin/users", { email, username, role });
+    mutationFn: async ({ email, username, password, role }: { email: string; username: string; password: string; role: string }) => {
+      return apiRequest("POST", "/api/admin/users", { email, username, password, role });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
@@ -51,6 +52,7 @@ export default function UserManagementPage() {
       setIsAddDialogOpen(false);
       setNewUserEmail("");
       setNewUserUsername("");
+      setNewUserPassword("");
       setNewUserRole("admin");
     },
     onError: (error: any) => {
@@ -105,10 +107,19 @@ export default function UserManagementPage() {
   });
 
   const handleCreateAdmin = () => {
-    if (!newUserEmail || !newUserUsername) {
+    if (!newUserEmail || !newUserUsername || !newUserPassword) {
       toast({
         title: "입력 오류",
-        description: "이메일과 사용자명을 모두 입력해주세요.",
+        description: "이메일, 사용자명, 비밀번호를 모두 입력해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (newUserPassword.length < 6) {
+      toast({
+        title: "비밀번호 오류",
+        description: "비밀번호는 최소 6자 이상이어야 합니다.",
         variant: "destructive",
       });
       return;
@@ -117,6 +128,7 @@ export default function UserManagementPage() {
     createAdminMutation.mutate({
       email: newUserEmail,
       username: newUserUsername,
+      password: newUserPassword,
       role: newUserRole,
     });
   };
@@ -180,6 +192,16 @@ export default function UserManagementPage() {
                     placeholder="admin_username"
                     value={newUserUsername}
                     onChange={(e) => setNewUserUsername(e.target.value)}
+                    className="bg-white/10 border-white/20 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-white">비밀번호</Label>
+                  <Input
+                    type="password"
+                    placeholder="최소 6자 이상"
+                    value={newUserPassword}
+                    onChange={(e) => setNewUserPassword(e.target.value)}
                     className="bg-white/10 border-white/20 text-white"
                   />
                 </div>

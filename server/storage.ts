@@ -378,12 +378,12 @@ export class MemStorage implements IStorage {
     return user;
   }
 
-  async createAdmin(insertAdmin: { email: string; username: string; role: string }): Promise<User> {
+  async createAdmin(insertAdmin: { email: string; username: string; password: string; role: string }): Promise<User> {
     const id = this.currentUserId++;
     const user: User = {
       id,
       username: insertAdmin.username,
-      password: Math.random().toString(36).substring(2, 15), // Temporary password
+      password: insertAdmin.password, // Use provided password
       email: insertAdmin.email,
       role: insertAdmin.role,
       isActive: true,
