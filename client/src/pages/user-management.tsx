@@ -253,7 +253,7 @@ export default function UserManagementPage() {
                           {user.role === "super_admin" ? "슈퍼 관리자" : 
                            user.role === "admin" ? "일반 관리자" : "사용자"}
                         </Badge>
-                        <Badge className={user.isActive ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"}>
+                        <Badge className={user.isActive ? "bg-green-500/20 text-green-300 border-green-500/50" : "bg-red-500/30 text-red-200 border-red-400/60 font-medium"}>
                           {user.isActive ? "활성" : "비활성"}
                         </Badge>
                       </div>
@@ -275,7 +275,10 @@ export default function UserManagementPage() {
                         variant="outline"
                         onClick={() => handleStatusToggle(user.id, user.isActive || false)}
                         disabled={updateStatusMutation.isPending}
-                        className="text-white border-white/40 hover:bg-white/20"
+                        className={user.isActive 
+                          ? "text-red-300 border-red-400/50 hover:bg-red-400/20 font-medium" 
+                          : "text-green-300 border-green-400/50 hover:bg-green-400/20 font-medium"
+                        }
                       >
                         {user.isActive ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
                         {user.isActive ? "비활성화" : "활성화"}
