@@ -114,35 +114,35 @@ export class MemStorage implements IStorage {
     this.packages.set(hangangTourPackage.id, hangangTourPackage);
     this.packages.set(garosugilTourPackage.id, garosugilTourPackage);
 
-    // Initialize addons with Korean won pricing
+    // Initialize addons with updated Korean won pricing
     const fullTrackMixing: Addon = {
       id: this.currentAddonId++,
       name: "Full Track Mixing",
-      price: 130000, // ₩130,000
+      price: 100000, // ₩100,000
       description: "Professional mixing and mastering of your recording",
       icon: "fas fa-music",
     };
 
-    const recordingVideo50k: Addon = {
+    const recordingVideoRaw: Addon = {
       id: this.currentAddonId++,
-      name: "Recording Video (Basic)",
-      price: 65000, // ₩65,000
-      description: "Basic recording video with single camera angle",
+      name: "Recording Video - Raw footage only",
+      price: 50000, // ₩50,000
+      description: "Raw recording video footage",
       icon: "fas fa-video",
     };
 
-    const recordingVideo100k: Addon = {
+    const recordingVideoEdited: Addon = {
       id: this.currentAddonId++,
-      name: "Recording Video (Premium)",
+      name: "Recording Video - Edited with song",
       price: 100000, // ₩100,000
-      description: "Premium recording video with multiple camera angles",
+      description: "Professionally edited recording video with your song",
       icon: "fas fa-video",
     };
 
     const makeup: Addon = {
       id: this.currentAddonId++,
-      name: "Makeup",
-      price: 65000, // ₩65,000
+      name: "Makeup Service",
+      price: 100000, // ₩100,000
       description: "Professional K-pop makeup styling",
       icon: "fas fa-palette",
     };
@@ -150,14 +150,14 @@ export class MemStorage implements IStorage {
     const globalDistribution: Addon = {
       id: this.currentAddonId++,
       name: "Global Distribution",
-      price: 260000, // ₩260,000
+      price: 1300000, // ₩1,300,000
       description: "Worldwide distribution to Spotify, Apple Music, YouTube Music and more",
       icon: "fas fa-globe",
     };
 
     this.addons.set(fullTrackMixing.id, fullTrackMixing);
-    this.addons.set(recordingVideo50k.id, recordingVideo50k);
-    this.addons.set(recordingVideo100k.id, recordingVideo100k);
+    this.addons.set(recordingVideoRaw.id, recordingVideoRaw);
+    this.addons.set(recordingVideoEdited.id, recordingVideoEdited);
     this.addons.set(makeup.id, makeup);
     this.addons.set(globalDistribution.id, globalDistribution);
 

@@ -135,7 +135,7 @@ Changelog:
 - August 05, 2025. Added backing track preparation note to "Please Note" section on both main and franchise pages
 - August 05, 2025. Fixed booking time slot display issue using useEffect instead of TanStack Query
 - August 05, 2025. Implemented time-based pricing structure in Korean won: AM10:00-PM12:50 (₩40,000), PM01:00-PM05:50 (₩50,000), PM06:00-PM10:00 (₩44,000)
-- August 05, 2025. Updated Additional Services pricing in Korean won: Full Track Mixing (₩130,000), Recording Video Basic/Premium (₩65,000/₩100,000), Makeup (₩65,000), Global Distribution (₩260,000)
+- August 05, 2025. Updated Additional Services pricing in Korean won: Full Track Mixing (₩100,000), Recording Video Raw/Edited (₩50,000/₩100,000), Makeup Service (₩100,000), Global Distribution (₩1,300,000)
 ```
 
 ## User Preferences
