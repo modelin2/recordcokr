@@ -203,7 +203,7 @@ export class MemStorage implements IStorage {
       id: this.currentAddonId++,
       name: "LP Record Production",
       price: 150000, // ₩150,000
-      description: "실물 LP판을 만들어 준다. (제작기간 2~3주 소요된다.)",
+      description: "Create your own physical LP vinyl record. Production takes 2-3 weeks.",
       icon: "fas fa-compact-disc",
     };
 
