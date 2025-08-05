@@ -304,7 +304,7 @@ export default function EnhancedBookingSection() {
                 variant="outline" 
                 size="sm" 
                 onClick={() => setBookingStep("select-type")}
-                className="w-fit mt-2 text-white border-white/20 hover:bg-white/10"
+                className="w-fit mt-2 text-gray-300 border-white/20 hover:bg-white/10 hover:text-white"
               >
                 ← Change Booking Type
               </Button>
