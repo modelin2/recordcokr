@@ -3,20 +3,28 @@ import menuImage from "@assets/recordingcafemenu_1751782203762.jpg";
 
 const menuItems = {
   hot: [
-    { name: "Americano", korean: "아메리카노", price: "₩5,000" },
-    { name: "Ice Americano", korean: "아이스 아메리카노", price: "₩5,500" },
-    { name: "Latte", korean: "라떼", price: "₩6,000" },
-    { name: "Vanilla Latte", korean: "바닐라라떼", price: "₩6,500" },
-    { name: "Mango Juice", korean: "망고 주스", price: "₩7,000" },
-    { name: "Passion Fruit Juice", korean: "패션프루트 주스", price: "₩7,000" }
+    { name: "Coffee (Hot)", korean: "커피 (핫)", price: "₩5,000" },
+    { name: "Coffee Decaf (Hot)", korean: "커피(디카페인) (핫)", price: "₩5,500" },
+    { name: "Green Tea (Hot)", korean: "그린티 (핫)", price: "₩6,000" },
+    { name: "Hibiscus (Hot)", korean: "히비스커스 (핫)", price: "₩6,000" },
+    { name: "Earl Grey (Hot)", korean: "얼그레이 (핫)", price: "₩6,000" },
+    { name: "Peppermint (Hot)", korean: "페퍼민트 (핫)", price: "₩6,000" },
+    { name: "Chamomile (Hot)", korean: "캐모마일 (핫)", price: "₩6,000" },
+    { name: "Hot Chocolate", korean: "핫초코 (핫)", price: "₩7,000" }
   ],
   cold: [
-    { name: "Americano", korean: "아메리카노", price: "₩5,500" },
-    { name: "Green Tea (Organic)", korean: "녹차(유기농재료)", price: "₩6,000" },
-    { name: "Earl Grey", korean: "얼그레이", price: "₩6,000" },
-    { name: "Lemon Tea", korean: "유자차", price: "₩6,500" },
-    { name: "Grapefruit Tea", korean: "대추차", price: "₩6,500" },
-    { name: "Ginger Tea", korean: "황차고", price: "₩7,000" }
+    { name: "Coffee (Iced)", korean: "커피 (아이스)", price: "₩5,500" },
+    { name: "Coffee Decaf (Iced)", korean: "커피(디카페인) (아이스)", price: "₩6,000" },
+    { name: "Lemonade", korean: "레몬에이드 (아이스)", price: "₩6,500" },
+    { name: "Strawberry Ade", korean: "딸기에이드 (아이스)", price: "₩7,000" },
+    { name: "Orange Ade", korean: "오렌지에이드 (아이스)", price: "₩7,000" },
+    { name: "Grapefruit Ade", korean: "자몽에이드 (아이스)", price: "₩7,000" },
+    { name: "Iced Tea", korean: "아이스티 (아이스)", price: "₩6,000" },
+    { name: "Green Tea (Iced)", korean: "그린티 (아이스)", price: "₩6,500" },
+    { name: "Hibiscus (Iced)", korean: "히비스커스 (아이스)", price: "₩6,500" },
+    { name: "Earl Grey (Iced)", korean: "얼그레이 (아이스)", price: "₩6,500" },
+    { name: "Peppermint (Iced)", korean: "페퍼민트 (아이스)", price: "₩6,500" },
+    { name: "Chamomile (Iced)", korean: "캐모마일 (아이스)", price: "₩6,500" }
   ]
 };
 
@@ -55,7 +63,7 @@ export default function MenuSection() {
               <div className="glass p-6 rounded-2xl">
                 <div className="flex items-center mb-4">
                   <Snowflake className="text-[hsl(var(--k-blue))] mr-3" size={24} />
-                  <h3 className="text-2xl font-bold text-white">Cold Drinks & Teas</h3>
+                  <h3 className="text-2xl font-bold text-white">Cold Drinks</h3>
                 </div>
                 <div className="space-y-3">
                   {menuItems.cold.map((item, index) => (
