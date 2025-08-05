@@ -210,7 +210,7 @@ export class MemStorage implements IStorage {
         addons: [1, 2], // Full Track Mixing + Recording Video Raw
         selectedDate: "2025-08-06",
         selectedTime: "14:00",
-        youtubeTrack: "https://youtube.com/watch?v=dQw4w9WgXcQ",
+        youtubeTrack: "https://www.youtube.com/watch?v=pBuZEGYXA6E",
         selectedBeverages: ["아메리카노"],
         totalPrice: 125000,
         bookingType: "direct" as const,

@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { spawn } from "child_process";
+import { unlink } from "fs/promises";
 import { insertBookingSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -168,8 +170,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const outputPath = `/tmp/audio_${bookingId}_${videoId}.mp3`;
       
       // Use yt-dlp to extract audio
-      const { spawn } = require('child_process');
-      
       const ytDlp = spawn('yt-dlp', [
         '--extract-audio',
         '--audio-format', 'mp3',
@@ -184,23 +184,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
         errorOutput += data.toString();
       });
 
-      ytDlp.on('close', (code: number) => {
+      ytDlp.on('close', async (code: number) => {
         if (code === 0) {
           // Success - send file for download
-          res.download(outputPath, `audio_${bookingId}_${videoId}.mp3`, (err) => {
+          res.download(outputPath, `audio_${bookingId}_${videoId}.mp3`, async (err) => {
             if (err) {
               console.error('Download error:', err);
-              res.status(500).json({ message: "Failed to download file" });
+              if (!res.headersSent) {
+                res.status(500).json({ message: "Failed to download file" });
+              }
             }
             // Clean up temporary file
-            require('fs').unlink(outputPath, () => {});
+            try {
+              await unlink(outputPath);
+            } catch (unlinkErr) {
+              console.error('Failed to delete temp file:', unlinkErr);
+            }
           });
         } else {
           console.error('yt-dlp error:', errorOutput);
-          res.status(500).json({ 
-            message: "Failed to extract audio from YouTube video",
-            error: errorOutput 
-          });
+          if (!res.headersSent) {
+            // Check if it's a bot protection error
+            if (errorOutput.includes("Sign in to confirm you're not a bot")) {
+              res.status(500).json({ 
+                message: "YouTube는 현재 봇 보호 정책으로 인해 다운로드가 제한되었습니다. 실제 서비스에서는 유료 API나 대안 방법을 사용해야 합니다.",
+                error: "YouTube bot protection activated" 
+              });
+            } else {
+              res.status(500).json({ 
+                message: "YouTube 영상에서 음원 추출에 실패했습니다",
+                error: errorOutput 
+              });
+            }
+          }
         }
       });
 
