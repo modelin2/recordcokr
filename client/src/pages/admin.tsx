@@ -102,7 +102,9 @@ export default function AdminPage() {
     const matchesSearch = searchQuery === "" || 
       booking.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       booking.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booking.phone.includes(searchQuery);
+      booking.phone.includes(searchQuery) ||
+      (booking.bookingType === "klook" && "klook".includes(searchQuery.toLowerCase())) ||
+      (booking.bookingType === "direct" && "direct".includes(searchQuery.toLowerCase()));
     return matchesStatus && matchesSearch;
   });
 
@@ -264,7 +266,7 @@ K-Recording Cafe Team`
                 <div className="relative">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
-                    placeholder="Search by name, email, or phone..."
+                    placeholder="Search by name, email, phone, or booking type (klook/direct)..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 bg-white/10 border-white/20 text-white"
