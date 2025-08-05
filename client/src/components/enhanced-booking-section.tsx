@@ -59,7 +59,7 @@ const bookingFormSchema = z.object({
     });
   }
   // If LP Record Production is selected, delivery address is required
-  if (data.selectedAddons.includes(6) && (!data.lpDeliveryAddress || data.lpDeliveryAddress.trim() === "")) {
+  if (data.selectedAddons.includes(5) && (!data.lpDeliveryAddress || data.lpDeliveryAddress.trim() === "")) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: "LP delivery address is required for LP Record Production",
@@ -641,7 +641,7 @@ export default function EnhancedBookingSection() {
                   </div>
 
                   {/* LP Delivery Address - only show if LP Record Production is selected */}
-                  {form.watch("selectedAddons")?.includes(6) && (
+                  {form.watch("selectedAddons")?.includes(5) && (
                     <div className="space-y-4">
                       <h3 className="text-xl font-semibold text-white flex items-center gap-2">
                         <Music className="h-5 w-5" />
