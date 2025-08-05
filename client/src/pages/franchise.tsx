@@ -19,7 +19,8 @@ import {
   MapPin,
   TrendingUp,
   Shield,
-  Zap
+  Zap,
+  AlertCircle
 } from 'lucide-react';
 
 export default function FranchisePage() {
@@ -284,88 +285,7 @@ export default function FranchisePage() {
         </div>
       </section>
 
-      {/* Franchise Packages */}
-      <section className="py-16 px-4" id="packages">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Choose Your
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400"> Franchise Package</span>
-            </h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Whether you're starting fresh or transforming an existing business, we have the perfect solution
-            </p>
-          </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {franchisePackages.map((pkg) => (
-              <Card key={pkg.id} className="bg-white/5 border-white/10 hover:border-pink-500/50 transition-all duration-300">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <CardTitle className="text-2xl font-bold text-white">{pkg.title}</CardTitle>
-                    <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30">
-                      {pkg.id === 'new-business' ? 'Most Popular' : 'Cost Effective'}
-                    </Badge>
-                  </div>
-                  <CardDescription className="text-gray-300 text-base">
-                    {pkg.subtitle}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-6">
-                    <div className="text-3xl font-bold text-white mb-2">{pkg.totalInvestment}</div>
-                    <div className="text-lg text-gray-300">{pkg.interiorCost}</div>
-                    <div className="text-sm text-gray-400">Minimum space: {pkg.minSpace}</div>
-                  </div>
-
-                  <div className="space-y-4 mb-6">
-                    <h4 className="text-lg font-semibold text-white">Package Includes:</h4>
-                    <ul className="space-y-2">
-                      {pkg.features.map((feature, index) => (
-                        <li key={index} className="flex items-start text-gray-300">
-                          <CheckCircle className="h-4 w-4 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="bg-black/20 p-4 rounded-lg mb-6">
-                    <h4 className="text-lg font-semibold text-white mb-3">Investment Breakdown:</h4>
-                    <div className="space-y-2">
-                      {Object.entries(pkg.breakdown).map(([key, value]) => (
-                        <div key={key} className="flex justify-between text-sm">
-                          <span className="text-gray-300 capitalize">{key.replace('_', ' ')}</span>
-                          <span className="text-white font-medium">{value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2 mb-6">
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Monthly Fee:</span>
-                      <span className="text-white font-medium">{pkg.monthlyFee}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Support Level:</span>
-                      <span className="text-white font-medium">{pkg.support}</span>
-                    </div>
-                  </div>
-
-                  <Button 
-                    className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
-                    onClick={() => setSelectedPackage(pkg.id)}
-                  >
-                    Choose This Package
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Key Differentiators */}
       <section className="py-16 px-4">
@@ -541,6 +461,40 @@ export default function FranchisePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Please Note Section */}
+      <section className="py-16 px-4">
+        <div className="container mx-auto">
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-6 max-w-4xl mx-auto">
+            <h3 className="text-2xl font-bold text-amber-400 mb-4 flex items-center">
+              <AlertCircle className="mr-2 h-6 w-6" />
+              Please Note
+            </h3>
+            <ul className="space-y-3 text-gray-300">
+              <li className="flex items-start">
+                <span className="text-amber-400 mr-2">•</span>
+                Franchise locations must meet minimum space requirements (25-40 pyeong)
+              </li>
+              <li className="flex items-start">
+                <span className="text-amber-400 mr-2">•</span>
+                Initial investment includes full setup, training, and first-year support
+              </li>
+              <li className="flex items-start">
+                <span className="text-amber-400 mr-2">•</span>
+                Monthly franchise fees apply after the first year of operation
+              </li>
+              <li className="flex items-start">
+                <span className="text-amber-400 mr-2">•</span>
+                All franchisees receive comprehensive training on equipment and operations
+              </li>
+              <li className="flex items-start">
+                <span className="text-amber-400 mr-2">•</span>
+                Please prepare your backing track in advance and provide the YouTube link upon arrival
+              </li>
+            </ul>
           </div>
         </div>
       </section>
