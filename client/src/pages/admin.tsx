@@ -406,7 +406,7 @@ K-Recording Cafe Team`
                             variant="outline" 
                             size="sm"
                             onClick={() => setSelectedBooking(booking)}
-                            className="text-white border-white/20 hover:bg-white/10"
+                            className="text-white border-white/40 hover:bg-white/20 bg-white/5"
                           >
                             <Mail className="h-4 w-4 mr-2" />
                             Send Email
@@ -453,23 +453,23 @@ K-Recording Cafe Team`
                                 <Button
                                   variant="outline"
                                   onClick={() => applyEmailTemplate("confirmation")}
-                                  className="text-white border-white/20 hover:bg-white/10 justify-start"
+                                  className="text-white border-white/40 hover:bg-white/20 bg-white/5 justify-start"
                                 >
-                                  Booking Confirmation
+                                  <span className="font-medium">Booking Confirmation</span>
                                 </Button>
                                 <Button
                                   variant="outline"
                                   onClick={() => applyEmailTemplate("reminder")}
-                                  className="text-white border-white/20 hover:bg-white/10 justify-start"
+                                  className="text-white border-white/40 hover:bg-white/20 bg-white/5 justify-start"
                                 >
-                                  Session Reminder
+                                  <span className="font-medium">Session Reminder</span>
                                 </Button>
                                 <Button
                                   variant="outline"
                                   onClick={() => applyEmailTemplate("completion")}
-                                  className="text-white border-white/20 hover:bg-white/10 justify-start"
+                                  className="text-white border-white/40 hover:bg-white/20 bg-white/5 justify-start"
                                 >
-                                  Recording Complete
+                                  <span className="font-medium">Recording Complete</span>
                                 </Button>
                               </div>
                             </TabsContent>
@@ -479,7 +479,7 @@ K-Recording Cafe Team`
                             <Button
                               onClick={handleSendEmail}
                               disabled={!emailSubject || !emailMessage || sendEmailMutation.isPending}
-                              className="bg-blue-600 hover:bg-blue-700"
+                              className="bg-blue-600 hover:bg-blue-700 text-white font-medium"
                             >
                               <Send className="h-4 w-4 mr-2" />
                               {sendEmailMutation.isPending ? "Sending..." : "Send Email"}
