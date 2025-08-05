@@ -237,37 +237,67 @@ K-Recording Cafe Team`
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
-          <Card className="glass border-white/20">
+          <Card 
+            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
+              statusFilter === "all" ? "ring-2 ring-white/50" : ""
+            }`}
+            onClick={() => setStatusFilter("all")}
+          >
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-white">{stats.total}</div>
               <div className="text-sm text-gray-300">Total</div>
             </CardContent>
           </Card>
-          <Card className="glass border-white/20">
+          <Card 
+            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
+              statusFilter === "pending" ? "ring-2 ring-yellow-400/50" : ""
+            }`}
+            onClick={() => setStatusFilter("pending")}
+          >
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-yellow-400">{stats.pending}</div>
               <div className="text-sm text-gray-300">Pending</div>
             </CardContent>
           </Card>
-          <Card className="glass border-white/20">
+          <Card 
+            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
+              statusFilter === "confirmed" ? "ring-2 ring-blue-400/50" : ""
+            }`}
+            onClick={() => setStatusFilter("confirmed")}
+          >
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-blue-400">{stats.confirmed}</div>
               <div className="text-sm text-gray-300">Confirmed</div>
             </CardContent>
           </Card>
-          <Card className="glass border-white/20">
+          <Card 
+            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
+              statusFilter === "in-progress" ? "ring-2 ring-purple-400/50" : ""
+            }`}
+            onClick={() => setStatusFilter("in-progress")}
+          >
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-purple-400">{stats.inProgress}</div>
               <div className="text-sm text-gray-300">In Progress</div>
             </CardContent>
           </Card>
-          <Card className="glass border-white/20">
+          <Card 
+            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
+              statusFilter === "completed" ? "ring-2 ring-green-400/50" : ""
+            }`}
+            onClick={() => setStatusFilter("completed")}
+          >
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-green-400">{stats.completed}</div>
               <div className="text-sm text-gray-300">Completed</div>
             </CardContent>
           </Card>
-          <Card className="glass border-white/20">
+          <Card 
+            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
+              statusFilter === "cancelled" ? "ring-2 ring-red-400/50" : ""
+            }`}
+            onClick={() => setStatusFilter("cancelled")}
+          >
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-red-400">{stats.cancelled}</div>
               <div className="text-sm text-gray-300">Cancelled</div>
