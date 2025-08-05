@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Coffee, Music, ShoppingBag, Snowflake, Zap } from "lucide-react";
+import { CalendarIcon, Coffee, Music, ShoppingBag } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -160,29 +160,23 @@ export default function EnhancedBookingSection() {
     bookingMutation.mutate(data);
   };
 
-  // Drink options matching the cafe menu
-  const drinkCategories = {
-    hot: [
-      { value: "americano", name: "Americano", korean: "아메리카노", price: "₩5,000" },
-      { value: "latte", name: "Latte", korean: "라떼", price: "₩6,000" },
-      { value: "vanilla-latte", name: "Vanilla Latte", korean: "바닐라라떼", price: "₩6,500" },
-      { value: "green-tea", name: "Green Tea (Organic)", korean: "녹차(유기농재료)", price: "₩6,000" },
-      { value: "earl-grey", name: "Earl Grey", korean: "얼그레이", price: "₩6,000" },
-      { value: "lemon-tea", name: "Lemon Tea", korean: "유자차", price: "₩6,500" }
-    ],
-    cold: [
-      { value: "ice-americano", name: "Ice Americano", korean: "아이스 아메리카노", price: "₩5,500" },
-      { value: "mango-juice", name: "Mango Juice", korean: "망고 주스", price: "₩7,000" },
-      { value: "passion-fruit-juice", name: "Passion Fruit Juice", korean: "패션프루트 주스", price: "₩7,000" },
-      { value: "grapefruit-tea", name: "Grapefruit Tea", korean: "대추차", price: "₩6,500" },
-      { value: "ginger-tea", name: "Ginger Tea", korean: "황차고", price: "₩7,000" }
-    ]
-  };
+  const drinkOptions = [
+    { value: "coffee", label: "Coffee", hasTemperature: true },
+    { value: "coffee-decaf", label: "Coffee (Decaffeinated)", hasTemperature: true },
+    { value: "lemonade", label: "Lemonade", hasTemperature: false },
+    { value: "strawberry-ade", label: "Strawberry Ade", hasTemperature: false },
+    { value: "orange-ade", label: "Orange Ade", hasTemperature: false },
+    { value: "grapefruit-ade", label: "Grapefruit Ade", hasTemperature: false },
+    { value: "iced-tea", label: "Iced Tea", hasTemperature: false },
+    { value: "green-tea", label: "Green Tea", hasTemperature: true },
+    { value: "hibiscus", label: "Hibiscus", hasTemperature: true },
+    { value: "earl-grey", label: "Earl Grey", hasTemperature: true },
+    { value: "peppermint", label: "Peppermint", hasTemperature: true },
+    { value: "chamomile", label: "Chamomile", hasTemperature: true },
+    { value: "hot-chocolate", label: "Hot Chocolate", hasTemperature: false, hotOnly: true },
+  ];
 
-  // Get all drink options for the form
-  const allDrinkOptions = [...drinkCategories.hot, ...drinkCategories.cold];
-  const selectedDrink = form.watch("selectedDrink");
-  const selectedDrinkOption = allDrinkOptions.find(d => d.value === selectedDrink);
+  const selectedDrinkOption = drinkOptions.find(d => d.value === form.watch("selectedDrink"));
 
   return (
     <section id="booking" className="py-20 bg-gradient-to-br from-gray-900 to-purple-900">
@@ -285,94 +279,59 @@ export default function EnhancedBookingSection() {
                   </div>
 
                   {/* Drink Selection */}
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-white text-center gradient-text">Choose Your Drink</h3>
-                    
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {/* Hot Drinks */}
-                      <div className="glass p-6 rounded-2xl">
-                        <div className="flex items-center mb-4">
-                          <Coffee className="text-[hsl(var(--k-coral))] mr-3" size={24} />
-                          <h4 className="text-xl font-bold text-white">Hot Drinks</h4>
-                        </div>
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                      <Coffee className="h-5 w-5" />
+                      Drink Selection
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="selectedDrink"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-white">Choose Your Drink *</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                                  <SelectValue placeholder="Select a drink" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {drinkOptions.map((drink) => (
+                                  <SelectItem key={drink.value} value={drink.value}>
+                                    {drink.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {selectedDrinkOption?.hasTemperature && !selectedDrinkOption?.hotOnly && (
                         <FormField
                           control={form.control}
-                          name="selectedDrink"
+                          name="drinkTemperature"
                           render={({ field }) => (
-                            <FormItem className="space-y-3">
-                              {drinkCategories.hot.map((drink) => (
-                                <div key={drink.value} className="flex items-center space-x-2">
-                                  <FormControl>
-                                    <input
-                                      type="radio"
-                                      value={drink.value}
-                                      checked={field.value === drink.value}
-                                      onChange={() => field.onChange(drink.value)}
-                                      className="text-[hsl(var(--k-pink))]"
-                                    />
-                                  </FormControl>
-                                  <div className="flex justify-between items-center w-full">
-                                    <div className="flex-1">
-                                      <div className="text-white font-medium">{drink.name}</div>
-                                      <div className="text-gray-400 text-sm">{drink.korean}</div>
-                                    </div>
-                                    <div className="text-[hsl(var(--k-pink))] font-bold">{drink.price}</div>
-                                  </div>
-                                </div>
-                              ))}
+                            <FormItem>
+                              <FormLabel className="text-white">Temperature</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                                    <SelectValue placeholder="Hot or Iced" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="hot">Hot</SelectItem>
+                                  <SelectItem value="iced">Iced</SelectItem>
+                                </SelectContent>
+                              </Select>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
-                      </div>
-
-                      {/* Cold Drinks */}
-                      <div className="glass p-6 rounded-2xl">
-                        <div className="flex items-center mb-4">
-                          <Snowflake className="text-[hsl(var(--k-blue))] mr-3" size={24} />
-                          <h4 className="text-xl font-bold text-white">Cold Drinks & Teas</h4>
-                        </div>
-                        <FormField
-                          control={form.control}
-                          name="selectedDrink"
-                          render={({ field }) => (
-                            <FormItem className="space-y-3">
-                              {drinkCategories.cold.map((drink) => (
-                                <div key={drink.value} className="flex items-center space-x-2">
-                                  <FormControl>
-                                    <input
-                                      type="radio"
-                                      value={drink.value}
-                                      checked={field.value === drink.value}
-                                      onChange={() => field.onChange(drink.value)}
-                                      className="text-[hsl(var(--k-purple))]"
-                                    />
-                                  </FormControl>
-                                  <div className="flex justify-between items-center w-full">
-                                    <div className="flex-1">
-                                      <div className="text-white font-medium">{drink.name}</div>
-                                      <div className="text-gray-400 text-sm">{drink.korean}</div>
-                                    </div>
-                                    <div className="text-[hsl(var(--k-purple))] font-bold">{drink.price}</div>
-                                  </div>
-                                </div>
-                              ))}
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
-
-                    {/* What's Included Note */}
-                    <div className="p-6 k-gradient-pink-purple rounded-2xl">
-                      <div className="flex items-center mb-3">
-                        <Zap className="text-white mr-3" size={24} />
-                        <h4 className="text-xl font-bold text-white">What's Included</h4>
-                      </div>
-                      <p className="text-white">
-                        Your recording session includes one premium drink of your choice from our full menu. The drink price is included in your session fee.
-                      </p>
+                      )}
                     </div>
                   </div>
 
