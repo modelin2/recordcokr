@@ -115,69 +115,51 @@ export class MemStorage implements IStorage {
     this.packages.set(garosugilTourPackage.id, garosugilTourPackage);
 
     // Initialize addons
-    const memoryPack: Addon = {
+    const fullTrackMixing: Addon = {
       id: this.currentAddonId++,
-      name: "Memory Pack",
-      price: 50000,
-      description: "Mixed & mastered complete song with backing track",
+      name: "Full Track Mixing",
+      price: 100000,
+      description: "Professional mixing and mastering of your recording",
       icon: "fas fa-music",
     };
 
-    const releasePack: Addon = {
+    const recordingVideo50k: Addon = {
       id: this.currentAddonId++,
-      name: "Release Pack",
-      price: 200000,
-      description: "Custom backing track production + professional mixing",
-      icon: "fas fa-star",
-    };
-
-    const globalRelease: Addon = {
-      id: this.currentAddonId++,
-      name: "Global Release",
-      price: 300000,
-      description: "Spotify, Apple Music & YouTube distribution",
-      icon: "fas fa-globe",
-    };
-
-    const idolMakeup: Addon = {
-      id: this.currentAddonId++,
-      name: "Idol Makeup",
-      price: 150000,
-      description: "Professional K-pop idol styling",
-      icon: "fas fa-palette",
-    };
-
-    const makingVideo: Addon = {
-      id: this.currentAddonId++,
-      name: "Making Video",
-      price: 100000,
-      description: "Behind-the-scenes recording footage",
+      name: "Recording Video (Basic)",
+      price: 50000,
+      description: "Basic recording video with single camera angle",
       icon: "fas fa-video",
     };
 
-    const videoEditing: Addon = {
+    const recordingVideo100k: Addon = {
       id: this.currentAddonId++,
-      name: "Video + Editing",
-      price: 300000,
-      description: "Professional video recording and editing",
-      icon: "fas fa-edit",
+      name: "Recording Video (Premium)",
+      price: 100000,
+      description: "Premium recording video with multiple camera angles",
+      icon: "fas fa-video",
     };
 
-    const musicVideo: Addon = {
+    const makeup: Addon = {
       id: this.currentAddonId++,
-      name: "Music Video",
-      price: 1000000,
-      description: "Full music video production with location shooting",
-      icon: "fas fa-film",
+      name: "Makeup",
+      price: 100000,
+      description: "Professional K-pop makeup styling",
+      icon: "fas fa-palette",
     };
 
-    this.addons.set(memoryPack.id, memoryPack);
-    this.addons.set(releasePack.id, releasePack);
-    this.addons.set(globalRelease.id, globalRelease);
-    this.addons.set(idolMakeup.id, idolMakeup);
-    this.addons.set(makingVideo.id, makingVideo);
-    this.addons.set(videoEditing.id, videoEditing);
-    this.addons.set(musicVideo.id, musicVideo);
+    const globalDistribution: Addon = {
+      id: this.currentAddonId++,
+      name: "Global Distribution",
+      price: 1300000,
+      description: "Worldwide distribution to Spotify, Apple Music, YouTube Music and more",
+      icon: "fas fa-globe",
+    };
+
+    this.addons.set(fullTrackMixing.id, fullTrackMixing);
+    this.addons.set(recordingVideo50k.id, recordingVideo50k);
+    this.addons.set(recordingVideo100k.id, recordingVideo100k);
+    this.addons.set(makeup.id, makeup);
+    this.addons.set(globalDistribution.id, globalDistribution);
 
     // Initialize time slots for the next 30 days
     const today = new Date();
@@ -186,16 +168,21 @@ export class MemStorage implements IStorage {
       date.setDate(today.getDate() + i);
       const dateStr = date.toISOString().split('T')[0];
       
-      // Create time slots from 10:00 to 21:00 (every hour)
-      for (let hour = 10; hour <= 21; hour++) {
-        const timeStr = `${hour.toString().padStart(2, '0')}:00`;
-        const timeSlot: TimeSlot = {
-          id: this.currentTimeSlotId++,
-          date: dateStr,
-          time: timeStr,
-          isAvailable: true,
-        };
-        this.timeSlots.set(timeSlot.id, timeSlot);
+      // Create time slots from 10:00 to 22:00 (every 10 minutes)
+      for (let hour = 10; hour <= 22; hour++) {
+        for (let minute = 0; minute < 60; minute += 10) {
+          // Skip creating slots after 22:00
+          if (hour === 22 && minute > 0) break;
+          
+          const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+          const timeSlot: TimeSlot = {
+            id: this.currentTimeSlotId++,
+            date: dateStr,
+            time: timeStr,
+            isAvailable: true,
+          };
+          this.timeSlots.set(timeSlot.id, timeSlot);
+        }
       }
     }
   }
