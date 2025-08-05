@@ -17,19 +17,22 @@ export default function LoginPage() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
-      return apiRequest("POST", "/api/auth/login", credentials);
+      const response = await apiRequest("POST", "/api/auth/login", credentials);
+      return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
-        title: "Login Successful",
-        description: "Welcome to K-Recording Cafe Admin",
+        title: "로그인 성공",
+        description: `환영합니다, ${data.user.username}님!`,
       });
-      setLocation("/admin");
+      // Force query invalidation to refresh user data
+      window.location.href = "/admin";
     },
     onError: (error: Error) => {
+      console.error("Login error:", error);
       toast({
-        title: "Login Failed",
-        description: error.message || "Invalid credentials",
+        title: "로그인 실패",
+        description: "아이디 또는 비밀번호를 확인해주세요.",
         variant: "destructive",
       });
     },
