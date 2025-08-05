@@ -36,12 +36,7 @@ export default function Navigation() {
         </button>
         
         <div className="hidden md:flex space-x-8">
-          <Link href="/franchise" className="hover:text-[hsl(var(--k-pink))] transition-colors">
-            Franchise
-          </Link>
-          <Link href="/admin" className="hover:text-[hsl(var(--k-pink))] transition-colors">
-            Admin
-          </Link>
+          {/* Hidden menu items - only accessible via direct URL */}
         </div>
         
         <Button 
