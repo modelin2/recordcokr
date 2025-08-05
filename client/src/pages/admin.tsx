@@ -40,9 +40,13 @@ export default function AdminPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch all bookings
+  // Fetch all bookings and addons for better display
   const { data: bookings = [], isLoading } = useQuery<Booking[]>({
     queryKey: ['/api/admin/bookings'],
+  });
+
+  const { data: addons = [] } = useQuery({
+    queryKey: ['/api/addons'],
   });
 
   // Update booking status mutation
@@ -322,22 +326,24 @@ K-Recording Cafe Team`
                           <Phone className="h-4 w-4" />
                           {booking.phone}
                         </div>
-                        {booking.bookingDate && booking.bookingTime && (
+                        {booking.selectedDate && booking.selectedTime && (
                           <>
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4" />
-                              {booking.bookingDate}
+                              {booking.selectedDate}
                             </div>
                             <div className="flex items-center gap-2">
                               <Clock className="h-4 w-4" />
-                              {booking.bookingTime}
+                              {booking.selectedTime}
                             </div>
                           </>
                         )}
-                        <div className="flex items-center gap-2">
-                          <Coffee className="h-4 w-4" />
-                          {booking.selectedDrink} {booking.drinkTemperature && `(${booking.drinkTemperature})`}
-                        </div>
+                        {booking.selectedBeverages && booking.selectedBeverages.length > 0 && (
+                          <div className="flex items-center gap-2">
+                            <Coffee className="h-4 w-4" />
+                            {booking.selectedBeverages.join(', ')}
+                          </div>
+                        )}
                         <div className="flex items-center gap-2">
                           <ShoppingBag className="h-4 w-4" />
                           ₩{booking.totalPrice.toLocaleString()}
@@ -347,23 +353,30 @@ K-Recording Cafe Team`
                             <span className="font-mono text-xs">ID: {booking.klookBookingId}</span>
                           </div>
                         )}
-                        <div className="flex items-center gap-2">
-                          <Music className="h-4 w-4" />
-                          <a 
-                            href={booking.youtubeTrackUrl} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-blue-400 hover:text-blue-300 truncate max-w-[200px]"
-                          >
-                            YouTube Track
-                          </a>
-                        </div>
+                        {booking.youtubeTrack && (
+                          <div className="flex items-center gap-2">
+                            <Music className="h-4 w-4" />
+                            <a 
+                              href={booking.youtubeTrack} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-400 hover:text-blue-300 truncate max-w-[200px]"
+                            >
+                              YouTube Track
+                            </a>
+                          </div>
+                        )}
                       </div>
                       
-                      {booking.selectedAddons && booking.selectedAddons.length > 0 && (
+                      {booking.addons && booking.addons.length > 0 && (
                         <div className="mt-3">
-                          <span className="text-xs text-gray-400">Add-ons: </span>
-                          <span className="text-xs text-gray-300">{booking.selectedAddons.join(", ")}</span>
+                          <span className="text-xs text-gray-400">Additional Services: </span>
+                          <span className="text-xs text-gray-300">
+                            {booking.addons.map(addonId => {
+                              const addon = addons.find((a: any) => a.id === addonId);
+                              return addon ? addon.name : `Service #${addonId}`;
+                            }).join(", ")}
+                          </span>
                         </div>
                       )}
                     </div>
