@@ -147,6 +147,14 @@ export class MemStorage implements IStorage {
       icon: "fas fa-palette",
     };
 
+    const lpProduction: Addon = {
+      id: this.currentAddonId++,
+      name: "LP Record Production",
+      price: 150000, // ₩150,000
+      description: "실물 LP판을 만들어 준다. (제작기간 2~3주 소요된다.)",
+      icon: "fas fa-compact-disc",
+    };
+
     const globalDistribution: Addon = {
       id: this.currentAddonId++,
       name: "Global Distribution",
@@ -155,20 +163,12 @@ export class MemStorage implements IStorage {
       icon: "fas fa-globe",
     };
 
-    const lpProduction: Addon = {
-      id: this.currentAddonId++,
-      name: "LP Record Production",
-      price: 150000, // ₩150,000
-      description: "Professional vinyl LP record production of your song",
-      icon: "fas fa-compact-disc",
-    };
-
     this.addons.set(fullTrackMixing.id, fullTrackMixing);
     this.addons.set(recordingVideoRaw.id, recordingVideoRaw);
     this.addons.set(recordingVideoEdited.id, recordingVideoEdited);
     this.addons.set(makeup.id, makeup);
-    this.addons.set(globalDistribution.id, globalDistribution);
     this.addons.set(lpProduction.id, lpProduction);
+    this.addons.set(globalDistribution.id, globalDistribution);
 
     // Initialize time slots for the next 30 days
     const today = new Date();
