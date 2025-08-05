@@ -44,22 +44,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { username, password } = req.body;
+      console.log("로그인 요청:", { username, password: "***" });
       
       if (!username || !password) {
+        console.log("필수 정보 누락");
         return res.status(400).json({ message: "Username and password required" });
       }
 
       const user = await storage.getUserByUsername(username);
+      console.log("사용자 조회 결과:", user ? { id: user.id, username: user.username, email: user.email } : "사용자 없음");
       
       if (!user || user.password !== password) {
+        console.log("인증 실패:", !user ? "사용자 없음" : "비밀번호 불일치");
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
       if (!user.isActive) {
+        console.log("비활성 계정");
         return res.status(401).json({ message: "Account is disabled" });
       }
 
       req.session.userId = user.id;
+      console.log("로그인 성공:", { userId: user.id, username: user.username });
       res.json({ message: "Login successful", user: { ...user, password: undefined } });
     } catch (error) {
       console.error("Login error:", error);

@@ -17,10 +17,14 @@ export default function LoginPage() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
+      console.log("로그인 시도:", credentials);
       const response = await apiRequest("POST", "/api/auth/login", credentials);
-      return await response.json();
+      const result = await response.json();
+      console.log("로그인 응답:", result);
+      return result;
     },
     onSuccess: (data) => {
+      console.log("로그인 성공:", data);
       toast({
         title: "로그인 성공",
         description: `환영합니다, ${data.user.username}님!`,
@@ -29,7 +33,8 @@ export default function LoginPage() {
       window.location.href = "/admin";
     },
     onError: (error: Error) => {
-      console.error("Login error:", error);
+      console.error("Login error details:", error);
+      console.error("Error message:", error.message);
       toast({
         title: "로그인 실패",
         description: "아이디 또는 비밀번호를 확인해주세요.",
@@ -40,6 +45,7 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("폼 제출:", { username, password: "***" });
     if (!username || !password) {
       toast({
         title: "입력 오류",
