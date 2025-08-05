@@ -9,6 +9,7 @@ import Admin from "@/pages/admin";
 import LoginPage from "@/pages/login";
 import UserManagement from "@/pages/user-management";
 import NotFound from "@/pages/not-found";
+import { ProtectedRoute } from "@/components/protected-route";
 
 function Router() {
   return (
@@ -16,8 +17,16 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/franchise" component={FranchisePage} />
       <Route path="/login" component={LoginPage} />
-      <Route path="/admin" component={Admin} />
-      <Route path="/admin/users" component={UserManagement} />
+      <Route path="/admin">
+        <ProtectedRoute requireAdmin={true}>
+          <Admin />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/users">
+        <ProtectedRoute requireAdmin={true}>
+          <UserManagement />
+        </ProtectedRoute>
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

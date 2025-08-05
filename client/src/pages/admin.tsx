@@ -43,21 +43,32 @@ export default function AdminPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
-  const { user, isLoading: authLoading, isAdmin } = useAuth();
+  const { user, isLoading: authLoading, isAdmin, error } = useAuth();
 
   // Redirect to login if not authenticated or not admin
   useEffect(() => {
-    if (!authLoading && (!user || !isAdmin)) {
-      toast({
-        title: "Access Denied",
-        description: "Admin access required. Please log in.",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        setLocation("/login");
-      }, 1000);
+    if (!authLoading) {
+      if (!user) {
+        toast({
+          title: "로그인 필요",
+          description: "관리자 페이지에 접근하려면 로그인이 필요합니다.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation("/login");
+        }, 1500);
+      } else if (!isAdmin) {
+        toast({
+          title: "접근 권한 없음",
+          description: "관리자 권한이 필요합니다.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation("/");
+        }, 1500);
+      }
     }
-  }, [authLoading, user, isAdmin, setLocation, toast]);
+  }, [authLoading, user, isAdmin, setLocation, toast, error]);
 
   // Logout mutation
   const logoutMutation = useMutation({
@@ -288,7 +299,7 @@ K-Recording Cafe Team`
         <div className="mb-8 flex justify-between items-center">
           <div>
             <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
-            <p className="text-gray-300">Welcome back, {user.username} ({user.role})</p>
+            <p className="text-gray-300">Welcome back, {(user as any)?.username} ({(user as any)?.role})</p>
           </div>
           <div className="flex items-center gap-4">
             <Button 
