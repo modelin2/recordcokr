@@ -95,6 +95,8 @@ export const insertAddonSchema = createInsertSchema(addons).omit({
 export const insertBookingSchema = createInsertSchema(bookings).omit({
   id: true,
   createdAt: true,
+  totalPrice: true,
+  status: true,
 }).extend({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),

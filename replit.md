@@ -138,6 +138,7 @@ Changelog:
 - August 05, 2025. Updated Additional Services pricing in Korean won: Full Track Mixing (₩100,000), Recording Video Raw/Edited (₩50,000/₩100,000), Makeup Service (₩100,000), Global Distribution (₩1,300,000)
 - August 05, 2025. Added status-based filtering system: clicking statistics cards filters booking lists by status with visual indicators
 - August 05, 2025. Implemented comprehensive user management system with role-based access control (super_admin, admin, user roles)
+- August 05, 2025. Fixed booking form 400 error by correcting selectedAddons data type mismatch (changed from string[] to number[] in schema and database)
 ```
 
 ## User Preferences
