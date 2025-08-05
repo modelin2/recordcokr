@@ -43,9 +43,10 @@ export default function EnhancedBookingSection() {
     queryKey: ['/api/addons'],
   });
 
-  const { data: timeSlots = [] } = useQuery<string[]>({
-    queryKey: ['/api/timeslots', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : ''],
+  const { data: timeSlots = [], isLoading: timeSlotsLoading } = useQuery<string[]>({
+    queryKey: ['/api/timeslots', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null],
     enabled: !!selectedDate,
+    staleTime: 0, // Force refetch when date changes
   });
 
   const form = useForm<BookingForm>({
@@ -333,6 +334,8 @@ export default function EnhancedBookingSection() {
                                 onSelect={(date) => {
                                   setSelectedDate(date);
                                   field.onChange(date ? format(date, 'yyyy-MM-dd') : '');
+                                  // Reset time selection when date changes
+                                  form.setValue('bookingTime', '');
                                 }}
                                 disabled={(date) =>
                                   date < new Date() || date < new Date("1900-01-01")
@@ -353,20 +356,32 @@ export default function EnhancedBookingSection() {
                           <FormLabel className="text-white">Booking Time *</FormLabel>
                           <Select 
                             onValueChange={field.onChange} 
-                            defaultValue={field.value}
-                            disabled={!selectedDate}
+                            value={field.value}
+                            disabled={!selectedDate || timeSlotsLoading}
                           >
                             <FormControl>
                               <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                                <SelectValue placeholder="Select time" />
+                                <SelectValue placeholder={
+                                  !selectedDate 
+                                    ? "Select a date first" 
+                                    : timeSlotsLoading 
+                                    ? "Loading times..." 
+                                    : "Select time"
+                                } />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {timeSlots.map((time) => (
-                                <SelectItem key={time} value={time}>
-                                  {time}
-                                </SelectItem>
-                              ))}
+                              {timeSlots.length > 0 ? (
+                                timeSlots.map((time) => (
+                                  <SelectItem key={time} value={time}>
+                                    {time}
+                                  </SelectItem>
+                                ))
+                              ) : selectedDate ? (
+                                <div className="p-4 text-center text-gray-500">
+                                  No available times for this date
+                                </div>
+                              ) : null}
                             </SelectContent>
                           </Select>
                           <FormMessage />
