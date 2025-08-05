@@ -152,6 +152,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // YouTube audio download endpoint
+  app.post("/api/admin/download-youtube-audio", async (req, res) => {
+    try {
+      const { youtubeUrl, bookingId } = req.body;
+      
+      if (!youtubeUrl) {
+        return res.status(400).json({ message: "YouTube URL is required" });
+      }
+
+      // Extract video ID from URL for filename
+      const videoIdMatch = youtubeUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+      const videoId = videoIdMatch ? videoIdMatch[1] : 'unknown';
+      
+      const outputPath = `/tmp/audio_${bookingId}_${videoId}.mp3`;
+      
+      // Use yt-dlp to extract audio
+      const { spawn } = require('child_process');
+      
+      const ytDlp = spawn('yt-dlp', [
+        '--extract-audio',
+        '--audio-format', 'mp3',
+        '--audio-quality', '192K',
+        '-o', outputPath,
+        youtubeUrl
+      ]);
+
+      let errorOutput = '';
+      
+      ytDlp.stderr.on('data', (data: Buffer) => {
+        errorOutput += data.toString();
+      });
+
+      ytDlp.on('close', (code: number) => {
+        if (code === 0) {
+          // Success - send file for download
+          res.download(outputPath, `audio_${bookingId}_${videoId}.mp3`, (err) => {
+            if (err) {
+              console.error('Download error:', err);
+              res.status(500).json({ message: "Failed to download file" });
+            }
+            // Clean up temporary file
+            require('fs').unlink(outputPath, () => {});
+          });
+        } else {
+          console.error('yt-dlp error:', errorOutput);
+          res.status(500).json({ 
+            message: "Failed to extract audio from YouTube video",
+            error: errorOutput 
+          });
+        }
+      });
+
+    } catch (error: any) {
+      console.error("Error downloading YouTube audio:", error);
+      res.status(500).json({ message: "Failed to process download request" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
