@@ -40,7 +40,7 @@ export const bookings = pgTable("bookings", {
   selectedDrink: text("selected_drink").notNull(),
   drinkTemperature: text("drink_temperature"), // "hot" or "iced"
   youtubeTrackUrl: text("youtube_track_url").notNull(),
-  selectedAddons: text("selected_addons").array().default([]),
+  selectedAddons: integer("selected_addons").array().default([]),
   bookingDate: text("booking_date"), // Optional for klook bookings
   bookingTime: text("booking_time"), // Optional for klook bookings
   totalPrice: integer("total_price").notNull(),
@@ -106,7 +106,7 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   youtubeTrackUrl: z.string().url("Valid YouTube URL is required"),
   bookingDate: z.string().optional(), // Optional for klook bookings
   bookingTime: z.string().optional(), // Optional for klook bookings
-  selectedAddons: z.array(z.string()).default([]),
+  selectedAddons: z.array(z.number()).default([]),
 });
 
 export const insertRevenueStatsSchema = createInsertSchema(revenueStats).omit({

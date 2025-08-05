@@ -50,8 +50,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Add addon prices
       if (validatedData.selectedAddons && validatedData.selectedAddons.length > 0) {
-        for (const addonIdStr of validatedData.selectedAddons) {
-          const addonId = parseInt(addonIdStr);
+        for (const addonId of validatedData.selectedAddons) {
           const addon = await storage.getAddon(addonId);
           if (addon) {
             totalPrice += addon.price;
