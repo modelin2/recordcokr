@@ -133,6 +133,9 @@ Changelog:
 - July 15, 2025. Updated franchise page navigation and footer to match main page styling exactly
 - August 05, 2025. Removed "Choose Your Package" section and pricing table from main page
 - August 05, 2025. Added backing track preparation note to "Please Note" section on both main and franchise pages
+- August 05, 2025. Fixed booking time slot display issue using useEffect instead of TanStack Query
+- August 05, 2025. Implemented time-based pricing structure in USD: AM10:00-PM12:50 ($28.89), PM01:00-PM05:50 ($36.15), PM06:00-PM10:00 ($31.79)
+- August 05, 2025. Converted Additional Services pricing to USD: Full Track Mixing ($100), Recording Video Basic/Premium ($50/$75), Makeup ($50), Global Distribution ($200)
 ```
 
 ## User Preferences

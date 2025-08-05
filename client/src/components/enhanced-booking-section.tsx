@@ -94,12 +94,12 @@ export default function EnhancedBookingSection() {
 
   const bookingMutation = useMutation({
     mutationFn: async (data: BookingForm) => {
-      const totalPrice = calculateTotalPrice(data.selectedAddons);
+      const totalPrice = calculateTotalPrice(data.selectedAddons, data.bookingTime);
       
       const bookingData = {
         ...data,
         bookingDate: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
-        totalPrice,
+        totalPrice: Math.round(totalPrice * 100), // Convert to cents for backend
       };
 
       return apiRequest("POST", "/api/bookings", bookingData);
@@ -123,11 +123,37 @@ export default function EnhancedBookingSection() {
     },
   });
 
-  const calculateTotalPrice = (selectedAddonIds: number[]) => {
-    return selectedAddonIds.reduce((total, addonId) => {
+  // Calculate base price based on time slot
+  const getBasePrice = (time: string): number => {
+    if (!time) return 0;
+    
+    const hour = parseInt(time.split(':')[0]);
+    const minute = parseInt(time.split(':')[1]);
+    const timeInMinutes = hour * 60 + minute;
+    
+    // AM10:00~PM12:50 (10:00-12:50) - $28.89
+    if (timeInMinutes >= 600 && timeInMinutes <= 770) {
+      return 28.89;
+    }
+    // PM01:00~PM05:50 (13:00-17:50) - $36.15  
+    else if (timeInMinutes >= 780 && timeInMinutes <= 1070) {
+      return 36.15;
+    }
+    // PM06:00~PM10:00 (18:00-22:00) - $31.79
+    else if (timeInMinutes >= 1080 && timeInMinutes <= 1320) {
+      return 31.79;
+    }
+    
+    return 0;
+  };
+
+  const calculateTotalPrice = (selectedAddonIds: number[], bookingTime: string = "") => {
+    const basePrice = getBasePrice(bookingTime);
+    const addonsPrice = selectedAddonIds.reduce((total, addonId) => {
       const addon = addons.find(a => a.id === addonId);
       return total + (addon?.price || 0);
     }, 0);
+    return basePrice + addonsPrice;
   };
 
   const onSubmit = (data: BookingForm) => {
@@ -383,7 +409,12 @@ export default function EnhancedBookingSection() {
                       name="bookingTime"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-white">Booking Time *</FormLabel>
+                          <FormLabel className="text-white">
+                            Booking Time * 
+                            <div className="text-sm text-gray-300 mt-1">
+                              AM10:00-PM12:50: $28.89 | PM01:00-PM05:50: $36.15 | PM06:00-PM10:00: $31.79
+                            </div>
+                          </FormLabel>
                           <Select 
                             onValueChange={field.onChange} 
                             value={field.value}
@@ -469,7 +500,7 @@ export default function EnhancedBookingSection() {
                                           {addon.description}
                                         </p>
                                         <p className="text-lg font-bold text-yellow-400">
-                                          ₩{addon.price.toLocaleString()}
+                                          ${addon.price}
                                         </p>
                                       </div>
                                     </FormItem>
@@ -489,7 +520,7 @@ export default function EnhancedBookingSection() {
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-semibold text-white">Total Price:</span>
                       <span className="text-2xl font-bold text-yellow-400">
-                        ₩{calculateTotalPrice(form.watch("selectedAddons")).toLocaleString()}
+                        ${calculateTotalPrice(form.watch("selectedAddons"), form.watch("bookingTime")).toFixed(2)}
                       </span>
                     </div>
                   </div>

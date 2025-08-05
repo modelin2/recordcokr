@@ -114,11 +114,11 @@ export class MemStorage implements IStorage {
     this.packages.set(hangangTourPackage.id, hangangTourPackage);
     this.packages.set(garosugilTourPackage.id, garosugilTourPackage);
 
-    // Initialize addons
+    // Initialize addons with USD pricing
     const fullTrackMixing: Addon = {
       id: this.currentAddonId++,
       name: "Full Track Mixing",
-      price: 100000,
+      price: 100, // $100
       description: "Professional mixing and mastering of your recording",
       icon: "fas fa-music",
     };
@@ -126,7 +126,7 @@ export class MemStorage implements IStorage {
     const recordingVideo50k: Addon = {
       id: this.currentAddonId++,
       name: "Recording Video (Basic)",
-      price: 50000,
+      price: 50, // $50
       description: "Basic recording video with single camera angle",
       icon: "fas fa-video",
     };
@@ -134,7 +134,7 @@ export class MemStorage implements IStorage {
     const recordingVideo100k: Addon = {
       id: this.currentAddonId++,
       name: "Recording Video (Premium)",
-      price: 100000,
+      price: 75, // $75
       description: "Premium recording video with multiple camera angles",
       icon: "fas fa-video",
     };
@@ -142,7 +142,7 @@ export class MemStorage implements IStorage {
     const makeup: Addon = {
       id: this.currentAddonId++,
       name: "Makeup",
-      price: 100000,
+      price: 50, // $50
       description: "Professional K-pop makeup styling",
       icon: "fas fa-palette",
     };
@@ -150,7 +150,7 @@ export class MemStorage implements IStorage {
     const globalDistribution: Addon = {
       id: this.currentAddonId++,
       name: "Global Distribution",
-      price: 1300000,
+      price: 200, // $200
       description: "Worldwide distribution to Spotify, Apple Music, YouTube Music and more",
       icon: "fas fa-globe",
     };
