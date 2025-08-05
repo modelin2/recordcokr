@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send } from "lucide-react";
+import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon } from "lucide-react";
 import type { Booking } from "@shared/schema";
 import { format } from "date-fns";
 import { Copy } from "lucide-react";
@@ -230,9 +230,20 @@ K-Recording Cafe Team`
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900">
       <div className="container mx-auto px-6 py-8 max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
-          <p className="text-gray-300">Manage bookings and communicate with customers</p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
+            <p className="text-gray-300">Manage bookings and communicate with customers</p>
+          </div>
+          <div className="flex gap-4">
+            <Button 
+              onClick={() => window.location.href = '/admin/users'}
+              className="k-gradient-pink-purple text-white"
+            >
+              <UserIcon className="h-4 w-4 mr-2" />
+              사용자 관리
+            </Button>
+          </div>
         </div>
 
         {/* Statistics Cards */}

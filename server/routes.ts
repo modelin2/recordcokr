@@ -119,6 +119,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin management routes
+  app.get("/api/admin/users", async (req, res) => {
+    try {
+      const admins = await storage.getAllAdmins();
+      res.json(admins);
+    } catch (error: any) {
+      console.error("Error fetching admins:", error);
+      res.status(500).json({ message: "Failed to fetch admin users" });
+    }
+  });
+
+  app.post("/api/admin/users", async (req, res) => {
+    try {
+      const { email, username, role } = req.body;
+      
+      if (!email || !username) {
+        return res.status(400).json({ message: "Email and username are required" });
+      }
+
+      const newAdmin = await storage.createAdmin({ email, username, role: role || "admin" });
+      res.json({ 
+        message: "Admin user created successfully", 
+        user: { ...newAdmin, password: undefined } // Don't send password back
+      });
+    } catch (error: any) {
+      console.error("Error creating admin:", error);
+      res.status(500).json({ message: "Failed to create admin user" });
+    }
+  });
+
+  app.patch("/api/admin/users/:id/status", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { isActive } = req.body;
+      
+      const updatedUser = await storage.updateUserStatus(userId, isActive);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ message: "User status updated successfully", user: updatedUser });
+    } catch (error: any) {
+      console.error("Error updating user status:", error);
+      res.status(500).json({ message: "Failed to update user status" });
+    }
+  });
+
+  app.delete("/api/admin/users/:id", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      
+      const deleted = await storage.deleteAdmin(userId);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Admin user not found" });
+      }
+
+      res.json({ message: "Admin user deleted successfully" });
+    } catch (error: any) {
+      console.error("Error deleting admin:", error);
+      res.status(500).json({ message: "Failed to delete admin user" });
+    }
+  });
+
   app.post("/api/admin/bookings/:id/send-email", async (req, res) => {
     try {
       const bookingId = parseInt(req.params.id);

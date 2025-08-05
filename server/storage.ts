@@ -1,6 +1,6 @@
 import { 
   users, packages, addons, bookings, timeSlots,
-  type User, type InsertUser,
+  type User, type InsertUser, type InsertAdmin,
   type Package, type InsertPackage,
   type Addon, type InsertAddon,
   type Booking, type InsertBooking,
@@ -11,6 +11,12 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  
+  // Admin management
+  createAdmin(admin: { email: string; username: string; role: string }): Promise<User>;
+  getAllAdmins(): Promise<User[]>;
+  updateUserStatus(userId: number, isActive: boolean): Promise<User | undefined>;
+  deleteAdmin(userId: number): Promise<boolean>;
   
   getAllPackages(): Promise<Package[]>;
   getPackage(id: number): Promise<Package | undefined>;
@@ -314,9 +320,56 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
+    const user: User = { 
+      id,
+      username: insertUser.username,
+      password: insertUser.password,
+      email: insertUser.email || null,
+      role: insertUser.role || "user",
+      isActive: true,
+      createdAt: new Date(),
+    };
     this.users.set(id, user);
     return user;
+  }
+
+  async createAdmin(insertAdmin: { email: string; username: string; role: string }): Promise<User> {
+    const id = this.currentUserId++;
+    const user: User = {
+      id,
+      username: insertAdmin.username,
+      password: Math.random().toString(36).substring(2, 15), // Temporary password
+      email: insertAdmin.email,
+      role: insertAdmin.role,
+      isActive: true,
+      createdAt: new Date(),
+    };
+    this.users.set(id, user);
+    return user;
+  }
+
+  async getAllAdmins(): Promise<User[]> {
+    return Array.from(this.users.values()).filter(user => 
+      user.role === "admin" || user.role === "super_admin"
+    );
+  }
+
+  async updateUserStatus(userId: number, isActive: boolean): Promise<User | undefined> {
+    const user = this.users.get(userId);
+    if (user) {
+      user.isActive = isActive;
+      this.users.set(userId, user);
+    }
+    return user;
+  }
+
+  async deleteAdmin(userId: number): Promise<boolean> {
+    const user = this.users.get(userId);
+    if (user && (user.role === "admin" || user.role === "super_admin")) {
+      this.users.delete(userId);
+      return true;
+    }
+    return false;
   }
 
   async getAllPackages(): Promise<Package[]> {

@@ -6,6 +6,10 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  email: text("email").unique(),
+  role: text("role").default("user"), // "super_admin", "admin", "user"
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const packages = pgTable("packages", {
@@ -66,6 +70,18 @@ export const timeSlots = pgTable("time_slots", {
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
+  email: true,
+  role: true,
+});
+
+export const insertAdminSchema = createInsertSchema(users).pick({
+  email: true,
+  username: true,
+  role: true,
+}).extend({
+  email: z.string().email("Valid email is required"),
+  username: z.string().min(1, "Username is required"),
+  role: z.enum(["admin", "super_admin"]).default("admin"),
 });
 
 export const insertPackageSchema = createInsertSchema(packages).omit({
@@ -103,6 +119,7 @@ export const insertTimeSlotSchema = createInsertSchema(timeSlots).omit({
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 export type User = typeof users.$inferSelect;
 export type Package = typeof packages.$inferSelect;
 export type InsertPackage = z.infer<typeof insertPackageSchema>;
