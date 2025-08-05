@@ -256,24 +256,28 @@ export class MemStorage implements IStorage {
       name: insertBooking.name,
       email: insertBooking.email,
       phone: insertBooking.phone,
+      bookingType: insertBooking.bookingType || "direct",
+      klookBookingId: insertBooking.klookBookingId || null,
       selectedDrink: insertBooking.selectedDrink,
       drinkTemperature: insertBooking.drinkTemperature || null,
       youtubeTrackUrl: insertBooking.youtubeTrackUrl,
       selectedAddons: insertBooking.selectedAddons || [],
-      bookingDate: insertBooking.bookingDate,
-      bookingTime: insertBooking.bookingTime,
+      bookingDate: insertBooking.bookingDate || null,
+      bookingTime: insertBooking.bookingTime || null,
       totalPrice: insertBooking.totalPrice,
       status: insertBooking.status || "confirmed",
       createdAt: new Date(),
     };
     this.bookings.set(id, booking);
 
-    // Mark the time slot as unavailable
-    const timeSlot = Array.from(this.timeSlots.values()).find(
-      slot => slot.date === booking.bookingDate && slot.time === booking.bookingTime
-    );
-    if (timeSlot) {
-      timeSlot.isAvailable = false;
+    // Mark the time slot as unavailable (only for direct bookings with date/time)
+    if (booking.bookingDate && booking.bookingTime) {
+      const timeSlot = Array.from(this.timeSlots.values()).find(
+        slot => slot.date === booking.bookingDate && slot.time === booking.bookingTime
+      );
+      if (timeSlot) {
+        timeSlot.isAvailable = false;
+      }
     }
 
     return booking;

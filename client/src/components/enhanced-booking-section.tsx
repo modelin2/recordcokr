@@ -18,8 +18,10 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Addon } from "@shared/schema";
 
-// Booking form schema
+// Booking form schema with conditional validation
 const bookingFormSchema = z.object({
+  bookingType: z.enum(["direct", "klook"]).default("direct"),
+  klookBookingId: z.string().optional(),
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),
   phone: z.string().min(1, "Phone number is required"),
@@ -27,8 +29,34 @@ const bookingFormSchema = z.object({
   drinkTemperature: z.string().optional(),
   youtubeTrackUrl: z.string().url("Please enter a valid YouTube URL"),
   selectedAddons: z.array(z.number()).default([]),
-  bookingDate: z.string().min(1, "Please select a date"),
-  bookingTime: z.string().min(1, "Please select a time"),
+  bookingDate: z.string().optional(),
+  bookingTime: z.string().optional(),
+}).superRefine((data, ctx) => {
+  // For direct bookings, date and time are required
+  if (data.bookingType === "direct") {
+    if (!data.bookingDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please select a date",
+        path: ["bookingDate"],
+      });
+    }
+    if (!data.bookingTime) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please select a time",
+        path: ["bookingTime"],
+      });
+    }
+  }
+  // For klook bookings, klook booking ID is required
+  if (data.bookingType === "klook" && !data.klookBookingId) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Please enter your Klook booking ID",
+      path: ["klookBookingId"],
+    });
+  }
 });
 
 type BookingForm = z.infer<typeof bookingFormSchema>;
@@ -37,6 +65,8 @@ export default function EnhancedBookingSection() {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [loadingTimes, setLoadingTimes] = useState(false);
+  const [bookingStep, setBookingStep] = useState<"select-type" | "booking-form">("select-type");
+  const [selectedBookingType, setSelectedBookingType] = useState<"direct" | "klook">();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -78,6 +108,8 @@ export default function EnhancedBookingSection() {
   const form = useForm<BookingForm>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
+      bookingType: selectedBookingType || "direct",
+      klookBookingId: "",
       name: "",
       email: "",
       phone: "",
@@ -92,11 +124,11 @@ export default function EnhancedBookingSection() {
 
   const bookingMutation = useMutation({
     mutationFn: async (data: BookingForm) => {
-      const totalPrice = calculateTotalPrice(data.selectedAddons, data.bookingTime);
+      const totalPrice = calculateTotalPrice(data.selectedAddons, data.bookingTime, data.bookingType);
       
       const bookingData = {
         ...data,
-        bookingDate: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
+        bookingDate: data.bookingType === "direct" ? (selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '') : undefined,
         totalPrice: Math.round(totalPrice), // Korean won
       };
 
@@ -145,8 +177,9 @@ export default function EnhancedBookingSection() {
     return 0;
   };
 
-  const calculateTotalPrice = (selectedAddonIds: number[], bookingTime: string = "") => {
-    const basePrice = getBasePrice(bookingTime);
+  const calculateTotalPrice = (selectedAddonIds: number[], bookingTime: string = "", bookingType: string = "direct") => {
+    // For Klook bookings, base price is 0 (already paid through Klook)
+    const basePrice = bookingType === "klook" ? 0 : getBasePrice(bookingTime);
     const addonsPrice = selectedAddonIds.reduce((total, addonId) => {
       const addon = addons.find(a => a.id === addonId);
       return total + (addon?.price || 0);
@@ -175,6 +208,74 @@ export default function EnhancedBookingSection() {
   ];
 
   const selectedDrinkOption = drinkOptions.find(d => d.value === form.watch("selectedDrink"));
+  const currentBookingType = form.watch("bookingType");
+
+  // Handle booking type selection
+  const handleBookingTypeSelect = (type: "direct" | "klook") => {
+    setSelectedBookingType(type);
+    form.setValue("bookingType", type);
+    setBookingStep("booking-form");
+  };
+
+  // If we're in the type selection step, show the selection UI
+  if (bookingStep === "select-type") {
+    return (
+      <section id="booking" className="py-20 bg-gradient-to-br from-gray-900 to-purple-900">
+        <div className="container mx-auto px-6 lg:px-8 xl:px-12 max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold mb-8 gradient-text">Book Your K-pop Recording Session</h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              How would you like to make your booking?
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+            {/* Direct Booking */}
+            <Card 
+              className="glass border-white/20 cursor-pointer hover:border-pink-500/50 transition-all duration-300"
+              onClick={() => handleBookingTypeSelect("direct")}
+            >
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                  <CalendarIcon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">Direct Booking</h3>
+                <p className="text-gray-300 mb-6">
+                  Book directly with us and choose your preferred date and time
+                </p>
+                <ul className="text-sm text-gray-400 space-y-2">
+                  <li>✓ Choose your preferred time slot</li>
+                  <li>✓ Real-time availability</li>
+                  <li>✓ Instant confirmation</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Klook Booking */}
+            <Card 
+              className="glass border-white/20 cursor-pointer hover:border-blue-500/50 transition-all duration-300"
+              onClick={() => handleBookingTypeSelect("klook")}
+            >
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                  <ShoppingBag className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">Klook Reservation</h3>
+                <p className="text-gray-300 mb-6">
+                  Already booked through Klook? Complete your experience here
+                </p>
+                <ul className="text-sm text-gray-400 space-y-2">
+                  <li>✓ Use your Klook booking ID</li>
+                  <li>✓ Select drinks & add-ons</li>
+                  <li>✓ Quick check-in process</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="booking" className="py-20 bg-gradient-to-br from-gray-900 to-purple-900">
@@ -191,11 +292,22 @@ export default function EnhancedBookingSection() {
             <CardHeader>
               <CardTitle className="text-2xl text-white flex items-center gap-2">
                 <Music className="h-6 w-6" />
-                Recording Session Booking
+                {currentBookingType === "klook" ? "Complete Your Klook Reservation" : "Recording Session Booking"}
               </CardTitle>
               <CardDescription className="text-gray-300">
-                Fill in your details to book your K-pop recording experience
+                {currentBookingType === "klook" 
+                  ? "Select your drink and additional services for your reserved session"
+                  : "Fill in your details to book your K-pop recording experience"
+                }
               </CardDescription>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setBookingStep("select-type")}
+                className="w-fit mt-2 text-white border-white/20 hover:bg-white/10"
+              >
+                ← Change Booking Type
+              </Button>
             </CardHeader>
             <CardContent className="space-y-6">
               <Form {...form}>
@@ -258,6 +370,27 @@ export default function EnhancedBookingSection() {
                       )}
                     />
                   </div>
+
+                  {/* Klook Booking ID (only for Klook bookings) */}
+                  {currentBookingType === "klook" && (
+                    <FormField
+                      control={form.control}
+                      name="klookBookingId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-white">Klook Booking ID *</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter your Klook booking confirmation ID" 
+                              className="bg-white/10 border-white/20 text-white"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
 
                   {/* Drink Selection */}
                   <div className="space-y-4">
@@ -335,8 +468,9 @@ export default function EnhancedBookingSection() {
                     )}
                   />
 
-                  {/* Date and Time Selection */}
-                  <div className="grid md:grid-cols-2 gap-4">
+                  {/* Date and Time Selection (only for direct bookings) */}
+                  {currentBookingType === "direct" && (
+                    <div className="grid md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="bookingDate"
@@ -434,7 +568,8 @@ export default function EnhancedBookingSection() {
                         </FormItem>
                       )}
                     />
-                  </div>
+                    </div>
+                  )}
 
                   {/* Additional Services */}
                   <div className="space-y-4">
@@ -499,11 +634,18 @@ export default function EnhancedBookingSection() {
                   {/* Total Price */}
                   <div className="bg-white/5 p-4 rounded-lg">
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-semibold text-white">Total Price:</span>
+                      <span className="text-lg font-semibold text-white">
+                        {currentBookingType === "klook" ? "Additional Services Total:" : "Total Price:"}
+                      </span>
                       <span className="text-2xl font-bold text-yellow-400">
-                        ₩{calculateTotalPrice(form.watch("selectedAddons"), form.watch("bookingTime")).toLocaleString()}
+                        ₩{calculateTotalPrice(form.watch("selectedAddons"), form.watch("bookingTime"), currentBookingType).toLocaleString()}
                       </span>
                     </div>
+                    {currentBookingType === "klook" && (
+                      <p className="text-sm text-gray-400 mt-2">
+                        * Recording session fee already paid through Klook
+                      </p>
+                    )}
                   </div>
 
                   <Button 
