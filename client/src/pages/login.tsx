@@ -42,8 +42,8 @@ export default function LoginPage() {
     e.preventDefault();
     if (!username || !password) {
       toast({
-        title: "Missing Information",
-        description: "Please enter both username and password",
+        title: "입력 오류",
+        description: "사용자명과 비밀번호를 모두 입력해주세요.",
         variant: "destructive",
       });
       return;
@@ -68,26 +68,26 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-white">Username</Label>
+              <Label htmlFor="username" className="text-white">사용자명 또는 이메일</Label>
               <Input
                 id="username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="bg-gray-800 border-gray-600 text-white placeholder-gray-400"
-                placeholder="Enter your username"
+                placeholder="사용자명 또는 이메일을 입력하세요"
                 disabled={loginMutation.isPending}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white">Password</Label>
+              <Label htmlFor="password" className="text-white">비밀번호</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-gray-800 border-gray-600 text-white placeholder-gray-400"
-                placeholder="Enter your password"
+                placeholder="비밀번호를 입력하세요"
                 disabled={loginMutation.isPending}
               />
             </div>
