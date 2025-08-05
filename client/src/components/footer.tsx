@@ -11,6 +11,13 @@ export default function Footer() {
     }
   };
 
+  const scrollToFAQ = () => {
+    const faqSection = document.querySelector('#faq');
+    if (faqSection) {
+      faqSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <footer className="bg-black py-12">
@@ -38,7 +45,7 @@ export default function Footer() {
               Cancellation Policy
             </button>
             <button 
-              onClick={scrollToContact}
+              onClick={scrollToFAQ}
               className="hover:text-[hsl(var(--k-pink))] transition-colors cursor-pointer"
             >
               FAQ
