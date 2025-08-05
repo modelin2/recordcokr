@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Plus, UserCheck, UserX, Trash2, Mail, Shield, ShieldCheck } from "lucide-react";
+import { Plus, UserCheck, UserX, Trash2, Mail, Shield, ShieldCheck, RefreshCw } from "lucide-react";
 import type { User } from "@shared/schema";
 
 const roleColors = {
@@ -34,20 +34,29 @@ export default function UserManagementPage() {
   const queryClient = useQueryClient();
 
   // Fetch all admin users
-  const { data: users = [], isLoading } = useQuery<User[]>({
+  const { data: users = [], isLoading, refetch } = useQuery<User[]>({
     queryKey: ['/api/admin/users'],
+    refetchOnWindowFocus: true,
+    staleTime: 0, // Always consider data stale to force refresh
   });
 
   // Create admin mutation
   const createAdminMutation = useMutation({
     mutationFn: async ({ email, username, password, role }: { email: string; username: string; password: string; role: string }) => {
-      return apiRequest("POST", "/api/admin/users", { email, username, password, role });
+      console.log("관리자 추가 요청:", { email, username, role });
+      const response = await apiRequest("POST", "/api/admin/users", { email, username, password, role });
+      const result = await response.json();
+      console.log("관리자 추가 응답:", result);
+      return result;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("관리자 추가 성공, 쿼리 무효화 중...");
       queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+      // Force refetch
+      queryClient.refetchQueries({ queryKey: ['/api/admin/users'] });
       toast({
         title: "관리자 추가됨",
-        description: "새로운 관리자가 성공적으로 추가되었습니다.",
+        description: `새로운 관리자 ${data.user?.username || ''}가 성공적으로 추가되었습니다.`,
       });
       setIsAddDialogOpen(false);
       setNewUserEmail("");
@@ -56,6 +65,7 @@ export default function UserManagementPage() {
       setNewUserRole("admin");
     },
     onError: (error: any) => {
+      console.error("관리자 추가 실패:", error);
       toast({
         title: "추가 실패",
         description: error.message || "관리자 추가에 실패했습니다.",
@@ -160,13 +170,23 @@ export default function UserManagementPage() {
             <p className="text-gray-300">관리자 계정을 추가하고 관리하세요</p>
           </div>
           
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="k-gradient-pink-purple text-white">
-                <Plus className="h-4 w-4 mr-2" />
-                새 관리자 추가
-              </Button>
-            </DialogTrigger>
+          <div className="flex gap-3">
+            <Button
+              onClick={() => refetch()}
+              variant="outline"
+              className="border-white/20 text-white hover:bg-white/10"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              새로고침
+            </Button>
+            
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="k-gradient-pink-purple text-white">
+                  <Plus className="h-4 w-4 mr-2" />
+                  새 관리자 추가
+                </Button>
+              </DialogTrigger>
             <DialogContent className="bg-gray-900 border-white/20">
               <DialogHeader>
                 <DialogTitle className="text-white">새 관리자 추가</DialogTitle>
@@ -230,6 +250,7 @@ export default function UserManagementPage() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
 
         {/* Statistics */}
