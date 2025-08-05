@@ -195,6 +195,113 @@ export class MemStorage implements IStorage {
         }
       }
     }
+
+    // Initialize sample bookings for admin testing
+    this.initializeSampleBookings();
+  }
+
+  private initializeSampleBookings() {
+    const sampleBookings = [
+      {
+        name: "김서연",
+        email: "seoyeon.kim@gmail.com",
+        phone: "010-1234-5678",
+        packageId: 2,
+        addons: [1, 2], // Full Track Mixing + Recording Video Raw
+        selectedDate: "2025-08-06",
+        selectedTime: "14:00",
+        youtubeTrack: "https://youtube.com/watch?v=dQw4w9WgXcQ",
+        selectedBeverages: ["아메리카노", "녹차라떼"],
+        totalPrice: 125000,
+        bookingType: "direct" as const,
+        status: "confirmed" as const,
+        createdAt: new Date("2025-08-05T02:30:00Z"),
+      },
+      {
+        name: "이민준",
+        email: "minjun.lee@naver.com",
+        phone: "010-9876-5432",
+        packageId: 1,
+        addons: [3], // Makeup Service
+        selectedDate: "2025-08-07",
+        selectedTime: "16:30",
+        youtubeTrack: "https://youtube.com/watch?v=BTS_Dynamite",
+        selectedBeverages: ["카페라떼"],
+        totalPrice: 137500,
+        bookingType: "direct" as const,
+        status: "pending" as const,
+        createdAt: new Date("2025-08-05T05:15:00Z"),
+      },
+      {
+        name: "Sarah Johnson",
+        email: "sarah.johnson@yahoo.com",
+        phone: "010-5555-7777",
+        packageId: 3,
+        addons: [1, 4], // Full Track Mixing + LP Production
+        selectedDate: "2025-08-08",
+        selectedTime: "18:00",
+        youtubeTrack: "https://youtube.com/watch?v=BlackPink_DDU",
+        selectedBeverages: ["딸기라떼", "초콜릿라떼"],
+        totalPrice: 400000,
+        bookingType: "klook" as const,
+        status: "in-progress" as const,
+        createdAt: new Date("2025-08-04T12:45:00Z"),
+      },
+      {
+        name: "田中美咲",
+        email: "tanaka.misaki@gmail.com",
+        phone: "010-3333-4444",
+        packageId: 2,
+        addons: [2, 5], // Recording Video Edited + Global Distribution
+        selectedDate: "2025-08-09",
+        selectedTime: "11:00",
+        youtubeTrack: "https://youtube.com/watch?v=NewJeans_GetUp",
+        selectedBeverages: ["바닐라라떼"],
+        totalPrice: 1475000,
+        bookingType: "direct" as const,
+        status: "completed" as const,
+        createdAt: new Date("2025-08-03T08:20:00Z"),
+      },
+      {
+        name: "박지훈",
+        email: "jihun.park@kakao.com",
+        phone: "010-2222-8888",
+        packageId: 1,
+        addons: [],
+        selectedDate: "2025-08-10",
+        selectedTime: "20:00",
+        youtubeTrack: "https://youtube.com/watch?v=IVE_LOVE_DIVE",
+        selectedBeverages: ["아이스티"],
+        totalPrice: 44000,
+        bookingType: "klook" as const,
+        status: "cancelled" as const,
+        createdAt: new Date("2025-08-02T14:10:00Z"),
+      },
+      {
+        name: "Emma Wilson",
+        email: "emma.wilson@hotmail.com",
+        phone: "010-7777-1111",
+        packageId: 2,
+        addons: [1, 3], // Full Track Mixing + Makeup
+        selectedDate: "2025-08-11",
+        selectedTime: "13:30",
+        youtubeTrack: "https://youtube.com/watch?v=aespa_Spicy",
+        selectedBeverages: ["카라멜마키아또", "얼그레이"],
+        totalPrice: 275000,
+        bookingType: "direct" as const,
+        status: "confirmed" as const,
+        createdAt: new Date("2025-08-05T01:55:00Z"),
+      }
+    ];
+
+    sampleBookings.forEach(booking => {
+      const id = this.currentBookingId++;
+      const fullBooking: Booking = {
+        ...booking,
+        id,
+      };
+      this.bookings.set(id, fullBooking);
+    });
   }
 
   async getUser(id: number): Promise<User | undefined> {
