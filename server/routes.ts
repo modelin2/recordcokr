@@ -62,6 +62,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       req.session.userId = user.id;
       res.json({ message: "Login successful", user: { ...user, password: undefined } });
     } catch (error) {
+      console.error("Login error:", error);
       res.status(500).json({ message: "Login failed" });
     }
   });
