@@ -45,7 +45,7 @@ export default function AdminPage() {
     queryKey: ['/api/admin/bookings'],
   });
 
-  const { data: addons = [] } = useQuery({
+  const { data: addons = [] } = useQuery<any[]>({
     queryKey: ['/api/addons'],
   });
 
@@ -326,22 +326,22 @@ K-Recording Cafe Team`
                           <Phone className="h-4 w-4" />
                           {booking.phone}
                         </div>
-                        {booking.selectedDate && booking.selectedTime && (
+                        {(booking as any).selectedDate && (booking as any).selectedTime && (
                           <>
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4" />
-                              {booking.selectedDate}
+                              {(booking as any).selectedDate}
                             </div>
                             <div className="flex items-center gap-2">
                               <Clock className="h-4 w-4" />
-                              {booking.selectedTime}
+                              {(booking as any).selectedTime}
                             </div>
                           </>
                         )}
-                        {booking.selectedBeverages && booking.selectedBeverages.length > 0 && (
+                        {(booking as any).selectedBeverages && (booking as any).selectedBeverages.length > 0 && (
                           <div className="flex items-center gap-2">
                             <Coffee className="h-4 w-4" />
-                            {booking.selectedBeverages.join(', ')}
+                            {(booking as any).selectedBeverages.join(', ')}
                           </div>
                         )}
                         <div className="flex items-center gap-2">
@@ -353,11 +353,11 @@ K-Recording Cafe Team`
                             <span className="font-mono text-xs">ID: {booking.klookBookingId}</span>
                           </div>
                         )}
-                        {booking.youtubeTrack && (
+                        {(booking as any).youtubeTrack && (
                           <div className="flex items-center gap-2">
                             <Music className="h-4 w-4" />
                             <a 
-                              href={booking.youtubeTrack} 
+                              href={(booking as any).youtubeTrack} 
                               target="_blank" 
                               rel="noopener noreferrer"
                               className="text-blue-400 hover:text-blue-300 truncate max-w-[200px]"
@@ -368,11 +368,11 @@ K-Recording Cafe Team`
                         )}
                       </div>
                       
-                      {booking.addons && booking.addons.length > 0 && (
+                      {(booking as any).addons && (booking as any).addons.length > 0 && (
                         <div className="mt-3">
                           <span className="text-xs text-gray-400">Additional Services: </span>
                           <span className="text-xs text-gray-300">
-                            {booking.addons.map(addonId => {
+                            {(booking as any).addons.map((addonId: number) => {
                               const addon = addons.find((a: any) => a.id === addonId);
                               return addon ? addon.name : `Service #${addonId}`;
                             }).join(", ")}
