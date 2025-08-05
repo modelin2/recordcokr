@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,6 +36,8 @@ type BookingForm = z.infer<typeof bookingFormSchema>;
 
 export default function EnhancedBookingSection() {
   const [selectedDate, setSelectedDate] = useState<Date>();
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+  const [loadingTimes, setLoadingTimes] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -43,11 +45,36 @@ export default function EnhancedBookingSection() {
     queryKey: ['/api/addons'],
   });
 
-  const { data: timeSlots = [], isLoading: timeSlotsLoading } = useQuery<string[]>({
-    queryKey: ['/api/timeslots', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null],
-    enabled: !!selectedDate,
-    staleTime: 0, // Force refetch when date changes
-  });
+  // Fetch time slots when date changes
+  useEffect(() => {
+    if (!selectedDate) {
+      setAvailableTimes([]);
+      return;
+    }
+
+    const fetchTimeSlots = async () => {
+      setLoadingTimes(true);
+      try {
+        const dateStr = format(selectedDate, 'yyyy-MM-dd');
+        console.log('Fetching time slots for:', dateStr);
+        
+        const response = await fetch(`/api/timeslots/${dateStr}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch time slots');
+        }
+        const data = await response.json();
+        console.log('Received time slots:', data);
+        setAvailableTimes(data || []);
+      } catch (error) {
+        console.error('Error fetching time slots:', error);
+        setAvailableTimes([]);
+      } finally {
+        setLoadingTimes(false);
+      }
+    };
+
+    fetchTimeSlots();
+  }, [selectedDate]);
 
   const form = useForm<BookingForm>({
     resolver: zodResolver(bookingFormSchema),
@@ -84,6 +111,7 @@ export default function EnhancedBookingSection() {
       });
       form.reset();
       setSelectedDate(undefined);
+      setAvailableTimes([]);
       queryClient.invalidateQueries({ queryKey: ['/api/timeslots'] });
     },
     onError: (error: any) => {
@@ -332,10 +360,12 @@ export default function EnhancedBookingSection() {
                                 mode="single"
                                 selected={selectedDate}
                                 onSelect={(date) => {
+                                  console.log('Date selected:', date);
                                   setSelectedDate(date);
                                   field.onChange(date ? format(date, 'yyyy-MM-dd') : '');
                                   // Reset time selection when date changes
                                   form.setValue('bookingTime', '');
+
                                 }}
                                 disabled={(date) =>
                                   date < new Date() || date < new Date("1900-01-01")
@@ -357,29 +387,33 @@ export default function EnhancedBookingSection() {
                           <Select 
                             onValueChange={field.onChange} 
                             value={field.value}
-                            disabled={!selectedDate || timeSlotsLoading}
+                            disabled={!selectedDate || loadingTimes}
                           >
                             <FormControl>
                               <SelectTrigger className="bg-white/10 border-white/20 text-white">
                                 <SelectValue placeholder={
                                   !selectedDate 
                                     ? "Select a date first" 
-                                    : timeSlotsLoading 
+                                    : loadingTimes 
                                     ? "Loading times..." 
                                     : "Select time"
                                 } />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {timeSlots.length > 0 ? (
-                                timeSlots.map((time) => (
+                              {loadingTimes ? (
+                                <div className="p-4 text-center text-gray-500">
+                                  Loading available times...
+                                </div>
+                              ) : availableTimes.length > 0 ? (
+                                availableTimes.map((time) => (
                                   <SelectItem key={time} value={time}>
                                     {time}
                                   </SelectItem>
                                 ))
                               ) : selectedDate ? (
                                 <div className="p-4 text-center text-gray-500">
-                                  No available times for this date
+                                  No available times for {format(selectedDate, 'yyyy-MM-dd')}
                                 </div>
                               ) : null}
                             </SelectContent>
