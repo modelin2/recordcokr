@@ -13,7 +13,13 @@ export default function Footer() {
           <a href="#" className="hover:text-[hsl(var(--k-pink))] transition-colors">Support</a>
         </div>
         
-        <div className="text-gray-500">© 2025 Korea Crowdfunding Association. All rights reserved.  The trademark and service model (BM) are patents protected.</div>
+        <div className="text-gray-500">
+          <p>© 2025 Korea Crowdfunding Association. All rights reserved. The trademark and service model (BM) are patents protected.</p>
+          <p className="text-xs mt-2">
+            TMMT Co., Ltd. | Business Registration No. 113-86-03777 | 
+            Telecommunications Sales Business No. 2011-Seoul Songpa-0554
+          </p>
+        </div>
       </div>
     </footer>
   );
