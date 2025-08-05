@@ -21,7 +21,6 @@ import type { Addon } from "@shared/schema";
 // Booking form schema
 const bookingFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  nickname: z.string().optional(),
   email: z.string().email("Valid email is required"),
   phone: z.string().min(1, "Phone number is required"),
   selectedDrink: z.string().min(1, "Please select a drink"),
@@ -80,7 +79,6 @@ export default function EnhancedBookingSection() {
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
       name: "",
-      nickname: "",
       email: "",
       phone: "",
       selectedDrink: "",
@@ -203,7 +201,7 @@ export default function EnhancedBookingSection() {
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   {/* Personal Information */}
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid md:grid-cols-1 gap-4">
                     <FormField
                       control={form.control}
                       name="name"
@@ -213,23 +211,6 @@ export default function EnhancedBookingSection() {
                           <FormControl>
                             <Input 
                               placeholder="Your full name" 
-                              className="bg-white/10 border-white/20 text-white"
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="nickname"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-white">Nickname</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Your preferred nickname" 
                               className="bg-white/10 border-white/20 text-white"
                               {...field} 
                             />

@@ -155,11 +155,20 @@ export class MemStorage implements IStorage {
       icon: "fas fa-globe",
     };
 
+    const lpProduction: Addon = {
+      id: this.currentAddonId++,
+      name: "LP Record Production",
+      price: 150000, // ₩150,000
+      description: "Professional vinyl LP record production of your song",
+      icon: "fas fa-compact-disc",
+    };
+
     this.addons.set(fullTrackMixing.id, fullTrackMixing);
     this.addons.set(recordingVideoRaw.id, recordingVideoRaw);
     this.addons.set(recordingVideoEdited.id, recordingVideoEdited);
     this.addons.set(makeup.id, makeup);
     this.addons.set(globalDistribution.id, globalDistribution);
+    this.addons.set(lpProduction.id, lpProduction);
 
     // Initialize time slots for the next 30 days
     const today = new Date();
@@ -245,7 +254,6 @@ export class MemStorage implements IStorage {
     const booking: Booking = { 
       id,
       name: insertBooking.name,
-      nickname: insertBooking.nickname || null,
       email: insertBooking.email,
       phone: insertBooking.phone,
       selectedDrink: insertBooking.selectedDrink,

@@ -29,7 +29,6 @@ export const addons = pgTable("addons", {
 export const bookings = pgTable("bookings", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  nickname: text("nickname"),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
   selectedDrink: text("selected_drink").notNull(),
@@ -68,7 +67,6 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   createdAt: true,
 }).extend({
   name: z.string().min(1, "Name is required"),
-  nickname: z.string().optional(),
   email: z.string().email("Valid email is required"),
   phone: z.string().min(1, "Phone number is required"),
   selectedDrink: z.string().min(1, "Drink selection is required"),
