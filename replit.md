@@ -159,6 +159,11 @@ Changelog:
   - Created sessions table in database schema
   - Optimized build configuration with chunk splitting
   - Resolved deployment timeout issues and configuration errors
+- August 06, 2025. **Additional Services Update**:
+  - Changed "Makeup Service" to "LP Record Production" in Additional Services
+  - Updated pricing from ₩100,000 to ₩1,300,000 for LP production
+  - Enhanced admin panel with detailed booking information display
+  - Added YouTube URL copy functionality and improved service details view
 ```
 
 ## User Preferences
