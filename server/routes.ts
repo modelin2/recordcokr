@@ -590,7 +590,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { bookingId, amount, customerName, customerEmail } = req.body;
 
+      console.log('Payment initialization request:', { bookingId, amount, customerName, customerEmail });
+      
       if (!bookingId || !amount || !customerName || !customerEmail) {
+        console.log('Missing required fields:', { 
+          bookingId: !!bookingId, 
+          amount: !!amount, 
+          customerName: !!customerName, 
+          customerEmail: !!customerEmail 
+        });
         return res.status(400).json({
           success: false,
           message: '필수 결제 정보가 누락되었습니다.'
