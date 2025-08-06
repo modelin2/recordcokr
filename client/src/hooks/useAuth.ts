@@ -6,17 +6,21 @@ export function useAuth() {
     queryKey: ['/api/auth/user'],
     queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
-    staleTime: 0, // Always check authentication status
-    refetchOnWindowFocus: true,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to reduce server calls
+    refetchOnWindowFocus: false, // Don't refetch on window focus to avoid unnecessary calls
     refetchOnMount: true,
   });
+
+  const isAuthenticated = !!user && !error;
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
+  const isSuperAdmin = user?.role === 'super_admin';
 
   return {
     user: user || null,
     isLoading,
-    isAuthenticated: !!user && !error,
-    isAdmin: (user as any)?.role === 'admin' || (user as any)?.role === 'super_admin',
-    isSuperAdmin: (user as any)?.role === 'super_admin',
+    isAuthenticated,
+    isAdmin,
+    isSuperAdmin,
     error,
   };
 }

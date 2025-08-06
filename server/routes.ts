@@ -69,31 +69,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Account is disabled" });
       }
 
-      // Create session with proper regeneration for security
-      req.session.regenerate((err) => {
-        if (err) {
-          console.error("Session regeneration error:", err);
+      // Set session user ID directly for better compatibility
+      req.session.userId = user.id;
+      
+      req.session.save((saveErr) => {
+        if (saveErr) {
+          console.error("Session save error:", saveErr);
           return res.status(500).json({ message: "Login failed" });
         }
         
-        req.session.userId = user.id;
-        req.session.save((saveErr) => {
-          if (saveErr) {
-            console.error("Session save error:", saveErr);
-            return res.status(500).json({ message: "Login failed" });
-          }
-          
-          res.json({ 
-            message: "Login successful", 
-            user: { 
-              id: user.id,
-              username: user.username,
-              email: user.email,
-              role: user.role,
-              isActive: user.isActive,
-              createdAt: user.createdAt
-            } 
-          });
+        console.log("Session saved successfully. User ID:", req.session.userId);
+        console.log("Session ID:", req.session.id);
+        
+        res.json({ 
+          message: "Login successful", 
+          user: { 
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            isActive: user.isActive,
+            createdAt: user.createdAt
+          } 
         });
       });
     } catch (error) {
@@ -102,15 +99,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get current user
-  app.get("/api/auth/user", requireAuth, async (req, res) => {
+  // Get current user with detailed logging
+  app.get("/api/auth/user", async (req, res) => {
     try {
-      const user = await storage.getUser(req.session.userId!);
+      console.log("Auth check - Session ID:", req.session.id);
+      console.log("Auth check - User ID in session:", req.session.userId);
+      
+      if (!req.session?.userId) {
+        console.log("No session or user ID found");
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = await storage.getUser(req.session.userId);
+      console.log("Found user:", user ? { id: user.id, username: user.username, role: user.role } : "not found");
+      
       if (!user) {
+        console.log("User not found in database");
         return res.status(404).json({ message: "User not found" });
       }
-      res.json({ ...user, password: undefined });
+
+      if (!user.isActive) {
+        console.log("User account is inactive");
+        return res.status(401).json({ message: "Account is disabled" });
+      }
+
+      res.json({ 
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        isActive: user.isActive,
+        createdAt: user.createdAt
+      });
     } catch (error) {
+      console.error("Auth user error:", error);
       res.status(500).json({ message: "Failed to get user" });
     }
   });

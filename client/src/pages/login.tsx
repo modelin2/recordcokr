@@ -31,10 +31,10 @@ export default function LoginPage() {
         description: `환영합니다, ${data.user?.username || '사용자'}님!`,
       });
       
-      // Use proper navigation instead of window.location.href
+      // Force a full page reload to ensure session is properly established
       setTimeout(() => {
-        setLocation("/admin");
-      }, 500);
+        window.location.href = "/admin";
+      }, 800);
     },
     onError: (error: Error) => {
       let errorMessage = "아이디 또는 비밀번호를 확인해주세요.";
