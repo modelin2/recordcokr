@@ -109,19 +109,19 @@ export default function PackagesSection() {
             </div>
 
             <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-              <h4 className="text-xl font-bold text-[hsl(var(--k-coral))] mb-3">💿 LP Record Production</h4>
-              <p className="text-gray-300 text-sm mb-4">
-                Create a physical vinyl LP record of your performance with professional packaging
-              </p>
-              <p className="text-2xl font-bold text-white">₩1,300,000</p>
-            </div>
-
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
               <h4 className="text-xl font-bold text-[hsl(var(--k-blue))] mb-3">🌍 Global Distribution</h4>
               <p className="text-gray-300 text-sm mb-4">
                 Original licensing + backing track production + mixing, mastering. Release your music on Youtube, Instagram, Apple Music, Spotify, Melon and more
               </p>
-              <p className="text-2xl font-bold text-white">₩1,300,000</p>
+              <p className="text-2xl font-bold text-white">₩300,000</p>
+            </div>
+
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+              <h4 className="text-xl font-bold text-[hsl(var(--k-coral))] mb-3">💿 LP Record Production</h4>
+              <p className="text-gray-300 text-sm mb-4">
+                Create your own physical LP vinyl record. Includes Full Track Mixing. Production takes 2-3 weeks.
+              </p>
+              <p className="text-2xl font-bold text-white">₩300,000</p>
             </div>
           </div>
 
