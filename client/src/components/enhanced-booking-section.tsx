@@ -156,8 +156,8 @@ export default function EnhancedBookingSection() {
       if (!bookingId) {
         console.error('No bookingId in response:', response);
         toast({
-          title: "예약 실패",
-          description: "예약 처리 중 오류가 발생했습니다.",
+          title: "Booking Failed",
+          description: "An error occurred while processing your booking.",
           variant: "destructive",
         });
         return;
@@ -165,8 +165,8 @@ export default function EnhancedBookingSection() {
 
       // Booking complete - no payment processing
       toast({
-        title: "예약 접수 완료!",
-        description: `예약번호 #${bookingId}로 성공적으로 접수되었습니다. 곧 연락드리겠습니다.`,
+        title: "Booking Confirmed!",
+        description: `Booking #${bookingId} has been successfully received. We will contact you soon.`,
         duration: 5000,
       });
       
