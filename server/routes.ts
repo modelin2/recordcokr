@@ -179,6 +179,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const booking = await storage.createBooking(bookingData);
+      console.log('Created booking response:', booking);
       res.json(booking);
     } catch (error) {
       console.error("Booking creation error:", error);

@@ -146,6 +146,7 @@ export default function EnhancedBookingSection() {
       return apiRequest("POST", "/api/bookings", bookingData);
     },
     onSuccess: (response) => {
+      console.log('Booking creation response:', response);
       const bookingType = form.getValues("bookingType");
       
       const bookingId = response.id;
@@ -155,7 +156,7 @@ export default function EnhancedBookingSection() {
       if (totalPrice > 0) {
         // Store booking data temporarily in sessionStorage for payment
         const paymentData = {
-          bookingId,
+          bookingId: bookingId,
           totalPrice: Math.round(totalPrice),
           customerName: form.getValues("name"),
           customerEmail: form.getValues("email")
