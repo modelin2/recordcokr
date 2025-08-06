@@ -120,11 +120,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/timeslots/:date", async (req, res) => {
     try {
       const { date } = req.params;
+      console.log('Fetching timeslots for date:', date);
       const timeSlots = await storage.getAvailableTimeSlots(date);
+      console.log('Found timeslots:', timeSlots.length);
       // Return just the time strings for easier frontend handling
       const availableTimes = timeSlots.map(slot => slot.time);
+      console.log('Available times:', availableTimes);
       res.json(availableTimes);
     } catch (error) {
+      console.error('Timeslot fetch error:', error);
       res.status(500).json({ message: "Failed to fetch time slots" });
     }
   });

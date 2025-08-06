@@ -143,7 +143,8 @@ export default function EnhancedBookingSection() {
         totalPrice: Math.round(totalPrice), // Korean won
       };
 
-      return apiRequest("POST", "/api/bookings", bookingData);
+      const response = await apiRequest("POST", "/api/bookings", bookingData);
+      return response.json();
     },
     onSuccess: (response) => {
       console.log('Booking creation response:', response);
