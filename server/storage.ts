@@ -8,7 +8,7 @@ import {
   type PaymentOrder, type InsertPaymentOrder
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -623,7 +623,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllBookings(): Promise<Booking[]> {
-    return await db.select().from(bookings);
+    return await db.select().from(bookings).orderBy(desc(bookings.createdAt));
   }
 
   async getBooking(id: number): Promise<Booking | undefined> {
