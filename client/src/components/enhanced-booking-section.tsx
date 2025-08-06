@@ -149,7 +149,9 @@ export default function EnhancedBookingSection() {
       console.log('Booking creation response:', response);
       const bookingType = form.getValues("bookingType");
       
+      // Extract bookingId from response (response is the booking object itself)
       const bookingId = response.id;
+      console.log('Extracted bookingId:', bookingId);
       const totalPrice = calculateTotalPrice(form.getValues("selectedAddons"), form.getValues("bookingTime"), bookingType);
       
       // If there's any amount to pay (base price for direct booking or addons for any booking type)
@@ -162,6 +164,7 @@ export default function EnhancedBookingSection() {
           customerEmail: form.getValues("email")
         };
         console.log('Storing payment data in sessionStorage:', paymentData);
+        console.log('BookingId value check:', { bookingId, type: typeof bookingId });
         sessionStorage.setItem('pendingPayment', JSON.stringify(paymentData));
         
         toast({
