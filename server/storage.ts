@@ -236,28 +236,33 @@ export class MemStorage implements IStorage {
 
     // Initialize time slots for the next 30 days
     const today = new Date();
+    console.log('Initializing time slots starting from:', today.toISOString().split('T')[0]);
+    
     for (let i = 0; i < 30; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
       const dateStr = date.toISOString().split('T')[0];
       
-      // Create time slots from 10:00 to 22:00 (every 10 minutes)
-      for (let hour = 10; hour <= 22; hour++) {
-        for (let minute = 0; minute < 60; minute += 10) {
-          // Skip creating slots after 22:00
-          if (hour === 22 && minute > 0) break;
-          
-          const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-          const timeSlot: TimeSlot = {
-            id: this.currentTimeSlotId++,
-            date: dateStr,
-            time: timeStr,
-            isAvailable: true,
-          };
-          this.timeSlots.set(timeSlot.id, timeSlot);
-        }
-      }
+      // Create time slots from 10:00 to 22:00 (every 50 minutes for realistic booking slots)
+      const timeSlots = [
+        "10:00", "10:50", "11:40", "12:30", // Morning slots
+        "13:00", "13:50", "14:40", "15:30", "16:20", "17:10", // Afternoon slots  
+        "18:00", "18:50", "19:40", "20:30", "21:20", "22:00"  // Evening slots
+      ];
+      
+      timeSlots.forEach(timeStr => {
+        const timeSlot: TimeSlot = {
+          id: this.currentTimeSlotId++,
+          date: dateStr,
+          time: timeStr,
+          isAvailable: true,
+        };
+        this.timeSlots.set(timeSlot.id, timeSlot);
+      });
     }
+    
+    console.log(`Initialized ${this.timeSlots.size} time slots total`);
+    console.log('Sample dates with slots:', Array.from(this.timeSlots.values()).slice(0, 5).map(slot => `${slot.date} ${slot.time}`));
 
     // Initialize sample bookings for admin testing
     this.initializeSampleBookings();
@@ -413,9 +418,17 @@ export class MemStorage implements IStorage {
   }
 
   async getAvailableTimeSlots(date: string): Promise<TimeSlot[]> {
-    return Array.from(this.timeSlots.values()).filter(
-      slot => slot.date === date && slot.isAvailable
-    );
+    console.log('Looking for timeslots on date:', date);
+    console.log('Total timeslots in storage:', this.timeSlots.size);
+    
+    const allSlots = Array.from(this.timeSlots.values());
+    const datesInStorage = [...new Set(allSlots.map(slot => slot.date))].slice(0, 10);
+    console.log('Sample dates in storage:', datesInStorage);
+    
+    const slotsForDate = allSlots.filter(slot => slot.date === date && slot.isAvailable);
+    console.log(`Found ${slotsForDate.length} available slots for ${date}`);
+    
+    return slotsForDate;
   }
 
   async createTimeSlot(insertTimeSlot: InsertTimeSlot): Promise<TimeSlot> {
