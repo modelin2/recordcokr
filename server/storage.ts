@@ -523,7 +523,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteAdmin(userId: number): Promise<boolean> {
     const result = await db.delete(users).where(eq(users.id, userId));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getAllPackages(): Promise<Package[]> {
@@ -564,11 +564,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createBooking(booking: InsertBooking): Promise<Booking> {
-    const [newBooking] = await db.insert(bookings).values({
-      ...booking,
-      totalPrice: 0, // Will be calculated by server
-      status: 'pending'
-    }).returning();
+    const [newBooking] = await db.insert(bookings).values(booking).returning();
     return newBooking;
   }
 
