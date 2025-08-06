@@ -72,27 +72,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Set session user ID directly for better compatibility
       req.session.userId = user.id;
       
-      req.session.save((saveErr) => {
-        if (saveErr) {
-          console.error("Session save error:", saveErr);
-          return res.status(500).json({ message: "Login failed" });
-        }
-        
-        console.log("Session saved successfully. User ID:", req.session.userId);
-        console.log("Session ID:", req.session.id);
-        
-        res.json({ 
-          message: "Login successful", 
-          user: { 
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-            isActive: user.isActive,
-            createdAt: user.createdAt
-          } 
+      // Add a delay to ensure session is saved before responding
+      setTimeout(() => {
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error("Session save error:", saveErr);
+            return res.status(500).json({ message: "Login failed" });
+          }
+          
+          console.log("Session saved successfully. User ID:", req.session.userId);
+          console.log("Session ID:", req.session.id);
+          console.log("Cookie settings:", req.session.cookie);
+          
+          res.json({ 
+            message: "Login successful", 
+            user: { 
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              role: user.role,
+              isActive: user.isActive,
+              createdAt: user.createdAt
+            } 
+          });
         });
-      });
+      }, 100); // Small delay to ensure session persistence
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ message: "Login failed" });

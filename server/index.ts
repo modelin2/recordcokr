@@ -14,11 +14,11 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 let sessionConfig: any = {
   secret: process.env.SESSION_SECRET || 'k-recording-cafe-session-secret-2025',
-  resave: false,
+  resave: true, // Force session save to ensure persistence
   saveUninitialized: false,
-  rolling: false, // Don't extend session on every request for performance
+  rolling: true, // Extend session on activity
   cookie: {
-    secure: isProduction, // Use HTTPS in production only
+    secure: false, // Disable secure flag temporarily for debugging
     httpOnly: true,
     maxAge: sessionTtl,
     sameSite: 'lax' // Better compatibility

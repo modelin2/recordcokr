@@ -34,7 +34,7 @@ export default function LoginPage() {
       // Force a full page reload to ensure session is properly established
       setTimeout(() => {
         window.location.href = "/admin";
-      }, 800);
+      }, 1500); // Increased delay to ensure session is fully established
     },
     onError: (error: Error) => {
       let errorMessage = "아이디 또는 비밀번호를 확인해주세요.";
