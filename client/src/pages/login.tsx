@@ -28,7 +28,7 @@ export default function LoginPage() {
     onSuccess: (data) => {
       toast({
         title: "로그인 성공",
-        description: `환영합니다, ${data.user.username}님!`,
+        description: `환영합니다, ${data.user?.username || '사용자'}님!`,
       });
       
       // Use proper navigation instead of window.location.href
