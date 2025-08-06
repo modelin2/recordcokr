@@ -84,12 +84,14 @@ export default function PaymentPage() {
         customerEmail: paymentData.customerEmail,
       });
       
-      const paymentResponse = await apiRequest("POST", "/api/payments/initialize", {
+      const response = await apiRequest("POST", "/api/payments/initialize", {
         bookingId: paymentData.bookingId || parseInt(bookingId as string),
         amount: paymentData.totalPrice,
         customerName: paymentData.customerName,
         customerEmail: paymentData.customerEmail,
       });
+
+      const paymentResponse = await response.json();
 
       if (!paymentResponse.success) {
         throw new Error(paymentResponse.message || "결제 초기화 실패");
