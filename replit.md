@@ -139,6 +139,13 @@ Changelog:
 - August 05, 2025. Added status-based filtering system: clicking statistics cards filters booking lists by status with visual indicators
 - August 05, 2025. Implemented comprehensive user management system with role-based access control (super_admin, admin, user roles)
 - August 05, 2025. Fixed booking form 400 error by correcting selectedAddons data type mismatch (changed from string[] to number[] in schema and database)
+- August 06, 2025. **TossPayments Integration Work (Temporarily Paused)**:
+  - Implemented full TossPayments payment flow with booking integration
+  - Added payment initialization, success/fail page routing
+  - Fixed bookingId extraction and JSON parsing issues
+  - Resolved time slot display problems (switched from DatabaseStorage to MemStorage)
+  - Added proper error handling for payment failures
+  - Note: Payment system integration paused due to PG company change requirement
 ```
 
 ## User Preferences

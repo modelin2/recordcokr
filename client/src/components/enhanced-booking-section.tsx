@@ -148,48 +148,40 @@ export default function EnhancedBookingSection() {
     },
     onSuccess: (response) => {
       console.log('Booking creation response:', response);
-      const bookingType = form.getValues("bookingType");
       
-      // Extract bookingId from response (response is the booking object itself)
+      // Extract bookingId from response
       const bookingId = response.id;
       console.log('Extracted bookingId:', bookingId);
-      const totalPrice = calculateTotalPrice(form.getValues("selectedAddons"), form.getValues("bookingTime"), bookingType);
       
-      // If there's any amount to pay (base price for direct booking or addons for any booking type)
-      if (totalPrice > 0) {
-        // Store booking data temporarily in sessionStorage for payment
-        const paymentData = {
-          bookingId: bookingId,
-          totalPrice: Math.round(totalPrice),
-          customerName: form.getValues("name"),
-          customerEmail: form.getValues("email")
-        };
-        console.log('Storing payment data in sessionStorage:', paymentData);
-        console.log('BookingId value check:', { bookingId, type: typeof bookingId });
-        sessionStorage.setItem('pendingPayment', JSON.stringify(paymentData));
-        
+      if (!bookingId) {
+        console.error('No bookingId in response:', response);
         toast({
-          title: "Booking Created Successfully!",
-          description: "Redirecting to payment page...",
+          title: "예약 실패",
+          description: "예약 처리 중 오류가 발생했습니다.",
+          variant: "destructive",
         });
-        
-        // Navigate to payment page with delay
-        setTimeout(() => {
-          setLocation(`/payment?bookingId=${bookingId}&amount=${Math.round(totalPrice)}`);
-        }, 1500);
-      } else {
-        // No payment needed (Klook booking without addons)
-        toast({
-          title: "Booking Confirmed!",
-          description: "Your booking has been successfully confirmed. No additional payment required.",
-        });
-        form.reset();
-        setSelectedDate(undefined);
-        setAvailableTimes([]);
-        setBookingStep("select-type");
-        setSelectedBookingType(undefined);
-        queryClient.invalidateQueries({ queryKey: ['/api/timeslots'] });
+        return;
       }
+
+      // Booking complete - no payment processing
+      toast({
+        title: "예약 접수 완료!",
+        description: `예약번호 #${bookingId}로 성공적으로 접수되었습니다. 곧 연락드리겠습니다.`,
+        duration: 5000,
+      });
+      
+      // Reset form and selections
+      form.reset();
+      setSelectedDate(undefined);
+      setAvailableTimes([]);
+      setBookingStep("select-type");
+      setSelectedBookingType(undefined);
+      
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['/api/timeslots'] });
+      
+      // Optional: Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     onError: (error: any) => {
       toast({
