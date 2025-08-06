@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
+import connectPg from "connect-pg-simple";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
@@ -7,17 +8,33 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Session middleware
-app.use(session({
-  secret: 'k-recording-cafe-session-secret-2025', // In production, use a secure secret from environment
+// Session middleware with PostgreSQL store for production
+const sessionTtl = 24 * 60 * 60 * 1000; // 24 hours
+const isProduction = process.env.NODE_ENV === 'production';
+
+let sessionConfig: any = {
+  secret: process.env.SESSION_SECRET || 'k-recording-cafe-session-secret-2025',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // Set to true in production with HTTPS
+    secure: isProduction, // Use HTTPS in production
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: sessionTtl
   }
-}));
+};
+
+// Use PostgreSQL session store in production if DATABASE_URL is available
+if (isProduction && process.env.DATABASE_URL) {
+  const pgStore = connectPg(session);
+  sessionConfig.store = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true,
+    ttl: sessionTtl / 1000, // TTL in seconds
+    tableName: "sessions",
+  });
+}
+
+app.use(session(sessionConfig));
 
 app.use((req, res, next) => {
   const start = Date.now();
