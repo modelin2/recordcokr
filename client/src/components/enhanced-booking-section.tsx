@@ -148,11 +148,11 @@ export default function EnhancedBookingSection() {
     onSuccess: (response) => {
       const bookingType = form.getValues("bookingType");
       
-      if (bookingType === "direct") {
-        // For direct bookings, proceed to payment
-        const bookingId = response.id;
-        const totalPrice = calculateTotalPrice(form.getValues("selectedAddons"), form.getValues("bookingTime"), bookingType);
-        
+      const bookingId = response.id;
+      const totalPrice = calculateTotalPrice(form.getValues("selectedAddons"), form.getValues("bookingTime"), bookingType);
+      
+      // If there's any amount to pay (base price for direct booking or addons for any booking type)
+      if (totalPrice > 0) {
         // Store booking data temporarily in sessionStorage for payment
         sessionStorage.setItem('pendingPayment', JSON.stringify({
           bookingId,
@@ -171,9 +171,9 @@ export default function EnhancedBookingSection() {
           setLocation(`/payment?bookingId=${bookingId}&amount=${Math.round(totalPrice)}`);
         }, 1500);
       } else {
-        // For Klook bookings, show success message
+        // No payment needed (Klook booking without addons)
         toast({
-          title: "Klook Booking Confirmed!",
+          title: "Booking Confirmed!",
           description: "Your booking has been successfully confirmed. No additional payment required.",
         });
         form.reset();
@@ -219,11 +219,15 @@ export default function EnhancedBookingSection() {
 
   const calculateTotalPrice = (selectedAddonIds: number[], bookingTime: string = "", bookingType: string = "direct") => {
     // For Klook bookings, base price is 0 (already paid through Klook)
+    // For Direct bookings, include base price based on time slot
     const basePrice = bookingType === "klook" ? 0 : getBasePrice(bookingTime);
+    
+    // Always include addon prices for both booking types
     const addonsPrice = selectedAddonIds.reduce((total, addonId) => {
       const addon = addons.find(a => a.id === addonId);
       return total + (addon?.price || 0);
     }, 0);
+    
     return basePrice + addonsPrice;
   };
 
