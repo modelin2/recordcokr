@@ -383,9 +383,9 @@ export class MemStorage implements IStorage {
       phone: insertBooking.phone,
       bookingType: insertBooking.bookingType || "direct",
       klookBookingId: insertBooking.klookBookingId || null,
-      selectedDrink: insertBooking.selectedDrink,
+      selectedDrink: insertBooking.selectedDrink || null,
       drinkTemperature: insertBooking.drinkTemperature || null,
-      youtubeTrackUrl: insertBooking.youtubeTrackUrl,
+      youtubeTrackUrl: insertBooking.youtubeTrackUrl || null,
       selectedAddons: insertBooking.selectedAddons || [],
       lpDeliveryAddress: insertBooking.lpDeliveryAddress || null,
       bookingDate: insertBooking.bookingDate || null,
@@ -422,7 +422,7 @@ export class MemStorage implements IStorage {
     console.log('Total timeslots in storage:', this.timeSlots.size);
     
     const allSlots = Array.from(this.timeSlots.values());
-    const datesInStorage = [...new Set(allSlots.map(slot => slot.date))].slice(0, 10);
+    const datesInStorage = Array.from(new Set(allSlots.map(slot => slot.date))).slice(0, 10);
     console.log('Sample dates in storage:', datesInStorage);
     
     const slotsForDate = allSlots.filter(slot => slot.date === date && slot.isAvailable);
@@ -632,7 +632,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createBooking(booking: InsertBooking): Promise<Booking> {
-    const [newBooking] = await db.insert(bookings).values(booking).returning();
+    // Add required totalPrice field
+    const bookingData = {
+      ...booking,
+      totalPrice: 0, // Will be calculated by the route handler
+    };
+    const [newBooking] = await db.insert(bookings).values(bookingData).returning();
     return newBooking;
   }
 
