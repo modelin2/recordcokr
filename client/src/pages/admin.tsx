@@ -462,22 +462,23 @@ K-Recording Cafe Team`
                           <Phone className="h-4 w-4" />
                           {booking.phone}
                         </div>
-                        {(booking as any).selectedDate && (booking as any).selectedTime && (
+                        {(booking as any).bookingDate && (booking as any).bookingTime && (
                           <>
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4" />
-                              {(booking as any).selectedDate}
+                              {(booking as any).bookingDate}
                             </div>
                             <div className="flex items-center gap-2">
                               <Clock className="h-4 w-4" />
-                              {(booking as any).selectedTime}
+                              {(booking as any).bookingTime}
                             </div>
                           </>
                         )}
-                        {(booking as any).selectedBeverages && (booking as any).selectedBeverages.length > 0 && (
+                        {(booking as any).selectedDrink && (
                           <div className="flex items-center gap-2">
                             <Coffee className="h-4 w-4" />
-                            {(booking as any).selectedBeverages.join(', ')}
+                            {(booking as any).selectedDrink}
+                            {(booking as any).drinkTemperature && ` (${(booking as any).drinkTemperature})`}
                           </div>
                         )}
                         <div className="flex items-center gap-2">
@@ -486,26 +487,35 @@ K-Recording Cafe Team`
                         </div>
                         {booking.klookBookingId && (
                           <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs">ID: {booking.klookBookingId}</span>
+                            <span className="font-mono text-xs">Klook ID: {booking.klookBookingId}</span>
                           </div>
                         )}
-                        {(booking as any).youtubeTrack && (
-                          <div className="space-y-2">
+                        {(booking as any).lpDeliveryAddress && (
+                          <div className="flex items-start gap-2">
+                            <span className="text-gray-400 text-xs mt-0.5">📦</span>
+                            <div className="text-xs text-gray-300">
+                              <div className="font-medium">LP Delivery:</div>
+                              <div className="text-gray-400">{(booking as any).lpDeliveryAddress}</div>
+                            </div>
+                          </div>
+                        )}
+                        {(booking as any).youtubeTrackUrl && (
+                          <div className="col-span-full space-y-2 mt-3">
                             <div className="flex items-center gap-2">
                               <Music className="h-4 w-4 flex-shrink-0" />
-                              <span className="text-gray-300 text-sm">YouTube Track:</span>
+                              <span className="text-gray-300 text-sm font-medium">YouTube Track:</span>
                             </div>
                             <div className="flex items-center gap-2 ml-6">
-                              <div className="flex-1 bg-white/5 rounded px-2 py-1 text-xs text-gray-300 font-mono break-all">
-                                {(booking as any).youtubeTrack}
+                              <div className="flex-1 bg-white/5 rounded px-3 py-2 text-sm text-gray-300 font-mono break-all max-w-[400px]">
+                                {(booking as any).youtubeTrackUrl}
                               </div>
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => copyToClipboard((booking as any).youtubeTrack)}
-                                className="h-6 px-2 text-xs text-white border-white/40 hover:bg-white/20 bg-white/5 flex-shrink-0"
+                                onClick={() => copyToClipboard((booking as any).youtubeTrackUrl)}
+                                className="h-8 px-3 text-sm text-white border-white/40 hover:bg-white/20 bg-white/5 flex-shrink-0"
                               >
-                                <Copy className="h-3 w-3 mr-1" />
+                                <Copy className="h-4 w-4 mr-1" />
                                 복사
                               </Button>
                             </div>
@@ -513,15 +523,29 @@ K-Recording Cafe Team`
                         )}
                       </div>
                       
-                      {(booking as any).addons && (booking as any).addons.length > 0 && (
-                        <div className="mt-3">
-                          <span className="text-xs text-gray-400">Additional Services: </span>
-                          <span className="text-xs text-gray-300">
-                            {(booking as any).addons.map((addonId: number) => {
+                      {(booking as any).selectedAddons && (booking as any).selectedAddons.length > 0 && (
+                        <div className="mt-4 p-3 bg-white/5 rounded border border-white/10">
+                          <div className="flex items-center gap-2 mb-2">
+                            <ShoppingBag className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm text-gray-300 font-medium">Additional Services:</span>
+                          </div>
+                          <div className="space-y-1">
+                            {(booking as any).selectedAddons.map((addonId: number) => {
                               const addon = addons.find((a: any) => a.id === addonId);
-                              return addon ? addon.name : `Service #${addonId}`;
-                            }).join(", ")}
-                          </span>
+                              return (
+                                <div key={addonId} className="flex items-center justify-between text-sm">
+                                  <span className="text-gray-300">
+                                    {addon ? addon.name : `Service #${addonId}`}
+                                  </span>
+                                  {addon && (
+                                    <span className="text-green-400 font-mono">
+                                      ₩{addon.price.toLocaleString()}
+                                    </span>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       )}
                     </div>
