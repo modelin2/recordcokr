@@ -8,29 +8,32 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Session middleware with PostgreSQL store for production
-const sessionTtl = 24 * 60 * 60 * 1000; // 24 hours
+// Session middleware with optimized configuration for production
+const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 7 days for better UX
 const isProduction = process.env.NODE_ENV === 'production';
 
 let sessionConfig: any = {
   secret: process.env.SESSION_SECRET || 'k-recording-cafe-session-secret-2025',
   resave: false,
   saveUninitialized: false,
+  rolling: false, // Don't extend session on every request for performance
   cookie: {
-    secure: isProduction, // Use HTTPS in production
+    secure: isProduction, // Use HTTPS in production only
     httpOnly: true,
-    maxAge: sessionTtl
+    maxAge: sessionTtl,
+    sameSite: 'lax' // Better compatibility
   }
 };
 
-// Use PostgreSQL session store in production if DATABASE_URL is available
-if (isProduction && process.env.DATABASE_URL) {
+// Always use PostgreSQL session store if DATABASE_URL is available
+if (process.env.DATABASE_URL) {
   const pgStore = connectPg(session);
   sessionConfig.store = new pgStore({
     conString: process.env.DATABASE_URL,
     createTableIfMissing: true,
     ttl: sessionTtl / 1000, // TTL in seconds
     tableName: "sessions",
+    pruneSessionInterval: 60 * 15, // Clean up expired sessions every 15 minutes
   });
 }
 

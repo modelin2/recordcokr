@@ -17,27 +17,39 @@ export default function LoginPage() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
-      console.log("로그인 시도:", credentials);
-      const response = await apiRequest("POST", "/api/auth/login", credentials);
-      const result = await response.json();
-      console.log("로그인 응답:", result);
-      return result;
+      // Trim whitespace for better validation
+      const trimmedData = {
+        username: credentials.username.trim(),
+        password: credentials.password.trim()
+      };
+      
+      return await apiRequest("POST", "/api/auth/login", trimmedData);
     },
     onSuccess: (data) => {
-      console.log("로그인 성공:", data);
       toast({
         title: "로그인 성공",
         description: `환영합니다, ${data.user.username}님!`,
       });
-      // Force query invalidation to refresh user data
-      window.location.href = "/admin";
+      
+      // Use proper navigation instead of window.location.href
+      setTimeout(() => {
+        setLocation("/admin");
+      }, 500);
     },
     onError: (error: Error) => {
-      console.error("Login error details:", error);
-      console.error("Error message:", error.message);
+      let errorMessage = "아이디 또는 비밀번호를 확인해주세요.";
+      
+      if (error.message?.includes("Invalid credentials")) {
+        errorMessage = "사용자명 또는 비밀번호가 잘못되었습니다.";
+      } else if (error.message?.includes("Account is disabled")) {
+        errorMessage = "계정이 비활성화되었습니다.";
+      } else if (error.message?.includes("required")) {
+        errorMessage = "사용자명과 비밀번호를 입력해주세요.";
+      }
+      
       toast({
         title: "로그인 실패",
-        description: "아이디 또는 비밀번호를 확인해주세요.",
+        description: errorMessage,
         variant: "destructive",
       });
     },
@@ -45,8 +57,11 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("폼 제출:", { username, password: "***" });
-    if (!username || !password) {
+    
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+    
+    if (!trimmedUsername || !trimmedPassword) {
       toast({
         title: "입력 오류",
         description: "사용자명과 비밀번호를 모두 입력해주세요.",
@@ -54,7 +69,8 @@ export default function LoginPage() {
       });
       return;
     }
-    loginMutation.mutate({ username, password });
+    
+    loginMutation.mutate({ username: trimmedUsername, password: trimmedPassword });
   };
 
   return (

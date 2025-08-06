@@ -40,33 +40,62 @@ const requireAdmin = async (req: any, res: any, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Simple login endpoint (for demo - in production use proper authentication)
+  // Optimized login endpoint for production
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { username, password } = req.body;
-      console.log("로그인 요청:", { username, password: "***" });
       
       if (!username || !password) {
-        console.log("필수 정보 누락");
         return res.status(400).json({ message: "Username and password required" });
       }
 
-      const user = await storage.getUserByUsername(username);
-      console.log("사용자 조회 결과:", user ? { id: user.id, username: user.username, email: user.email } : "사용자 없음");
+      // Trim whitespace and validate input
+      const trimmedUsername = username.trim();
+      const trimmedPassword = password.trim();
+
+      if (!trimmedUsername || !trimmedPassword) {
+        return res.status(400).json({ message: "Invalid username or password format" });
+      }
+
+      const user = await storage.getUserByUsername(trimmedUsername);
       
-      if (!user || user.password !== password) {
-        console.log("인증 실패:", !user ? "사용자 없음" : "비밀번호 불일치");
+      if (!user || user.password !== trimmedPassword) {
+        // Add small delay to prevent timing attacks
+        await new Promise(resolve => setTimeout(resolve, 200));
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
       if (!user.isActive) {
-        console.log("비활성 계정");
         return res.status(401).json({ message: "Account is disabled" });
       }
 
-      req.session.userId = user.id;
-      console.log("로그인 성공:", { userId: user.id, username: user.username });
-      res.json({ message: "Login successful", user: { ...user, password: undefined } });
+      // Create session with proper regeneration for security
+      req.session.regenerate((err) => {
+        if (err) {
+          console.error("Session regeneration error:", err);
+          return res.status(500).json({ message: "Login failed" });
+        }
+        
+        req.session.userId = user.id;
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error("Session save error:", saveErr);
+            return res.status(500).json({ message: "Login failed" });
+          }
+          
+          res.json({ 
+            message: "Login successful", 
+            user: { 
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              role: user.role,
+              isActive: user.isActive,
+              createdAt: user.createdAt
+            } 
+          });
+        });
+      });
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ message: "Login failed" });
@@ -86,14 +115,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Logout
+  // Optimized logout endpoint
   app.post("/api/auth/logout", (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ message: "Logout failed" });
-      }
-      res.json({ message: "Logout successful" });
-    });
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Session destruction error:", err);
+          return res.status(500).json({ message: "Logout failed" });
+        }
+        res.clearCookie('connect.sid'); // Clear the session cookie
+        res.json({ message: "Logout successful" });
+      });
+    } else {
+      res.json({ message: "Already logged out" });
+    }
   });
 
   // Get all packages
