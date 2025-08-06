@@ -154,12 +154,14 @@ export default function EnhancedBookingSection() {
       // If there's any amount to pay (base price for direct booking or addons for any booking type)
       if (totalPrice > 0) {
         // Store booking data temporarily in sessionStorage for payment
-        sessionStorage.setItem('pendingPayment', JSON.stringify({
+        const paymentData = {
           bookingId,
           totalPrice: Math.round(totalPrice),
           customerName: form.getValues("name"),
           customerEmail: form.getValues("email")
-        }));
+        };
+        console.log('Storing payment data in sessionStorage:', paymentData);
+        sessionStorage.setItem('pendingPayment', JSON.stringify(paymentData));
         
         toast({
           title: "Booking Created Successfully!",

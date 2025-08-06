@@ -49,8 +49,11 @@ export default function PaymentPage() {
 
     // Get payment data from sessionStorage
     const pendingPayment = sessionStorage.getItem('pendingPayment');
+    console.log('Retrieved payment data from sessionStorage:', pendingPayment);
     if (pendingPayment) {
-      setPaymentData(JSON.parse(pendingPayment));
+      const parsedData = JSON.parse(pendingPayment);
+      console.log('Parsed payment data:', parsedData);
+      setPaymentData(parsedData);
     }
 
     return () => {
@@ -82,7 +85,7 @@ export default function PaymentPage() {
       });
       
       const paymentResponse = await apiRequest("POST", "/api/payments/initialize", {
-        bookingId: paymentData.bookingId,
+        bookingId: paymentData.bookingId || parseInt(bookingId as string),
         amount: paymentData.totalPrice,
         customerName: paymentData.customerName,
         customerEmail: paymentData.customerEmail,
@@ -96,7 +99,7 @@ export default function PaymentPage() {
       await tossPayments.requestPayment('카드', {
         amount: paymentData.totalPrice,
         orderId: paymentResponse.orderId,
-        orderName: `K-Recording Cafe 녹음 세션 #${paymentData.bookingId}`,
+        orderName: `K-Recording Cafe 녹음 세션 #${paymentData.bookingId || bookingId}`,
         customerName: paymentData.customerName,
         customerEmail: paymentData.customerEmail,
         successUrl: `${window.location.origin}/payment-success`,
@@ -128,7 +131,7 @@ export default function PaymentPage() {
     );
   }
 
-  if (!paymentData || !paymentData.bookingId || !paymentData.totalPrice) {
+  if (!paymentData || !paymentData.totalPrice) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 flex items-center justify-center">
         <Card className="w-full max-w-md glass border-white/20">
