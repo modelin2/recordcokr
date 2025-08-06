@@ -74,9 +74,16 @@ export default function PaymentPage() {
 
     try {
       // Create payment with server
+      console.log('Payment request data:', {
+        bookingId: bookingId,
+        amount: amount,
+        customerName: paymentData.customerName,
+        customerEmail: paymentData.customerEmail,
+      });
+      
       const paymentResponse = await apiRequest("POST", "/api/payments/initialize", {
-        bookingId: parseInt(bookingId as string),
-        amount: parseInt(amount as string),
+        bookingId: bookingId ? parseInt(bookingId) : paymentData.bookingId,
+        amount: amount ? parseInt(amount) : paymentData.totalPrice,
         customerName: paymentData.customerName,
         customerEmail: paymentData.customerEmail,
       });
