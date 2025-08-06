@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useLocation } from "wouter";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,6 +74,7 @@ type BookingForm = z.infer<typeof bookingFormSchema>;
 export default function EnhancedBookingSection() {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+  const [, setLocation] = useLocation();
   const [loadingTimes, setLoadingTimes] = useState(false);
   const [bookingStep, setBookingStep] = useState<"select-type" | "booking-form">("select-type");
   const [selectedBookingType, setSelectedBookingType] = useState<"direct" | "klook">();
@@ -143,15 +145,35 @@ export default function EnhancedBookingSection() {
 
       return apiRequest("POST", "/api/bookings", bookingData);
     },
-    onSuccess: () => {
-      toast({
-        title: "Booking Successful!",
-        description: "Your recording session has been booked. We'll send confirmation details to your email.",
-      });
-      form.reset();
-      setSelectedDate(undefined);
-      setAvailableTimes([]);
-      queryClient.invalidateQueries({ queryKey: ['/api/timeslots'] });
+    onSuccess: (response) => {
+      const bookingType = form.getValues("bookingType");
+      
+      if (bookingType === "direct") {
+        // For direct bookings, proceed to payment
+        const bookingId = response.id;
+        const totalPrice = calculateTotalPrice(form.getValues("selectedAddons"), form.getValues("bookingTime"), bookingType);
+        
+        // Store booking data temporarily in sessionStorage for payment
+        sessionStorage.setItem('pendingPayment', JSON.stringify({
+          bookingId,
+          totalPrice: Math.round(totalPrice),
+          customerName: form.getValues("name"),
+          customerEmail: form.getValues("email")
+        }));
+        
+        // Navigate to payment page
+        setLocation(`/payment?bookingId=${bookingId}&amount=${Math.round(totalPrice)}`);
+      } else {
+        // For Klook bookings, show success message
+        toast({
+          title: "Booking Successful!",
+          description: "Your recording session has been booked. We'll send confirmation details to your email.",
+        });
+        form.reset();
+        setSelectedDate(undefined);
+        setAvailableTimes([]);
+        queryClient.invalidateQueries({ queryKey: ['/api/timeslots'] });
+      }
     },
     onError: (error: any) => {
       toast({
@@ -692,7 +714,8 @@ export default function EnhancedBookingSection() {
                     className="w-full k-gradient-pink-purple text-lg py-6"
                     disabled={bookingMutation.isPending}
                   >
-                    {bookingMutation.isPending ? "Processing..." : "Complete Booking"}
+                    {bookingMutation.isPending ? "Processing..." : 
+                     currentBookingType === "direct" ? "Proceed to Payment" : "Complete Booking"}
                   </Button>
                 </form>
               </Form>

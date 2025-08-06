@@ -68,6 +68,30 @@ export const timeSlots = pgTable("time_slots", {
   isAvailable: boolean("is_available").default(true),
 });
 
+// Payment orders table for TossPayments integration
+export const paymentOrders = pgTable("payment_orders", {
+  id: serial("id").primaryKey(),
+  orderId: text("order_id").notNull().unique(), // Unique order identifier
+  paymentKey: text("payment_key"), // From TossPayments
+  bookingId: integer("booking_id").notNull(),
+  amount: integer("amount").notNull(), // Payment amount in Korean won
+  status: text("status").notNull().default("ready"), // ready, in_progress, waiting_for_deposit, done, canceled, partial_canceled, aborted, expired
+  method: text("method"), // Card payment method
+  approvedAt: timestamp("approved_at"),
+  requestedAt: timestamp("requested_at").defaultNow(),
+  failReason: text("fail_reason"), // If payment failed
+  cancelReason: text("cancel_reason"), // If payment canceled
+  customerName: text("customer_name"),
+  customerEmail: text("customer_email"),
+  customerPhone: text("customer_phone"),
+  isPartialCancelable: boolean("is_partial_cancelable").default(false),
+  receipt: text("receipt"), // Receipt URL from TossPayments
+  checkoutUrl: text("checkout_url"), // Payment checkout URL
+  metadata: text("metadata"), // Additional payment metadata JSON
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -122,6 +146,19 @@ export const insertTimeSlotSchema = createInsertSchema(timeSlots).omit({
   id: true,
 });
 
+export const insertPaymentOrderSchema = createInsertSchema(paymentOrders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  orderId: z.string().min(1, "Order ID is required"),
+  bookingId: z.number().int().positive("Valid booking ID is required"),
+  amount: z.number().int().positive("Amount must be positive"),
+  customerName: z.string().min(1, "Customer name is required"),
+  customerEmail: z.string().email("Valid email is required"),
+  customerPhone: z.string().min(1, "Phone number is required"),
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 export type User = typeof users.$inferSelect;
@@ -135,3 +172,5 @@ export type TimeSlot = typeof timeSlots.$inferSelect;
 export type InsertTimeSlot = z.infer<typeof insertTimeSlotSchema>;
 export type RevenueStats = typeof revenueStats.$inferSelect;
 export type InsertRevenueStats = z.infer<typeof insertRevenueStatsSchema>;
+export type PaymentOrder = typeof paymentOrders.$inferSelect;
+export type InsertPaymentOrder = z.infer<typeof insertPaymentOrderSchema>;

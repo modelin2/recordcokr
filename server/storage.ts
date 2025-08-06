@@ -1,11 +1,14 @@
 import { 
-  users, packages, addons, bookings, timeSlots,
+  users, packages, addons, bookings, timeSlots, paymentOrders,
   type User, type InsertUser, type InsertAdmin,
   type Package, type InsertPackage,
   type Addon, type InsertAddon,
   type Booking, type InsertBooking,
-  type TimeSlot, type InsertTimeSlot
+  type TimeSlot, type InsertTimeSlot,
+  type PaymentOrder, type InsertPaymentOrder
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -34,6 +37,11 @@ export interface IStorage {
   getAvailableTimeSlots(date: string): Promise<TimeSlot[]>;
   createTimeSlot(timeSlot: InsertTimeSlot): Promise<TimeSlot>;
   updateTimeSlotAvailability(id: number, isAvailable: boolean): Promise<TimeSlot | undefined>;
+  
+  // Payment operations
+  createPaymentOrder(paymentOrder: InsertPaymentOrder): Promise<PaymentOrder>;
+  getPaymentOrderByOrderId(orderId: string): Promise<PaymentOrder | undefined>;
+  updatePaymentOrder(orderId: string, updates: Partial<PaymentOrder>): Promise<PaymentOrder>;
 }
 
 export class MemStorage implements IStorage {
@@ -42,11 +50,13 @@ export class MemStorage implements IStorage {
   private addons: Map<number, Addon>;
   private bookings: Map<number, Booking>;
   private timeSlots: Map<number, TimeSlot>;
+  private paymentOrders: Map<number, PaymentOrder>;
   private currentUserId: number;
   private currentPackageId: number;
   private currentAddonId: number;
   private currentBookingId: number;
   private currentTimeSlotId: number;
+  private currentPaymentOrderId: number;
 
   constructor() {
     this.users = new Map();
@@ -54,11 +64,13 @@ export class MemStorage implements IStorage {
     this.addons = new Map();
     this.bookings = new Map();
     this.timeSlots = new Map();
+    this.paymentOrders = new Map();
     this.currentUserId = 1;
     this.currentPackageId = 1;
     this.currentAddonId = 1;
     this.currentBookingId = 1;
     this.currentTimeSlotId = 1;
+    this.currentPaymentOrderId = 1;
 
     this.initializeData();
   }
@@ -252,107 +264,7 @@ export class MemStorage implements IStorage {
   }
 
   private initializeSampleBookings() {
-    const sampleBookings = [
-      {
-        name: "김서연",
-        email: "seoyeon.kim@gmail.com",
-        phone: "010-1234-5678",
-        packageId: 2,
-        addons: [1, 2], // Full Track Mixing + Recording Video Raw
-        selectedDate: "2025-08-06",
-        selectedTime: "14:00",
-        youtubeTrack: "https://www.youtube.com/watch?v=pBuZEGYXA6E",
-        selectedBeverages: ["아메리카노"],
-        totalPrice: 125000,
-        bookingType: "direct" as const,
-        status: "confirmed" as const,
-        createdAt: new Date("2025-08-05T02:30:00Z"),
-      },
-      {
-        name: "이민준",
-        email: "minjun.lee@naver.com",
-        phone: "010-9876-5432",
-        packageId: 1,
-        addons: [3], // Makeup Service
-        selectedDate: "2025-08-07",
-        selectedTime: "16:30",
-        youtubeTrack: "https://youtube.com/watch?v=BTS_Dynamite",
-        selectedBeverages: ["카페라떼"],
-        totalPrice: 137500,
-        bookingType: "direct" as const,
-        status: "pending" as const,
-        createdAt: new Date("2025-08-05T05:15:00Z"),
-      },
-      {
-        name: "Sarah Johnson",
-        email: "sarah.johnson@yahoo.com",
-        phone: "010-5555-7777",
-        packageId: 3,
-        addons: [1, 4], // Full Track Mixing + LP Production
-        selectedDate: "2025-08-08",
-        selectedTime: "18:00",
-        youtubeTrack: "https://youtube.com/watch?v=BlackPink_DDU",
-        selectedBeverages: ["딸기라떼"],
-        totalPrice: 400000,
-        bookingType: "klook" as const,
-        status: "in-progress" as const,
-        createdAt: new Date("2025-08-04T12:45:00Z"),
-      },
-      {
-        name: "田中美咲",
-        email: "tanaka.misaki@gmail.com",
-        phone: "010-3333-4444",
-        packageId: 2,
-        addons: [2, 5], // Recording Video Edited + Global Distribution
-        selectedDate: "2025-08-09",
-        selectedTime: "11:00",
-        youtubeTrack: "https://youtube.com/watch?v=NewJeans_GetUp",
-        selectedBeverages: ["바닐라라떼"],
-        totalPrice: 1475000,
-        bookingType: "direct" as const,
-        status: "completed" as const,
-        createdAt: new Date("2025-08-03T08:20:00Z"),
-      },
-      {
-        name: "박지훈",
-        email: "jihun.park@kakao.com",
-        phone: "010-2222-8888",
-        packageId: 1,
-        addons: [],
-        selectedDate: "2025-08-10",
-        selectedTime: "20:00",
-        youtubeTrack: "https://youtube.com/watch?v=IVE_LOVE_DIVE",
-        selectedBeverages: ["아이스티"],
-        totalPrice: 44000,
-        bookingType: "klook" as const,
-        status: "cancelled" as const,
-        createdAt: new Date("2025-08-02T14:10:00Z"),
-      },
-      {
-        name: "Emma Wilson",
-        email: "emma.wilson@hotmail.com",
-        phone: "010-7777-1111",
-        packageId: 2,
-        addons: [1, 3], // Full Track Mixing + Makeup
-        selectedDate: "2025-08-11",
-        selectedTime: "13:30",
-        youtubeTrack: "https://youtube.com/watch?v=aespa_Spicy",
-        selectedBeverages: ["카라멜마키아또"],
-        totalPrice: 275000,
-        bookingType: "direct" as const,
-        status: "confirmed" as const,
-        createdAt: new Date("2025-08-05T01:55:00Z"),
-      }
-    ];
-
-    sampleBookings.forEach(booking => {
-      const id = this.currentBookingId++;
-      const fullBooking: Booking = {
-        ...booking,
-        id,
-      };
-      this.bookings.set(id, fullBooking);
-    });
+    // No sample bookings - they will be created through the API
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -470,10 +382,11 @@ export class MemStorage implements IStorage {
       drinkTemperature: insertBooking.drinkTemperature || null,
       youtubeTrackUrl: insertBooking.youtubeTrackUrl,
       selectedAddons: insertBooking.selectedAddons || [],
+      lpDeliveryAddress: insertBooking.lpDeliveryAddress || null,
       bookingDate: insertBooking.bookingDate || null,
       bookingTime: insertBooking.bookingTime || null,
-      totalPrice: insertBooking.totalPrice,
-      status: insertBooking.status || "pending",
+      totalPrice: 0, // Will be calculated separately
+      status: "pending",
       createdAt: new Date(),
     };
     this.bookings.set(id, booking);
@@ -519,6 +432,198 @@ export class MemStorage implements IStorage {
     }
     return timeSlot;
   }
+
+  // Payment operations
+  async createPaymentOrder(insertPaymentOrder: InsertPaymentOrder): Promise<PaymentOrder> {
+    const id = this.currentPaymentOrderId++;
+    const paymentOrder: PaymentOrder = {
+      id,
+      orderId: insertPaymentOrder.orderId,
+      paymentKey: insertPaymentOrder.paymentKey || null,
+      bookingId: insertPaymentOrder.bookingId,
+      amount: insertPaymentOrder.amount,
+      status: insertPaymentOrder.status || "ready",
+      method: insertPaymentOrder.method || null,
+      approvedAt: insertPaymentOrder.approvedAt || null,
+      requestedAt: new Date(),
+      failReason: insertPaymentOrder.failReason || null,
+      cancelReason: insertPaymentOrder.cancelReason || null,
+      customerName: insertPaymentOrder.customerName,
+      customerEmail: insertPaymentOrder.customerEmail,
+      customerPhone: insertPaymentOrder.customerPhone,
+      isPartialCancelable: insertPaymentOrder.isPartialCancelable || false,
+      receipt: insertPaymentOrder.receipt || null,
+      checkoutUrl: insertPaymentOrder.checkoutUrl || null,
+      metadata: insertPaymentOrder.metadata || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.paymentOrders.set(id, paymentOrder);
+    return paymentOrder;
+  }
+
+  async getPaymentOrderByOrderId(orderId: string): Promise<PaymentOrder | undefined> {
+    return Array.from(this.paymentOrders.values()).find(order => order.orderId === orderId);
+  }
+
+  async updatePaymentOrder(orderId: string, updates: Partial<PaymentOrder>): Promise<PaymentOrder> {
+    const paymentOrder = await this.getPaymentOrderByOrderId(orderId);
+    if (!paymentOrder) {
+      throw new Error("Payment order not found");
+    }
+
+    const updatedOrder = {
+      ...paymentOrder,
+      ...updates,
+      updatedAt: new Date(),
+    };
+
+    this.paymentOrders.set(paymentOrder.id, updatedOrder);
+    return updatedOrder;
+  }
 }
 
-export const storage = new MemStorage();
+// Database Storage Implementation
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const [newUser] = await db.insert(users).values(user).returning();
+    return newUser;
+  }
+
+  async createAdmin(admin: { email: string; username: string; role: string }): Promise<User> {
+    const [newAdmin] = await db.insert(users).values({
+      ...admin,
+      password: 'admin123', // Default password
+    }).returning();
+    return newAdmin;
+  }
+
+  async getAllAdmins(): Promise<User[]> {
+    return await db.select().from(users).where(eq(users.role, 'admin'));
+  }
+
+  async updateUserStatus(userId: number, isActive: boolean): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ isActive })
+      .where(eq(users.id, userId))
+      .returning();
+    return updatedUser;
+  }
+
+  async deleteAdmin(userId: number): Promise<boolean> {
+    const result = await db.delete(users).where(eq(users.id, userId));
+    return result.rowCount > 0;
+  }
+
+  async getAllPackages(): Promise<Package[]> {
+    return await db.select().from(packages);
+  }
+
+  async getPackage(id: number): Promise<Package | undefined> {
+    const [pkg] = await db.select().from(packages).where(eq(packages.id, id));
+    return pkg;
+  }
+
+  async createPackage(pkg: InsertPackage): Promise<Package> {
+    const [newPackage] = await db.insert(packages).values(pkg).returning();
+    return newPackage;
+  }
+
+  async getAllAddons(): Promise<Addon[]> {
+    return await db.select().from(addons);
+  }
+
+  async getAddon(id: number): Promise<Addon | undefined> {
+    const [addon] = await db.select().from(addons).where(eq(addons.id, id));
+    return addon;
+  }
+
+  async createAddon(addon: InsertAddon): Promise<Addon> {
+    const [newAddon] = await db.insert(addons).values(addon).returning();
+    return newAddon;
+  }
+
+  async getAllBookings(): Promise<Booking[]> {
+    return await db.select().from(bookings);
+  }
+
+  async getBooking(id: number): Promise<Booking | undefined> {
+    const [booking] = await db.select().from(bookings).where(eq(bookings.id, id));
+    return booking;
+  }
+
+  async createBooking(booking: InsertBooking): Promise<Booking> {
+    const [newBooking] = await db.insert(bookings).values({
+      ...booking,
+      totalPrice: 0, // Will be calculated by server
+      status: 'pending'
+    }).returning();
+    return newBooking;
+  }
+
+  async updateBookingStatus(id: number, status: string): Promise<Booking | undefined> {
+    const [updatedBooking] = await db
+      .update(bookings)
+      .set({ status })
+      .where(eq(bookings.id, id))
+      .returning();
+    return updatedBooking;
+  }
+
+  async getAvailableTimeSlots(date: string): Promise<TimeSlot[]> {
+    return await db
+      .select()
+      .from(timeSlots)
+      .where(and(eq(timeSlots.date, date), eq(timeSlots.isAvailable, true)));
+  }
+
+  async createTimeSlot(timeSlot: InsertTimeSlot): Promise<TimeSlot> {
+    const [newTimeSlot] = await db.insert(timeSlots).values(timeSlot).returning();
+    return newTimeSlot;
+  }
+
+  async updateTimeSlotAvailability(id: number, isAvailable: boolean): Promise<TimeSlot | undefined> {
+    const [updatedTimeSlot] = await db
+      .update(timeSlots)
+      .set({ isAvailable })
+      .where(eq(timeSlots.id, id))
+      .returning();
+    return updatedTimeSlot;
+  }
+
+  async createPaymentOrder(paymentOrder: InsertPaymentOrder): Promise<PaymentOrder> {
+    const [newPaymentOrder] = await db.insert(paymentOrders).values(paymentOrder).returning();
+    return newPaymentOrder;
+  }
+
+  async getPaymentOrderByOrderId(orderId: string): Promise<PaymentOrder | undefined> {
+    const [paymentOrder] = await db
+      .select()
+      .from(paymentOrders)
+      .where(eq(paymentOrders.orderId, orderId));
+    return paymentOrder;
+  }
+
+  async updatePaymentOrder(orderId: string, updates: Partial<PaymentOrder>): Promise<PaymentOrder> {
+    const [updatedPaymentOrder] = await db
+      .update(paymentOrders)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(paymentOrders.orderId, orderId))
+      .returning();
+    return updatedPaymentOrder;
+  }
+}
+
+// Use DatabaseStorage for production
+export const storage = new DatabaseStorage();
