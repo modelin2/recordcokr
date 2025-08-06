@@ -146,6 +146,13 @@ Changelog:
   - Resolved time slot display problems (switched from DatabaseStorage to MemStorage)
   - Added proper error handling for payment failures
   - Note: Payment system integration paused due to PG company change requirement
+- August 06, 2025. **Payment System Removal & Booking Simplification**:
+  - Completely removed TossPayments integration per user request
+  - Modified booking flow to complete immediately without payment redirect
+  - Changed success messages to English for international users
+  - Switched to DatabaseStorage with automatic time slot initialization
+  - Fixed data persistence issues to prevent booking loss
+  - Project now ready for deployment with simplified booking flow
 ```
 
 ## User Preferences
