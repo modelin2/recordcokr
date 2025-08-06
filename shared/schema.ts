@@ -37,9 +37,9 @@ export const bookings = pgTable("bookings", {
   phone: text("phone").notNull(),
   bookingType: text("booking_type").notNull().default("direct"), // "direct" or "klook"
   klookBookingId: text("klook_booking_id"), // For klook reservations
-  selectedDrink: text("selected_drink").notNull(),
+  selectedDrink: text("selected_drink"),
   drinkTemperature: text("drink_temperature"), // "hot" or "iced"
-  youtubeTrackUrl: text("youtube_track_url").notNull(),
+  youtubeTrackUrl: text("youtube_track_url"),
   selectedAddons: integer("selected_addons").array().default([]),
   lpDeliveryAddress: text("lp_delivery_address"), // For LP Record Production addon
   bookingDate: text("booking_date"), // Optional for klook bookings
@@ -128,9 +128,9 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   phone: z.string().min(1, "Phone number is required"),
   bookingType: z.enum(["direct", "klook"]).default("direct"),
   klookBookingId: z.string().optional(),
-  selectedDrink: z.string().min(1, "Drink selection is required"),
+  selectedDrink: z.string().optional(),
   drinkTemperature: z.string().optional(),
-  youtubeTrackUrl: z.string().url("Valid YouTube URL is required"),
+  youtubeTrackUrl: z.string().optional(),
   selectedAddons: z.array(z.number()).default([]),
   lpDeliveryAddress: z.string().optional(),
   bookingDate: z.string().optional(), // Optional for klook bookings

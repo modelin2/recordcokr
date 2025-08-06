@@ -170,6 +170,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const bookingData = {
         ...validatedData,
+        // For direct bookings, bookingDate and bookingTime are required and already set
+        // For klook bookings, these can be null
+        bookingDate: validatedData.bookingType === "klook" && !validatedData.bookingDate ? undefined : validatedData.bookingDate,
+        bookingTime: validatedData.bookingType === "klook" && !validatedData.bookingTime ? undefined : validatedData.bookingTime,
         totalPrice,
         status: "pending" as const,
       };
