@@ -498,52 +498,62 @@ export class MemStorage implements IStorage {
 
 // Database Storage Implementation
 export class DatabaseStorage implements IStorage {
-  constructor() {
-    this.initializeTimeSlots();
-  }
+  private initialized = false;
 
   private async initializeTimeSlots() {
-    // Check if time slots already exist
-    const existingSlots = await db.select().from(timeSlots).limit(1);
-    if (existingSlots.length > 0) {
-      console.log('Time slots already exist, skipping initialization');
-      return;
-    }
-
-    console.log('Initializing time slots in database...');
-    
-    // Initialize time slots for the next 30 days
-    const today = new Date();
-    const timeSlotsList = [
-      "10:00", "10:50", "11:40", "12:30", // Morning slots
-      "13:00", "13:50", "14:40", "15:30", "16:20", "17:10", // Afternoon slots  
-      "18:00", "18:50", "19:40", "20:30", "21:20", "22:00"  // Evening slots
-    ];
-
-    const slotsToInsert: any[] = [];
-    
-    for (let i = 0; i < 30; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      const dateStr = date.toISOString().split('T')[0];
-      
-      timeSlotsList.forEach(timeStr => {
-        slotsToInsert.push({
-          date: dateStr,
-          time: timeStr,
-          isAvailable: true,
-        });
-      });
-    }
+    if (this.initialized) return;
     
     try {
+      // Check if time slots already exist
+      const existingSlots = await db.select().from(timeSlots).limit(1);
+      if (existingSlots.length > 0) {
+        console.log('Time slots already exist, skipping initialization');
+        this.initialized = true;
+        return;
+      }
+
+      console.log('Initializing time slots in database...');
+      
+      // Initialize time slots for the next 30 days
+      const today = new Date();
+      const timeSlotsList = [
+        "10:00", "10:50", "11:40", "12:30", // Morning slots
+        "13:00", "13:50", "14:40", "15:30", "16:20", "17:10", // Afternoon slots  
+        "18:00", "18:50", "19:40", "20:30", "21:20", "22:00"  // Evening slots
+      ];
+
+      const slotsToInsert: any[] = [];
+      
+      for (let i = 0; i < 30; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        timeSlotsList.forEach(timeStr => {
+          slotsToInsert.push({
+            date: dateStr,
+            time: timeStr,
+            isAvailable: true,
+          });
+        });
+      }
+      
       await db.insert(timeSlots).values(slotsToInsert);
       console.log(`Initialized ${slotsToInsert.length} time slots in database`);
+      this.initialized = true;
     } catch (error) {
       console.error('Error initializing time slots:', error);
+      this.initialized = true; // Mark as initialized even if failed to avoid infinite retries
+    }
+  }
+
+  private async ensureInitialized() {
+    if (!this.initialized) {
+      await this.initializeTimeSlots();
     }
   }
   async getUser(id: number): Promise<User | undefined> {
+    await this.ensureInitialized();
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
