@@ -161,17 +161,26 @@ export default function EnhancedBookingSection() {
           customerEmail: form.getValues("email")
         }));
         
-        // Navigate to payment page
-        setLocation(`/payment?bookingId=${bookingId}&amount=${Math.round(totalPrice)}`);
+        toast({
+          title: "Booking Created Successfully!",
+          description: "Redirecting to payment page...",
+        });
+        
+        // Navigate to payment page with delay
+        setTimeout(() => {
+          setLocation(`/payment?bookingId=${bookingId}&amount=${Math.round(totalPrice)}`);
+        }, 1500);
       } else {
         // For Klook bookings, show success message
         toast({
-          title: "Booking Successful!",
-          description: "Your recording session has been booked. We'll send confirmation details to your email.",
+          title: "Klook Booking Confirmed!",
+          description: "Your booking has been successfully confirmed. No additional payment required.",
         });
         form.reset();
         setSelectedDate(undefined);
         setAvailableTimes([]);
+        setBookingStep("select-type");
+        setSelectedBookingType(undefined);
         queryClient.invalidateQueries({ queryKey: ['/api/timeslots'] });
       }
     },
