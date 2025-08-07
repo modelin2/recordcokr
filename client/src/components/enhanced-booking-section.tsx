@@ -73,15 +73,6 @@ type BookingForm = z.infer<typeof bookingFormSchema>;
 
 export default function EnhancedBookingSection() {
   const [selectedDate, setSelectedDate] = useState<Date>();
-  
-  // Check if URL has klook anchor and auto-select klook booking
-  useEffect(() => {
-    if (window.location.hash === '#klook-booking' || window.location.hash === '#klook') {
-      setSelectedBookingType("klook");
-      form.setValue("bookingType", "klook");
-      setBookingStep("booking-form");
-    }
-  }, []);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [, setLocation] = useLocation();
   const [loadingTimes, setLoadingTimes] = useState(false);
@@ -141,6 +132,34 @@ export default function EnhancedBookingSection() {
       bookingTime: "",
     },
   });
+
+  // Check if URL has klook anchor and auto-select klook booking
+  useEffect(() => {
+    const checkKlookHash = () => {
+      if (window.location.hash === '#klook-booking' || window.location.hash === '#klook') {
+        console.log("Klook hash detected, activating klook mode");
+        setSelectedBookingType("klook");
+        form.setValue("bookingType", "klook");
+        setBookingStep("booking-form");
+        
+        // Scroll to booking section
+        setTimeout(() => {
+          const bookingSection = document.getElementById('booking');
+          if (bookingSection) {
+            bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 500); // Increased delay to ensure component is rendered
+      }
+    };
+    
+    // Check immediately and also listen for hash changes
+    checkKlookHash();
+    window.addEventListener('hashchange', checkKlookHash);
+    
+    return () => {
+      window.removeEventListener('hashchange', checkKlookHash);
+    };
+  }, [form]);
 
   const bookingMutation = useMutation({
     mutationFn: async (data: BookingForm) => {
@@ -264,9 +283,15 @@ export default function EnhancedBookingSection() {
 
   // Handle booking type selection
   const handleBookingTypeSelect = (type: "direct" | "klook") => {
+    console.log("Booking type selected:", type);
     setSelectedBookingType(type);
     form.setValue("bookingType", type);
     setBookingStep("booking-form");
+    
+    // Update URL hash for klook bookings
+    if (type === "klook") {
+      window.location.hash = '#klook-booking';
+    }
   };
 
   // If we're in the type selection step, show the selection UI
