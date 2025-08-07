@@ -73,6 +73,15 @@ type BookingForm = z.infer<typeof bookingFormSchema>;
 
 export default function EnhancedBookingSection() {
   const [selectedDate, setSelectedDate] = useState<Date>();
+  
+  // Check if URL has klook anchor and auto-select klook booking
+  useEffect(() => {
+    if (window.location.hash === '#klook-booking' || window.location.hash === '#klook') {
+      setSelectedBookingType("klook");
+      form.setValue("bookingType", "klook");
+      setBookingStep("booking-form");
+    }
+  }, []);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [, setLocation] = useLocation();
   const [loadingTimes, setLoadingTimes] = useState(false);
@@ -296,6 +305,7 @@ export default function EnhancedBookingSection() {
 
             {/* Klook Booking */}
             <Card 
+              id="klook-booking"
               className="glass border-white/20 cursor-pointer hover:border-blue-500/50 transition-all duration-300"
               onClick={() => handleBookingTypeSelect("klook")}
             >
