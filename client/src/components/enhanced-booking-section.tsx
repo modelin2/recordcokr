@@ -133,22 +133,24 @@ export default function EnhancedBookingSection() {
     },
   });
 
-  // Check if URL has klook anchor and auto-select klook booking
+  // Check if URL has klook anchor and scroll to booking section (but keep selection screen)
   useEffect(() => {
     const checkKlookHash = () => {
       if (window.location.hash === '#klook-booking' || window.location.hash === '#klook') {
-        console.log("Klook hash detected, activating klook mode");
-        setSelectedBookingType("klook");
-        form.setValue("bookingType", "klook");
-        setBookingStep("booking-form");
+        console.log("Klook hash detected, scrolling to booking section");
         
-        // Scroll to booking section
+        // DON'T auto-select klook mode - keep the selection screen
+        // Just scroll to the booking type selection cards
         setTimeout(() => {
-          const bookingSection = document.getElementById('booking');
-          if (bookingSection) {
-            bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const cardContainer = document.getElementById('booking-type-cards');
+          if (cardContainer) {
+            // Scroll to show both booking cards nicely
+            cardContainer.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center' 
+            });
           }
-        }, 500); // Increased delay to ensure component is rendered
+        }, 500);
       }
     };
     
@@ -306,7 +308,7 @@ export default function EnhancedBookingSection() {
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+          <div id="booking-type-cards" className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
             {/* Direct Booking */}
             <Card 
               className="glass border-white/20 cursor-pointer hover:border-pink-500/50 transition-all duration-300"
