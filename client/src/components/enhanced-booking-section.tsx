@@ -323,28 +323,7 @@ export default function EnhancedBookingSection() {
           </div>
 
           <div id="booking-type-cards" className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
-            {/* Direct Booking */}
-            <Card 
-              className="glass border-white/20 cursor-pointer hover:border-pink-500/50 transition-all duration-300"
-              onClick={() => handleBookingTypeSelect("direct")}
-            >
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
-                  <CalendarIcon className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Direct Booking</h3>
-                <p className="text-gray-300 mb-6">
-                  Book directly with us and choose your preferred date and time
-                </p>
-                <ul className="text-sm text-gray-400 space-y-2">
-                  <li>✓ Choose your preferred time slot</li>
-                  <li>✓ Real-time availability</li>
-                  <li>✓ Instant confirmation</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Klook Booking */}
+            {/* Klook Booking - First Position */}
             <Card 
               id="klook-booking"
               className="glass border-white/20 cursor-pointer hover:border-blue-500/50 transition-all duration-300"
@@ -362,6 +341,27 @@ export default function EnhancedBookingSection() {
                   <li>✓ Use your Klook booking ID</li>
                   <li>✓ Select drinks & add-ons</li>
                   <li>✓ Quick check-in process</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Direct Booking - Second Position */}
+            <Card 
+              className="glass border-white/20 cursor-pointer hover:border-pink-500/50 transition-all duration-300"
+              onClick={() => handleBookingTypeSelect("direct")}
+            >
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+                  <CalendarIcon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">Direct Booking</h3>
+                <p className="text-gray-300 mb-6">
+                  Book directly with us and choose your preferred date and time
+                </p>
+                <ul className="text-sm text-gray-400 space-y-2">
+                  <li>✓ Choose your preferred time slot</li>
+                  <li>✓ Real-time availability</li>
+                  <li>✓ Instant confirmation</li>
                 </ul>
               </CardContent>
             </Card>
