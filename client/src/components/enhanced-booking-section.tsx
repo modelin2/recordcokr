@@ -140,17 +140,31 @@ export default function EnhancedBookingSection() {
         console.log("Klook hash detected, scrolling to booking section");
         
         // DON'T auto-select klook mode - keep the selection screen
-        // Just scroll to the booking type selection cards
+        // Scroll directly to the booking type cards
         setTimeout(() => {
+          console.log("Attempting to scroll to booking-type-cards");
           const cardContainer = document.getElementById('booking-type-cards');
+          const bookingSection = document.getElementById('booking');
+          
           if (cardContainer) {
-            // Scroll to show both booking cards nicely
-            cardContainer.scrollIntoView({ 
+            console.log("Found booking-type-cards, scrolling to it");
+            // Get the position of the card container
+            const rect = cardContainer.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const targetPosition = rect.top + scrollTop - 150; // Offset to show cards better
+            
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+          } else if (bookingSection) {
+            console.log("Fallback: scrolling to booking section");
+            bookingSection.scrollIntoView({ 
               behavior: 'smooth', 
               block: 'center' 
             });
           }
-        }, 500);
+        }, 800); // Increased delay to ensure elements are rendered
       }
     };
     
