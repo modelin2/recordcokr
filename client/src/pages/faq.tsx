@@ -1,17 +1,12 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 
+type Language = 'ko' | 'en' | 'zh';
+
 const koreanFaqs = [
-  {
-    question: "화장실은 어디에 있나요?",
-    answer: "화장실은 매장 정문을 나가신 후 왼쪽으로 가시면 됩니다. 남자화장실과 여자화장실이 분리되어 있어 편리하게 이용하실 수 있어요."
-  },
-  {
-    question: "화장실이 매장 안에 있나요?",
-    answer: "화장실은 매장 외부에 위치해 있습니다. 정문을 나가서 왼쪽으로 이동하시면 바로 찾으실 수 있고, 남녀 화장실이 각각 구분되어 있습니다."
-  },
   {
     question: "안녕하세요 / 하이 / 여기 처음이에요",
     answer: "안녕하세요! 케이팝 레코딩카페에 오신 것을 환영합니다. 저는 매장 안내를 도와드리는 AI 도우미예요. 궁금한 것이 있으시면 언제든 말씀해 주세요!"
@@ -31,10 +26,6 @@ const koreanFaqs = [
   {
     question: "친구들과 같이 와도 되나요? / 단체 이용 가능해요?",
     answer: "네, 친구분들과 함께 오시면 더욱 재미있게 즐기실 수 있어요! 함께 듀엣이나 그룹 커버를 녹음하거나, 서로 응원하며 촬영할 수도 있습니다. 단체 이용도 가능하니 미리 예약해 주세요."
-  },
-  {
-    question: "직원이랑 얘기할 수 있어요? / 사람 불러주세요",
-    answer: "저는 기본적인 안내만 도와드릴 수 있어요. 더 자세한 문의나 예약, 기술적인 도움이 필요하시면 매장 직원을 불러드릴게요. 바로 반응이 없으면 아래 전화번호로 전화주세요!"
   },
   {
     question: "뭐가 제일 인기 있어요? / 추천해주세요",
@@ -210,11 +201,441 @@ const koreanFaqs = [
   }
 ];
 
+const englishFaqs = [
+  {
+    question: "Hello / Hi / First time here",
+    answer: "Hello! Welcome to K-pop Recording Cafe. I'm an AI assistant to help guide you around the store. Please feel free to ask me anything!"
+  },
+  {
+    question: "What is this place? / What do you do here?",
+    answer: "We are a special recording cafe for K-pop lovers. You can record your favorite K-pop songs directly and take photos like an idol. Create your own K-pop cover with professional equipment!"
+  },
+  {
+    question: "It's my first time, what can I do? / Is it possible for beginners?",
+    answer: "The popular experience for first-time visitors is K-pop cover recording! Choose your favorite song to record in a professional recording booth and take photos in our beautiful photo zone. Our staff will kindly help you, so don't worry!"
+  },
+  {
+    question: "Can I come alone? / Is solo use possible?",
+    answer: "Of course! Many people come alone. Enjoy your own time and sing your favorite K-pop songs to your heart's content. You can use it comfortably without any burden."
+  },
+  {
+    question: "Can I come with friends? / Is group use possible?",
+    answer: "Yes, coming with friends makes it even more fun! You can record duets or group covers together, or cheer each other on while filming. Group use is also possible, so please book in advance."
+  },
+  {
+    question: "What's most popular? / Please recommend",
+    answer: "If it's your first time, we recommend the basic recording package with songs you usually sing a lot. You can experience 1-2 songs and receive the files."
+  },
+  {
+    question: "When do you open? / What are your business hours?",
+    answer: "Our exact business hours are from 10 AM to 10 PM. We recommend checking by phone or website before visiting!"
+  },
+  {
+    question: "Do you have holidays? / When are you closed?",
+    answer: "We don't have holidays. However, we operate by advance reservation, so please check our homepage before visiting."
+  },
+  {
+    question: "What's your address? / Can you tell me the phone number?",
+    answer: "You can check our detailed address and contact information on our website https://record.co.kr."
+  },
+  {
+    question: "Can I park? / Is there parking fee?",
+    answer: "Parking is not available. Please use nearby paid parking lots or public parking."
+  },
+  {
+    question: "Is it close to the subway station? / How do I get there?",
+    answer: "It's a 5-minute walk from Sinsa Station Exit 5 on Line 3."
+  },
+  {
+    question: "Is there WiFi? / Can I charge my phone?",
+    answer: "WiFi and phone charging are available."
+  },
+  {
+    question: "Is there a place to store luggage? / Are there lockers?",
+    answer: "There are no lockers, but there is space to leave your travel bags."
+  },
+  {
+    question: "How long does the whole experience take?",
+    answer: "Since it's basically a cafe, there's no special time limit. Only the recording studio use is limited to 10-minute sessions."
+  },
+  {
+    question: "Can I only record K-pop songs? / Is cover recording possible?",
+    answer: "You can record any song, not just K-pop. The only requirement is that the backing track must be available on YouTube. Please find it beforehand."
+  },
+  {
+    question: "What songs do you have? / What if you don't have the song I want?",
+    answer: "You can record any song, not just K-pop. The only requirement is that the backing track must be available on YouTube. Please find it beforehand."
+  },
+  {
+    question: "Can I record as a group with friends? / Are duets possible?",
+    answer: "Basically, one microphone is prepared. One session is for one person by default."
+  },
+  {
+    question: "Can I record just the rap part? / Can I mix vocals and rap?",
+    answer: "Since you sing along to the backing track from YouTube, there are no restrictions."
+  },
+  {
+    question: "Can I take photos? / Is there a photo zone?",
+    answer: "Yes! Professional lighting and selfie sticks are installed so you can mount your phone and take photos."
+  },
+  {
+    question: "Do you provide backing tracks? / Can you change the key?",
+    answer: "You need to search for backing tracks on YouTube as karaoke or karaoke versions and provide us with the address. If you have an MR file, you can upload it to YouTube as unlisted and give us the link."
+  },
+  {
+    question: "How do I record? / It's my first time, is it difficult?",
+    answer: "Don't worry! It's very simple. The process is: song selection → enter booth → wear headphones → sing along to MR. Experienced engineers will kindly help you, and we'll handle all the equipment operation!"
+  },
+  {
+    question: "I sang wrong, can I do it again? / Can I re-record just parts?",
+    answer: "Recording only parts is not possible. Like karaoke, the backing track plays continuously from start to finish and you sing the whole song. We recommend doing 2 full performances in one session."
+  },
+  {
+    question: "Do you do pitch correction? / Do you do mixing too?",
+    answer: "Basic products don't include pitch correction and mixing. Correction and mixing must be requested as additional options."
+  },
+  {
+    question: "How do I receive the recorded files? / What format do you provide?",
+    answer: "When you arrive at the cafe, please provide us with the email address where you'd like to receive the files. We'll email you the files the day after recording is complete. We send two files: vocals only and vocals mixed with backing track."
+  },
+  {
+    question: "Can I see lyrics while recording? / Can I hear my voice well?",
+    answer: "We don't provide lyrics separately. You need to bring them on your phone or paper. You can clearly hear your voice through the headphones."
+  },
+  {
+    question: "Can I upload recorded files to YouTube? / Are there copyright issues?",
+    answer: "Personal use or uploading to personal SNS accounts is generally fine. However, there may be copyright issues for commercial use or monetization, so please select the appropriate option if needed."
+  },
+  {
+    question: "Can you change key or adjust tempo? / Do you create harmonies?",
+    answer: "It's not possible since we use backing tracks uploaded to YouTube. There's no separate harmony option, but if you select the mixing service and request it, we can create them mechanically."
+  },
+  {
+    question: "Can I book online? / How do I book on the website?",
+    answer: "Yes, you can make online reservations 24/7 on our website https://record.co.kr!"
+  },
+  {
+    question: "Can I book by phone? / Can I visit without a reservation?",
+    answer: "Phone reservations are not possible. Walk-ins are possible but recording studio use may not be available. We strongly recommend booking in advance for smooth service!"
+  },
+  {
+    question: "Can I change reservation time? / Are there cancellation fees?",
+    answer: "Reservation changes and cancellations follow Klook's standard cancellation terms. Cancellation or no-show fees may apply, so please check the terms."
+  },
+  {
+    question: "Can I extend time?",
+    answer: "To extend time, you can access our homepage https://record.co.kr on-site and make another reservation."
+  },
+  {
+    question: "What happens if I'm late for my reservation?",
+    answer: "Being late for your reservation will result in a no-show. Please arrive at least 30 minutes early."
+  },
+  {
+    question: "How many people can fit in one booth? / Is group use possible?",
+    answer: "Booths are basically for one person."
+  },
+  {
+    question: "Can minors use it? / Do they need guardian accompaniment?",
+    answer: "Minors can use it. We recommend guardian accompaniment for those under 14."
+  },
+  {
+    question: "What should I prepare? / Can I bring my own MR?",
+    answer: "You need to find the backing track of the song you want to record on YouTube and provide us with the address. Instrumental files without vocals can be found by searching for MR or karaoke."
+  },
+  {
+    question: "Are there separate costs for professional engineers or mixing?",
+    answer: "Basic service includes simple mixing. Professional vocal tuning, harmony addition, advanced mixing, mastering, etc. are additional options with separate charges."
+  },
+  {
+    question: "Can I pay with card? / Are mobile payments accepted?",
+    answer: "Credit cards, debit cards, and cash are all accepted! Most mobile payments like KakaoPay, NaverPay, Samsung Pay are also supported."
+  },
+  {
+    question: "Are refunds possible? / Can I get money back if I cancel?",
+    answer: "Reservation changes and cancellations follow Klook's standard cancellation terms. Cancellation or no-show fees may apply, so please check the terms."
+  },
+  {
+    question: "Do I need to pay in advance? / Can I just pay a deposit?",
+    answer: "For online reservations, you must pay in full in advance. If you're on-site, on-site payment is also possible."
+  },
+  {
+    question: "Can you issue receipts? / I need a tax invoice",
+    answer: "Receipts, cash receipts, and tax invoices are all available! Please request on-site or mention in advance when paying. Email delivery is also possible."
+  },
+  {
+    question: "Can I bring outside food? / Can I order delivery?",
+    answer: "Outside food is restricted to maintain a pleasant environment."
+  },
+  {
+    question: "Can I drink beverages in the recording booth?",
+    answer: "To protect professional equipment, only beverages with lids are allowed in the booth."
+  },
+  {
+    question: "Is there a waiting area? / Is there a comfortable space to rest?",
+    answer: "Yes, we have a spacious and comfortable cafe space!"
+  },
+  {
+    question: "What's the WiFi password? / Can I charge my phone?",
+    answer: "We provide free WiFi! The password is posted at the front door. Chargers are available at the information desk."
+  },
+  {
+    question: "Is there a smoking area?",
+    answer: "The entire store including restrooms is non-smoking. There's a designated smoking area on the building rooftop."
+  },
+  {
+    question: "Are there rules to follow? / What are the usage precautions?",
+    answer: "Please follow basic manners so everyone can enjoy. This includes restrictions on bringing food into booths, handling equipment carefully, being quiet in common areas, and punctuality for reservations."
+  },
+  {
+    question: "Can I make videos for YouTube or TikTok? / Do you help with music video filming?",
+    answer: "We provide content creation services for creators! From SNS clips to cover videos are possible through high-quality audio recording and basic filming support. Please apply for paid options."
+  },
+  {
+    question: "Can I pay with foreign currency? / Are there discounts for foreigners?",
+    answer: "Foreign card payments like Mastercard and Visa are accepted."
+  }
+];
+
+const chineseFaqs = [
+  {
+    question: "你好 / 嗨 / 第一次来这里",
+    answer: "你好！欢迎来到K-pop录音咖啡厅。我是帮助您了解店铺的AI助手。有任何问题请随时告诉我！"
+  },
+  {
+    question: "这是什么地方？/ 你们做什么的？",
+    answer: "我们是为K-pop爱好者打造的特别录音咖啡厅。您可以直接录制喜欢的K-pop歌曲，还可以像偶像一样拍照。用专业设备制作属于您自己的K-pop翻唱吧！"
+  },
+  {
+    question: "第一次来可以做什么？/ 初学者也可以吗？",
+    answer: "第一次来的客人最受欢迎的体验是K-pop翻唱录音！选择喜欢的歌曲在专业录音室录制，还可以在漂亮的拍照区拍照。工作人员会亲切地帮助您，请不要担心！"
+  },
+  {
+    question: "可以一个人来吗？/ 可以单独使用吗？",
+    answer: "当然可以！很多人都是一个人来的。享受属于自己的时间，尽情演唱喜欢的K-pop歌曲吧。可以毫无负担地轻松使用。"
+  },
+  {
+    question: "可以和朋友一起来吗？/ 可以团体使用吗？",
+    answer: "是的，和朋友一起来会更有趣！可以一起录制二重唱或团体翻唱，或者互相加油拍摄。也支持团体使用，请提前预约。"
+  },
+  {
+    question: "什么最受欢迎？/ 请推荐",
+    answer: "如果是第一次来，推荐用平时经常唱的歌曲选择基础录音套餐。可以体验1-2首歌并获得文件。"
+  },
+  {
+    question: "什么时候开门？/ 营业时间是怎样的？",
+    answer: "准确的营业时间是上午10点到晚上10点。建议访问前先通过电话或网站确认！"
+  },
+  {
+    question: "有休息日吗？/ 什么时候休息？",
+    answer: "没有休息日。但是，访问前需要提前预约，请务必在访问前查看主页。"
+  },
+  {
+    question: "地址是什么？/ 请告诉我电话号码",
+    answer: "详细地址和联系方式可以在我们的网站 https://record.co.kr 查看。"
+  },
+  {
+    question: "可以停车吗？/ 有停车费吗？",
+    answer: "无法停车。请使用附近的付费停车场或公共停车场。"
+  },
+  {
+    question: "离地铁站近吗？/ 怎么去？",
+    answer: "从3号线新沙站5号出口步行5分钟"
+  },
+  {
+    question: "有WiFi吗？/ 可以给手机充电吗？",
+    answer: "有WiFi，也可以给手机充电"
+  },
+  {
+    question: "有地方存放行李吗？/ 有储物柜吗？",
+    answer: "没有储物柜，但有放置旅行箱的空间。"
+  },
+  {
+    question: "整个使用时间需要多长？",
+    answer: "基本上是咖啡厅，使用时间没有特别限制。只有录音室使用是以10分钟为一个单位。"
+  },
+  {
+    question: "只能录K-pop歌曲吗？/ 可以录翻唱吗？",
+    answer: "可以录制任何歌曲，不仅仅是K-pop。只要该歌曲的伴奏在YouTube上有就可以。请提前查找。"
+  },
+  {
+    question: "有什么歌曲？/ 如果没有想要的歌曲怎么办？",
+    answer: "可以录制任何歌曲，不仅仅是K-pop。只要该歌曲的伴奏在YouTube上有就可以。请提前查找。"
+  },
+  {
+    question: "可以和朋友一起录制团体歌曲吗？/ 二重唱也可以吗？",
+    answer: "基本上准备了1个麦克风。1个session基本是1个人。"
+  },
+  {
+    question: "可以单独录rap部分吗？/ 声乐和rap混合也可以吗？",
+    answer: "因为是听着YouTube的伴奏唱歌，所以没有限制。"
+  },
+  {
+    question: "可以拍照吗？/ 有拍照区吗？",
+    answer: "有！配备了专业照明和自拍杆，可以放置手机进行拍摄。"
+  },
+  {
+    question: "店里提供伴奏吗？/ 可以改变音调吗？",
+    answer: "伴奏需要您在YouTube上搜索卡拉OK或伴奏版本，提前给我们地址。如果您有MR文件，可以上传到YouTube设为部分公开，然后给我们链接地址。"
+  },
+  {
+    question: "录音怎么进行？/ 第一次很难吗？",
+    answer: "不要担心！非常简单。流程是：选曲 → 进入录音室 → 戴耳机 → 听着MR唱歌。有经验的工程师会亲切地帮助您，设备操作我们都会为您处理！"
+  },
+  {
+    question: "唱错了可以重新录吗？/ 可以只重录部分吗？",
+    answer: "无法只唱部分。像卡拉OK一样，伴奏从头到尾连续播放，需要完整演唱。建议在1个session内完整演唱2遍。"
+  },
+  {
+    question: "会修正音准吗？/ 也会混音吗？",
+    answer: "基础产品不包含音准修正和混音。修正和混音需要申请额外选项。"
+  },
+  {
+    question: "录音文件怎么接收？/ 以什么格式提供？",
+    answer: "到达咖啡厅后，请告诉我们接收文件的邮箱地址。录音完成后第二天会通过邮件发送文件。会发送两个文件：只有人声的文件和与伴奏混合的文件。"
+  },
+  {
+    question: "可以看着歌词录音吗？/ 能听清自己的声音吗？",
+    answer: "我们不单独准备歌词。您需要用手机或纸张自己带来。通过耳机可以清楚地听到自己的声音。"
+  },
+  {
+    question: "录音文件可以上传到YouTube吗？/ 没有版权问题吗？",
+    answer: "个人收藏或SNS个人账户上传一般是可以的。但商业使用或收益创造时可能有版权问题，需要的话请选择选项。"
+  },
+  {
+    question: "可以改变音调或调节节拍吗？/ 也会制作和声吗？",
+    answer: "因为使用YouTube上传的伴奏所以无法改变。和声没有单独的选项，如果选择混音产品并提出要求，可以机械性地制作。"
+  },
+  {
+    question: "可以在线预约吗？/ 网站上怎么预约？",
+    answer: "是的，可以在网站 https://record.co.kr 24小时随时在线预约！"
+  },
+  {
+    question: "也可以电话预约吗？/ 不预约也可以去吗？",
+    answer: "无法电话预约。现场访问也可以，但可能无法使用录音室。为了顺利使用，强烈建议提前预约！"
+  },
+  {
+    question: "可以更改预约时间吗？/ 有取消手续费吗？",
+    answer: "预约更改和取消遵循Klook标准取消条款。取消或爽约可能产生手续费，请务必确认条款。"
+  },
+  {
+    question: "可以延长时间吗？",
+    answer: "要延长时间，可以在现场重新访问主页 https://record.co.kr 进行预约。"
+  },
+  {
+    question: "预约时间迟到会怎样？",
+    answer: "预约时间迟到会被处理为爽约。请至少提前30分钟到达。"
+  },
+  {
+    question: "一个录音室可以进几个人？/ 可以团体使用吗？",
+    answer: "录音室基本上是1人用的。"
+  },
+  {
+    question: "未成年人也可以使用吗？/ 需要监护人陪同吗？",
+    answer: "未成年人也可以使用。建议14岁以下儿童有监护人陪同。"
+  },
+  {
+    question: "需要准备什么？/ 可以带个人MR吗？",
+    answer: "需要在YouTube上找到想录制歌曲的伴奏并提供地址。没有人声的伴奏文件可以搜索MR或karaoke找到。"
+  },
+  {
+    question: "专业工程师或混音费用另外收费吗？",
+    answer: "基础服务包含简单混音。专业人声调音、和声添加、高级混音、母带处理等作为额外选项单独收费。"
+  },
+  {
+    question: "可以刷卡吗？/ 简便支付也可以吗？",
+    answer: "信用卡、借记卡、现金都可以！KakaoPay、NaverPay、Samsung Pay等简便支付大部分都支持。"
+  },
+  {
+    question: "可以退款吗？/ 取消的话可以退钱吗？",
+    answer: "预约更改和取消遵循Klook标准取消条款。取消或爽约可能产生手续费，请务必确认条款。"
+  },
+  {
+    question: "需要提前付款吗？/ 只付定金也可以吗？",
+    answer: "在线预约时必须全额预付。如果在现场，现场付款也可以。"
+  },
+  {
+    question: "可以开发票吗？/ 需要税务发票",
+    answer: "收据、现金收据、税务发票都可以开具！可以在现场要求或付款时提前说明。也可以通过邮件发送。"
+  },
+  {
+    question: "可以带外面的食物吗？/ 可以叫外卖吗？",
+    answer: "为了维持舒适的环境，限制外部食物带入。"
+  },
+  {
+    question: "在录音室里可以喝饮料吗？",
+    answer: "为了保护专业设备，录音室内只允许有盖子的饮料。"
+  },
+  {
+    question: "有等候的地方吗？/ 有舒适休息的空间吗？",
+    answer: "有，准备了宽敞舒适的咖啡厅空间！"
+  },
+  {
+    question: "WiFi密码是什么？/ 可以给手机充电吗？",
+    answer: "提供免费WiFi！密码贴在正门。充电器在咨询台前面。"
+  },
+  {
+    question: "有可以吸烟的地方吗？",
+    answer: "包括洗手间在内的店内全面禁烟。如果上到建筑物屋顶，有指定的吸烟区域。"
+  },
+  {
+    question: "有需要遵守的规则吗？/ 使用时的注意事项是什么？",
+    answer: "为了让所有人都能愉快使用，请遵守基本礼仪。包括录音室内限制食物带入、爱护设备、在公共空间保持安静、遵守预约时间等。"
+  },
+  {
+    question: "可以制作YouTube或TikTok用的视频吗？/ 帮助拍摄音乐视频吗？",
+    answer: "为创作者提供内容制作服务！通过高品质音频录制和基础拍摄支持，从SNS剪辑到翻唱视频都可以制作。请申请付费选项。"
+  },
+  {
+    question: "可以外币结算吗？/ 有外国人折扣吗？",
+    answer: "可以使用万事达卡和维萨卡等海外卡结算。"
+  }
+];
+
+const languageLabels = {
+  ko: '한국어',
+  en: 'English', 
+  zh: '中文'
+};
+
 export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [currentLanguage, setCurrentLanguage] = useState<Language>('ko');
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const getCurrentFaqs = () => {
+    switch (currentLanguage) {
+      case 'en':
+        return englishFaqs;
+      case 'zh':
+        return chineseFaqs;
+      default:
+        return koreanFaqs;
+    }
+  };
+
+  const getTitle = () => {
+    switch (currentLanguage) {
+      case 'en':
+        return 'Frequently Asked Questions';
+      case 'zh':
+        return '常见问题';
+      default:
+        return '자주 묻는 질문';
+    }
+  };
+
+  const getSubtitle = () => {
+    switch (currentLanguage) {
+      case 'en':
+        return 'Check everything you want to know about K-pop Recording Cafe';
+      case 'zh':
+        return '查看关于K-pop录音咖啡厅的所有疑问';
+      default:
+        return '케이팝 레코딩카페에 대해 궁금한 모든 것들을 확인해보세요';
+    }
   };
 
   return (
@@ -225,11 +646,35 @@ export default function FAQPage() {
       <section className="pt-32 pb-20 bg-gradient-to-br from-gray-900 via-purple-900/20 to-pink-900/20">
         <div className="container mx-auto px-6 lg:px-8 xl:px-12 max-w-7xl">
           <div className="text-center">
+            {/* Language Toggle */}
+            <div className="flex justify-center mb-8">
+              <div className="glass rounded-full p-2 border border-white/10">
+                <div className="flex items-center space-x-1">
+                  <Globe className="text-[hsl(var(--k-pink))] mr-2" size={20} />
+                  {(['ko', 'en', 'zh'] as Language[]).map((lang) => (
+                    <Button
+                      key={lang}
+                      onClick={() => setCurrentLanguage(lang)}
+                      variant={currentLanguage === lang ? "default" : "ghost"}
+                      size="sm"
+                      className={`rounded-full px-4 py-2 transition-all ${
+                        currentLanguage === lang 
+                          ? 'k-gradient-pink-purple text-white' 
+                          : 'text-gray-300 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      {languageLabels[lang]}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             <h1 className="text-6xl md:text-7xl font-bold mb-6 gradient-text">
-              자주 묻는 질문
+              {getTitle()}
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              케이팝 레코딩카페에 대해 궁금한 모든 것들을 확인해보세요
+              {getSubtitle()}
             </p>
           </div>
         </div>
@@ -239,7 +684,7 @@ export default function FAQPage() {
       <section className="py-20 bg-gray-800">
         <div className="container mx-auto px-6 lg:px-8 xl:px-12 max-w-7xl">
           <div className="max-w-4xl mx-auto space-y-4">
-            {koreanFaqs.map((faq, index) => (
+            {getCurrentFaqs().map((faq, index) => (
               <div 
                 key={index}
                 className="glass rounded-2xl overflow-hidden border border-white/10"
