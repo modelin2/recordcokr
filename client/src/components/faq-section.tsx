@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 const faqs = [
   {
@@ -95,7 +97,14 @@ export default function FAQSection() {
           ))}
         </div>
 
-        
+        {/* MORE Button */}
+        <div className="text-center mt-12">
+          <Link href="/faq">
+            <Button className="k-gradient-pink-purple px-8 py-3 rounded-full hover:scale-105 transition-transform text-white border-0 text-lg font-semibold">
+              MORE
+            </Button>
+          </Link>
+        </div>
       </div>
     </section>
   );
