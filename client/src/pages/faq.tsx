@@ -599,7 +599,7 @@ const languageLabels = {
 
 export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState<Language>('ko');
+  const [currentLanguage, setCurrentLanguage] = useState<Language>('en');
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
