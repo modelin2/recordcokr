@@ -653,6 +653,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAvailableTimeSlots(date: string): Promise<TimeSlot[]> {
+    await this.ensureInitialized();
     return await db
       .select()
       .from(timeSlots)
