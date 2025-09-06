@@ -501,14 +501,11 @@ export class DatabaseStorage implements IStorage {
   private initialized = false;
 
   private async initializeTimeSlots() {
-    if (this.initialized) return;
-    
     try {
-      // Check if time slots already exist
+      // Always check if time slots need to be created
       const existingSlots = await db.select().from(timeSlots).limit(1);
-      if (existingSlots.length > 0) {
+      if (existingSlots.length > 0 && this.initialized) {
         console.log('Time slots already exist, skipping initialization');
-        this.initialized = true;
         return;
       }
 
