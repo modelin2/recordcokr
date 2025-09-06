@@ -87,7 +87,7 @@ export default function PaymentSuccessPage() {
         <div className="text-center mb-8">
           <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-white mb-4">결제 완료!</h1>
-          <p className="text-gray-300 text-lg">K-Recording Cafe 녹음 세션 예약이 완료되었습니다.</p>
+          <p className="text-gray-300 text-lg">Recording Cafe 녹음 세션 예약이 완료되었습니다.</p>
         </div>
 
         {/* Payment Details */}

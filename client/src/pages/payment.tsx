@@ -101,7 +101,7 @@ export default function PaymentPage() {
       await tossPayments.requestPayment('카드', {
         amount: paymentData.totalPrice,
         orderId: paymentResponse.orderId,
-        orderName: `K-Recording Cafe 녹음 세션 #${paymentData.bookingId || bookingId}`,
+        orderName: `Recording Cafe 녹음 세션 #${paymentData.bookingId || bookingId}`,
         customerName: paymentData.customerName,
         customerEmail: paymentData.customerEmail,
         successUrl: `${window.location.origin}/payment-success`,
@@ -160,7 +160,7 @@ export default function PaymentPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">결제하기</h1>
-          <p className="text-gray-300">K-Recording Cafe 녹음 세션</p>
+          <p className="text-gray-300">Recording Cafe 녹음 세션</p>
         </div>
 
         {/* Payment Summary */}

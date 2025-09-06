@@ -91,7 +91,7 @@ export default function PolicyDialog({ type, isOpen, onClose }: PolicyDialogProp
             <section>
               <h3 className="text-lg font-semibold mb-3">Acceptance of Terms</h3>
               <p>
-                By accessing and using K-Recording Cafe's services, you accept and agree to be bound by 
+                By accessing and using Recording Cafe's services, you accept and agree to be bound by 
                 the terms and provision of this agreement. If you do not agree to abide by the above, 
                 please do not use this service.
               </p>
@@ -100,7 +100,7 @@ export default function PolicyDialog({ type, isOpen, onClose }: PolicyDialogProp
             <section>
               <h3 className="text-lg font-semibold mb-3">Service Description</h3>
               <p className="mb-3">
-                K-Recording Cafe provides professional recording studio services combined with a cafe experience. 
+                Recording Cafe provides professional recording studio services combined with a cafe experience. 
                 Our services include:
               </p>
               <ul className="list-disc list-inside space-y-1 ml-4">
@@ -151,7 +151,7 @@ export default function PolicyDialog({ type, isOpen, onClose }: PolicyDialogProp
             <section>
               <h3 className="text-lg font-semibold mb-3">Limitation of Liability</h3>
               <p>
-                K-Recording Cafe shall not be liable for any indirect, incidental, special, 
+                Recording Cafe shall not be liable for any indirect, incidental, special, 
                 consequential, or punitive damages resulting from your use of our services.
               </p>
             </section>

@@ -81,7 +81,7 @@ export default function LoginPage() {
             <Music className="w-8 h-8 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold text-white">
-            K-Recording Cafe
+            Recording Cafe
           </CardTitle>
           <CardDescription className="text-gray-400">
             Admin Login

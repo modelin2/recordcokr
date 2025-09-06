@@ -218,10 +218,10 @@ export default function AdminPage() {
   // Pre-defined email templates
   const emailTemplates = {
     confirmation: {
-      subject: "Recording Session Confirmed - K-Recording Cafe",
+      subject: "Recording Session Confirmed - Recording Cafe",
       message: `안녕하세요 {{name}}님,
 
-K-Recording Cafe에서 예약해 주셔서 감사합니다.
+Recording Cafe에서 예약해 주셔서 감사합니다.
 
 예약 정보:
 - 날짜: {{date}}
@@ -233,7 +233,7 @@ K-Recording Cafe에서 예약해 주셔서 감사합니다.
 문의사항이 있으시면 언제든 연락 주세요.
 
 감사합니다.
-K-Recording Cafe Team`
+Recording Cafe Team`
     },
     reminder: {
       subject: "Recording Session Reminder - Tomorrow",
@@ -252,7 +252,7 @@ K-Recording Cafe Team`
 3. 물을 충분히 마셔주세요
 
 기대하고 있겠습니다!
-K-Recording Cafe Team`
+Recording Cafe Team`
     },
     completion: {
       subject: "Recording Complete - Download Your Track",
@@ -264,7 +264,7 @@ K-Recording Cafe Team`
 소셜미디어에 공유하실 때 @k_recording_cafe를 태그해 주세요!
 
 다음에 또 뵙겠습니다.
-K-Recording Cafe Team`
+Recording Cafe Team`
     }
   };
 

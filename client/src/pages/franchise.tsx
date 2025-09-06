@@ -59,7 +59,7 @@ export default function FranchisePage() {
     {
       id: 'remodeling',
       title: 'Existing Business Remodeling',
-      subtitle: 'Transform your existing cafe into K-Recording Cafe',
+      subtitle: 'Transform your existing cafe into Recording Cafe',
       totalInvestment: '₩120,000,000',
       interiorCost: '₩800,000 per pyeong',
       minSpace: '100㎡ (30 pyeong)',
@@ -187,7 +187,7 @@ export default function FranchisePage() {
       <nav className="fixed top-0 w-full z-50 transition-all duration-300 glass">
         <div className="container mx-auto px-6 lg:px-8 xl:px-12 py-4 flex items-center justify-between max-w-7xl">
           <Link href="/" className="text-2xl font-bold gradient-text hover:scale-105 transition-transform">
-            K-Recording Cafe
+            Recording Cafe
           </Link>
           
           <div className="hidden md:flex space-x-8">
@@ -209,7 +209,7 @@ export default function FranchisePage() {
             Global Franchise Opportunity
           </Badge>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            K-Recording Cafe
+            Recording Cafe
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
               Franchise
             </span>
@@ -292,7 +292,7 @@ export default function FranchisePage() {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-white mb-4">
-              Why K-Recording Cafe
+              Why Recording Cafe
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400"> Dominates</span>
             </h2>
           </div>
@@ -536,7 +536,7 @@ export default function FranchisePage() {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Music className="h-8 w-8 text-pink-400" />
-                <span className="text-xl font-bold text-white">K-Recording Cafe</span>
+                <span className="text-xl font-bold text-white">Recording Cafe</span>
               </div>
               <p className="text-gray-300">
                 Transforming music dreams into reality through proven entertainment industry systems.
@@ -570,7 +570,7 @@ export default function FranchisePage() {
             </div>
           </div>
           <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-300">
-            <p>&copy; 2025 K-Recording Cafe. All rights reserved. Patent protected under Korean law.</p>
+            <p>&copy; 2025 Recording Cafe. All rights reserved. Patent protected under Korean law.</p>
           </div>
         </div>
       </footer>

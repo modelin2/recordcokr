@@ -36,12 +36,12 @@ export default function Navigation() {
             onClick={() => scrollToSection('home')}
             className="text-2xl font-bold gradient-text hover:scale-105 transition-transform"
           >
-            K-Recording Cafe
+            Recording Cafe
           </button>
         ) : (
           <Link href="/">
             <button className="text-2xl font-bold gradient-text hover:scale-105 transition-transform">
-              K-Recording Cafe
+              Recording Cafe
             </button>
           </Link>
         )}
