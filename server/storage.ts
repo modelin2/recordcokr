@@ -1,8 +1,9 @@
 import { 
-  users, packages, addons, bookings, timeSlots, paymentOrders,
+  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders,
   type User, type InsertUser, type InsertAdmin,
   type Package, type InsertPackage,
   type Addon, type InsertAddon,
+  type PartnerAddon, type InsertPartnerAddon,
   type Booking, type InsertBooking,
   type TimeSlot, type InsertTimeSlot,
   type PaymentOrder, type InsertPaymentOrder
@@ -16,7 +17,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   
   // Admin management
-  createAdmin(admin: { email: string; username: string; role: string }): Promise<User>;
+  createAdmin(admin: { email: string; username: string; password: string; role: string }): Promise<User>;
   getAllAdmins(): Promise<User[]>;
   updateUserStatus(userId: number, isActive: boolean): Promise<User | undefined>;
   deleteAdmin(userId: number): Promise<boolean>;
@@ -28,6 +29,11 @@ export interface IStorage {
   getAllAddons(): Promise<Addon[]>;
   getAddon(id: number): Promise<Addon | undefined>;
   createAddon(addon: InsertAddon): Promise<Addon>;
+  
+  // Partner addons (Naver, etc.)
+  getAllPartnerAddons(partner: string): Promise<PartnerAddon[]>;
+  getPartnerAddon(id: number): Promise<PartnerAddon | undefined>;
+  createPartnerAddon(addon: InsertPartnerAddon): Promise<PartnerAddon>;
   
   getAllBookings(): Promise<Booking[]>;
   getBooking(id: number): Promise<Booking | undefined>;
@@ -366,6 +372,21 @@ export class MemStorage implements IStorage {
     return addon;
   }
 
+  async getAllPartnerAddons(partner: string): Promise<PartnerAddon[]> {
+    // MemStorage doesn't store partner addons, use DatabaseStorage for partner features
+    return [];
+  }
+
+  async getPartnerAddon(id: number): Promise<PartnerAddon | undefined> {
+    // MemStorage doesn't store partner addons, use DatabaseStorage for partner features
+    return undefined;
+  }
+
+  async createPartnerAddon(insertAddon: InsertPartnerAddon): Promise<PartnerAddon> {
+    // MemStorage doesn't support partner addons, use DatabaseStorage
+    throw new Error("Partner addons are not supported in MemStorage");
+  }
+
   async getAllBookings(): Promise<Booking[]> {
     return Array.from(this.bookings.values());
   }
@@ -383,10 +404,14 @@ export class MemStorage implements IStorage {
       phone: insertBooking.phone,
       bookingType: insertBooking.bookingType || "direct",
       klookBookingId: insertBooking.klookBookingId || null,
+      naverReservationId: insertBooking.naverReservationId || null,
+      naverBaseAmount: insertBooking.naverBaseAmount || null,
+      naverMetadata: insertBooking.naverMetadata || null,
       selectedDrink: insertBooking.selectedDrink || null,
       drinkTemperature: insertBooking.drinkTemperature || null,
       youtubeTrackUrl: insertBooking.youtubeTrackUrl || null,
       selectedAddons: insertBooking.selectedAddons || [],
+      selectedPartnerAddons: insertBooking.selectedPartnerAddons || [],
       lpDeliveryAddress: insertBooking.lpDeliveryAddress || null,
       bookingDate: insertBooking.bookingDate || null,
       bookingTime: insertBooking.bookingTime || null,
@@ -567,11 +592,8 @@ export class DatabaseStorage implements IStorage {
     return newUser;
   }
 
-  async createAdmin(admin: { email: string; username: string; role: string }): Promise<User> {
-    const [newAdmin] = await db.insert(users).values({
-      ...admin,
-      password: 'admin123', // Default password
-    }).returning();
+  async createAdmin(admin: { email: string; username: string; password: string; role: string }): Promise<User> {
+    const [newAdmin] = await db.insert(users).values(admin).returning();
     return newAdmin;
   }
 
@@ -618,6 +640,20 @@ export class DatabaseStorage implements IStorage {
 
   async createAddon(addon: InsertAddon): Promise<Addon> {
     const [newAddon] = await db.insert(addons).values(addon).returning();
+    return newAddon;
+  }
+
+  async getAllPartnerAddons(partner: string): Promise<PartnerAddon[]> {
+    return await db.select().from(partnerAddons).where(eq(partnerAddons.partner, partner));
+  }
+
+  async getPartnerAddon(id: number): Promise<PartnerAddon | undefined> {
+    const [addon] = await db.select().from(partnerAddons).where(eq(partnerAddons.id, id));
+    return addon;
+  }
+
+  async createPartnerAddon(addon: InsertPartnerAddon): Promise<PartnerAddon> {
+    const [newAddon] = await db.insert(partnerAddons).values(addon).returning();
     return newAddon;
   }
 

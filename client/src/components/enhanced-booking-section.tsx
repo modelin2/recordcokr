@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Coffee, Music, ShoppingBag } from "lucide-react";
+import { CalendarIcon, Coffee, Music, ShoppingBag, Sparkles } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -365,6 +365,42 @@ export default function EnhancedBookingSection() {
                 </ul>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Naver Booking Button */}
+          <div className="max-w-4xl mx-auto mt-12 text-center">
+            <div className="inline-block bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 p-1 rounded-2xl">
+              <Card 
+                className="bg-gray-900 border-0 cursor-pointer hover:bg-gray-800 transition-all duration-300"
+                onClick={() => setLocation("/naver-booking")}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Sparkles className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-xl font-bold text-white mb-1">
+                        네이버 예약자 주문
+                      </h3>
+                      <p className="text-sm text-gray-300">
+                        네이버에서 예약하신 고객님 전용 추가 주문 페이지 (50% 할인)
+                      </p>
+                    </div>
+                    <div className="ml-auto">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+                        data-testid="button-naver-booking"
+                      >
+                        바로가기 →
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>

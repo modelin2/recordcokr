@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { spawn } from "child_process";
 import { unlink } from "fs/promises";
-import { insertBookingSchema } from "@shared/schema";
+import { insertBookingSchema, insertNaverBookingSchema } from "@shared/schema";
 import { z } from "zod";
 
 // Simple session middleware for demo purposes
@@ -177,6 +177,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all Naver partner addons (50% discount)
+  app.get("/api/naver/addons", async (req, res) => {
+    try {
+      const naverAddons = await storage.getAllPartnerAddons("naver");
+      res.json(naverAddons);
+    } catch (error) {
+      console.error("Failed to fetch Naver addons:", error);
+      res.status(500).json({ message: "Failed to fetch Naver addons" });
+    }
+  });
+
   // Get available time slots for a specific date
   app.get("/api/timeslots/:date", async (req, res) => {
     try {
@@ -263,6 +274,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(bookings);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch bookings" });
+    }
+  });
+
+  // Create a Naver booking with partner addons
+  app.post("/api/naver/bookings", async (req, res) => {
+    try {
+      const validatedData = insertNaverBookingSchema.parse(req.body);
+      
+      // Calculate addon prices from partner addons
+      let addonPrice = 0;
+      if (validatedData.selectedPartnerAddons && validatedData.selectedPartnerAddons.length > 0) {
+        for (const addonId of validatedData.selectedPartnerAddons) {
+          const addon = await storage.getPartnerAddon(addonId);
+          if (addon && !addon.isManualProcessing) {
+            addonPrice += addon.discountedPrice;
+          }
+        }
+      }
+
+      // For Naver bookings, base amount is already paid via Naver
+      // totalPrice represents only the addon upsell amount
+      const totalPrice = addonPrice;
+
+      const bookingData = {
+        ...validatedData,
+        totalPrice,
+        status: "pending" as const,
+      };
+
+      const booking = await storage.createBooking(bookingData);
+      console.log('Created Naver booking:', booking);
+      res.json(booking);
+    } catch (error) {
+      console.error("Naver booking creation error:", error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid booking data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to create Naver booking" });
+      }
     }
   });
 

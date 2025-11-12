@@ -41,20 +41,39 @@ export const addons = pgTable("addons", {
   icon: text("icon").notNull(),
 });
 
+// Partner-specific addons (e.g., Naver with discounted prices)
+export const partnerAddons = pgTable("partner_addons", {
+  id: serial("id").primaryKey(),
+  partner: text("partner").notNull(), // "naver", etc.
+  name: text("name").notNull(),
+  nameKo: text("name_ko").notNull(), // Korean name
+  originalPrice: integer("original_price").notNull(),
+  discountRate: integer("discount_rate").notNull(), // percentage (e.g., 50 for 50%)
+  discountedPrice: integer("discounted_price").notNull(),
+  description: text("description").notNull(),
+  descriptionKo: text("description_ko").notNull(), // Korean description
+  icon: text("icon").notNull(),
+  isManualProcessing: boolean("is_manual_processing").default(false), // For "custom quote" items
+});
+
 export const bookings = pgTable("bookings", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
-  bookingType: text("booking_type").notNull().default("direct"), // "direct" or "klook"
+  bookingType: text("booking_type").notNull().default("direct"), // "direct", "klook", or "naver"
   klookBookingId: text("klook_booking_id"), // For klook reservations
+  naverReservationId: text("naver_reservation_id"), // For naver reservations
+  naverBaseAmount: integer("naver_base_amount"), // Base amount already paid via Naver
+  naverMetadata: text("naver_metadata"), // Additional Naver booking metadata (JSON)
   selectedDrink: text("selected_drink"),
   drinkTemperature: text("drink_temperature"), // "hot" or "iced"
   youtubeTrackUrl: text("youtube_track_url"),
   selectedAddons: integer("selected_addons").array().default([]),
+  selectedPartnerAddons: integer("selected_partner_addons").array().default([]), // For Naver addons
   lpDeliveryAddress: text("lp_delivery_address"), // For LP Record Production addon
-  bookingDate: text("booking_date"), // Optional for klook bookings
-  bookingTime: text("booking_time"), // Optional for klook bookings
+  bookingDate: text("booking_date"), // Optional for klook/naver bookings
+  bookingTime: text("booking_time"), // Optional for klook/naver bookings
   totalPrice: integer("total_price").notNull(),
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").defaultNow(),
@@ -128,6 +147,10 @@ export const insertAddonSchema = createInsertSchema(addons).omit({
   id: true,
 });
 
+export const insertPartnerAddonSchema = createInsertSchema(partnerAddons).omit({
+  id: true,
+});
+
 export const insertBookingSchema = createInsertSchema(bookings).omit({
   id: true,
   createdAt: true,
@@ -137,15 +160,29 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),
   phone: z.string().min(1, "Phone number is required"),
-  bookingType: z.enum(["direct", "klook"]).default("direct"),
+  bookingType: z.enum(["direct", "klook", "naver"]).default("direct"),
   klookBookingId: z.string().optional(),
+  naverReservationId: z.string().optional(),
+  naverBaseAmount: z.number().optional(),
+  naverMetadata: z.string().optional(),
   selectedDrink: z.string().optional(),
   drinkTemperature: z.string().optional(),
   youtubeTrackUrl: z.string().optional(),
   selectedAddons: z.array(z.number()).default([]),
+  selectedPartnerAddons: z.array(z.number()).default([]),
   lpDeliveryAddress: z.string().optional(),
-  bookingDate: z.string().optional(), // Optional for klook bookings
-  bookingTime: z.string().optional(), // Optional for klook bookings
+  bookingDate: z.string().optional(), // Optional for klook/naver bookings
+  bookingTime: z.string().optional(), // Optional for klook/naver bookings
+});
+
+// Naver-specific booking schema
+export const insertNaverBookingSchema = insertBookingSchema.extend({
+  bookingType: z.literal("naver"),
+  naverReservationId: z.string().min(1, "Naver reservation ID is required"),
+  selectedDrink: z.string().min(1, "Beverage selection is required"),
+  drinkTemperature: z.string().min(1, "Drink temperature is required"),
+  bookingDate: z.string().min(1, "Booking date is required"),
+  bookingTime: z.string().min(1, "Booking time is required"),
 });
 
 export const insertRevenueStatsSchema = createInsertSchema(revenueStats).omit({
@@ -177,8 +214,11 @@ export type Package = typeof packages.$inferSelect;
 export type InsertPackage = z.infer<typeof insertPackageSchema>;
 export type Addon = typeof addons.$inferSelect;
 export type InsertAddon = z.infer<typeof insertAddonSchema>;
+export type PartnerAddon = typeof partnerAddons.$inferSelect;
+export type InsertPartnerAddon = z.infer<typeof insertPartnerAddonSchema>;
 export type Booking = typeof bookings.$inferSelect;
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
+export type InsertNaverBooking = z.infer<typeof insertNaverBookingSchema>;
 export type TimeSlot = typeof timeSlots.$inferSelect;
 export type InsertTimeSlot = z.infer<typeof insertTimeSlotSchema>;
 export type RevenueStats = typeof revenueStats.$inferSelect;
