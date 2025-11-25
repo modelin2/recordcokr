@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { spawn } from "child_process";
 import { unlink } from "fs/promises";
-import { insertBookingSchema, insertNaverBookingSchema } from "@shared/schema";
+import { insertBookingSchema, insertNaverBookingSchema, insertVisitorPhotoSchema } from "@shared/schema";
 import { z } from "zod";
 
 // Simple session middleware for demo purposes
@@ -824,6 +824,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: false,
         message: '결제 확인 중 오류가 발생했습니다.'
       });
+    }
+  });
+
+  // ==================== Visitor Photo Routes ====================
+
+  // Get all visitor photos (admin only)
+  app.get("/api/photos", requireAdmin, async (req, res) => {
+    try {
+      const photos = await storage.getAllVisitorPhotos();
+      res.json(photos);
+    } catch (error) {
+      console.error("Error fetching visitor photos:", error);
+      res.status(500).json({ message: "Failed to fetch photos" });
+    }
+  });
+
+  // Get single visitor photo
+  app.get("/api/photos/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const photo = await storage.getVisitorPhoto(id);
+      
+      if (!photo) {
+        return res.status(404).json({ message: "Photo not found" });
+      }
+      
+      res.json(photo);
+    } catch (error) {
+      console.error("Error fetching photo:", error);
+      res.status(500).json({ message: "Failed to fetch photo" });
+    }
+  });
+
+  // Upload visitor photo (admin only)
+  app.post("/api/photos", requireAdmin, async (req, res) => {
+    try {
+      const validatedData = insertVisitorPhotoSchema.parse(req.body);
+      const photo = await storage.createVisitorPhoto(validatedData);
+      res.status(201).json(photo);
+    } catch (error) {
+      console.error("Error creating visitor photo:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid photo data", 
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to create photo" });
+    }
+  });
+
+  // Update photo print status
+  app.patch("/api/photos/:id/print", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { isPrinted } = req.body;
+      
+      const updatedPhoto = await storage.updateVisitorPhotoStatus(id, isPrinted);
+      
+      if (!updatedPhoto) {
+        return res.status(404).json({ message: "Photo not found" });
+      }
+      
+      res.json(updatedPhoto);
+    } catch (error) {
+      console.error("Error updating photo status:", error);
+      res.status(500).json({ message: "Failed to update photo status" });
+    }
+  });
+
+  // Delete visitor photo
+  app.delete("/api/photos/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteVisitorPhoto(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Photo not found" });
+      }
+      
+      res.json({ message: "Photo deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting photo:", error);
+      res.status(500).json({ message: "Failed to delete photo" });
+    }
+  });
+
+  // Get customer names from bookings for photo selection
+  app.get("/api/photos/customers/list", requireAdmin, async (req, res) => {
+    try {
+      const bookings = await storage.getAllBookings();
+      const customers = bookings.map(b => ({
+        id: b.id,
+        name: b.name,
+        bookingDate: b.bookingDate,
+        bookingTime: b.bookingTime,
+        createdAt: b.createdAt
+      }));
+      res.json(customers);
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+      res.status(500).json({ message: "Failed to fetch customers" });
     }
   });
 
