@@ -164,6 +164,20 @@ Changelog:
   - Updated pricing from ₩100,000 to ₩1,300,000 for LP production
   - Enhanced admin panel with detailed booking information display
   - Added YouTube URL copy functionality and improved service details view
+- November 25, 2025. **Naver Booking System**:
+  - Created partner_addons table for Naver-exclusive discounted services
+  - Added /naver-booking page with 50% discounted add-ons for Naver pre-paid customers
+  - Implemented 6 Naver add-ons: voice correction, mixing/mastering, video production, music distribution
+- November 25, 2025. **Photo Print System for Admin**:
+  - Created visitor_photos table for newspaper-style commemorative prints
+  - Added /photo admin page for uploading customer photos
+  - Implemented newspaper-style template design with Korean styling
+  - Features: photo upload, customer name selection, custom headline, print function
+  - Admin-only internal feature for printing commemorative photos
+- November 25, 2025. **Stripe/Payment Removal**:
+  - Removed all Stripe and TossPayments related code and dependencies
+  - Deleted payment pages (payment.tsx, payment-success.tsx, payment-fail.tsx)
+  - Simplified booking flow without external payment integration
 ```
 
 ## User Preferences

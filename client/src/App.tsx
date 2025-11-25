@@ -11,9 +11,6 @@ import Admin from "@/pages/admin";
 import LoginPage from "@/pages/login";
 import UserManagement from "@/pages/user-management";
 import PhotoPage from "@/pages/photo";
-import PaymentPage from "@/pages/payment";
-import PaymentSuccessPage from "@/pages/payment-success";
-import PaymentFailPage from "@/pages/payment-fail";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "@/components/protected-route";
 
@@ -40,9 +37,6 @@ function Router() {
           <PhotoPage />
         </ProtectedRoute>
       </Route>
-      <Route path="/payment" component={PaymentPage} />
-      <Route path="/payment-success" component={PaymentSuccessPage} />
-      <Route path="/payment-fail" component={PaymentFailPage} />
       <Route component={NotFound} />
     </Switch>
   );
