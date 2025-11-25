@@ -10,6 +10,7 @@ import NaverBooking from "@/pages/naver-booking";
 import Admin from "@/pages/admin";
 import LoginPage from "@/pages/login";
 import UserManagement from "@/pages/user-management";
+import PhotoPage from "@/pages/photo";
 import PaymentPage from "@/pages/payment";
 import PaymentSuccessPage from "@/pages/payment-success";
 import PaymentFailPage from "@/pages/payment-fail";
@@ -32,6 +33,11 @@ function Router() {
       <Route path="/admin/users">
         <ProtectedRoute requireAdmin={true}>
           <UserManagement />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/photo">
+        <ProtectedRoute requireAdmin={true}>
+          <PhotoPage />
         </ProtectedRoute>
       </Route>
       <Route path="/payment" component={PaymentPage} />
