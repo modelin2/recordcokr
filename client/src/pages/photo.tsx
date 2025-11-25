@@ -414,6 +414,28 @@ export default function PhotoPage() {
                     photoData={selectedPhoto}
                     headline={customHeadline || undefined}
                   />
+                  <div className="mt-6 flex justify-center gap-4">
+                    <Button
+                      onClick={() => {
+                        setPreviewPhoto({
+                          id: 0,
+                          customerName: selectedCustomerName,
+                          photoData: selectedPhoto,
+                          headline: customHeadline || null,
+                          isPrinted: false,
+                          createdAt: new Date(),
+                        });
+                        setTimeout(() => {
+                          window.print();
+                        }, 500);
+                      }}
+                      className="bg-amber-800 hover:bg-amber-900 text-white px-8 py-3 text-lg"
+                      data-testid="button-print-preview"
+                    >
+                      <Printer className="w-5 h-5 mr-2" />
+                      미리보기 출력하기
+                    </Button>
+                  </div>
                 </div>
               ) : (
                 <div className="text-center py-12 text-amber-700">
