@@ -1,5 +1,3 @@
-import recordingCafeLogo from "@assets/A_sophisticated_and_modern_logo_design_for_Record-1757038688225_1764047744299.png";
-
 interface NewspaperTemplateProps {
   customerName: string;
   photoData: string;
@@ -25,7 +23,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
 
   return (
     <div 
-      className="bg-white p-6 w-full text-black"
+      className="bg-white p-3 w-full text-black"
       style={{ 
         fontFamily: "'Times New Roman', 'Nanum Myeongjo', serif",
       }}
@@ -44,14 +42,24 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
           
           {/* K-POP BOARD Title */}
           <div className="text-center flex-1">
-            <div className="flex items-center justify-center gap-0">
+            <div className="flex items-baseline justify-center gap-0">
               <span 
                 className="text-4xl font-black tracking-tight"
                 style={{ fontFamily: "'Arial Black', sans-serif" }}
               >
-                <span className="text-black">K-POP</span>
-                <span className="mx-2 text-gray-400 text-2xl">|</span>
-                <span className="text-black">BOARD</span>
+                K-POP
+              </span>
+              <span 
+                className="mx-2 text-gray-400 text-3xl font-light"
+                style={{ lineHeight: "1" }}
+              >
+                |
+              </span>
+              <span 
+                className="text-4xl font-black tracking-tight"
+                style={{ fontFamily: "'Arial Black', sans-serif" }}
+              >
+                BOARD
               </span>
             </div>
             <div 
@@ -62,12 +70,11 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
             </div>
           </div>
 
-          <div className="flex items-center justify-end">
-            <img 
-              src={recordingCafeLogo}
-              alt="Recording Cafe"
-              className="h-14 w-auto"
-            />
+          <div className="text-right text-xs text-black leading-tight">
+            <div className="border-2 border-black p-2">
+              <div className="font-black text-sm">QR</div>
+              <div className="font-bold">SCAN</div>
+            </div>
           </div>
         </div>
         
@@ -86,17 +93,9 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
         >
           {headline || <>서울의 숨은 보석 발견! 오늘 K-POP 차기 스타 탄생?</>}
         </h1>
-        <p className="text-sm text-center text-gray-700 italic mb-2">
+        <p className="text-sm text-center text-gray-700 italic border-b-2 border-black pb-2">
           Hidden Gem of Seoul Discovered! Is the Next K-Pop Star Born Today?
         </p>
-        <div className="text-center border-b-2 border-black pb-2">
-          <p className="text-base font-bold">
-            Recording Cafe 방문객, 압도적 가창력에 제작진 '경악'... 데뷔 임박설 솔솔
-          </p>
-          <p className="text-xs text-gray-600 italic mt-1">
-            Visitor at Recording Cafe stuns staff with overwhelming vocals... Debut rumors swirling.
-          </p>
-        </div>
       </div>
 
       {/* Three Column Layout */}
@@ -204,22 +203,22 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
 
       {/* Bottom Ad Banner */}
       <div className="mt-3 pt-2 border-t-4 border-black">
-        <div className="flex items-center justify-between p-3 bg-gray-50 border-2 border-black">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-black flex items-center justify-center">
-              <span className="text-white font-black text-sm">RC</span>
+        <div className="flex items-center justify-between p-2 bg-gray-50 border-2 border-black">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-black flex items-center justify-center">
+              <span className="text-white font-black text-xs">RC</span>
             </div>
             <div>
-              <p className="text-base font-black">Recording Cafe</p>
-              <p className="text-xs text-gray-700">서울 서초구 강남대로 107길 21. 2층</p>
+              <p className="text-sm font-black">Recording Cafe</p>
+              <p className="text-[10px] text-gray-700">서울 서초구 강남대로 107길 21. 2층</p>
             </div>
           </div>
-          <div className="text-right text-xs">
-            <p className="font-bold mb-1">인스타그램에 인증샷 올리고 @recordingcafe 팔로우하면 1타임 무료!</p>
-            <p className="text-gray-600 italic text-[10px]">
+          <div className="text-right">
+            <p className="font-bold text-[10px]">인스타그램에 인증샷 올리고 @recordingcafe 팔로우하면 1타임 무료!</p>
+            <p className="text-gray-600 italic text-[9px]">
               Share on Instagram & follow @recordingcafe for 1 free session!
             </p>
-            <p className="font-bold mt-1">#SeoulHotspot #SeoulItinerary #RecordingCafe</p>
+            <p className="font-bold text-[10px] mt-1">#SeoulHotspot #SeoulItinerary #RecordingCafe</p>
           </div>
         </div>
       </div>
