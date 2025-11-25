@@ -28,10 +28,12 @@ export default function PhotoPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [selectedCustomerName, setSelectedCustomerName] = useState<string>("");
+  const [koreanName, setKoreanName] = useState<string>("");
   const [selectedDrink, setSelectedDrink] = useState<string>("");
   const [drinkTemperature, setDrinkTemperature] = useState<string>("");
   const [customHeadline, setCustomHeadline] = useState<string>("");
   const [previewPhoto, setPreviewPhoto] = useState<VisitorPhoto | null>(null);
+  const [previewKoreanName, setPreviewKoreanName] = useState<string>("");
 
   const { data: user, isLoading: userLoading } = useQuery<{ id: number; username: string; role: string }>({
     queryKey: ["/api/auth/user"],
@@ -200,8 +202,11 @@ export default function PhotoPage() {
         <div id="print-area" className="hidden print:block">
           <NewspaperTemplate 
             customerName={previewPhoto.customerName}
+            koreanName={previewKoreanName || undefined}
             photoData={previewPhoto.photoData}
             headline={previewPhoto.headline || undefined}
+            drinkName={selectedDrink || undefined}
+            drinkTemperature={drinkTemperature || undefined}
           />
         </div>
       )}
@@ -308,6 +313,18 @@ export default function PhotoPage() {
                     onChange={(e) => setSelectedCustomerName(e.target.value)}
                     className="mt-2 bg-white border-amber-600"
                     data-testid="input-customer-name"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-amber-900 font-medium">한국어 이름 (영어 이름일 경우)</Label>
+                  <Input
+                    type="text"
+                    placeholder="예: John → 존"
+                    value={koreanName}
+                    onChange={(e) => setKoreanName(e.target.value)}
+                    className="mt-2 bg-white border-amber-600"
+                    data-testid="input-korean-name"
                   />
                 </div>
 
@@ -425,6 +442,7 @@ export default function PhotoPage() {
                 <div className="max-w-2xl mx-auto">
                   <NewspaperTemplate
                     customerName={selectedCustomerName}
+                    koreanName={koreanName || undefined}
                     photoData={selectedPhoto}
                     headline={customHeadline || undefined}
                     drinkName={selectedDrink || undefined}
@@ -441,6 +459,7 @@ export default function PhotoPage() {
                           isPrinted: false,
                           createdAt: new Date(),
                         });
+                        setPreviewKoreanName(koreanName);
                         setTimeout(() => {
                           window.print();
                         }, 500);

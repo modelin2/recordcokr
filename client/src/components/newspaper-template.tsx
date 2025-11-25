@@ -1,12 +1,14 @@
 interface NewspaperTemplateProps {
   customerName: string;
+  koreanName?: string;
   photoData: string;
   headline?: string;
   drinkName?: string;
   drinkTemperature?: string;
 }
 
-export default function NewspaperTemplate({ customerName, photoData, headline, drinkName, drinkTemperature }: NewspaperTemplateProps) {
+export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature }: NewspaperTemplateProps) {
+  const displayName = koreanName ? `${customerName} (${koreanName})` : customerName;
   const today = new Date();
   const dateKr = today.toLocaleDateString("ko-KR", {
     year: "numeric",
@@ -86,16 +88,13 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
       </div>
 
       {/* Main Headline */}
-      <div className="mb-3">
+      <div className="mb-3 border-b-2 border-black pb-2">
         <h1 
-          className="text-2xl font-black leading-tight text-center mb-1"
+          className="text-3xl font-black leading-tight text-center"
           style={{ fontFamily: "'Arial Black', 'Nanum Gothic', sans-serif" }}
         >
           {headline || <>서울의 숨은 보석 발견! 오늘 K-POP 차기 스타 탄생?</>}
         </h1>
-        <p className="text-sm text-center text-gray-700 italic border-b-2 border-black pb-2">
-          Hidden Gem of Seoul Discovered! Is the Next K-Pop Star Born Today?
-        </p>
       </div>
 
       {/* Three Column Layout */}
@@ -113,7 +112,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
             />
           </div>
           <p className="text-xs text-center mt-1 border-b-2 border-black pb-2 font-medium">
-            ▲ 오늘 Recording Cafe 스튜디오를 뜨겁게 달군 주인공 <span className="font-bold">{customerName}</span>님이 녹음에 열중하고 있다. 
+            ▲ 오늘 Recording Cafe 스튜디오를 뜨겁게 달군 주인공 <span className="font-bold">{displayName}</span>님이 녹음에 열중하고 있다. 
             관계자들은 "마이크를 잡는 순간 눈빛이 변했다"며 혀를 내둘렀다. / 사진 = SMT 특별취재팀
           </p>
           
@@ -148,7 +147,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
                 <span className="font-medium">Artist</span>
-                <span className="font-black">{customerName}</span>
+                <span className="font-black">{displayName}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Date</span>
@@ -186,7 +185,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
           <div className="border-2 border-black p-2" style={{ backgroundColor: "#f0f0f0" }}>
             <div className="text-xs font-black mb-1 text-center">[스타의 음료]</div>
             <div className="text-xs text-center mb-1">
-              <span className="font-bold">{customerName}</span>님이
+              <span className="font-bold">{displayName}</span>님이
             </div>
             <div className="text-xs text-center">
               주문한 것으로 알려진
