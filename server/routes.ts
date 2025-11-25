@@ -618,6 +618,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: b.name,
         bookingDate: b.bookingDate,
         bookingTime: b.bookingTime,
+        selectedDrink: b.selectedDrink,
+        drinkTemperature: b.drinkTemperature,
         createdAt: b.createdAt
       }));
       res.json(customers);

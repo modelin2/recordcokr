@@ -2,9 +2,11 @@ interface NewspaperTemplateProps {
   customerName: string;
   photoData: string;
   headline?: string;
+  drinkName?: string;
+  drinkTemperature?: string;
 }
 
-export default function NewspaperTemplate({ customerName, photoData, headline }: NewspaperTemplateProps) {
+export default function NewspaperTemplate({ customerName, photoData, headline, drinkName, drinkTemperature }: NewspaperTemplateProps) {
   const today = new Date();
   const dateKr = today.toLocaleDateString("ko-KR", {
     year: "numeric",
@@ -158,7 +160,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
           </div>
 
           {/* English Summary */}
-          <div className="bg-gray-100 p-2 mb-3 border border-black">
+          <div className="p-2 mb-3 border border-black" style={{ backgroundColor: "#f0f0f0" }}>
             <h3 className="font-black text-xs mb-1">[English Summary]</h3>
             <p className="text-[10px] leading-relaxed">
               A visitor at Recording Cafe today shocked everyone with an amazing singing performance. 
@@ -179,7 +181,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
           </div>
 
           {/* Joke Drink Section */}
-          <div className="border-2 border-black p-2 bg-gray-50">
+          <div className="border-2 border-black p-2" style={{ backgroundColor: "#f0f0f0" }}>
             <div className="text-xs font-black mb-1 text-center">[스타의 음료]</div>
             <div className="text-xs text-center mb-1">
               <span className="font-bold">{customerName}</span>님이
@@ -188,10 +190,10 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
               주문한 것으로 알려진
             </div>
             <div className="text-sm font-black text-center mt-1 border-t border-gray-300 pt-1">
-              ☕ 아메리카노
+              ☕ {drinkTemperature === "iced" ? "Iced " : drinkTemperature === "hot" ? "Hot " : ""}{drinkName || "아메리카노"}
             </div>
             <div className="text-[10px] text-gray-600 italic text-center mt-1">
-              "성공한 아티스트의 시작은 항상 아메리카노와 함께"
+              "성공한 아티스트의 시작은 항상 커피와 함께"
             </div>
           </div>
         </div>
@@ -210,11 +212,11 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
             </div>
           </div>
           <div className="text-right text-xs">
-            <p className="font-bold mb-1">인스타그램에 인증샷 올리면 아메리카노 무료!</p>
+            <p className="font-bold mb-1">인스타그램에 인증샷 올리고 @recordingcafe 팔로우하면 1타임 무료!</p>
             <p className="text-gray-600 italic text-[10px]">
-              Share on Instagram and get a free Americano!
+              Share on Instagram & follow @recordingcafe for 1 free session!
             </p>
-            <p className="font-bold mt-1">#서울핫플 #RecordingCafe</p>
+            <p className="font-bold mt-1">#SeoulHotspot #SeoulItinerary #RecordingCafe</p>
           </div>
         </div>
       </div>

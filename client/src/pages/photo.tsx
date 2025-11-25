@@ -17,6 +17,8 @@ interface CustomerInfo {
   name: string;
   bookingDate: string | null;
   bookingTime: string | null;
+  selectedDrink: string | null;
+  drinkTemperature: string | null;
   createdAt: Date;
 }
 
@@ -26,6 +28,8 @@ export default function PhotoPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [selectedCustomerName, setSelectedCustomerName] = useState<string>("");
+  const [selectedDrink, setSelectedDrink] = useState<string>("");
+  const [drinkTemperature, setDrinkTemperature] = useState<string>("");
   const [customHeadline, setCustomHeadline] = useState<string>("");
   const [previewPhoto, setPreviewPhoto] = useState<VisitorPhoto | null>(null);
 
@@ -271,7 +275,17 @@ export default function PhotoPage() {
 
                 <div>
                   <Label className="text-amber-900 font-medium">고객 이름 선택</Label>
-                  <Select value={selectedCustomerName} onValueChange={setSelectedCustomerName}>
+                  <Select 
+                    value={selectedCustomerName} 
+                    onValueChange={(name) => {
+                      setSelectedCustomerName(name);
+                      const customer = customers.find(c => c.name === name);
+                      if (customer) {
+                        setSelectedDrink(customer.selectedDrink || "");
+                        setDrinkTemperature(customer.drinkTemperature || "");
+                      }
+                    }}
+                  >
                     <SelectTrigger className="mt-2 bg-white border-amber-600" data-testid="select-customer">
                       <SelectValue placeholder="예약자 이름 선택" />
                     </SelectTrigger>
@@ -413,6 +427,8 @@ export default function PhotoPage() {
                     customerName={selectedCustomerName}
                     photoData={selectedPhoto}
                     headline={customHeadline || undefined}
+                    drinkName={selectedDrink || undefined}
+                    drinkTemperature={drinkTemperature || undefined}
                   />
                   <div className="mt-6 flex justify-center gap-4">
                     <Button
