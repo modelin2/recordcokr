@@ -21,20 +21,11 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
 
   return (
     <div 
-      className="bg-white p-6 max-w-[700px] mx-auto text-black"
+      className="bg-white p-6 w-full text-black"
       style={{ 
-        border: "2px solid #111",
         fontFamily: "'Times New Roman', 'Nanum Myeongjo', serif",
       }}
     >
-      {/* Top Breaking News */}
-      <div className="text-xs text-center mb-2 font-bold border-b border-gray-300 pb-1">
-        [특종] 서울 한복판에서 들려온 '천상의 목소리'... 시민들 충격!
-        <span className="block text-[10px] text-gray-600 italic font-normal mt-0.5">
-          [BREAKING NEWS] "Heavenly Voice" heard in the middle of Seoul... Citizens Shocked!
-        </span>
-      </div>
-
       {/* K-POP BOARD Masthead */}
       <div className="border-b-4 border-black pb-3 mb-3">
         <div className="flex items-center justify-between">
@@ -56,15 +47,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
               >
                 <span className="text-black">K-POP</span>
                 <span className="mx-2 text-gray-400">|</span>
-                <span className="relative inline-block">
-                  <span className="text-black">B</span>
-                  <span className="absolute top-[2px] left-[5px] w-3 h-3 rounded-full bg-pink-500"></span>
-                </span>
-                <span className="relative inline-block">
-                  <span className="text-black">O</span>
-                  <span className="absolute top-[6px] left-[4px] w-3 h-3 rounded-full bg-cyan-500"></span>
-                </span>
-                <span className="text-black">ARD</span>
+                <span className="text-black">BOARD</span>
               </span>
             </div>
             <div 
@@ -96,14 +79,14 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
           className="text-2xl font-black leading-tight text-center mb-1"
           style={{ fontFamily: "'Arial Black', 'Nanum Gothic', sans-serif" }}
         >
-          {headline || <>서울의 숨은 보석 발견! 오늘 <span className="text-red-600">K-POP 차기 스타</span> 탄생?</>}
+          {headline || <>서울의 숨은 보석 발견! 오늘 K-POP 차기 스타 탄생?</>}
         </h1>
         <p className="text-sm text-center text-gray-700 italic mb-2">
           Hidden Gem of Seoul Discovered! Is the Next K-Pop Star Born Today?
         </p>
         <div className="text-center border-b-2 border-black pb-2">
           <p className="text-base font-bold">
-            Recording Cafe 방문객, 압도적 가창력에 제작진 '<span className="text-red-600">경악</span>'... 데뷔 임박설 솔솔
+            Recording Cafe 방문객, 압도적 가창력에 제작진 '경악'... 데뷔 임박설 솔솔
           </p>
           <p className="text-xs text-gray-600 italic mt-1">
             Visitor at Recording Cafe stuns staff with overwhelming vocals... Debut rumors swirling.
@@ -133,7 +116,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
           {/* Article under photo */}
           <div className="mt-2 columns-2 gap-3 text-justify text-xs leading-relaxed" style={{ columnRule: "2px solid #333" }}>
             <p className="mb-2">
-              <span className="font-bold">서울=SMT뉴스</span> 대한민국 가요계가 긴장하고 있다. 오늘 오후, 서울 강남구에 위치한 'Recording Cafe'에서 믿을 수 없는 일이 벌어졌다. 우연히 스튜디오를 방문한 한 고객이 프로 가수 뺨치는 엄청난 실력을 선보였기 때문이다.
+              <span className="font-bold">서울=SMT뉴스</span> 대한민국 가요계가 긴장하고 있다. 오늘 오후, 서울 서초구에 위치한 'Recording Cafe'에서 믿을 수 없는 일이 벌어졌다. 우연히 스튜디오를 방문한 한 고객이 프로 가수 뺨치는 엄청난 실력을 선보였기 때문이다.
             </p>
             <p className="mb-2">
               현장에 있던 엔지니어 A씨는 "수많은 사람을 녹음해봤지만, 이런 재능은 처음"이라며, "첫 소절을 듣는 순간 소름이 돋아 페이더를 올리는 것도 잊었다"고 흥분을 감추지 못했다.
@@ -206,7 +189,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
             </div>
             <div>
               <p className="text-base font-black">Recording Cafe</p>
-              <p className="text-xs text-gray-700">서울 강남구 압구정로 2길 46</p>
+              <p className="text-xs text-gray-700">서울 서초구 강남대로 107길 21. 2층</p>
             </div>
           </div>
           <div className="text-right text-xs">
@@ -214,7 +197,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
             <p className="text-gray-600 italic text-[10px]">
               Share on Instagram and get a free Americano!
             </p>
-            <p className="font-bold mt-1 text-pink-600">#서울핫플 #RecordingCafe</p>
+            <p className="font-bold mt-1">#서울핫플 #RecordingCafe</p>
           </div>
         </div>
       </div>
