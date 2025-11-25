@@ -172,10 +172,27 @@ export default function NewspaperTemplate({ customerName, photoData, headline }:
             <div className="text-xs">맑음. 노래하기 딱 좋은 날씨.</div>
             <div className="text-[10px] text-gray-600 italic">(Sunny. Perfect day for singing.)</div>
           </div>
-          <div className="border-2 border-black p-2">
+          <div className="border-2 border-black p-2 mb-2">
             <div className="text-xs font-bold mb-1">[금주의 운세]</div>
             <div className="text-xs">마이크를 잡으면 대박 날 운명.</div>
             <div className="text-[10px] text-gray-600 italic">(Destined for success with a mic.)</div>
+          </div>
+
+          {/* Joke Drink Section */}
+          <div className="border-2 border-black p-2 bg-gray-50">
+            <div className="text-xs font-black mb-1 text-center">[스타의 음료]</div>
+            <div className="text-xs text-center mb-1">
+              <span className="font-bold">{customerName}</span>님이
+            </div>
+            <div className="text-xs text-center">
+              주문한 것으로 알려진
+            </div>
+            <div className="text-sm font-black text-center mt-1 border-t border-gray-300 pt-1">
+              ☕ 아메리카노
+            </div>
+            <div className="text-[10px] text-gray-600 italic text-center mt-1">
+              "성공한 아티스트의 시작은 항상 아메리카노와 함께"
+            </div>
           </div>
         </div>
       </div>
