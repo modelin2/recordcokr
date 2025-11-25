@@ -1,3 +1,5 @@
+import recordingCafeLogo from "@assets/A_sophisticated_and_modern_logo_design_for_Record-1757038688225_1764047744299.png";
+
 interface NewspaperTemplateProps {
   customerName: string;
   photoData: string;
@@ -48,7 +50,7 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
                 style={{ fontFamily: "'Arial Black', sans-serif" }}
               >
                 <span className="text-black">K-POP</span>
-                <span className="mx-2 text-gray-400">|</span>
+                <span className="mx-2 text-gray-400 text-2xl">|</span>
                 <span className="text-black">BOARD</span>
               </span>
             </div>
@@ -60,11 +62,12 @@ export default function NewspaperTemplate({ customerName, photoData, headline, d
             </div>
           </div>
 
-          <div className="text-right text-xs text-black leading-tight">
-            <div className="border-2 border-black p-2">
-              <div className="font-black text-sm">QR</div>
-              <div className="font-bold">SCAN</div>
-            </div>
+          <div className="flex items-center justify-end">
+            <img 
+              src={recordingCafeLogo}
+              alt="Recording Cafe"
+              className="h-14 w-auto"
+            />
           </div>
         </div>
         
