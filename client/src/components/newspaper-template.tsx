@@ -8,56 +8,108 @@ interface NewspaperTemplateProps {
 }
 
 function convertToKorean(name: string): string {
-  const koreanMap: Record<string, string> = {
-    'john': '존', 'jane': '제인', 'mike': '마이크', 'michael': '마이클',
-    'david': '데이비드', 'james': '제임스', 'robert': '로버트', 'william': '윌리엄',
-    'richard': '리차드', 'joseph': '조셉', 'thomas': '토마스', 'charles': '찰스',
-    'chris': '크리스', 'christopher': '크리스토퍼', 'daniel': '다니엘', 'matthew': '매튜',
-    'anthony': '앤서니', 'mark': '마크', 'donald': '도널드', 'steven': '스티븐',
-    'paul': '폴', 'andrew': '앤드류', 'joshua': '조슈아', 'kevin': '케빈',
-    'brian': '브라이언', 'george': '조지', 'edward': '에드워드', 'ronald': '로널드',
-    'timothy': '티모시', 'jason': '제이슨', 'jeffrey': '제프리', 'ryan': '라이언',
-    'jacob': '제이콥', 'gary': '게리', 'nicholas': '니콜라스', 'eric': '에릭',
-    'jonathan': '조나단', 'stephen': '스티븐', 'larry': '래리', 'justin': '저스틴',
-    'scott': '스콧', 'brandon': '브랜든', 'benjamin': '벤자민', 'samuel': '사무엘',
-    'raymond': '레이몬드', 'gregory': '그레고리', 'frank': '프랭크', 'alexander': '알렉산더',
-    'alex': '알렉스', 'patrick': '패트릭', 'jack': '잭', 'dennis': '데니스',
-    'jerry': '제리', 'tyler': '타일러', 'aaron': '아론', 'henry': '헨리',
-    'mary': '메리', 'patricia': '패트리샤', 'jennifer': '제니퍼', 'linda': '린다',
-    'elizabeth': '엘리자베스', 'barbara': '바바라', 'susan': '수잔', 'jessica': '제시카',
-    'sarah': '사라', 'karen': '카렌', 'lisa': '리사', 'nancy': '낸시',
-    'betty': '베티', 'margaret': '마가렛', 'sandra': '샌드라', 'ashley': '애슐리',
-    'dorothy': '도로시', 'kimberly': '킴벌리', 'emily': '에밀리', 'donna': '도나',
-    'michelle': '미셸', 'carol': '캐롤', 'amanda': '아만다', 'melissa': '멜리사',
-    'deborah': '데보라', 'stephanie': '스테파니', 'rebecca': '레베카', 'sharon': '샤론',
-    'laura': '로라', 'cynthia': '신시아', 'kathleen': '캐슬린', 'amy': '에이미',
-    'angela': '안젤라', 'shirley': '셜리', 'anna': '안나', 'brenda': '브렌다',
-    'emma': '엠마', 'olivia': '올리비아', 'ava': '에바', 'sophia': '소피아',
-    'isabella': '이사벨라', 'mia': '미아', 'charlotte': '샬롯', 'amelia': '아멜리아',
-    'harper': '하퍼', 'evelyn': '에블린', 'abigail': '애비게일', 'ella': '엘라',
-    'peter': '피터', 'tom': '톰', 'tommy': '토미', 'bob': '밥', 'bobby': '바비',
-    'sam': '샘', 'ben': '벤', 'max': '맥스', 'leo': '레오', 'luke': '루크',
-    'noah': '노아', 'oliver': '올리버', 'elijah': '엘라이자', 'liam': '리암',
-    'mason': '메이슨', 'logan': '로건', 'lucas': '루카스', 'ethan': '에단',
-    'aiden': '에이든', 'jackson': '잭슨', 'sebastian': '세바스찬', 'mateo': '마테오',
-    'owen': '오웬', 'theodore': '테오도어', 'theo': '테오', 'miles': '마일스',
-    'kate': '케이트', 'katie': '케이티', 'grace': '그레이스', 'zoe': '조이',
-    'natalie': '나탈리', 'hannah': '한나', 'lily': '릴리', 'chloe': '클로이',
-    'victoria': '빅토리아', 'madison': '매디슨', 'lucy': '루시', 'aria': '아리아',
+  if (!name || name.trim() === '') return '';
+  
+  const isKorean = /[가-힣]/.test(name);
+  if (isKorean) return '';
+  
+  const phonemeMap: Record<string, string> = {
+    'tion': '션', 'sion': '션', 'cian': '션', 'tian': '션',
+    'ight': '아이트', 'ough': '오', 'ould': '울드', 'ound': '운드',
+    'ther': '더', 'ther': '더', 'this': '디스', 'that': '댓',
+    'chr': '크', 'sch': '스', 'tch': '치', 'dge': '지',
+    'ph': '프', 'th': '스', 'ch': '치', 'sh': '쉬', 'wh': '와',
+    'ck': '크', 'ng': '응', 'nk': '응크', 'qu': '쿼', 'wr': '르',
+    'kn': '느', 'gn': '느', 'gh': '', 'mb': 'ㅁ', 'mn': 'ㅁ',
+    'ee': '이', 'ea': '이', 'ie': '이', 'ey': '이', 'ay': '에이',
+    'ai': '에이', 'oa': '오', 'oe': '오', 'oo': '우', 'ou': '아우',
+    'ow': '오', 'ew': '유', 'ue': '유', 'au': '오', 'aw': '오',
+    'oi': '오이', 'oy': '오이', 'ar': '아', 'er': '어', 'ir': '어',
+    'or': '오', 'ur': '어', 'ce': '스', 'ci': '시', 'cy': '시',
+    'ge': '지', 'gi': '지', 'gy': '지', 'sc': '스',
+    'll': 'ㄹ', 'ss': '스', 'tt': 'ㅌ', 'ff': '프', 'pp': 'ㅍ',
+    'bb': 'ㅂ', 'dd': 'ㄷ', 'gg': 'ㄱ', 'nn': 'ㄴ', 'mm': 'ㅁ', 'rr': 'ㄹ',
+    'a': '아', 'e': '에', 'i': '이', 'o': '오', 'u': '우', 'y': '이',
+    'b': '브', 'c': '크', 'd': '드', 'f': '프', 'g': '그', 'h': '흐',
+    'j': '제이', 'k': '크', 'l': 'ㄹ', 'm': 'ㅁ', 'n': 'ㄴ', 'p': '프',
+    'q': '크', 'r': '르', 's': '스', 't': '트', 'v': '브', 'w': '우',
+    'x': '크스', 'z': '즈',
   };
   
-  const lowerName = name.toLowerCase().trim();
-  if (koreanMap[lowerName]) {
-    return koreanMap[lowerName];
+  const syllableMap: Record<string, string> = {
+    'la': '라', 'le': '레', 'li': '리', 'lo': '로', 'lu': '루', 'ly': '리',
+    'ra': '라', 're': '레', 'ri': '리', 'ro': '로', 'ru': '루', 'ry': '리',
+    'ma': '마', 'me': '메', 'mi': '미', 'mo': '모', 'mu': '무', 'my': '미',
+    'na': '나', 'ne': '네', 'ni': '니', 'no': '노', 'nu': '누', 'ny': '니',
+    'ba': '바', 'be': '베', 'bi': '비', 'bo': '보', 'bu': '부', 'by': '비',
+    'pa': '파', 'pe': '페', 'pi': '피', 'po': '포', 'pu': '푸', 'py': '피',
+    'da': '다', 'de': '데', 'di': '디', 'do': '도', 'du': '두', 'dy': '디',
+    'ta': '타', 'te': '테', 'ti': '티', 'to': '토', 'tu': '투', 'ty': '티',
+    'ga': '가', 'ge': '게', 'gi': '기', 'go': '고', 'gu': '구', 'gy': '지',
+    'ka': '카', 'ke': '케', 'ki': '키', 'ko': '코', 'ku': '쿠', 'ky': '키',
+    'sa': '사', 'se': '세', 'si': '시', 'so': '소', 'su': '수', 'sy': '시',
+    'za': '자', 'ze': '제', 'zi': '지', 'zo': '조', 'zu': '주', 'zy': '지',
+    'fa': '파', 'fe': '페', 'fi': '피', 'fo': '포', 'fu': '푸', 'fy': '피',
+    'va': '바', 've': '베', 'vi': '비', 'vo': '보', 'vu': '부', 'vy': '비',
+    'ha': '하', 'he': '헤', 'hi': '히', 'ho': '호', 'hu': '후', 'hy': '히',
+    'ja': '자', 'je': '제', 'ji': '지', 'jo': '조', 'ju': '주', 'jy': '지',
+    'wa': '와', 'we': '웨', 'wi': '위', 'wo': '워', 'wu': '우',
+    'ya': '야', 'ye': '예', 'yi': '이', 'yo': '요', 'yu': '유',
+    'ca': '카', 'co': '코', 'cu': '쿠',
+    'cha': '차', 'che': '체', 'chi': '치', 'cho': '초', 'chu': '추',
+    'sha': '샤', 'she': '쉬', 'shi': '시', 'sho': '쇼', 'shu': '슈',
+    'tha': '타', 'the': '더', 'thi': '시', 'tho': '소', 'thu': '수',
+    'tra': '트라', 'tre': '트레', 'tri': '트리', 'tro': '트로', 'tru': '트루',
+    'pra': '프라', 'pre': '프레', 'pri': '프리', 'pro': '프로', 'pru': '프루',
+    'bra': '브라', 'bre': '브레', 'bri': '브리', 'bro': '브로', 'bru': '브루',
+    'cra': '크라', 'cre': '크레', 'cri': '크리', 'cro': '크로', 'cru': '크루',
+    'gra': '그라', 'gre': '그레', 'gri': '그리', 'gro': '그로', 'gru': '그루',
+    'dra': '드라', 'dre': '드레', 'dri': '드리', 'dro': '드로', 'dru': '드루',
+    'fla': '플라', 'fle': '플레', 'fli': '플리', 'flo': '플로', 'flu': '플루',
+    'cla': '클라', 'cle': '클레', 'cli': '클리', 'clo': '클로', 'clu': '클루',
+    'sta': '스타', 'ste': '스테', 'sti': '스티', 'sto': '스토', 'stu': '스투',
+    'sca': '스카', 'sce': '스케', 'sci': '사이', 'sco': '스코', 'scu': '스쿠',
+    'lla': '야', 'lle': '예', 'lli': '이', 'llo': '요', 'llu': '유',
+    'an': '안', 'en': '엔', 'in': '인', 'on': '온', 'un': '운',
+    'al': '알', 'el': '엘', 'il': '일', 'ol': '올', 'ul': '울',
+    'am': '암', 'em': '엠', 'im': '임', 'om': '옴', 'um': '움',
+    'ar': '아', 'er': '어', 'ir': '어', 'or': '오', 'ur': '어',
+    'as': '아스', 'es': '에스', 'is': '이스', 'os': '오스', 'us': '우스',
+    'at': '앳', 'et': '엣', 'it': '잇', 'ot': '옷', 'ut': '웃',
+    'ck': '크', 'sk': '스크', 'sp': '스프', 'st': '스트', 'str': '스트르',
+  };
+  
+  let result = '';
+  const lower = name.toLowerCase().trim();
+  let i = 0;
+  
+  while (i < lower.length) {
+    let matched = false;
+    
+    for (let len = 4; len >= 1; len--) {
+      const substr = lower.substring(i, i + len);
+      if (syllableMap[substr]) {
+        result += syllableMap[substr];
+        i += len;
+        matched = true;
+        break;
+      }
+      if (phonemeMap[substr]) {
+        result += phonemeMap[substr];
+        i += len;
+        matched = true;
+        break;
+      }
+    }
+    
+    if (!matched) {
+      i++;
+    }
   }
   
-  const nameParts = name.split(' ');
-  const firstName = nameParts[0].toLowerCase();
-  if (koreanMap[firstName]) {
-    return koreanMap[firstName];
-  }
+  result = result.replace(/ㄹㄹ/g, 'ㄹ').replace(/ㄴㄴ/g, 'ㄴ').replace(/ㅁㅁ/g, 'ㅁ');
   
-  return '';
+  return result || '';
 }
 
 export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature }: NewspaperTemplateProps) {
