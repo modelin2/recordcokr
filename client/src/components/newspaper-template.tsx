@@ -16,7 +16,7 @@ function convertToKorean(name: string): string {
   const phonemeMap: Record<string, string> = {
     'tion': '션', 'sion': '션', 'cian': '션', 'tian': '션',
     'ight': '아이트', 'ough': '오', 'ould': '울드', 'ound': '운드',
-    'ther': '더', 'this': '디스', 'that': '댓',
+    'ther': '더', 'ther': '더', 'this': '디스', 'that': '댓',
     'chr': '크', 'sch': '스', 'tch': '치', 'dge': '지',
     'ph': '프', 'th': '스', 'ch': '치', 'sh': '쉬', 'wh': '와',
     'ck': '크', 'ng': '응', 'nk': '응크', 'qu': '쿼', 'wr': '르',
@@ -121,182 +121,251 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
     month: "long",
     day: "numeric",
   });
+  const dateEn = today.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
   const volumeNumber = Math.floor((today.getTime() - new Date("2024-01-01").getTime()) / (1000 * 60 * 60 * 24));
 
   return (
     <div 
-      className="bg-white p-4 w-full text-black"
+      className="bg-white p-3 w-full text-black"
       style={{ 
-        fontFamily: "'Nanum Myeongjo', 'Batang', serif",
+        fontFamily: "'Times New Roman', 'Nanum Myeongjo', serif",
       }}
     >
-      {/* 케이팝 늬우스 Masthead - Retro Style */}
-      <div className="border-b-[6px] border-double border-black pb-2 mb-3">
-        {/* Top decorative line */}
-        <div className="border-b-2 border-black mb-2 pb-1">
-          <div className="flex justify-between items-center text-[10px]">
-            <span>제 {volumeNumber} 호</span>
-            <span>◆ 서울特別市 瑞草區 ◆</span>
-            <span>價格 無料</span>
+      {/* K-POP BOARD Masthead */}
+      <div className="border-b-4 border-black pb-3 mb-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-12 h-12 bg-black flex items-center justify-center">
+              <span className="text-white font-black text-base">RC</span>
+            </div>
+            <span className="text-xs leading-tight text-black font-medium">
+              SINCE<br/>2024
+            </span>
+          </div>
+          
+          {/* K-POP BOARD Title */}
+          <div className="text-center flex-1">
+            <div className="flex items-center justify-center gap-0">
+              <span 
+                className="text-4xl font-black tracking-tight"
+                style={{ fontFamily: "'Arial Black', sans-serif" }}
+              >
+                K-P
+              </span>
+              {/* Vinyl Record O */}
+              <span className="inline-block relative mx-[-2px]" style={{ width: '32px', height: '32px' }}>
+                <svg viewBox="0 0 32 32" className="w-full h-full">
+                  <circle cx="16" cy="16" r="15" fill="#000" />
+                  <circle cx="16" cy="16" r="12" fill="none" stroke="#333" strokeWidth="0.5" />
+                  <circle cx="16" cy="16" r="9" fill="none" stroke="#333" strokeWidth="0.5" />
+                  <circle cx="16" cy="16" r="6" fill="none" stroke="#333" strokeWidth="0.5" />
+                  <circle cx="16" cy="16" r="4" fill="#fff" />
+                  <circle cx="16" cy="16" r="1.5" fill="#000" />
+                </svg>
+              </span>
+              <span 
+                className="text-4xl font-black tracking-tight"
+                style={{ fontFamily: "'Arial Black', sans-serif" }}
+              >
+                P
+              </span>
+              <span 
+                className="mx-2 text-gray-400 text-3xl font-light"
+                style={{ lineHeight: "1" }}
+              >
+                |
+              </span>
+              <span 
+                className="text-4xl font-black tracking-tight"
+                style={{ fontFamily: "'Arial Black', sans-serif" }}
+              >
+                B
+              </span>
+              {/* Vinyl Record O */}
+              <span className="inline-block relative mx-[-2px]" style={{ width: '32px', height: '32px' }}>
+                <svg viewBox="0 0 32 32" className="w-full h-full">
+                  <circle cx="16" cy="16" r="15" fill="#000" />
+                  <circle cx="16" cy="16" r="12" fill="none" stroke="#333" strokeWidth="0.5" />
+                  <circle cx="16" cy="16" r="9" fill="none" stroke="#333" strokeWidth="0.5" />
+                  <circle cx="16" cy="16" r="6" fill="none" stroke="#333" strokeWidth="0.5" />
+                  <circle cx="16" cy="16" r="4" fill="#fff" />
+                  <circle cx="16" cy="16" r="1.5" fill="#000" />
+                </svg>
+              </span>
+              <span 
+                className="text-4xl font-black tracking-tight"
+                style={{ fontFamily: "'Arial Black', sans-serif" }}
+              >
+                ARD
+              </span>
+            </div>
+            <div 
+              className="text-sm tracking-[0.3em] text-black font-bold -mt-1"
+              style={{ fontFamily: "'Arial', sans-serif" }}
+            >
+              SEOUL MUSIC TODAY
+            </div>
+          </div>
+
+          <div className="text-right text-xs text-black leading-tight">
+            <div className="border-2 border-black p-2">
+              <div className="font-black text-sm">QR</div>
+              <div className="font-bold">SCAN</div>
+            </div>
           </div>
         </div>
         
-        {/* Main Title */}
-        <div className="text-center py-2">
-          <h1 
-            className="text-5xl font-black tracking-[0.2em] mb-1"
-            style={{ 
-              fontFamily: "'Nanum Myeongjo', serif",
-              textShadow: "2px 2px 0px #ccc"
-            }}
-          >
-            케이팝 늬우스
-          </h1>
-          <div className="text-xs tracking-[0.5em] text-gray-700">
-            K-POP NEWS
-          </div>
-        </div>
-        
-        {/* Date and Info Bar */}
-        <div className="border-t-2 border-black pt-1 mt-2">
-          <div className="flex justify-between items-center text-xs">
-            <span>西紀 {today.getFullYear()}年 {today.getMonth() + 1}月 {today.getDate()}日</span>
-            <span className="font-bold">【 號 外 】</span>
-            <span>{dateKr} 發行</span>
-          </div>
+        <div className="flex justify-between items-center text-xs text-black mt-2 border-t-2 border-black pt-2 font-medium">
+          <span>{dateKr} ({dateEn})</span>
+          <span>No. {volumeNumber} (특별호)</span>
+          <span className="font-bold">가격: 당신의 열정</span>
         </div>
       </div>
 
-      {/* Main Headline - Retro Style */}
-      <div className="mb-3 border-2 border-black p-2 bg-gray-100">
-        <div className="text-center text-xs mb-1 tracking-widest">◆ 緊 急 速 報 ◆</div>
-        <h2 
-          className="text-2xl font-black leading-tight text-center tracking-wide"
-          style={{ fontFamily: "'Nanum Myeongjo', serif" }}
+      {/* Main Headline */}
+      <div className="mb-3 border-b-2 border-black pb-2">
+        <h1 
+          className="text-3xl font-black leading-tight text-center"
+          style={{ fontFamily: "'Arial Black', 'Nanum Gothic', sans-serif" }}
         >
-          {headline || <>{displayName} 氏 來韓 錄音 現場!</>}
-        </h2>
-        <div className="text-center text-xs mt-1 tracking-widest">― 歌謠界 發 칵 뒤집어 ―</div>
+          {headline || <>{displayName} 내한 녹음 현장!</>}
+        </h1>
       </div>
 
-      {/* Two Column Layout */}
-      <div className="grid grid-cols-5 gap-3 text-sm">
-        {/* Left Column: Photo + Article */}
-        <div className="col-span-3">
-          <div className="border-4 border-double border-black p-1">
+      {/* Three Column Layout */}
+      <div className="grid grid-cols-3 gap-3 text-sm leading-relaxed">
+        {/* Column 1-2: Main Photo + Article */}
+        <div className="col-span-2">
+          <div className="border-2 border-black">
             <img 
               src={photoData} 
               alt={customerName}
               className="w-full aspect-[4/3] object-cover"
               style={{ 
-                filter: "grayscale(100%) contrast(1.2) sepia(20%)",
+                filter: "grayscale(100%) contrast(1.3)",
               }}
             />
           </div>
-          <p className="text-[10px] text-center mt-1 border-b border-black pb-1">
-            ▲ 本紙 特派員이 捕捉한 {displayName} 氏의 錄音 現場. 關係者는 "마이크를 잡는 瞬間 눈빛이 變했다"고 傳했다.
+          <p className="text-xs text-center mt-1 border-b-2 border-black pb-2 font-medium">
+            ▲ 오늘 Recording Cafe 스튜디오를 뜨겁게 달군 주인공 <span className="font-bold">{displayName}</span>님이 녹음에 열중하고 있다. 
+            관계자들은 "마이크를 잡는 순간 눈빛이 변했다"며 혀를 내둘렀다. / 사진 = SMT 특별취재팀
           </p>
           
-          {/* Article */}
-          <div className="mt-2 text-justify text-xs leading-relaxed border-l-2 border-black pl-2">
-            <p className="mb-2 indent-4">
-              <span className="font-bold">【서울=本社】</span> 大韓民國 歌謠界가 緊張하고 있다. 今日 午後, 서울 瑞草區에 位置한 'Recording Cafe'에서 믿을 수 없는 일이 벌어졌다.
+          {/* Article under photo */}
+          <div className="mt-2 columns-2 gap-3 text-justify text-xs leading-relaxed" style={{ columnRule: "2px solid #333" }}>
+            <p className="mb-2">
+              <span className="font-bold">서울=SMT뉴스</span> 대한민국 가요계가 긴장하고 있다. 오늘 오후, 서울 서초구에 위치한 'Recording Cafe'에서 믿을 수 없는 일이 벌어졌다. 우연히 스튜디오를 방문한 한 고객이 프로 가수 뺨치는 엄청난 실력을 선보였기 때문이다.
             </p>
-            <p className="mb-2 indent-4">
-              偶然히 스튜디오를 訪問한 한 顧客이 프로 歌手 뺨치는 엄청난 實力을 선보였기 때문이다. 現場에 있던 엔지니어 A氏는 "數많은 사람을 錄音해봤지만, 이런 才能은 처음"이라며 興奮을 감추지 못했다.
+            <p className="mb-2">
+              현장에 있던 엔지니어 A씨는 "수많은 사람을 녹음해봤지만, 이런 재능은 처음"이라며, "첫 소절을 듣는 순간 소름이 돋아 페이더를 올리는 것도 잊었다"고 흥분을 감추지 못했다.
             </p>
-            <p className="indent-4">
-              이 正體不明의 '豫備 스타'는 錄音 내내 完璧한 感情 處理와 爆發的인 高音으로 스튜디오를 掌握했다는 後聞이다.
+            <p>
+              이 정체불명의 '예비 스타'는 녹음 내내 완벽한 감정 처리와 폭발적인 고음으로 스튜디오를 장악했다는 후문이다. 과연 서울에서 탄생한 이 새로운 별이 앞으로 어떤 행보를 보일지 귀추가 주목된다.
             </p>
           </div>
         </div>
 
-        {/* Right Column: Sidebar */}
-        <div className="col-span-2 border-l-2 border-black pl-2">
-          {/* Breaking News Box */}
-          <div className="border-2 border-black mb-2">
-            <div className="bg-black text-white text-center text-xs py-1 font-bold tracking-wider">
-              ◆ 本 日 의 主 人 公 ◆
+        {/* Column 3: Sidebar */}
+        <div className="border-l-2 border-black pl-3">
+          {/* Hot Chart Box */}
+          <div className="bg-black text-white p-2 mb-3">
+            <div className="text-xs font-black text-center tracking-wider">
+              ★ HOT RECORDING ★
             </div>
-            <div className="p-2 text-xs space-y-1">
-              <div className="flex justify-between border-b border-dashed border-gray-400 pb-1">
-                <span>姓 名</span>
-                <span className="font-bold">{displayName}</span>
-              </div>
-              <div className="flex justify-between border-b border-dashed border-gray-400 pb-1">
-                <span>日 字</span>
-                <span>{today.getMonth() + 1}月 {today.getDate()}日</span>
+          </div>
+
+          {/* Info Box */}
+          <div className="border-2 border-black p-2 mb-3">
+            <div className="text-xs font-black border-b-2 border-black pb-1 mb-2">
+              TODAY'S SESSION
+            </div>
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="font-medium">Artist</span>
+                <span className="font-black">{displayName}</span>
               </div>
               <div className="flex justify-between">
-                <span>場 所</span>
-                <span>新沙 스튜디오</span>
+                <span className="font-medium">Date</span>
+                <span className="font-bold">{today.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Studio</span>
+                <span className="font-bold">Sinsa</span>
               </div>
             </div>
           </div>
 
-          {/* Drink Section */}
-          <div className="border-2 border-black mb-2">
-            <div className="bg-black text-white text-center text-xs py-1">
-              ◆ 스타의 飮料 ◆
-            </div>
-            <div className="p-2 text-center">
-              <div className="text-xs mb-1">{displayName} 氏가</div>
-              <div className="text-xs mb-1">注文한 것으로 알려진</div>
-              <div className="text-lg font-black border-t border-black pt-1 mt-1">
-                ☕ {drinkTemperature === "iced" ? "冷 " : drinkTemperature === "hot" ? "溫 " : ""}{drinkName || "아메리카노"}
-              </div>
-              <div className="text-[9px] text-gray-600 italic mt-1">
-                "成功한 아티스트의 始作은 커피와 함께"
-              </div>
-            </div>
+          {/* English Summary */}
+          <div className="p-2 mb-3 border border-black" style={{ backgroundColor: "#f0f0f0" }}>
+            <h3 className="font-black text-xs mb-1">[English Summary]</h3>
+            <p className="text-[10px] leading-relaxed">
+              A visitor at Recording Cafe today shocked everyone with an amazing singing performance. 
+              The studio engineer said, "This is unbelievable talent."
+            </p>
           </div>
 
-          {/* Fortune Box */}
-          <div className="border-2 border-black mb-2 p-2">
-            <div className="text-xs font-bold text-center border-b border-black pb-1 mb-1">【今日의 運勢】</div>
+          {/* Weather/Fortune box */}
+          <div className="border-2 border-black p-2 mb-2">
+            <div className="text-xs font-bold mb-1">[오늘의 날씨]</div>
+            <div className="text-xs">맑음. 노래하기 딱 좋은 날씨.</div>
+            <div className="text-[10px] text-gray-600 italic">(Sunny. Perfect day for singing.)</div>
+          </div>
+          <div className="border-2 border-black p-2 mb-2">
+            <div className="text-xs font-bold mb-1">[금주의 운세]</div>
+            <div className="text-xs">마이크를 잡으면 대박 날 운명.</div>
+            <div className="text-[10px] text-gray-600 italic">(Destined for success with a mic.)</div>
+          </div>
+
+          {/* Joke Drink Section */}
+          <div className="border-2 border-black p-2" style={{ backgroundColor: "#f0f0f0" }}>
+            <div className="text-xs font-black mb-1 text-center">[스타의 음료]</div>
+            <div className="text-xs text-center mb-1">
+              <span className="font-bold">{displayName}</span>님이
+            </div>
             <div className="text-xs text-center">
-              마이크를 잡으면<br/>
-              <span className="font-bold text-sm">大 吉</span>
+              주문한 것으로 알려진
             </div>
-          </div>
-
-          {/* Weather */}
-          <div className="border-2 border-black p-2">
-            <div className="text-xs font-bold text-center border-b border-black pb-1 mb-1">【天 氣】</div>
-            <div className="text-xs text-center">
-              맑음 ☀<br/>
-              <span className="text-[10px]">노래하기 딱 좋은 날씨</span>
+            <div className="text-sm font-black text-center mt-1 border-t border-gray-300 pt-1">
+              ☕ {drinkTemperature === "iced" ? "Iced " : drinkTemperature === "hot" ? "Hot " : ""}{drinkName || "아메리카노"}
+            </div>
+            <div className="text-[10px] text-gray-600 italic text-center mt-1">
+              "성공한 아티스트의 시작은 항상 커피와 함께"
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Ad Banner - Retro Style */}
-      <div className="mt-3 pt-2 border-t-4 border-double border-black">
-        <div className="border-2 border-black p-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="border-2 border-black w-12 h-12 flex items-center justify-center">
-                <span className="font-black text-sm">RC</span>
-              </div>
-              <div>
-                <p className="text-sm font-black">Recording Cafe</p>
-                <p className="text-[10px]">서울 瑞草區 江南大路 107길 21. 2층</p>
-              </div>
+      {/* Bottom Ad Banner */}
+      <div className="mt-3 pt-2 border-t-4 border-black">
+        <div className="flex items-center justify-between p-2 bg-gray-50 border-2 border-black">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-black flex items-center justify-center">
+              <span className="text-white font-black text-xs">RC</span>
             </div>
-            <div className="text-right text-[10px]">
-              <p className="font-bold">인스타그램에 認證샷 게시 및</p>
-              <p className="font-bold">@recordingcafe 팔로우時 1타임 無料!</p>
-              <p className="mt-1">#SeoulHotspot #RecordingCafe</p>
+            <div>
+              <p className="text-sm font-black">Recording Cafe</p>
+              <p className="text-[10px] text-gray-700">서울 서초구 강남대로 107길 21. 2층</p>
             </div>
+          </div>
+          <div className="text-right">
+            <p className="font-bold text-[10px]">인스타그램에 인증샷 올리고 @recordingcafe 팔로우하면 1타임 무료!</p>
+            <p className="text-gray-600 italic text-[9px]">
+              Share on Instagram & follow @recordingcafe for 1 free session!
+            </p>
+            <p className="font-bold text-[10px] mt-1">#SeoulHotspot #SeoulItinerary #RecordingCafe</p>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="mt-2 pt-1 border-t border-black flex justify-between items-center text-[10px]">
-        <span>發行處: Recording Cafe</span>
-        <span>© 西紀 {today.getFullYear()}年</span>
+      <div className="mt-3 pt-2 border-t-2 border-black flex justify-between items-center text-xs font-medium">
+        <span>www.recordingcafe.com</span>
+        <span>© {today.getFullYear()} Recording Cafe</span>
         <span>@recordingcafe</span>
       </div>
     </div>
