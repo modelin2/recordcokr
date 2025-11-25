@@ -7,8 +7,62 @@ interface NewspaperTemplateProps {
   drinkTemperature?: string;
 }
 
+function convertToKorean(name: string): string {
+  const koreanMap: Record<string, string> = {
+    'john': '존', 'jane': '제인', 'mike': '마이크', 'michael': '마이클',
+    'david': '데이비드', 'james': '제임스', 'robert': '로버트', 'william': '윌리엄',
+    'richard': '리차드', 'joseph': '조셉', 'thomas': '토마스', 'charles': '찰스',
+    'chris': '크리스', 'christopher': '크리스토퍼', 'daniel': '다니엘', 'matthew': '매튜',
+    'anthony': '앤서니', 'mark': '마크', 'donald': '도널드', 'steven': '스티븐',
+    'paul': '폴', 'andrew': '앤드류', 'joshua': '조슈아', 'kevin': '케빈',
+    'brian': '브라이언', 'george': '조지', 'edward': '에드워드', 'ronald': '로널드',
+    'timothy': '티모시', 'jason': '제이슨', 'jeffrey': '제프리', 'ryan': '라이언',
+    'jacob': '제이콥', 'gary': '게리', 'nicholas': '니콜라스', 'eric': '에릭',
+    'jonathan': '조나단', 'stephen': '스티븐', 'larry': '래리', 'justin': '저스틴',
+    'scott': '스콧', 'brandon': '브랜든', 'benjamin': '벤자민', 'samuel': '사무엘',
+    'raymond': '레이몬드', 'gregory': '그레고리', 'frank': '프랭크', 'alexander': '알렉산더',
+    'alex': '알렉스', 'patrick': '패트릭', 'jack': '잭', 'dennis': '데니스',
+    'jerry': '제리', 'tyler': '타일러', 'aaron': '아론', 'henry': '헨리',
+    'mary': '메리', 'patricia': '패트리샤', 'jennifer': '제니퍼', 'linda': '린다',
+    'elizabeth': '엘리자베스', 'barbara': '바바라', 'susan': '수잔', 'jessica': '제시카',
+    'sarah': '사라', 'karen': '카렌', 'lisa': '리사', 'nancy': '낸시',
+    'betty': '베티', 'margaret': '마가렛', 'sandra': '샌드라', 'ashley': '애슐리',
+    'dorothy': '도로시', 'kimberly': '킴벌리', 'emily': '에밀리', 'donna': '도나',
+    'michelle': '미셸', 'carol': '캐롤', 'amanda': '아만다', 'melissa': '멜리사',
+    'deborah': '데보라', 'stephanie': '스테파니', 'rebecca': '레베카', 'sharon': '샤론',
+    'laura': '로라', 'cynthia': '신시아', 'kathleen': '캐슬린', 'amy': '에이미',
+    'angela': '안젤라', 'shirley': '셜리', 'anna': '안나', 'brenda': '브렌다',
+    'emma': '엠마', 'olivia': '올리비아', 'ava': '에바', 'sophia': '소피아',
+    'isabella': '이사벨라', 'mia': '미아', 'charlotte': '샬롯', 'amelia': '아멜리아',
+    'harper': '하퍼', 'evelyn': '에블린', 'abigail': '애비게일', 'ella': '엘라',
+    'peter': '피터', 'tom': '톰', 'tommy': '토미', 'bob': '밥', 'bobby': '바비',
+    'sam': '샘', 'ben': '벤', 'max': '맥스', 'leo': '레오', 'luke': '루크',
+    'noah': '노아', 'oliver': '올리버', 'elijah': '엘라이자', 'liam': '리암',
+    'mason': '메이슨', 'logan': '로건', 'lucas': '루카스', 'ethan': '에단',
+    'aiden': '에이든', 'jackson': '잭슨', 'sebastian': '세바스찬', 'mateo': '마테오',
+    'owen': '오웬', 'theodore': '테오도어', 'theo': '테오', 'miles': '마일스',
+    'kate': '케이트', 'katie': '케이티', 'grace': '그레이스', 'zoe': '조이',
+    'natalie': '나탈리', 'hannah': '한나', 'lily': '릴리', 'chloe': '클로이',
+    'victoria': '빅토리아', 'madison': '매디슨', 'lucy': '루시', 'aria': '아리아',
+  };
+  
+  const lowerName = name.toLowerCase().trim();
+  if (koreanMap[lowerName]) {
+    return koreanMap[lowerName];
+  }
+  
+  const nameParts = name.split(' ');
+  const firstName = nameParts[0].toLowerCase();
+  if (koreanMap[firstName]) {
+    return koreanMap[firstName];
+  }
+  
+  return '';
+}
+
 export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature }: NewspaperTemplateProps) {
-  const displayName = koreanName ? `${customerName} (${koreanName})` : customerName;
+  const autoKoreanName = koreanName || convertToKorean(customerName);
+  const displayName = autoKoreanName ? `${customerName} (${autoKoreanName})` : customerName;
   const today = new Date();
   const dateKr = today.toLocaleDateString("ko-KR", {
     year: "numeric",
@@ -93,7 +147,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           className="text-3xl font-black leading-tight text-center"
           style={{ fontFamily: "'Arial Black', 'Nanum Gothic', sans-serif" }}
         >
-          {headline || <>서울의 숨은 보석 발견! 오늘 K-POP 차기 스타 탄생?</>}
+          {headline || <>{displayName} 내한 녹음 현장!</>}
         </h1>
       </div>
 
