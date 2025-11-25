@@ -167,29 +167,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 className="text-4xl font-black tracking-tight"
                 style={{ fontFamily: "'Arial Black', sans-serif" }}
               >
-                핫1
-              </span>
-              {/* Vinyl Record 0 */}
-              <span className="inline-block relative mx-[-2px]" style={{ width: '32px', height: '32px' }}>
-                <svg viewBox="0 0 32 32" className="w-full h-full">
-                  <circle cx="16" cy="16" r="15" fill="#000" />
-                  <circle cx="16" cy="16" r="12" fill="none" stroke="#333" strokeWidth="0.5" />
-                  <circle cx="16" cy="16" r="9" fill="none" stroke="#333" strokeWidth="0.5" />
-                  <circle cx="16" cy="16" r="6" fill="none" stroke="#333" strokeWidth="0.5" />
-                  <circle cx="16" cy="16" r="4" fill="#fff" />
-                  <circle cx="16" cy="16" r="1.5" fill="#000" />
-                </svg>
-              </span>
-              {/* Vinyl Record 0 */}
-              <span className="inline-block relative mx-[-2px]" style={{ width: '32px', height: '32px' }}>
-                <svg viewBox="0 0 32 32" className="w-full h-full">
-                  <circle cx="16" cy="16" r="15" fill="#000" />
-                  <circle cx="16" cy="16" r="12" fill="none" stroke="#333" strokeWidth="0.5" />
-                  <circle cx="16" cy="16" r="9" fill="none" stroke="#333" strokeWidth="0.5" />
-                  <circle cx="16" cy="16" r="6" fill="none" stroke="#333" strokeWidth="0.5" />
-                  <circle cx="16" cy="16" r="4" fill="#fff" />
-                  <circle cx="16" cy="16" r="1.5" fill="#000" />
-                </svg>
+                핫100
               </span>
             </div>
             <div 
