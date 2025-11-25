@@ -1,12 +1,13 @@
 import { 
-  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders,
+  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos,
   type User, type InsertUser, type InsertAdmin,
   type Package, type InsertPackage,
   type Addon, type InsertAddon,
   type PartnerAddon, type InsertPartnerAddon,
   type Booking, type InsertBooking,
   type TimeSlot, type InsertTimeSlot,
-  type PaymentOrder, type InsertPaymentOrder
+  type PaymentOrder, type InsertPaymentOrder,
+  type VisitorPhoto, type InsertVisitorPhoto
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -48,6 +49,13 @@ export interface IStorage {
   createPaymentOrder(paymentOrder: InsertPaymentOrder): Promise<PaymentOrder>;
   getPaymentOrderByOrderId(orderId: string): Promise<PaymentOrder | undefined>;
   updatePaymentOrder(orderId: string, updates: Partial<PaymentOrder>): Promise<PaymentOrder>;
+  
+  // Visitor photo operations
+  getAllVisitorPhotos(): Promise<VisitorPhoto[]>;
+  getVisitorPhoto(id: number): Promise<VisitorPhoto | undefined>;
+  createVisitorPhoto(photo: InsertVisitorPhoto): Promise<VisitorPhoto>;
+  updateVisitorPhotoStatus(id: number, isPrinted: boolean): Promise<VisitorPhoto | undefined>;
+  deleteVisitorPhoto(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -519,6 +527,27 @@ export class MemStorage implements IStorage {
     this.paymentOrders.set(paymentOrder.id, updatedOrder);
     return updatedOrder;
   }
+
+  // Visitor photo operations (MemStorage doesn't support, use DatabaseStorage)
+  async getAllVisitorPhotos(): Promise<VisitorPhoto[]> {
+    return [];
+  }
+
+  async getVisitorPhoto(id: number): Promise<VisitorPhoto | undefined> {
+    return undefined;
+  }
+
+  async createVisitorPhoto(photo: InsertVisitorPhoto): Promise<VisitorPhoto> {
+    throw new Error("Visitor photos are not supported in MemStorage");
+  }
+
+  async updateVisitorPhotoStatus(id: number, isPrinted: boolean): Promise<VisitorPhoto | undefined> {
+    return undefined;
+  }
+
+  async deleteVisitorPhoto(id: number): Promise<boolean> {
+    return false;
+  }
 }
 
 // Database Storage Implementation
@@ -727,6 +756,35 @@ export class DatabaseStorage implements IStorage {
       .where(eq(paymentOrders.orderId, orderId))
       .returning();
     return updatedPaymentOrder;
+  }
+
+  // Visitor photo operations
+  async getAllVisitorPhotos(): Promise<VisitorPhoto[]> {
+    return await db.select().from(visitorPhotos).orderBy(desc(visitorPhotos.createdAt));
+  }
+
+  async getVisitorPhoto(id: number): Promise<VisitorPhoto | undefined> {
+    const [photo] = await db.select().from(visitorPhotos).where(eq(visitorPhotos.id, id));
+    return photo;
+  }
+
+  async createVisitorPhoto(photo: InsertVisitorPhoto): Promise<VisitorPhoto> {
+    const [newPhoto] = await db.insert(visitorPhotos).values(photo).returning();
+    return newPhoto;
+  }
+
+  async updateVisitorPhotoStatus(id: number, isPrinted: boolean): Promise<VisitorPhoto | undefined> {
+    const [updatedPhoto] = await db
+      .update(visitorPhotos)
+      .set({ isPrinted })
+      .where(eq(visitorPhotos.id, id))
+      .returning();
+    return updatedPhoto;
+  }
+
+  async deleteVisitorPhoto(id: number): Promise<boolean> {
+    const result = await db.delete(visitorPhotos).where(eq(visitorPhotos.id, id));
+    return (result.rowCount || 0) > 0;
   }
 }
 

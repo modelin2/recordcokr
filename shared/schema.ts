@@ -122,6 +122,16 @@ export const paymentOrders = pgTable("payment_orders", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Visitor photos for newspaper-style printing
+export const visitorPhotos = pgTable("visitor_photos", {
+  id: serial("id").primaryKey(),
+  customerName: text("customer_name").notNull(),
+  photoData: text("photo_data").notNull(), // Base64 encoded image data
+  headline: text("headline"), // Optional custom headline
+  isPrinted: boolean("is_printed").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -225,3 +235,16 @@ export type RevenueStats = typeof revenueStats.$inferSelect;
 export type InsertRevenueStats = z.infer<typeof insertRevenueStatsSchema>;
 export type PaymentOrder = typeof paymentOrders.$inferSelect;
 export type InsertPaymentOrder = z.infer<typeof insertPaymentOrderSchema>;
+
+export const insertVisitorPhotoSchema = createInsertSchema(visitorPhotos).omit({
+  id: true,
+  createdAt: true,
+  isPrinted: true,
+}).extend({
+  customerName: z.string().min(1, "Customer name is required"),
+  photoData: z.string().min(1, "Photo is required"),
+  headline: z.string().optional(),
+});
+
+export type VisitorPhoto = typeof visitorPhotos.$inferSelect;
+export type InsertVisitorPhoto = z.infer<typeof insertVisitorPhotoSchema>;
