@@ -148,31 +148,14 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             </span>
           </div>
           
-          {/* K-POP BOARD Title */}
+          {/* 케이팝 핫100 Title */}
           <div className="text-center flex-1">
             <div className="flex items-center justify-center gap-0">
               <span 
                 className="text-4xl font-black tracking-tight"
                 style={{ fontFamily: "'Arial Black', sans-serif" }}
               >
-                K-P
-              </span>
-              {/* Vinyl Record O */}
-              <span className="inline-block relative mx-[-2px]" style={{ width: '32px', height: '32px' }}>
-                <svg viewBox="0 0 32 32" className="w-full h-full">
-                  <circle cx="16" cy="16" r="15" fill="#000" />
-                  <circle cx="16" cy="16" r="12" fill="none" stroke="#333" strokeWidth="0.5" />
-                  <circle cx="16" cy="16" r="9" fill="none" stroke="#333" strokeWidth="0.5" />
-                  <circle cx="16" cy="16" r="6" fill="none" stroke="#333" strokeWidth="0.5" />
-                  <circle cx="16" cy="16" r="4" fill="#fff" />
-                  <circle cx="16" cy="16" r="1.5" fill="#000" />
-                </svg>
-              </span>
-              <span 
-                className="text-4xl font-black tracking-tight"
-                style={{ fontFamily: "'Arial Black', sans-serif" }}
-              >
-                P
+                케이팝
               </span>
               <span 
                 className="mx-2 text-gray-400 text-3xl font-light"
@@ -184,9 +167,9 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 className="text-4xl font-black tracking-tight"
                 style={{ fontFamily: "'Arial Black', sans-serif" }}
               >
-                B
+                핫1
               </span>
-              {/* Vinyl Record O */}
+              {/* Vinyl Record 0 */}
               <span className="inline-block relative mx-[-2px]" style={{ width: '32px', height: '32px' }}>
                 <svg viewBox="0 0 32 32" className="w-full h-full">
                   <circle cx="16" cy="16" r="15" fill="#000" />
@@ -197,11 +180,16 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                   <circle cx="16" cy="16" r="1.5" fill="#000" />
                 </svg>
               </span>
-              <span 
-                className="text-4xl font-black tracking-tight"
-                style={{ fontFamily: "'Arial Black', sans-serif" }}
-              >
-                ARD
+              {/* Vinyl Record 0 */}
+              <span className="inline-block relative mx-[-2px]" style={{ width: '32px', height: '32px' }}>
+                <svg viewBox="0 0 32 32" className="w-full h-full">
+                  <circle cx="16" cy="16" r="15" fill="#000" />
+                  <circle cx="16" cy="16" r="12" fill="none" stroke="#333" strokeWidth="0.5" />
+                  <circle cx="16" cy="16" r="9" fill="none" stroke="#333" strokeWidth="0.5" />
+                  <circle cx="16" cy="16" r="6" fill="none" stroke="#333" strokeWidth="0.5" />
+                  <circle cx="16" cy="16" r="4" fill="#fff" />
+                  <circle cx="16" cy="16" r="1.5" fill="#000" />
+                </svg>
               </span>
             </div>
             <div 
