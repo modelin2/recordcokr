@@ -32,18 +32,18 @@ function convertToKorean(name: string): string {
     'chr': '크', 'sch': '스', 'tch': '치', 'dge': '지',
     'ph': '프', 'th': '스', 'ch': '치', 'sh': '쉬', 'wh': '와',
     'ck': '크', 'ng': '응', 'nk': '응크', 'qu': '쿼', 'wr': '르',
-    'kn': '느', 'gn': '느', 'gh': '', 'mb': 'ㅁ', 'mn': 'ㅁ',
+    'kn': '느', 'gn': '느', 'gh': '', 'mb': '음브', 'mn': '음느',
     'ee': '이', 'ea': '이', 'ie': '이', 'ey': '이', 'ay': '에이',
     'ai': '에이', 'oa': '오', 'oe': '오', 'oo': '우', 'ou': '아우',
     'ow': '오', 'ew': '유', 'ue': '유', 'au': '오', 'aw': '오',
     'oi': '오이', 'oy': '오이', 'ar': '아', 'er': '어', 'ir': '어',
     'or': '오', 'ur': '어', 'ce': '스', 'ci': '시', 'cy': '시',
     'ge': '지', 'gi': '지', 'gy': '지', 'sc': '스',
-    'll': 'ㄹ', 'ss': '스', 'tt': 'ㅌ', 'ff': '프', 'pp': 'ㅍ',
-    'bb': 'ㅂ', 'dd': 'ㄷ', 'gg': 'ㄱ', 'nn': 'ㄴ', 'mm': 'ㅁ', 'rr': 'ㄹ',
+    'll': '을', 'ss': '스', 'tt': '트', 'ff': '프', 'pp': '프',
+    'bb': '브', 'dd': '드', 'gg': '그', 'nn': '은', 'mm': '음', 'rr': '르',
     'a': '아', 'e': '에', 'i': '이', 'o': '오', 'u': '우', 'y': '이',
     'b': '브', 'c': '크', 'd': '드', 'f': '프', 'g': '그', 'h': '흐',
-    'j': '제이', 'k': '크', 'l': 'ㄹ', 'm': 'ㅁ', 'n': 'ㄴ', 'p': '프',
+    'j': '제이', 'k': '크', 'l': '을', 'm': '음', 'n': '은', 'p': '프',
     'q': '크', 'r': '르', 's': '스', 't': '트', 'v': '브', 'w': '우',
     'x': '크스', 'z': '즈',
   };
@@ -85,10 +85,11 @@ function convertToKorean(name: string): string {
     'an': '안', 'en': '엔', 'in': '인', 'on': '온', 'un': '운',
     'al': '알', 'el': '엘', 'il': '일', 'ol': '올', 'ul': '울',
     'am': '암', 'em': '엠', 'im': '임', 'om': '옴', 'um': '움',
-    'ar': '아', 'er': '어', 'ir': '어', 'or': '오', 'ur': '어',
+    'ar': '아르', 'er': '어', 'ir': '어', 'or': '오르', 'ur': '어',
     'as': '아스', 'es': '에스', 'is': '이스', 'os': '오스', 'us': '우스',
     'at': '앳', 'et': '엣', 'it': '잇', 'ot': '옷', 'ut': '웃',
     'ck': '크', 'sk': '스크', 'sp': '스프', 'st': '스트', 'str': '스트르',
+    'nd': '은드', 'nt': '은트', 'mp': '음프', 'nk': '응크',
   };
   
   let result = '';
@@ -119,14 +120,14 @@ function convertToKorean(name: string): string {
     }
   }
   
-  result = result.replace(/ㄹㄹ/g, 'ㄹ').replace(/ㄴㄴ/g, 'ㄴ').replace(/ㅁㅁ/g, 'ㅁ');
+  result = result.replace(/으으/g, '으').replace(/은은/g, '은').replace(/음음/g, '음');
   
   return result || '';
 }
 
 export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, lifeStageImages = [] }: NewspaperTemplateProps) {
   const autoKoreanName = koreanName || convertToKorean(customerName);
-  const displayName = autoKoreanName ? `${customerName} (${autoKoreanName})` : customerName;
+  const displayName = autoKoreanName ? `${autoKoreanName} (${customerName})` : customerName;
   
   const today = new Date();
   const futureDate = new Date(today.getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
@@ -156,61 +157,63 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
 
   return (
     <div 
-      className="bg-white p-2 w-full text-black print-container"
+      className="bg-white w-full text-black print-container flex flex-col"
       style={{ 
         fontFamily: "'Times New Roman', 'Nanum Myeongjo', serif",
+        minHeight: "100vh",
+        padding: "12px",
       }}
     >
       {/* K-POP BOARD Masthead */}
-      <div className="border-b-4 border-black pb-2 mb-2">
+      <div className="border-b-4 border-black pb-3 mb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <div className="w-10 h-10 bg-black flex items-center justify-center">
-              <span className="text-white font-black text-sm">RC</span>
+          <div className="flex items-center gap-2">
+            <div className="w-14 h-14 bg-black flex items-center justify-center">
+              <span className="text-white font-black text-lg">RC</span>
             </div>
-            <span className="text-[9px] leading-tight text-black font-medium">
+            <span className="text-[11px] leading-tight text-black font-medium">
               SINCE<br/>2024
             </span>
           </div>
           
           <div className="text-center flex-1">
             <div className="flex items-center justify-center gap-0">
-              <span className="text-3xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>
+              <span className="text-5xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>
                 K-P
               </span>
-              <span className="inline-block relative mx-[-2px]" style={{ width: '26px', height: '26px' }}>
+              <span className="inline-block relative mx-[-3px]" style={{ width: '40px', height: '40px' }}>
                 <svg viewBox="0 0 32 32" className="w-full h-full">
                   <circle cx="16" cy="16" r="15" fill="#000" />
                   <circle cx="16" cy="16" r="4" fill="#fff" />
                   <circle cx="16" cy="16" r="1.5" fill="#000" />
                 </svg>
               </span>
-              <span className="text-3xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>P</span>
-              <span className="mx-1 text-gray-400 text-2xl font-light">|</span>
-              <span className="text-3xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>B</span>
-              <span className="inline-block relative mx-[-2px]" style={{ width: '26px', height: '26px' }}>
+              <span className="text-5xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>P</span>
+              <span className="mx-2 text-gray-400 text-4xl font-light">|</span>
+              <span className="text-5xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>B</span>
+              <span className="inline-block relative mx-[-3px]" style={{ width: '40px', height: '40px' }}>
                 <svg viewBox="0 0 32 32" className="w-full h-full">
                   <circle cx="16" cy="16" r="15" fill="#000" />
                   <circle cx="16" cy="16" r="4" fill="#fff" />
                   <circle cx="16" cy="16" r="1.5" fill="#000" />
                 </svg>
               </span>
-              <span className="text-3xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>ARD</span>
+              <span className="text-5xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>ARD</span>
             </div>
-            <div className="text-xs tracking-[0.2em] text-black font-bold -mt-1" style={{ fontFamily: "'Arial', sans-serif" }}>
+            <div className="text-sm tracking-[0.3em] text-black font-bold -mt-1" style={{ fontFamily: "'Arial', sans-serif" }}>
               SEOUL MUSIC TODAY
             </div>
           </div>
 
-          <div className="text-right text-[9px] text-black leading-tight">
-            <div className="border-2 border-black p-1">
-              <div className="font-black text-xs">QR</div>
-              <div className="font-bold text-[8px]">SCAN</div>
+          <div className="text-right text-[10px] text-black leading-tight">
+            <div className="border-2 border-black p-2">
+              <div className="font-black text-sm">QR</div>
+              <div className="font-bold text-[9px]">SCAN</div>
             </div>
           </div>
         </div>
         
-        <div className="flex justify-between items-center text-[9px] text-black mt-1 border-t-2 border-black pt-1 font-medium">
+        <div className="flex justify-between items-center text-[11px] text-black mt-2 border-t-2 border-black pt-2 font-medium">
           <span>{futureDateKr} ({futureDateEn})</span>
           <span>No. {volumeNumber} (특별호)</span>
           <span className="font-bold">가격: 당신의 열정</span>
@@ -218,16 +221,16 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       </div>
 
       {/* Main Headline - Future Tense */}
-      <div className="mb-2 border-b-2 border-black pb-1">
-        <h1 className="text-xl font-black leading-tight text-center" style={{ fontFamily: "'Arial Black', 'Nanum Gothic', sans-serif" }}>
+      <div className="mb-3 border-b-2 border-black pb-2">
+        <h1 className="text-2xl font-black leading-tight text-center" style={{ fontFamily: "'Arial Black', 'Nanum Gothic', sans-serif" }}>
           {headline || <>"한복이 가장 잘 어울리는 스타" {displayName}, 10년 전 녹음 사진 발굴!</>}
         </h1>
       </div>
 
-      {/* Two Column Layout */}
-      <div className="grid grid-cols-5 gap-2 text-[10px] leading-snug">
+      {/* Two Column Layout - Expanded */}
+      <div className="grid grid-cols-5 gap-4 text-[11px] leading-relaxed flex-1">
         {/* Left Column: Main Photo + Article (3 cols) */}
-        <div className="col-span-3">
+        <div className="col-span-3 flex flex-col">
           {/* Main Photo - 10 Years Ago Recording */}
           <div className="border-2 border-black">
             <img 
@@ -236,59 +239,62 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               className="w-full object-contain bg-gray-100"
               style={{ 
                 filter: "grayscale(100%) contrast(1.2)",
-                maxHeight: "180px"
+                height: "280px"
               }}
             />
           </div>
-          <p className="text-[9px] text-center mt-1 border-b border-black pb-1 font-medium">
+          <p className="text-[10px] text-center mt-2 border-b border-black pb-2 font-medium">
             ▲ 10년 전 우연히 'Recording Cafe'를 방문해 첫 녹음에 도전하던 <span className="font-bold">{displayName}</span>. 
             이 사진이 최근 스튜디오 자료실에서 발굴되어 화제다. / 사진 = SMT 자료실
           </p>
           
           {/* Article */}
-          <div className="mt-1 columns-2 gap-2 text-justify text-[9px] leading-tight" style={{ columnRule: "1px solid #333" }}>
-            <p className="mb-1">
+          <div className="mt-2 columns-2 gap-4 text-justify text-[11px] leading-relaxed flex-1" style={{ columnRule: "1px solid #333" }}>
+            <p className="mb-2">
               <span className="font-bold">[서울=SMT뉴스]</span> 최근 '한복이 가장 잘 어울리는 스타'로 선정되어 화제를 모으고 있는 {displayName}의 과거 녹음 사진이 발굴되어 팬들의 뜨거운 관심을 받고 있다.
             </p>
-            <p className="mb-1">
+            <p className="mb-2">
               10년 전, 당시 무명이었던 {displayName}은 서울 서초구의 'Recording Cafe'를 우연히 방문해 생애 첫 녹음을 경험했다. 당시 엔지니어 A씨는 "처음부터 남다른 재능이 느껴졌다"며 회상했다.
             </p>
-            <p>
+            <p className="mb-2">
               이후 음악의 꿈을 키워온 {displayName}은 현재 대한민국을 대표하는 아티스트로 성장, 최근 열린 '2035 한복문화대상'에서 영예의 대상을 수상했다.
+            </p>
+            <p>
+              수상 직후 인터뷰에서 {displayName}은 "10년 전 그 작은 카페에서 첫 녹음을 했던 순간이 제 인생의 터닝포인트였다"며 감격의 눈물을 흘렸다.
             </p>
           </div>
 
-          {/* Childhood Album Section - Integrated */}
+          {/* Childhood Album Section - Expanded */}
           {(infancyImage || middleschoolImage) && (
-            <div className="mt-2 pt-1 border-t border-black">
-              <div className="grid grid-cols-2 gap-2">
+            <div className="mt-4 pt-3 border-t-2 border-black">
+              <div className="grid grid-cols-2 gap-4">
                 {infancyImage?.imageData && (
                   <div>
-                    <div className="border border-black">
+                    <div className="border-2 border-black">
                       <img 
                         src={infancyImage.imageData} 
                         alt="유아 시절"
                         className="w-full object-contain bg-amber-50"
-                        style={{ filter: "sepia(30%)", maxHeight: "100px" }}
+                        style={{ filter: "sepia(30%)", height: "160px" }}
                       />
                     </div>
-                    <p className="text-[8px] mt-0.5 text-justify leading-tight">
-                      ▲ 가족이 공개한 어린 시절 사진. 이미 어린 나이에 음악적 재능을 보였다고 한다. "아기 때부터 음악만 틀어주면 웃었다"는 부모님의 증언.
+                    <p className="text-[10px] mt-1.5 text-justify leading-snug">
+                      ▲ <span className="font-bold">{displayName}</span>의 가족이 공개한 어린 시절 사진. 이미 어린 나이에 음악적 재능을 보였다고 한다. "아기 때부터 음악만 틀어주면 웃었다"는 부모님의 증언.
                     </p>
                   </div>
                 )}
                 {middleschoolImage?.imageData && (
                   <div>
-                    <div className="border border-black">
+                    <div className="border-2 border-black">
                       <img 
                         src={middleschoolImage.imageData} 
                         alt="중학교 시절"
                         className="w-full object-contain bg-gray-50"
-                        style={{ filter: "sepia(10%)", maxHeight: "100px" }}
+                        style={{ filter: "sepia(10%)", height: "160px" }}
                       />
                     </div>
-                    <p className="text-[8px] mt-0.5 text-justify leading-tight">
-                      ▲ 중학교 시절 밴드부에서 활동하던 모습. 당시 담임 교사는 "음악 시간마다 눈이 빛났다"며 숨겨진 재능을 일찍이 알아봤다고 전했다.
+                    <p className="text-[10px] mt-1.5 text-justify leading-snug">
+                      ▲ <span className="font-bold">{displayName}</span>의 중학교 시절 밴드부에서 활동하던 모습. 당시 담임 교사는 "음악 시간마다 눈이 빛났다"며 숨겨진 재능을 일찍이 알아봤다고 전했다.
                     </p>
                   </div>
                 )}
@@ -298,12 +304,12 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         </div>
 
         {/* Right Column: Sidebar + Future Image (2 cols) */}
-        <div className="col-span-2 border-l border-black pl-2">
+        <div className="col-span-2 border-l-2 border-black pl-4 flex flex-col">
           {/* Current Award Photo - Future Star in Hanbok */}
           {futureImage?.imageData && (
-            <div className="mb-2">
-              <div className="bg-black text-white p-1 mb-1">
-                <div className="text-[9px] font-black text-center tracking-wider">
+            <div className="mb-3">
+              <div className="bg-black text-white p-2 mb-2">
+                <div className="text-[11px] font-black text-center tracking-wider">
                   ★ 2035 한복문화대상 ★
                 </div>
               </div>
@@ -312,23 +318,23 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                   src={futureImage.imageData} 
                   alt="한복 시상식"
                   className="w-full object-contain bg-purple-50"
-                  style={{ maxHeight: "130px" }}
+                  style={{ height: "200px" }}
                 />
               </div>
-              <p className="text-[8px] mt-0.5 text-justify leading-tight">
-                ▲ 지난달 열린 '2035 한복문화대상'에서 대상을 수상한 {displayName}이 관객들에게 손을 흔들고 있다. 
+              <p className="text-[10px] mt-1.5 text-justify leading-snug">
+                ▲ 지난달 열린 '2035 한복문화대상'에서 대상을 수상한 <span className="font-bold">{displayName}</span>이 관객들에게 손을 흔들고 있다. 
                 전통 한복의 아름다움을 전 세계에 알린 공로를 인정받았다.
               </p>
             </div>
           )}
 
           {/* Info Box */}
-          <div className="border border-black p-1 mb-1">
-            <div className="text-[9px] font-black border-b border-black pb-0.5 mb-1">PROFILE</div>
-            <div className="space-y-0.5 text-[8px]">
+          <div className="border-2 border-black p-2 mb-3">
+            <div className="text-[11px] font-black border-b-2 border-black pb-1 mb-2">PROFILE</div>
+            <div className="space-y-1 text-[10px]">
               <div className="flex justify-between">
                 <span>Artist</span>
-                <span className="font-bold">{displayName}</span>
+                <span className="font-bold text-right" style={{ maxWidth: "70%" }}>{displayName}</span>
               </div>
               <div className="flex justify-between">
                 <span>데뷔</span>
@@ -342,53 +348,53 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           </div>
 
           {/* Quote Box */}
-          <div className="border border-black p-1 mb-1 bg-gray-50">
-            <p className="text-[8px] italic text-center leading-tight">
+          <div className="border-2 border-black p-3 mb-3 bg-gray-50">
+            <p className="text-[11px] italic text-center leading-relaxed">
               "10년 전 그 작은 카페에서 시작된 꿈이 오늘 이렇게 이루어졌습니다"
             </p>
-            <p className="text-[7px] text-right mt-0.5">- {displayName} 수상 소감 중</p>
+            <p className="text-[9px] text-right mt-2 font-medium">- {displayName} 수상 소감 중</p>
           </div>
 
-          {/* Weather/Fortune - Compact */}
-          <div className="border border-black p-1 mb-1">
-            <div className="text-[8px] font-bold">[오늘의 날씨]</div>
-            <div className="text-[8px]">맑음 ☀️ 축하하기 좋은 날</div>
+          {/* Weather/Fortune */}
+          <div className="border-2 border-black p-2 mb-3">
+            <div className="text-[10px] font-bold">[오늘의 날씨]</div>
+            <div className="text-[11px] mt-1">맑음 ☀️ 축하하기 좋은 날</div>
           </div>
 
-          {/* Drink Section */}
-          <div className="border border-black p-1 bg-gray-50">
-            <div className="text-[8px] font-black text-center">[10년 전 그날의 음료]</div>
-            <div className="text-[9px] font-bold text-center mt-0.5">
+          {/* Drink Section - Expanded */}
+          <div className="border-2 border-black p-3 bg-gray-50 flex-1">
+            <div className="text-[11px] font-black text-center">[10년 전 그날의 음료]</div>
+            <div className="text-base font-bold text-center mt-2">
               ☕ {drinkTemperature === "iced" ? "Iced " : drinkTemperature === "hot" ? "Hot " : ""}{drinkName || "아메리카노"}
             </div>
-            <div className="text-[7px] text-gray-600 italic text-center">
+            <div className="text-[10px] text-gray-600 italic text-center mt-2">
               "성공의 첫 걸음은 이 한 잔과 함께"
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Banner - Compact */}
-      <div className="mt-2 pt-1 border-t-2 border-black">
-        <div className="flex items-center justify-between p-1 bg-gray-50 border border-black">
-          <div className="flex items-center gap-1">
-            <div className="w-8 h-8 bg-black flex items-center justify-center">
-              <span className="text-white font-black text-[9px]">RC</span>
+      {/* Bottom Banner - Expanded */}
+      <div className="mt-4 pt-3 border-t-4 border-black">
+        <div className="flex items-center justify-between p-3 bg-gray-50 border-2 border-black">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-black flex items-center justify-center">
+              <span className="text-white font-black text-sm">RC</span>
             </div>
             <div>
-              <p className="text-[9px] font-black">Recording Cafe</p>
-              <p className="text-[7px] text-gray-700">서울 서초구 강남대로 107길 21. 2층</p>
+              <p className="text-sm font-black">Recording Cafe</p>
+              <p className="text-[10px] text-gray-700">서울 서초구 강남대로 107길 21. 2층</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="font-bold text-[8px]">@recordingcafe 팔로우하면 1타임 무료!</p>
-            <p className="font-bold text-[8px]">#RecordingCafe #꿈의시작</p>
+            <p className="font-bold text-[11px]">@recordingcafe 팔로우하면 1타임 무료!</p>
+            <p className="font-bold text-[11px]">#RecordingCafe #꿈의시작</p>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="mt-1 pt-1 border-t border-black flex justify-between items-center text-[8px] font-medium">
+      <div className="mt-3 pt-2 border-t-2 border-black flex justify-between items-center text-[10px] font-medium">
         <span>www.recordingcafe.com</span>
         <span>© {futureDate.getFullYear()} Recording Cafe</span>
         <span>@recordingcafe</span>
