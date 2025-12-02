@@ -420,7 +420,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             </div>
           </div>
           <p className="text-[11px] text-center mt-2 border-b border-black pb-2 font-medium">
-            ▲ 10년 전 우연히 'Recording Cafe'를 방문해 첫 녹음에 도전하던 <span className="font-bold">{displayName}</span>. 
+            ▲ 10년 전 우연히 '레코딩카페'를 방문해 첫 녹음에 도전하던 <span className="font-bold">{displayName}</span>. 
             이 사진이 최근 스튜디오 자료실에서 발굴되어 화제다. / 사진 = SMT 자료실
           </p>
           
@@ -430,10 +430,10 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               <span className="font-bold text-sm">[서울=SMT뉴스]</span> 최근 '한복이 가장 잘 어울리는 스타'로 선정되어 화제를 모으고 있는 {displayName}의 과거 녹음 사진이 발굴되어 팬들의 뜨거운 관심을 받고 있다.
             </p>
             <p className="mb-3">
-              10년 전, 당시 무명이었던 {displayName}은 서울 서초구의 'Recording Cafe'를 우연히 방문해 생애 첫 녹음을 경험했다. 당시 엔지니어 A씨는 "처음부터 남다른 재능이 느껴졌다"며 당시를 회상했다.
+              10년 전, 당시 무명이었던 {displayName}은 서울 서초구의 '레코딩카페'를 우연히 방문해 생애 첫 녹음을 경험했다. 당시 엔지니어 A씨는 "처음부터 남다른 재능이 느껴졌다"며 당시를 회상했다.
             </p>
             <p className="mb-3">
-              Recording Cafe 관계자는 "당시 녹음실에 들어오자마자 마이크 앞에서 자연스럽게 노래를 부르기 시작했다"며 "목소리에서 특별한 감성이 느껴졌다"고 전했다.
+              레코딩카페 관계자는 "당시 녹음실에 들어오자마자 마이크 앞에서 자연스럽게 노래를 부르기 시작했다"며 "목소리에서 특별한 감성이 느껴졌다"고 전했다.
             </p>
             <p className="mb-3">
               이후 음악의 꿈을 키워온 {displayName}은 현재 대한민국을 대표하는 아티스트로 성장, 최근 열린 '{futureYear} 한복문화대상'에서 영예의 대상을 수상했다.
@@ -442,7 +442,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               수상 직후 인터뷰에서 {displayName}은 "10년 전 그 작은 카페에서 첫 녹음을 했던 순간이 제 인생의 터닝포인트였다"며 감격의 눈물을 흘렸다.
             </p>
             <p>
-              한편, Recording Cafe는 이번 사진 발굴을 계기로 스튜디오 역사관 조성을 검토 중인 것으로 알려졌다.
+              한편, 레코딩카페는 이번 사진 발굴을 계기로 스튜디오 역사관 조성을 검토 중인 것으로 알려졌다.
             </p>
           </div>
 
@@ -521,7 +521,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               </div>
               <div 
                 className="border-2 border-black overflow-hidden flex items-center justify-center bg-purple-50 relative cursor-move print:cursor-default" 
-                style={{ height: "220px" }}
+                style={{ aspectRatio: "9/16", width: "100%" }}
                 onMouseDown={(e) => handleMouseDown("future", e)}
                 onWheel={(e) => handleWheel("future", e)}
                 title="드래그: 위치 조정 / 휠: 확대/축소"
@@ -563,10 +563,6 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 <span>수상</span>
                 <span className="font-bold">한복문화대상</span>
               </div>
-              <div className="flex justify-between">
-                <span>소속</span>
-                <span>Recording Cafe Family</span>
-              </div>
             </div>
           </div>
 
@@ -595,7 +591,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               "성공의 첫 걸음은 이 한 잔과 함께"
             </div>
             <div className="text-[10px] text-center mt-2 text-gray-500">
-              Recording Cafe 시그니처 메뉴
+              레코딩카페 시그니처 메뉴
             </div>
           </div>
         </div>
