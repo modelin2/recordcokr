@@ -225,11 +225,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         {/* Left Column: Main Photo + Article (3 cols) */}
         <div className="col-span-3 flex flex-col">
           {/* Main Photo */}
-          <div className="border-2 border-black overflow-hidden bg-black flex items-center justify-center" style={{ height: "320px" }}>
+          <div className="border-2 border-black overflow-hidden" style={{ height: "320px" }}>
             <img 
               src={photoData} 
               alt={customerName}
-              className="max-w-full max-h-full object-contain"
+              className="w-full h-full object-cover object-top"
               style={{ 
                 filter: "grayscale(100%) contrast(1.2)",
               }}
@@ -268,11 +268,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               <div className="grid grid-cols-2 gap-5">
                 {infancyImage?.imageData && (
                   <div>
-                    <div className="border-2 border-black overflow-hidden bg-amber-50 flex items-center justify-center" style={{ height: "180px" }}>
+                    <div className="border-2 border-black overflow-hidden" style={{ height: "180px" }}>
                       <img 
                         src={infancyImage.imageData} 
                         alt="유아 시절"
-                        className="max-w-full max-h-full object-contain"
+                        className="w-full h-full object-cover object-top"
                         style={{ filter: "sepia(30%)" }}
                       />
                     </div>
@@ -283,11 +283,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 )}
                 {middleschoolImage?.imageData && (
                   <div>
-                    <div className="border-2 border-black overflow-hidden bg-gray-50 flex items-center justify-center" style={{ height: "180px" }}>
+                    <div className="border-2 border-black overflow-hidden" style={{ height: "180px" }}>
                       <img 
                         src={middleschoolImage.imageData} 
                         alt="중학교 시절"
-                        className="max-w-full max-h-full object-contain"
+                        className="w-full h-full object-cover object-top"
                         style={{ filter: "sepia(10%)" }}
                       />
                     </div>
@@ -311,11 +311,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                   ★ {futureYear} 한복문화대상 ★
                 </div>
               </div>
-              <div className="border-2 border-black overflow-hidden bg-purple-50 flex items-center justify-center" style={{ height: "220px" }}>
+              <div className="border-2 border-black overflow-hidden" style={{ height: "220px" }}>
                 <img 
                   src={futureImage.imageData} 
                   alt="한복 시상식"
-                  className="max-w-full max-h-full object-contain"
+                  className="w-full h-full object-cover object-top"
                 />
               </div>
               <p className="text-[11px] mt-2 text-justify leading-snug">
