@@ -127,7 +127,7 @@ function convertToKorean(name: string): string {
 
 export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, lifeStageImages = [] }: NewspaperTemplateProps) {
   const autoKoreanName = koreanName || convertToKorean(customerName);
-  const displayName = autoKoreanName ? `${autoKoreanName}(${customerName})` : customerName;
+  const displayName = autoKoreanName ? `${autoKoreanName} (${customerName})` : customerName;
   
   const today = new Date();
   const futureYear = today.getFullYear() + 10;
@@ -220,134 +220,98 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         </h1>
       </div>
 
-      {/* Magazine Style Layout - Two Columns */}
+      {/* Two Column Layout */}
       <div className="grid grid-cols-5 gap-5 text-xs leading-relaxed flex-1">
-        
-        {/* Left Column: Magazine Interview Article (3 cols) */}
-        <div className="col-span-3">
-          <p className="mb-3 text-justify">
-            <span className="font-bold text-sm">[서울=SMT뉴스]</span> 최근 '한복이 가장 잘 어울리는 스타'로 선정되어 화제를 모으고 있는 <span className="font-bold">{displayName}</span>의 과거 녹음 사진이 발굴되어 팬들의 뜨거운 관심을 받고 있다.
+        {/* Left Column: Main Photo + Article (3 cols) */}
+        <div className="col-span-3 flex flex-col">
+          {/* Main Photo */}
+          <div className="border-2 border-black overflow-hidden" style={{ height: "320px" }}>
+            <img 
+              src={photoData} 
+              alt={customerName}
+              className="w-full h-full object-cover object-top"
+              style={{ 
+                filter: "grayscale(100%) contrast(1.2)",
+              }}
+            />
+          </div>
+          <p className="text-[11px] text-center mt-2 border-b border-black pb-2 font-medium">
+            ▲ 10년 전 우연히 'Recording Cafe'를 방문해 첫 녹음에 도전하던 <span className="font-bold">{displayName}</span>. 
+            이 사진이 최근 스튜디오 자료실에서 발굴되어 화제다. / 사진 = SMT 자료실
           </p>
-
-          {/* Main Photo - Integrated in article */}
-          <div className="float-right ml-4 mb-3" style={{ width: "55%" }}>
-            <div className="border-2 border-black overflow-hidden flex items-center justify-center bg-gray-100" style={{ height: "240px" }}>
-              <img 
-                src={photoData} 
-                alt={customerName}
-                className="h-full object-contain"
-                style={{ filter: "grayscale(100%) contrast(1.2)" }}
-              />
-            </div>
-            <p className="text-[10px] text-center mt-1 text-gray-700">
-              ▲ 10년 전 Recording Cafe에서 녹음 중인 {displayName}
+          
+          {/* Article - Expanded */}
+          <div className="mt-3 columns-2 gap-5 text-justify text-xs leading-relaxed" style={{ columnRule: "1px solid #333" }}>
+            <p className="mb-3">
+              <span className="font-bold text-sm">[서울=SMT뉴스]</span> 최근 '한복이 가장 잘 어울리는 스타'로 선정되어 화제를 모으고 있는 {displayName}의 과거 녹음 사진이 발굴되어 팬들의 뜨거운 관심을 받고 있다.
+            </p>
+            <p className="mb-3">
+              10년 전, 당시 무명이었던 {displayName}은 서울 서초구의 'Recording Cafe'를 우연히 방문해 생애 첫 녹음을 경험했다. 당시 엔지니어 A씨는 "처음부터 남다른 재능이 느껴졌다"며 당시를 회상했다.
+            </p>
+            <p className="mb-3">
+              Recording Cafe 관계자는 "당시 녹음실에 들어오자마자 마이크 앞에서 자연스럽게 노래를 부르기 시작했다"며 "목소리에서 특별한 감성이 느껴졌다"고 전했다.
+            </p>
+            <p className="mb-3">
+              이후 음악의 꿈을 키워온 {displayName}은 현재 대한민국을 대표하는 아티스트로 성장, 최근 열린 '{futureYear} 한복문화대상'에서 영예의 대상을 수상했다.
+            </p>
+            <p className="mb-3">
+              수상 직후 인터뷰에서 {displayName}은 "10년 전 그 작은 카페에서 첫 녹음을 했던 순간이 제 인생의 터닝포인트였다"며 감격의 눈물을 흘렸다.
+            </p>
+            <p>
+              한편, Recording Cafe는 이번 사진 발굴을 계기로 스튜디오 역사관 조성을 검토 중인 것으로 알려졌다.
             </p>
           </div>
 
-          <p className="mb-3 text-justify">
-            10년 전, 당시 무명이었던 {displayName}은 서울 서초구의 'Recording Cafe'를 우연히 방문해 생애 첫 녹음을 경험했다. 당시 엔지니어 A씨는 "처음부터 남다른 재능이 느껴졌다"며 당시를 회상했다.
-          </p>
-
-          <p className="mb-3 text-justify">
-            Recording Cafe 관계자는 "당시 녹음실에 들어오자마자 마이크 앞에서 자연스럽게 노래를 부르기 시작했다"며 "목소리에서 특별한 감성이 느껴졌다"고 전했다.
-          </p>
-
-          <p className="mb-3 text-justify">
-            이후 음악의 꿈을 키워온 {displayName}은 현재 대한민국을 대표하는 아티스트로 성장, 최근 열린 '{futureYear} 한복문화대상'에서 영예의 대상을 수상했다.
-          </p>
-
-          <div className="clear-both"></div>
-
-          {/* Infancy Photo - Integrated in article */}
-          {infancyImage?.imageData && (
-            <>
-              <div className="float-left mr-4 mb-3" style={{ width: "45%" }}>
-                <div className="border-2 border-black overflow-hidden flex items-center justify-center bg-amber-50" style={{ height: "180px" }}>
-                  <img 
-                    src={infancyImage.imageData} 
-                    alt="유아 시절"
-                    className="h-full object-contain"
-                    style={{ filter: "sepia(30%)" }}
-                  />
-                </div>
-                <p className="text-[10px] text-center mt-1 text-gray-700">
-                  ▲ 어린 시절 모습
-                </p>
+          {/* Childhood Album Section */}
+          {(infancyImage || middleschoolImage) && (
+            <div className="mt-5 pt-4 border-t-2 border-black">
+              <div className="grid grid-cols-2 gap-5">
+                {infancyImage?.imageData && (
+                  <div>
+                    <div className="border-2 border-black overflow-hidden" style={{ height: "180px" }}>
+                      <img 
+                        src={infancyImage.imageData} 
+                        alt="유아 시절"
+                        className="w-full h-full object-cover object-top"
+                        style={{ filter: "sepia(30%)" }}
+                      />
+                    </div>
+                    <p className="text-[11px] mt-2 text-justify leading-snug">
+                      ▲ 가족이 공개한 어린 시절 사진. 이미 어린 나이에 음악적 재능을 보였다고 한다. "아기 때부터 음악만 틀어주면 웃었다"는 부모님의 증언이 화제다.
+                    </p>
+                  </div>
+                )}
+                {middleschoolImage?.imageData && (
+                  <div>
+                    <div className="border-2 border-black overflow-hidden" style={{ height: "180px" }}>
+                      <img 
+                        src={middleschoolImage.imageData} 
+                        alt="중학교 시절"
+                        className="w-full h-full object-cover object-top"
+                        style={{ filter: "sepia(10%)" }}
+                      />
+                    </div>
+                    <p className="text-[11px] mt-2 text-justify leading-snug">
+                      ▲ 중학교 시절 밴드부에서 활동하던 모습. 당시 담임 교사는 "음악 시간마다 눈이 빛났다"며 숨겨진 재능을 일찍이 알아봤다고 전했다.
+                    </p>
+                  </div>
+                )}
               </div>
-
-              <p className="mb-3 text-justify">
-                한편 가족이 공개한 어린 시절 사진도 화제다. 이미 어린 나이에 음악적 재능을 보였다고 한다. "아기 때부터 음악만 틀어주면 웃었다"는 부모님의 증언이 팬들 사이에서 회자되고 있다.
-              </p>
-            </>
-          )}
-
-          <p className="mb-3 text-justify">
-            수상 직후 인터뷰에서 {displayName}은 "10년 전 그 작은 카페에서 첫 녹음을 했던 순간이 제 인생의 터닝포인트였다"며 감격의 눈물을 흘렸다.
-          </p>
-
-          <div className="clear-both"></div>
-
-          {/* Middle School Photo - Integrated in article */}
-          {middleschoolImage?.imageData && (
-            <>
-              <div className="float-right ml-4 mb-3" style={{ width: "45%" }}>
-                <div className="border-2 border-black overflow-hidden flex items-center justify-center bg-gray-100" style={{ height: "180px" }}>
-                  <img 
-                    src={middleschoolImage.imageData} 
-                    alt="중학교 시절"
-                    className="h-full object-contain"
-                    style={{ filter: "sepia(10%)" }}
-                  />
-                </div>
-                <p className="text-[10px] text-center mt-1 text-gray-700">
-                  ▲ 중학교 밴드부 시절
-                </p>
-              </div>
-
-              <p className="mb-3 text-justify">
-                중학교 시절 밴드부에서 활동하던 모습도 공개됐다. 당시 담임 교사는 "음악 시간마다 눈이 빛났다"며 숨겨진 재능을 일찍이 알아봤다고 전했다. 학창 시절부터 남다른 열정을 보여온 것이다.
-              </p>
-            </>
-          )}
-
-          <p className="mb-3 text-justify">
-            Recording Cafe는 이번 사진 발굴을 계기로 스튜디오 역사관 조성을 검토 중인 것으로 알려졌다. 관계자는 "많은 꿈나무들이 이곳에서 첫 걸음을 떼었다"며 "그 역사를 기록으로 남기고 싶다"고 밝혔다.
-          </p>
-
-          <div className="clear-both"></div>
-
-          {/* Quote Box */}
-          <div className="border-2 border-black p-4 my-4 bg-gray-50">
-            <p className="text-xs italic text-center leading-relaxed">
-              "10년 전 그 작은 카페에서 시작된 꿈이 오늘 이렇게 이루어졌습니다. 녹음실에서 처음 마이크를 잡았을 때의 떨림을 아직도 기억합니다."
-            </p>
-            <p className="text-[10px] text-right mt-3 font-bold">- {displayName} 수상 소감 중</p>
-          </div>
-
-          {/* Profile Box */}
-          <div className="border-2 border-black p-3 mt-4">
-            <div className="text-xs font-black border-b-2 border-black pb-2 mb-3">PROFILE</div>
-            <div className="grid grid-cols-4 gap-2 text-[11px]">
-              <div><span className="text-gray-600">Artist</span></div>
-              <div className="col-span-3 font-bold">{displayName}</div>
-              <div><span className="text-gray-600">데뷔</span></div>
-              <div>{today.getFullYear()}년</div>
-              <div><span className="text-gray-600">수상</span></div>
-              <div className="font-bold">한복문화대상</div>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Right Column: Award Photo Only (2 cols) */}
+        {/* Right Column: Sidebar + Future Image (2 cols) */}
         <div className="col-span-2 border-l-2 border-black pl-5 flex flex-col">
+          {/* Award Photo */}
           {futureImage?.imageData && (
-            <div className="flex-1 flex flex-col">
+            <div className="mb-4">
               <div className="bg-black text-white p-2 mb-2">
                 <div className="text-xs font-black text-center tracking-wider">
                   ★ {futureYear} 한복문화대상 ★
                 </div>
               </div>
-              <div className="border-2 border-black overflow-hidden flex items-center justify-center bg-purple-50 flex-1" style={{ minHeight: "420px" }}>
+              <div className="border-2 border-black overflow-hidden flex items-center justify-center bg-purple-50" style={{ height: "220px" }}>
                 <img 
                   src={futureImage.imageData} 
                   alt="한복 시상식"
@@ -361,11 +325,67 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             </div>
           )}
 
-          {!futureImage?.imageData && (
-            <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4">
-              <p className="text-gray-500 text-center text-sm">한복 시상식 사진이<br/>여기에 표시됩니다</p>
+          {/* Profile Box */}
+          <div className="border-2 border-black p-3 mb-4">
+            <div className="text-xs font-black border-b-2 border-black pb-2 mb-3">PROFILE</div>
+            <div className="space-y-2 text-[11px]">
+              <div className="flex justify-between gap-2">
+                <span className="shrink-0">Artist</span>
+                <span className="font-bold text-right">{displayName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>데뷔</span>
+                <span>{today.getFullYear()}년</span>
+              </div>
+              <div className="flex justify-between">
+                <span>수상</span>
+                <span className="font-bold">한복문화대상</span>
+              </div>
+              <div className="flex justify-between">
+                <span>소속</span>
+                <span>Recording Cafe Family</span>
+              </div>
             </div>
-          )}
+          </div>
+
+          {/* Quote Box */}
+          <div className="border-2 border-black p-4 mb-4 bg-gray-50">
+            <p className="text-xs italic text-center leading-relaxed">
+              "10년 전 그 작은 카페에서 시작된 꿈이 오늘 이렇게 이루어졌습니다. 녹음실에서 처음 마이크를 잡았을 때의 떨림을 아직도 기억합니다."
+            </p>
+            <p className="text-[10px] text-right mt-3 font-bold">- {displayName} 수상 소감 중</p>
+          </div>
+
+          {/* Related News Box */}
+          <div className="border-2 border-black p-3 mb-4">
+            <div className="text-[11px] font-black border-b border-black pb-1 mb-2">[관련 기사]</div>
+            <ul className="text-[10px] space-y-1.5">
+              <li>• "{displayName}, 한류 스타 중 '가장 한복이 잘 어울리는 스타' 1위 선정"</li>
+              <li>• "Recording Cafe, 10주년 맞아 역대 녹음 고객 사진전 개최"</li>
+              <li>• "한복문화대상 수상 연예인들의 공통점은? '열정'"</li>
+            </ul>
+          </div>
+
+          {/* Weather */}
+          <div className="border-2 border-black p-3 mb-4">
+            <div className="text-[11px] font-bold">[오늘의 날씨]</div>
+            <div className="text-xs mt-1">맑음 ☀️ 축하하기 좋은 날</div>
+            <div className="text-[10px] text-gray-600 mt-1">서울 최고 22°C / 최저 14°C</div>
+          </div>
+
+          {/* Drink Section */}
+          <div className="border-2 border-black p-4 bg-gray-50 flex-1 flex flex-col justify-center">
+            <div className="text-xs font-black text-center">[10년 전 그날의 음료]</div>
+            <div className="text-lg font-bold text-center mt-3">
+              ☕ {drinkTemperature === "iced" ? "Iced " : drinkTemperature === "hot" ? "Hot " : ""}{drinkName || "아메리카노"}
+            </div>
+            <div className="text-[11px] text-gray-600 italic text-center mt-3">
+              "성공의 첫 걸음은 이 한 잔과 함께"
+            </div>
+            <div className="text-[10px] text-center mt-2 text-gray-500">
+              Recording Cafe 시그니처 메뉴
+            </div>
+          </div>
         </div>
       </div>
 
