@@ -130,19 +130,9 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
   const displayName = autoKoreanName ? `${autoKoreanName} (${customerName})` : customerName;
   
   const today = new Date();
-  const futureDate = new Date(today.getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
-  const futureDateKr = futureDate.toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-  const futureDateEn = futureDate.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-  const volumeNumber = Math.floor((futureDate.getTime() - new Date("2024-01-01").getTime()) / (1000 * 60 * 60 * 24));
+  const futureDateKr = "2035년 11월 30일";
+  const futureDateEn = "Friday, Nov 30, 2035";
+  const volumeNumber = 4351;
 
   const sortedImages = lifeStageImages
     .filter(img => img.imageData)
@@ -216,14 +206,14 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         <div className="flex justify-between items-center text-[11px] text-black mt-2 border-t-2 border-black pt-2 font-medium">
           <span>{futureDateKr} ({futureDateEn})</span>
           <span>No. {volumeNumber} (특별호)</span>
-          <span className="font-bold">가격: 당신의 열정</span>
+          <span className="font-bold">무가지</span>
         </div>
       </div>
 
       {/* Main Headline - Future Tense */}
       <div className="mb-3 border-b-2 border-black pb-2">
         <h1 className="text-2xl font-black leading-tight text-center" style={{ fontFamily: "'Arial Black', 'Nanum Gothic', sans-serif" }}>
-          {headline || <>"한복이 가장 잘 어울리는 스타" {displayName}, 10년 전 녹음 사진 발굴!</>}
+          {headline || <>{displayName}, 10년 전 녹음 사진 발굴!</>}
         </h1>
       </div>
 
@@ -232,11 +222,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         {/* Left Column: Main Photo + Article (3 cols) */}
         <div className="col-span-3 flex flex-col">
           {/* Main Photo - 10 Years Ago Recording */}
-          <div className="border-2 border-black">
+          <div className="border-2 border-black overflow-hidden">
             <img 
               src={photoData} 
               alt={customerName}
-              className="w-full object-contain bg-gray-100"
+              className="w-full object-cover"
               style={{ 
                 filter: "grayscale(100%) contrast(1.2)",
                 height: "280px"
@@ -270,11 +260,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               <div className="grid grid-cols-2 gap-4">
                 {infancyImage?.imageData && (
                   <div>
-                    <div className="border-2 border-black">
+                    <div className="border-2 border-black overflow-hidden">
                       <img 
                         src={infancyImage.imageData} 
                         alt="유아 시절"
-                        className="w-full object-contain bg-amber-50"
+                        className="w-full object-cover"
                         style={{ filter: "sepia(30%)", height: "160px" }}
                       />
                     </div>
@@ -285,11 +275,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 )}
                 {middleschoolImage?.imageData && (
                   <div>
-                    <div className="border-2 border-black">
+                    <div className="border-2 border-black overflow-hidden">
                       <img 
                         src={middleschoolImage.imageData} 
                         alt="중학교 시절"
-                        className="w-full object-contain bg-gray-50"
+                        className="w-full object-cover"
                         style={{ filter: "sepia(10%)", height: "160px" }}
                       />
                     </div>
@@ -313,11 +303,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                   ★ 2035 한복문화대상 ★
                 </div>
               </div>
-              <div className="border-2 border-black">
+              <div className="border-2 border-black overflow-hidden">
                 <img 
                   src={futureImage.imageData} 
                   alt="한복 시상식"
-                  className="w-full object-contain bg-purple-50"
+                  className="w-full object-cover"
                   style={{ height: "200px" }}
                 />
               </div>
@@ -396,7 +386,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       {/* Footer */}
       <div className="mt-3 pt-2 border-t-2 border-black flex justify-between items-center text-[10px] font-medium">
         <span>www.recordingcafe.com</span>
-        <span>© {futureDate.getFullYear()} Recording Cafe</span>
+        <span>© 2035 Recording Cafe</span>
         <span>@recordingcafe</span>
       </div>
     </div>
