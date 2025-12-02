@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image } from "lucide-react";
+import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image, Wand2, Loader2, Sparkles } from "lucide-react";
 import type { VisitorPhoto } from "@shared/schema";
 import NewspaperTemplate from "@/components/newspaper-template";
 
@@ -20,6 +21,16 @@ interface CustomerInfo {
   selectedDrink: string | null;
   drinkTemperature: string | null;
   createdAt: Date;
+}
+
+interface EraImage {
+  era: string;
+  eraName: string;
+  eraNameKr: string;
+  imageData: string | null;
+  prompt: string;
+  success: boolean;
+  error?: string;
 }
 
 export default function PhotoPage() {
@@ -34,6 +45,10 @@ export default function PhotoPage() {
   const [customHeadline, setCustomHeadline] = useState<string>("");
   const [previewPhoto, setPreviewPhoto] = useState<VisitorPhoto | null>(null);
   const [previewKoreanName, setPreviewKoreanName] = useState<string>("");
+  const [customerDescription, setCustomerDescription] = useState<string>("");
+  const [generatedImages, setGeneratedImages] = useState<EraImage[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatingEra, setGeneratingEra] = useState<string>("");
 
   const { data: user, isLoading: userLoading } = useQuery<{ id: number; username: string; role: string }>({
     queryKey: ["/api/auth/user"],
@@ -150,6 +165,97 @@ export default function PhotoPage() {
     }, 500);
   };
 
+  const handleGenerateAllImages = async () => {
+    if (!customerDescription.trim()) {
+      toast({
+        title: "고객 특징 입력 필요",
+        description: "AI 이미지 생성을 위해 고객 특징을 영어로 입력해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    setGeneratingEra("all");
+    setGeneratedImages([]);
+
+    try {
+      const response = await apiRequest("POST", "/api/photos/generate-all-eras", {
+        customerDescription: customerDescription.trim()
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.results) {
+        setGeneratedImages(data.results);
+        toast({
+          title: "AI 이미지 생성 완료",
+          description: `${data.results.filter((r: EraImage) => r.success).length}개의 시대별 이미지가 생성되었습니다.`,
+        });
+      } else {
+        throw new Error(data.message || "이미지 생성 실패");
+      }
+    } catch (error: any) {
+      toast({
+        title: "AI 이미지 생성 실패",
+        description: error.message || "이미지 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+      setGeneratingEra("");
+    }
+  };
+
+  const handleGenerateSingleImage = async (era: string) => {
+    if (!customerDescription.trim()) {
+      toast({
+        title: "고객 특징 입력 필요",
+        description: "AI 이미지 생성을 위해 고객 특징을 영어로 입력해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setGeneratingEra(era);
+
+    try {
+      const response = await apiRequest("POST", "/api/photos/generate-ai", {
+        customerDescription: customerDescription.trim(),
+        era
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.imageData) {
+        setGeneratedImages(prev => {
+          const filtered = prev.filter(img => img.era !== era);
+          return [...filtered, {
+            era: data.era,
+            eraName: data.eraName,
+            eraNameKr: data.eraNameKr,
+            imageData: data.imageData,
+            prompt: data.prompt,
+            success: true
+          }];
+        });
+        toast({
+          title: `${data.eraNameKr} 이미지 생성 완료`,
+        });
+      } else {
+        throw new Error(data.message || "이미지 생성 실패");
+      }
+    } catch (error: any) {
+      toast({
+        title: "AI 이미지 생성 실패",
+        description: error.message || "이미지 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingEra("");
+    }
+  };
+
   if (userLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f5f0e1]">
@@ -179,6 +285,13 @@ export default function PhotoPage() {
     );
   }
 
+  const eraButtons = [
+    { era: "1970s", name: "70년대", color: "bg-amber-600 hover:bg-amber-700" },
+    { era: "1980s", name: "80년대", color: "bg-pink-600 hover:bg-pink-700" },
+    { era: "1990s", name: "90년대", color: "bg-blue-600 hover:bg-blue-700" },
+    { era: "future", name: "미래", color: "bg-purple-600 hover:bg-purple-700" },
+  ];
+
   return (
     <>
       <style>{`
@@ -207,6 +320,7 @@ export default function PhotoPage() {
             headline={previewPhoto.headline || undefined}
             drinkName={selectedDrink || undefined}
             drinkTemperature={drinkTemperature || undefined}
+            eraImages={generatedImages}
           />
         </div>
       )}
@@ -358,70 +472,87 @@ export default function PhotoPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-[#d4c4a8] border-amber-700 shadow-xl">
-              <CardHeader className="bg-amber-800 text-white rounded-t-lg">
+            {/* AI Image Generation Card */}
+            <Card className="bg-gradient-to-br from-purple-100 to-pink-100 border-purple-300 shadow-xl">
+              <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
                 <CardTitle className="flex items-center gap-2">
-                  <Newspaper className="w-5 h-5" />
-                  업로드된 사진 목록
+                  <Sparkles className="w-5 h-5" />
+                  AI 시대별 이미지 생성
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
-                {photosLoading ? (
-                  <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-800 mx-auto"></div>
-                    <p className="mt-2 text-amber-700">로딩 중...</p>
-                  </div>
-                ) : photos.length === 0 ? (
-                  <div className="text-center py-8 text-amber-700">
-                    <Camera className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                    <p>업로드된 사진이 없습니다.</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4 max-h-[500px] overflow-y-auto">
-                    {photos.map((photo) => (
-                      <div
-                        key={photo.id}
-                        className="flex items-center gap-4 p-4 bg-[#e8dcc8] rounded-lg border border-amber-600"
-                        data-testid={`photo-item-${photo.id}`}
-                      >
-                        <img
-                          src={photo.photoData}
-                          alt={photo.customerName}
-                          className="w-20 h-20 object-cover rounded-lg shadow"
-                        />
-                        <div className="flex-1">
-                          <h3 className="font-bold text-amber-900">{photo.customerName}</h3>
-                          {photo.headline && (
-                            <p className="text-sm text-amber-700">{photo.headline}</p>
-                          )}
-                          <p className="text-xs text-amber-600">
-                            {new Date(photo.createdAt!).toLocaleDateString("ko-KR")}
-                          </p>
-                          {photo.isPrinted && (
-                            <span className="inline-flex items-center text-xs text-green-700 bg-green-100 px-2 py-0.5 rounded">
-                              <Check className="w-3 h-3 mr-1" />
-                              출력 완료
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            onClick={() => handlePrint(photo)}
-                            className="bg-amber-700 hover:bg-amber-800"
-                            data-testid={`button-print-${photo.id}`}
-                          >
-                            <Printer className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deleteMutation.mutate(photo.id)}
-                            data-testid={`button-delete-${photo.id}`}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+              <CardContent className="p-6 space-y-6">
+                <div>
+                  <Label className="text-purple-900 font-medium">고객 특징 (영어로 입력)</Label>
+                  <Textarea
+                    placeholder="예: A happy young woman with long black hair and glasses"
+                    value={customerDescription}
+                    onChange={(e) => setCustomerDescription(e.target.value)}
+                    className="mt-2 bg-white border-purple-300 min-h-[80px]"
+                    data-testid="input-customer-description"
+                  />
+                  <p className="text-xs text-purple-600 mt-1">
+                    고객의 특징을 영어로 간단하게 설명해주세요. AI가 4개의 시대별 이미지를 생성합니다.
+                  </p>
+                </div>
+
+                <Button
+                  onClick={handleGenerateAllImages}
+                  disabled={isGenerating || !customerDescription.trim()}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                  data-testid="button-generate-all"
+                >
+                  {isGenerating && generatingEra === "all" ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      4개 시대 이미지 생성 중... (약 1분 소요)
+                    </>
+                  ) : (
+                    <>
+                      <Wand2 className="w-4 h-4 mr-2" />
+                      전체 시대 이미지 생성 (4장)
+                    </>
+                  )}
+                </Button>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {eraButtons.map((btn) => (
+                    <Button
+                      key={btn.era}
+                      onClick={() => handleGenerateSingleImage(btn.era)}
+                      disabled={isGenerating || !customerDescription.trim()}
+                      className={`${btn.color} text-white text-sm`}
+                      data-testid={`button-generate-${btn.era}`}
+                    >
+                      {generatingEra === btn.era ? (
+                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      ) : (
+                        <Wand2 className="w-4 h-4 mr-1" />
+                      )}
+                      {btn.name}
+                    </Button>
+                  ))}
+                </div>
+
+                {generatedImages.length > 0 && (
+                  <div className="grid grid-cols-2 gap-3 mt-4">
+                    {generatedImages.map((img) => (
+                      <div key={img.era} className="relative">
+                        {img.imageData ? (
+                          <div className="space-y-1">
+                            <img
+                              src={img.imageData}
+                              alt={img.eraNameKr}
+                              className="w-full aspect-[3/4] object-cover rounded-lg shadow-md"
+                            />
+                            <p className="text-xs text-center font-medium text-purple-800">{img.eraNameKr}</p>
+                          </div>
+                        ) : (
+                          <div className="w-full aspect-[3/4] bg-gray-200 rounded-lg flex items-center justify-center">
+                            <p className="text-xs text-gray-500 text-center p-2">
+                              {img.error || "생성 실패"}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -430,6 +561,79 @@ export default function PhotoPage() {
             </Card>
           </div>
 
+          {/* Photo List */}
+          <Card className="mt-8 bg-[#d4c4a8] border-amber-700 shadow-xl">
+            <CardHeader className="bg-amber-800 text-white rounded-t-lg">
+              <CardTitle className="flex items-center gap-2">
+                <Newspaper className="w-5 h-5" />
+                업로드된 사진 목록
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              {photosLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-800 mx-auto"></div>
+                  <p className="mt-2 text-amber-700">로딩 중...</p>
+                </div>
+              ) : photos.length === 0 ? (
+                <div className="text-center py-8 text-amber-700">
+                  <Camera className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>업로드된 사진이 없습니다.</p>
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[400px] overflow-y-auto">
+                  {photos.map((photo) => (
+                    <div
+                      key={photo.id}
+                      className="flex items-center gap-4 p-4 bg-[#e8dcc8] rounded-lg border border-amber-600"
+                      data-testid={`photo-item-${photo.id}`}
+                    >
+                      <img
+                        src={photo.photoData}
+                        alt={photo.customerName}
+                        className="w-20 h-20 object-cover rounded-lg shadow"
+                      />
+                      <div className="flex-1">
+                        <h3 className="font-bold text-amber-900">{photo.customerName}</h3>
+                        {photo.headline && (
+                          <p className="text-sm text-amber-700">{photo.headline}</p>
+                        )}
+                        <p className="text-xs text-amber-600">
+                          {new Date(photo.createdAt!).toLocaleDateString("ko-KR")}
+                        </p>
+                        {photo.isPrinted && (
+                          <span className="inline-flex items-center text-xs text-green-700 bg-green-100 px-2 py-0.5 rounded">
+                            <Check className="w-3 h-3 mr-1" />
+                            출력 완료
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => handlePrint(photo)}
+                          className="bg-amber-700 hover:bg-amber-800"
+                          data-testid={`button-print-${photo.id}`}
+                        >
+                          <Printer className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => deleteMutation.mutate(photo.id)}
+                          data-testid={`button-delete-${photo.id}`}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Preview Section */}
           <Card className="mt-8 bg-[#d4c4a8] border-amber-700 shadow-xl">
             <CardHeader className="bg-amber-800 text-white rounded-t-lg">
               <CardTitle className="flex items-center gap-2">
@@ -439,7 +643,7 @@ export default function PhotoPage() {
             </CardHeader>
             <CardContent className="p-6">
               {selectedPhoto && selectedCustomerName ? (
-                <div className="max-w-2xl mx-auto">
+                <div className="max-w-4xl mx-auto">
                   <NewspaperTemplate
                     customerName={selectedCustomerName}
                     koreanName={koreanName || undefined}
@@ -447,6 +651,7 @@ export default function PhotoPage() {
                     headline={customHeadline || undefined}
                     drinkName={selectedDrink || undefined}
                     drinkTemperature={drinkTemperature || undefined}
+                    eraImages={generatedImages}
                   />
                   <div className="mt-6 flex justify-center gap-4">
                     <Button

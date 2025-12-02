@@ -1,3 +1,13 @@
+interface EraImage {
+  era: string;
+  eraName: string;
+  eraNameKr: string;
+  imageData: string | null;
+  prompt: string;
+  success: boolean;
+  error?: string;
+}
+
 interface NewspaperTemplateProps {
   customerName: string;
   koreanName?: string;
@@ -5,6 +15,7 @@ interface NewspaperTemplateProps {
   headline?: string;
   drinkName?: string;
   drinkTemperature?: string;
+  eraImages?: EraImage[];
 }
 
 function convertToKorean(name: string): string {
@@ -16,7 +27,7 @@ function convertToKorean(name: string): string {
   const phonemeMap: Record<string, string> = {
     'tion': '션', 'sion': '션', 'cian': '션', 'tian': '션',
     'ight': '아이트', 'ough': '오', 'ould': '울드', 'ound': '운드',
-    'ther': '더', 'ther': '더', 'this': '디스', 'that': '댓',
+    'ther': '더', 'this': '디스', 'that': '댓',
     'chr': '크', 'sch': '스', 'tch': '치', 'dge': '지',
     'ph': '프', 'th': '스', 'ch': '치', 'sh': '쉬', 'wh': '와',
     'ck': '크', 'ng': '응', 'nk': '응크', 'qu': '쿼', 'wr': '르',
@@ -112,7 +123,7 @@ function convertToKorean(name: string): string {
   return result || '';
 }
 
-export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature }: NewspaperTemplateProps) {
+export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, eraImages = [] }: NewspaperTemplateProps) {
   const autoKoreanName = koreanName || convertToKorean(customerName);
   const displayName = autoKoreanName ? `${customerName} (${autoKoreanName})` : customerName;
   const today = new Date();
@@ -339,6 +350,52 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           </div>
         </div>
       </div>
+
+      {/* AI Generated Era Images Section */}
+      {eraImages.length > 0 && eraImages.some(img => img.imageData) && (
+        <div className="mt-3 pt-3 border-t-4 border-black">
+          <div className="text-center mb-3">
+            <h2 className="text-lg font-black tracking-wider" style={{ fontFamily: "'Arial Black', sans-serif" }}>
+              ★ TIME TRAVEL PHOTOBOOK ★
+            </h2>
+            <p className="text-xs text-gray-600">시간을 넘어 빛나는 스타의 여정</p>
+          </div>
+          
+          <div className="grid grid-cols-4 gap-2">
+            {eraImages
+              .sort((a, b) => {
+                const order = ["1970s", "1980s", "1990s", "future"];
+                return order.indexOf(a.era) - order.indexOf(b.era);
+              })
+              .map((img) => (
+                <div key={img.era} className="border-2 border-black">
+                  {img.imageData ? (
+                    <div>
+                      <img 
+                        src={img.imageData} 
+                        alt={img.eraNameKr}
+                        className="w-full aspect-[3/4] object-cover"
+                        style={{ filter: img.era === "1970s" ? "sepia(30%)" : img.era === "future" ? "brightness(1.1)" : "none" }}
+                      />
+                      <div className="bg-black text-white p-1 text-center">
+                        <p className="text-[9px] font-bold">{img.eraNameKr}</p>
+                        <p className="text-[7px] opacity-80">{img.eraName.split(":")[0]}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full aspect-[3/4] bg-gray-200 flex items-center justify-center">
+                      <p className="text-[8px] text-gray-500 text-center p-1">{img.eraNameKr}<br/>생성 대기</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+          </div>
+          
+          <div className="mt-2 text-center text-[9px] italic text-gray-600 border-t border-gray-300 pt-2">
+            "한 사람의 음악 여정이 시대를 초월해 전설이 되다" - AI가 예측한 {displayName}님의 과거와 미래
+          </div>
+        </div>
+      )}
 
       {/* Bottom Ad Banner */}
       <div className="mt-3 pt-2 border-t-4 border-black">
