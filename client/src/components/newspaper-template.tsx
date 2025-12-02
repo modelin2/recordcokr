@@ -357,9 +357,9 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         <div className="mt-3 pt-3 border-t-4 border-black">
           <div className="text-center mb-3">
             <h2 className="text-lg font-black tracking-wider" style={{ fontFamily: "'Arial Black', sans-serif" }}>
-              ★ GROWTH ALBUM ★
+              ★ 한복이 가장 잘 어울리는 스타 ★
             </h2>
-            <p className="text-xs text-gray-600">유아기부터 월드스타까지, 음악과 함께한 여정</p>
+            <p className="text-xs text-gray-600">유아기부터 한복스타까지, 음악과 함께한 여정</p>
           </div>
           
           <div className="grid grid-cols-3 gap-3">
@@ -396,7 +396,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           </div>
           
           <div className="mt-2 text-center text-[9px] italic text-gray-600 border-t border-gray-300 pt-2">
-            "음악을 사랑했던 어린 시절, 그 꿈이 오늘 현실이 되다" - {displayName}님의 성장 스토리
+            "음악을 사랑했던 어린 시절, 이제 한복이 가장 잘 어울리는 스타가 되다" - {displayName}님의 성장 스토리
           </div>
         </div>
       )}

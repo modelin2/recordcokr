@@ -239,7 +239,7 @@ export default function PhotoPage() {
   const lifeStageButtons = [
     { stage: "infancy", name: "유아기", age: "0-2세", color: "bg-pink-500 hover:bg-pink-600" },
     { stage: "middleschool", name: "중학교", age: "14-15세", color: "bg-blue-500 hover:bg-blue-600" },
-    { stage: "future", name: "미래", age: "월드스타", color: "bg-purple-500 hover:bg-purple-600" },
+    { stage: "future", name: "미래", age: "한복스타", color: "bg-purple-500 hover:bg-purple-600" },
   ];
 
   return (

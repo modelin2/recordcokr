@@ -75,31 +75,30 @@ const lifeStagePrompts = {
     ]
   },
   "future": {
-    name: "Future Star",
+    name: "Hanbok Star",
     nameKr: "미래",
-    ageRange: "월드스타",
+    ageRange: "한복스타",
     clothing: [
-      "wearing a luxurious custom designer stage outfit with sparkling details",
-      "wearing a sleek all-black concert outfit with LED accents",
-      "wearing a glamorous award show dress/suit with elegant accessories",
-      "wearing a futuristic K-pop idol style outfit with holographic elements"
+      "wearing a gorgeous traditional Korean hanbok (jeogori and chima for women, durumagi and baji for men) with luxurious silk fabric and intricate embroidery, NOT modernized hanbok",
+      "wearing an elegant authentic Korean traditional hanbok with beautiful color combinations like pink jeogori with blue chima or navy durumagi, with golden embroidery details",
+      "wearing a stunning classic hanbok in royal style, traditional silhouette with wide sleeves and flowing skirt or loose pants, precious fabric with traditional patterns"
     ],
     pose: [
-      "performing on a massive stadium stage, holding a microphone with passion",
-      "receiving a music award trophy with tears of joy",
-      "waving to thousands of fans from a concert stage",
-      "singing emotionally with dramatic spotlight on face"
+      "waving gracefully to the audience like a star at an award ceremony, confident smile",
+      "waving elegantly with one hand raised, standing like a celebrity receiving applause",
+      "smiling warmly and waving to fans, looking like a beloved star at a traditional ceremony",
+      "standing proudly and waving with both hands, like receiving a cultural award"
     ],
     background: [
-      "background is a sold-out stadium concert with thousands of glowing light sticks",
-      "background is a prestigious music award ceremony with red carpet",
-      "background is a world tour concert stage with massive LED screens",
-      "background is a dreamy stage with floating confetti and stage effects"
+      "background is a prestigious award ceremony stage with elegant lighting and traditional Korean decorative elements",
+      "background is a grand award show venue with red carpet and cameras flashing",
+      "background is a beautiful stage with traditional Korean palace-style backdrop",
+      "background is a glamorous ceremony hall with spotlights and audience applauding"
     ],
     style: [
-      "professional concert photography, cinematic lighting, 8K quality, dramatic lens flare, epic atmosphere",
-      "magazine cover quality, perfect lighting, high fashion editorial style",
-      "award show broadcast quality, glamorous lighting, celebrity portrait style"
+      "professional award show photography, elegant lighting, 8K quality, glamorous atmosphere, celebrity portrait style",
+      "magazine cover quality, perfect studio lighting, high fashion editorial with traditional elegance",
+      "broadcast award ceremony quality, warm glamorous lighting, Korean Wave star aesthetic"
     ]
   }
 };
@@ -117,9 +116,9 @@ function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompt
   
   if (stage === "future") {
     if (personCount === 2) {
-      return `Transform the TWO people in this photo into future K-pop superstars. IMPORTANT: Keep BOTH people's facial features exactly the same, just show them as successful music stars. Both people should be ${clothing}, ${pose}, ${background}. Apply this visual style: ${style}. Make it look like a real concert or award show photo featuring both of them together as a famous duo.`;
+      return `Transform the TWO people in this photo into famous Korean stars at an award ceremony wearing traditional hanbok. IMPORTANT: Keep BOTH people's facial features exactly the same. Men should wear traditional male hanbok (durumagi or baji-jeogori), women should wear traditional female hanbok (jeogori and chima). NOT modernized hanbok, traditional authentic hanbok only. Both people should be ${clothing}, ${pose}, ${background}. Apply this visual style: ${style}. Make it look like a prestigious award ceremony photo featuring both of them together as beloved Korean stars known for looking beautiful in traditional hanbok.`;
     }
-    return `Transform the person in this photo into a future K-pop superstar. IMPORTANT: Keep the same facial features, just show them as a successful music star. They should be ${clothing}, ${pose}, ${background}. Apply this visual style: ${style}. Make it look like a real concert or award show photo.`;
+    return `Transform the person in this photo into a famous Korean star at an award ceremony wearing traditional hanbok. IMPORTANT: Keep the same facial features. If the person appears male, dress them in traditional male hanbok (durumagi or baji-jeogori). If the person appears female, dress them in traditional female hanbok (jeogori and chima). NOT modernized hanbok, traditional authentic Korean hanbok only. They should be ${clothing}, ${pose}, ${background}. Apply this visual style: ${style}. Make it look like a prestigious award ceremony photo of a beloved Korean star known for looking beautiful in traditional hanbok.`;
   }
   
   if (personCount === 2) {
