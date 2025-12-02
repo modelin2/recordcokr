@@ -130,9 +130,12 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
   const displayName = autoKoreanName ? `${autoKoreanName} (${customerName})` : customerName;
   
   const today = new Date();
-  const futureDateKr = "2035년 11월 30일";
-  const futureDateEn = "Friday, Nov 30, 2035";
-  const volumeNumber = 4351;
+  const futureYear = today.getFullYear() + 10;
+  const futureDateKr = `${futureYear}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+  const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const futureDateEn = `${weekdays[today.getDay()]}, ${months[today.getMonth()]} ${today.getDate()}, ${futureYear}`;
+  const volumeNumber = Math.floor((new Date(futureYear, today.getMonth(), today.getDate()).getTime() - new Date("2024-01-01").getTime()) / (1000 * 60 * 60 * 24));
 
   const sortedImages = lifeStageImages
     .filter(img => img.imageData)
@@ -151,139 +154,144 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       style={{ 
         fontFamily: "'Times New Roman', 'Nanum Myeongjo', serif",
         minHeight: "100vh",
-        padding: "12px",
+        padding: "16px",
       }}
     >
       {/* K-POP BOARD Masthead */}
-      <div className="border-b-4 border-black pb-3 mb-3">
+      <div className="border-b-4 border-black pb-3 mb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-14 h-14 bg-black flex items-center justify-center">
-              <span className="text-white font-black text-lg">RC</span>
+            <div className="w-16 h-16 bg-black flex items-center justify-center">
+              <span className="text-white font-black text-xl">RC</span>
             </div>
-            <span className="text-[11px] leading-tight text-black font-medium">
+            <span className="text-xs leading-tight text-black font-medium">
               SINCE<br/>2024
             </span>
           </div>
           
           <div className="text-center flex-1">
             <div className="flex items-center justify-center gap-0">
-              <span className="text-5xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>
+              <span className="text-6xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>
                 K-P
               </span>
-              <span className="inline-block relative mx-[-3px]" style={{ width: '40px', height: '40px' }}>
+              <span className="inline-block relative mx-[-4px]" style={{ width: '48px', height: '48px' }}>
                 <svg viewBox="0 0 32 32" className="w-full h-full">
                   <circle cx="16" cy="16" r="15" fill="#000" />
                   <circle cx="16" cy="16" r="4" fill="#fff" />
                   <circle cx="16" cy="16" r="1.5" fill="#000" />
                 </svg>
               </span>
-              <span className="text-5xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>P</span>
-              <span className="mx-2 text-gray-400 text-4xl font-light">|</span>
-              <span className="text-5xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>B</span>
-              <span className="inline-block relative mx-[-3px]" style={{ width: '40px', height: '40px' }}>
+              <span className="text-6xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>P</span>
+              <span className="mx-2 text-gray-400 text-5xl font-light">|</span>
+              <span className="text-6xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>B</span>
+              <span className="inline-block relative mx-[-4px]" style={{ width: '48px', height: '48px' }}>
                 <svg viewBox="0 0 32 32" className="w-full h-full">
                   <circle cx="16" cy="16" r="15" fill="#000" />
                   <circle cx="16" cy="16" r="4" fill="#fff" />
                   <circle cx="16" cy="16" r="1.5" fill="#000" />
                 </svg>
               </span>
-              <span className="text-5xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>ARD</span>
+              <span className="text-6xl font-black tracking-tight" style={{ fontFamily: "'Arial Black', sans-serif" }}>ARD</span>
             </div>
-            <div className="text-sm tracking-[0.3em] text-black font-bold -mt-1" style={{ fontFamily: "'Arial', sans-serif" }}>
+            <div className="text-base tracking-[0.4em] text-black font-bold -mt-1" style={{ fontFamily: "'Arial', sans-serif" }}>
               SEOUL MUSIC TODAY
             </div>
           </div>
 
-          <div className="text-right text-[10px] text-black leading-tight">
+          <div className="text-right text-[11px] text-black leading-tight">
             <div className="border-2 border-black p-2">
-              <div className="font-black text-sm">QR</div>
-              <div className="font-bold text-[9px]">SCAN</div>
+              <div className="font-black text-base">QR</div>
+              <div className="font-bold text-[10px]">SCAN</div>
             </div>
           </div>
         </div>
         
-        <div className="flex justify-between items-center text-[11px] text-black mt-2 border-t-2 border-black pt-2 font-medium">
+        <div className="flex justify-between items-center text-xs text-black mt-3 border-t-2 border-black pt-2 font-medium">
           <span>{futureDateKr} ({futureDateEn})</span>
           <span>No. {volumeNumber} (특별호)</span>
           <span className="font-bold">무가지</span>
         </div>
       </div>
 
-      {/* Main Headline - Future Tense */}
-      <div className="mb-3 border-b-2 border-black pb-2">
-        <h1 className="text-2xl font-black leading-tight text-center" style={{ fontFamily: "'Arial Black', 'Nanum Gothic', sans-serif" }}>
+      {/* Main Headline */}
+      <div className="mb-4 border-b-2 border-black pb-3">
+        <h1 className="text-3xl font-black leading-tight text-center" style={{ fontFamily: "'Arial Black', 'Nanum Gothic', sans-serif" }}>
           {headline || <>{displayName}, 10년 전 녹음 사진 발굴!</>}
         </h1>
       </div>
 
-      {/* Two Column Layout - Expanded */}
-      <div className="grid grid-cols-5 gap-4 text-[11px] leading-relaxed flex-1">
+      {/* Two Column Layout */}
+      <div className="grid grid-cols-5 gap-5 text-xs leading-relaxed flex-1">
         {/* Left Column: Main Photo + Article (3 cols) */}
         <div className="col-span-3 flex flex-col">
-          {/* Main Photo - 10 Years Ago Recording */}
-          <div className="border-2 border-black overflow-hidden">
+          {/* Main Photo */}
+          <div className="border-2 border-black overflow-hidden bg-black flex items-center justify-center" style={{ height: "320px" }}>
             <img 
               src={photoData} 
               alt={customerName}
-              className="w-full object-cover"
+              className="max-w-full max-h-full object-contain"
               style={{ 
                 filter: "grayscale(100%) contrast(1.2)",
-                height: "280px"
               }}
             />
           </div>
-          <p className="text-[10px] text-center mt-2 border-b border-black pb-2 font-medium">
+          <p className="text-[11px] text-center mt-2 border-b border-black pb-2 font-medium">
             ▲ 10년 전 우연히 'Recording Cafe'를 방문해 첫 녹음에 도전하던 <span className="font-bold">{displayName}</span>. 
             이 사진이 최근 스튜디오 자료실에서 발굴되어 화제다. / 사진 = SMT 자료실
           </p>
           
-          {/* Article */}
-          <div className="mt-2 columns-2 gap-4 text-justify text-[11px] leading-relaxed flex-1" style={{ columnRule: "1px solid #333" }}>
-            <p className="mb-2">
-              <span className="font-bold">[서울=SMT뉴스]</span> 최근 '한복이 가장 잘 어울리는 스타'로 선정되어 화제를 모으고 있는 {displayName}의 과거 녹음 사진이 발굴되어 팬들의 뜨거운 관심을 받고 있다.
+          {/* Article - Expanded */}
+          <div className="mt-3 columns-2 gap-5 text-justify text-xs leading-relaxed" style={{ columnRule: "1px solid #333" }}>
+            <p className="mb-3">
+              <span className="font-bold text-sm">[서울=SMT뉴스]</span> 최근 '한복이 가장 잘 어울리는 스타'로 선정되어 화제를 모으고 있는 {displayName}의 과거 녹음 사진이 발굴되어 팬들의 뜨거운 관심을 받고 있다.
             </p>
-            <p className="mb-2">
-              10년 전, 당시 무명이었던 {displayName}은 서울 서초구의 'Recording Cafe'를 우연히 방문해 생애 첫 녹음을 경험했다. 당시 엔지니어 A씨는 "처음부터 남다른 재능이 느껴졌다"며 회상했다.
+            <p className="mb-3">
+              10년 전, 당시 무명이었던 {displayName}은 서울 서초구의 'Recording Cafe'를 우연히 방문해 생애 첫 녹음을 경험했다. 당시 엔지니어 A씨는 "처음부터 남다른 재능이 느껴졌다"며 당시를 회상했다.
             </p>
-            <p className="mb-2">
-              이후 음악의 꿈을 키워온 {displayName}은 현재 대한민국을 대표하는 아티스트로 성장, 최근 열린 '2035 한복문화대상'에서 영예의 대상을 수상했다.
+            <p className="mb-3">
+              Recording Cafe 관계자는 "당시 녹음실에 들어오자마자 마이크 앞에서 자연스럽게 노래를 부르기 시작했다"며 "목소리에서 특별한 감성이 느껴졌다"고 전했다.
+            </p>
+            <p className="mb-3">
+              이후 음악의 꿈을 키워온 {displayName}은 현재 대한민국을 대표하는 아티스트로 성장, 최근 열린 '{futureYear} 한복문화대상'에서 영예의 대상을 수상했다.
+            </p>
+            <p className="mb-3">
+              수상 직후 인터뷰에서 {displayName}은 "10년 전 그 작은 카페에서 첫 녹음을 했던 순간이 제 인생의 터닝포인트였다"며 감격의 눈물을 흘렸다.
             </p>
             <p>
-              수상 직후 인터뷰에서 {displayName}은 "10년 전 그 작은 카페에서 첫 녹음을 했던 순간이 제 인생의 터닝포인트였다"며 감격의 눈물을 흘렸다.
+              한편, Recording Cafe는 이번 사진 발굴을 계기로 스튜디오 역사관 조성을 검토 중인 것으로 알려졌다.
             </p>
           </div>
 
-          {/* Childhood Album Section - Expanded */}
+          {/* Childhood Album Section */}
           {(infancyImage || middleschoolImage) && (
-            <div className="mt-4 pt-3 border-t-2 border-black">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="mt-5 pt-4 border-t-2 border-black">
+              <div className="grid grid-cols-2 gap-5">
                 {infancyImage?.imageData && (
                   <div>
-                    <div className="border-2 border-black overflow-hidden">
+                    <div className="border-2 border-black overflow-hidden bg-amber-50 flex items-center justify-center" style={{ height: "180px" }}>
                       <img 
                         src={infancyImage.imageData} 
                         alt="유아 시절"
-                        className="w-full object-cover"
-                        style={{ filter: "sepia(30%)", height: "160px" }}
+                        className="max-w-full max-h-full object-contain"
+                        style={{ filter: "sepia(30%)" }}
                       />
                     </div>
-                    <p className="text-[10px] mt-1.5 text-justify leading-snug">
-                      ▲ <span className="font-bold">{displayName}</span>의 가족이 공개한 어린 시절 사진. 이미 어린 나이에 음악적 재능을 보였다고 한다. "아기 때부터 음악만 틀어주면 웃었다"는 부모님의 증언.
+                    <p className="text-[11px] mt-2 text-justify leading-snug">
+                      ▲ <span className="font-bold">{displayName}</span>의 가족이 공개한 어린 시절 사진. 이미 어린 나이에 음악적 재능을 보였다고 한다. "아기 때부터 음악만 틀어주면 웃었다"는 부모님의 증언이 화제다.
                     </p>
                   </div>
                 )}
                 {middleschoolImage?.imageData && (
                   <div>
-                    <div className="border-2 border-black overflow-hidden">
+                    <div className="border-2 border-black overflow-hidden bg-gray-50 flex items-center justify-center" style={{ height: "180px" }}>
                       <img 
                         src={middleschoolImage.imageData} 
                         alt="중학교 시절"
-                        className="w-full object-cover"
-                        style={{ filter: "sepia(10%)", height: "160px" }}
+                        className="max-w-full max-h-full object-contain"
+                        style={{ filter: "sepia(10%)" }}
                       />
                     </div>
-                    <p className="text-[10px] mt-1.5 text-justify leading-snug">
+                    <p className="text-[11px] mt-2 text-justify leading-snug">
                       ▲ <span className="font-bold">{displayName}</span>의 중학교 시절 밴드부에서 활동하던 모습. 당시 담임 교사는 "음악 시간마다 눈이 빛났다"며 숨겨진 재능을 일찍이 알아봤다고 전했다.
                     </p>
                   </div>
@@ -294,37 +302,36 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         </div>
 
         {/* Right Column: Sidebar + Future Image (2 cols) */}
-        <div className="col-span-2 border-l-2 border-black pl-4 flex flex-col">
-          {/* Current Award Photo - Future Star in Hanbok */}
+        <div className="col-span-2 border-l-2 border-black pl-5 flex flex-col">
+          {/* Award Photo */}
           {futureImage?.imageData && (
-            <div className="mb-3">
+            <div className="mb-4">
               <div className="bg-black text-white p-2 mb-2">
-                <div className="text-[11px] font-black text-center tracking-wider">
-                  ★ 2035 한복문화대상 ★
+                <div className="text-xs font-black text-center tracking-wider">
+                  ★ {futureYear} 한복문화대상 ★
                 </div>
               </div>
-              <div className="border-2 border-black overflow-hidden">
+              <div className="border-2 border-black overflow-hidden bg-purple-50 flex items-center justify-center" style={{ height: "220px" }}>
                 <img 
                   src={futureImage.imageData} 
                   alt="한복 시상식"
-                  className="w-full object-cover"
-                  style={{ height: "200px" }}
+                  className="max-w-full max-h-full object-contain"
                 />
               </div>
-              <p className="text-[10px] mt-1.5 text-justify leading-snug">
-                ▲ 지난달 열린 '2035 한복문화대상'에서 대상을 수상한 <span className="font-bold">{displayName}</span>이 관객들에게 손을 흔들고 있다. 
+              <p className="text-[11px] mt-2 text-justify leading-snug">
+                ▲ 지난달 열린 '{futureYear} 한복문화대상'에서 대상을 수상한 <span className="font-bold">{displayName}</span>이 관객들에게 손을 흔들고 있다. 
                 전통 한복의 아름다움을 전 세계에 알린 공로를 인정받았다.
               </p>
             </div>
           )}
 
-          {/* Info Box */}
-          <div className="border-2 border-black p-2 mb-3">
-            <div className="text-[11px] font-black border-b-2 border-black pb-1 mb-2">PROFILE</div>
-            <div className="space-y-1 text-[10px]">
-              <div className="flex justify-between">
-                <span>Artist</span>
-                <span className="font-bold text-right" style={{ maxWidth: "70%" }}>{displayName}</span>
+          {/* Profile Box */}
+          <div className="border-2 border-black p-3 mb-4">
+            <div className="text-xs font-black border-b-2 border-black pb-2 mb-3">PROFILE</div>
+            <div className="space-y-2 text-[11px]">
+              <div className="flex justify-between gap-2">
+                <span className="shrink-0">Artist</span>
+                <span className="font-bold text-right">{displayName}</span>
               </div>
               <div className="flex justify-between">
                 <span>데뷔</span>
@@ -334,59 +341,77 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 <span>수상</span>
                 <span className="font-bold">한복문화대상</span>
               </div>
+              <div className="flex justify-between">
+                <span>소속</span>
+                <span>Recording Cafe Family</span>
+              </div>
             </div>
           </div>
 
           {/* Quote Box */}
-          <div className="border-2 border-black p-3 mb-3 bg-gray-50">
-            <p className="text-[11px] italic text-center leading-relaxed">
-              "10년 전 그 작은 카페에서 시작된 꿈이 오늘 이렇게 이루어졌습니다"
+          <div className="border-2 border-black p-4 mb-4 bg-gray-50">
+            <p className="text-xs italic text-center leading-relaxed">
+              "10년 전 그 작은 카페에서 시작된 꿈이 오늘 이렇게 이루어졌습니다. 녹음실에서 처음 마이크를 잡았을 때의 떨림을 아직도 기억합니다."
             </p>
-            <p className="text-[9px] text-right mt-2 font-medium">- {displayName} 수상 소감 중</p>
+            <p className="text-[10px] text-right mt-3 font-bold">- {displayName} 수상 소감 중</p>
           </div>
 
-          {/* Weather/Fortune */}
-          <div className="border-2 border-black p-2 mb-3">
-            <div className="text-[10px] font-bold">[오늘의 날씨]</div>
-            <div className="text-[11px] mt-1">맑음 ☀️ 축하하기 좋은 날</div>
+          {/* Related News Box */}
+          <div className="border-2 border-black p-3 mb-4">
+            <div className="text-[11px] font-black border-b border-black pb-1 mb-2">[관련 기사]</div>
+            <ul className="text-[10px] space-y-1.5">
+              <li>• "{displayName}, 한류 스타 중 '가장 한복이 잘 어울리는 스타' 1위 선정"</li>
+              <li>• "Recording Cafe, 10주년 맞아 역대 녹음 고객 사진전 개최"</li>
+              <li>• "한복문화대상 수상 연예인들의 공통점은? '열정'"</li>
+            </ul>
           </div>
 
-          {/* Drink Section - Expanded */}
-          <div className="border-2 border-black p-3 bg-gray-50 flex-1">
-            <div className="text-[11px] font-black text-center">[10년 전 그날의 음료]</div>
-            <div className="text-base font-bold text-center mt-2">
+          {/* Weather */}
+          <div className="border-2 border-black p-3 mb-4">
+            <div className="text-[11px] font-bold">[오늘의 날씨]</div>
+            <div className="text-xs mt-1">맑음 ☀️ 축하하기 좋은 날</div>
+            <div className="text-[10px] text-gray-600 mt-1">서울 최고 22°C / 최저 14°C</div>
+          </div>
+
+          {/* Drink Section */}
+          <div className="border-2 border-black p-4 bg-gray-50 flex-1 flex flex-col justify-center">
+            <div className="text-xs font-black text-center">[10년 전 그날의 음료]</div>
+            <div className="text-lg font-bold text-center mt-3">
               ☕ {drinkTemperature === "iced" ? "Iced " : drinkTemperature === "hot" ? "Hot " : ""}{drinkName || "아메리카노"}
             </div>
-            <div className="text-[10px] text-gray-600 italic text-center mt-2">
+            <div className="text-[11px] text-gray-600 italic text-center mt-3">
               "성공의 첫 걸음은 이 한 잔과 함께"
+            </div>
+            <div className="text-[10px] text-center mt-2 text-gray-500">
+              Recording Cafe 시그니처 메뉴
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Banner - Expanded */}
-      <div className="mt-4 pt-3 border-t-4 border-black">
-        <div className="flex items-center justify-between p-3 bg-gray-50 border-2 border-black">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-black flex items-center justify-center">
-              <span className="text-white font-black text-sm">RC</span>
+      {/* Bottom Banner */}
+      <div className="mt-5 pt-4 border-t-4 border-black">
+        <div className="flex items-center justify-between p-4 bg-gray-50 border-2 border-black">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-black flex items-center justify-center">
+              <span className="text-white font-black text-base">RC</span>
             </div>
             <div>
-              <p className="text-sm font-black">Recording Cafe</p>
-              <p className="text-[10px] text-gray-700">서울 서초구 강남대로 107길 21. 2층</p>
+              <p className="text-base font-black">Recording Cafe</p>
+              <p className="text-[11px] text-gray-700">서울 서초구 강남대로 107길 21. 2층</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="font-bold text-[11px]">@recordingcafe 팔로우하면 1타임 무료!</p>
-            <p className="font-bold text-[11px]">#RecordingCafe #꿈의시작</p>
+            <p className="font-bold text-xs">@recordingcafe 팔로우하면 1타임 무료!</p>
+            <p className="font-bold text-xs">#RecordingCafe #꿈의시작</p>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="mt-3 pt-2 border-t-2 border-black flex justify-between items-center text-[10px] font-medium">
+      <div className="mt-4 pt-3 border-t-2 border-black flex justify-between items-center text-[11px] font-medium">
         <span>www.recordingcafe.com</span>
-        <span>© 2035 Recording Cafe</span>
+        <span>© {futureYear} Recording Cafe</span>
         <span>@recordingcafe</span>
       </div>
     </div>
