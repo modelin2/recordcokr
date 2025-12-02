@@ -22,10 +22,11 @@ interface CustomerInfo {
   createdAt: Date;
 }
 
-interface EraImage {
-  era: string;
-  eraName: string;
-  eraNameKr: string;
+interface LifeStageImage {
+  lifeStage: string;
+  stageName: string;
+  stageNameKr: string;
+  ageRange: string;
   imageData: string | null;
   prompt: string;
   success: boolean;
@@ -44,9 +45,9 @@ export default function PhotoPage() {
   const [customHeadline, setCustomHeadline] = useState<string>("");
   const [previewPhoto, setPreviewPhoto] = useState<VisitorPhoto | null>(null);
   const [previewKoreanName, setPreviewKoreanName] = useState<string>("");
-  const [generatedImages, setGeneratedImages] = useState<EraImage[]>([]);
+  const [generatedImages, setGeneratedImages] = useState<LifeStageImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatingEra, setGeneratingEra] = useState<string>("");
+  const [generatingStage, setGeneratingStage] = useState<string>("");
 
   const { data: user, isLoading: userLoading } = useQuery<{ id: number; username: string; role: string }>({
     queryKey: ["/api/auth/user"],
@@ -174,11 +175,11 @@ export default function PhotoPage() {
     }
 
     setIsGenerating(true);
-    setGeneratingEra("all");
+    setGeneratingStage("all");
     setGeneratedImages([]);
 
     try {
-      const response = await apiRequest("POST", "/api/photos/generate-all-eras", {
+      const response = await apiRequest("POST", "/api/photos/generate-all-stages", {
         sourceImageBase64: selectedPhoto
       });
       
@@ -188,7 +189,7 @@ export default function PhotoPage() {
         setGeneratedImages(data.results);
         toast({
           title: "AI 이미지 생성 완료",
-          description: `${data.results.filter((r: EraImage) => r.success).length}개의 시대별 이미지가 생성되었습니다.`,
+          description: `${data.results.filter((r: LifeStageImage) => r.success).length}개의 성장단계별 이미지가 생성되었습니다.`,
         });
       } else {
         throw new Error(data.message || "이미지 생성 실패");
@@ -201,11 +202,11 @@ export default function PhotoPage() {
       });
     } finally {
       setIsGenerating(false);
-      setGeneratingEra("");
+      setGeneratingStage("");
     }
   };
 
-  const handleGenerateSingleImage = async (era: string) => {
+  const handleGenerateSingleImage = async (stage: string) => {
     if (!selectedPhoto) {
       toast({
         title: "사진 필요",
@@ -215,30 +216,31 @@ export default function PhotoPage() {
       return;
     }
 
-    setGeneratingEra(era);
+    setGeneratingStage(stage);
 
     try {
       const response = await apiRequest("POST", "/api/photos/generate-ai", {
         sourceImageBase64: selectedPhoto,
-        era
+        lifeStage: stage
       });
       
       const data = await response.json();
       
       if (data.success && data.imageData) {
         setGeneratedImages(prev => {
-          const filtered = prev.filter(img => img.era !== era);
+          const filtered = prev.filter(img => img.lifeStage !== stage);
           return [...filtered, {
-            era: data.era,
-            eraName: data.eraName,
-            eraNameKr: data.eraNameKr,
+            lifeStage: data.lifeStage,
+            stageName: data.stageName,
+            stageNameKr: data.stageNameKr,
+            ageRange: data.ageRange,
             imageData: data.imageData,
             prompt: data.prompt,
             success: true
           }];
         });
         toast({
-          title: `${data.eraNameKr} 이미지 생성 완료`,
+          title: `${data.stageNameKr} 이미지 생성 완료`,
         });
       } else {
         throw new Error(data.message || "이미지 생성 실패");
@@ -250,7 +252,7 @@ export default function PhotoPage() {
         variant: "destructive",
       });
     } finally {
-      setGeneratingEra("");
+      setGeneratingStage("");
     }
   };
 
@@ -283,11 +285,11 @@ export default function PhotoPage() {
     );
   }
 
-  const eraButtons = [
-    { era: "1970s", name: "70년대", color: "bg-amber-600 hover:bg-amber-700" },
-    { era: "1980s", name: "80년대", color: "bg-pink-600 hover:bg-pink-700" },
-    { era: "1990s", name: "90년대", color: "bg-blue-600 hover:bg-blue-700" },
-    { era: "future", name: "미래", color: "bg-purple-600 hover:bg-purple-700" },
+  const lifeStageButtons = [
+    { stage: "infancy", name: "유아기", age: "0-2세", color: "bg-pink-500 hover:bg-pink-600" },
+    { stage: "kindergarten", name: "유치원", age: "5-6세", color: "bg-amber-500 hover:bg-amber-600" },
+    { stage: "elementary", name: "초등학교", age: "10-11세", color: "bg-green-500 hover:bg-green-600" },
+    { stage: "middleschool", name: "중학교", age: "14-15세", color: "bg-blue-500 hover:bg-blue-600" },
   ];
 
   return (
@@ -318,7 +320,7 @@ export default function PhotoPage() {
             headline={previewPhoto.headline || undefined}
             drinkName={selectedDrink || undefined}
             drinkTemperature={drinkTemperature || undefined}
-            eraImages={generatedImages}
+            lifeStageImages={generatedImages}
           />
         </div>
       )}
@@ -470,16 +472,16 @@ export default function PhotoPage() {
               </CardContent>
             </Card>
 
-            {/* AI Image Generation Card */}
-            <Card className="bg-gradient-to-br from-purple-100 to-pink-100 border-purple-300 shadow-xl">
-              <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
+            {/* AI Life Stage Image Generation Card */}
+            <Card className="bg-gradient-to-br from-pink-50 to-amber-50 border-pink-200 shadow-xl">
+              <CardHeader className="bg-gradient-to-r from-pink-500 to-amber-500 text-white rounded-t-lg">
                 <CardTitle className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5" />
-                  AI 시대별 이미지 생성
+                  AI 성장앨범 이미지 생성
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-6">
-                <div className="text-center p-4 bg-white/50 rounded-lg border border-purple-200">
+                <div className="text-center p-4 bg-white/50 rounded-lg border border-pink-200">
                   {selectedPhoto ? (
                     <div className="space-y-2">
                       <img 
@@ -487,15 +489,15 @@ export default function PhotoPage() {
                         alt="선택된 사진" 
                         className="max-h-32 mx-auto rounded-lg shadow"
                       />
-                      <p className="text-sm text-purple-700 font-medium">
-                        이 사진을 기반으로 시대별 이미지를 생성합니다
+                      <p className="text-sm text-pink-700 font-medium">
+                        이 얼굴로 어린 시절 모습을 생성합니다
                       </p>
                     </div>
                   ) : (
-                    <div className="text-purple-600">
+                    <div className="text-pink-600">
                       <Image className="w-10 h-10 mx-auto mb-2 opacity-50" />
                       <p className="text-sm">왼쪽에서 먼저 사진을 선택해주세요</p>
-                      <p className="text-xs text-purple-500 mt-1">업로드한 사진을 AI가 시대별 스타일로 합성합니다</p>
+                      <p className="text-xs text-pink-500 mt-1">AI가 유아기부터 중학교까지 성장앨범을 만들어드립니다</p>
                     </div>
                   )}
                 </div>
@@ -503,37 +505,40 @@ export default function PhotoPage() {
                 <Button
                   onClick={handleGenerateAllImages}
                   disabled={isGenerating || !selectedPhoto}
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                  className="w-full bg-gradient-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 text-white"
                   data-testid="button-generate-all"
                 >
-                  {isGenerating && generatingEra === "all" ? (
+                  {isGenerating && generatingStage === "all" ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      4개 시대 이미지 생성 중... (약 1분 소요)
+                      성장앨범 생성 중... (약 1분 소요)
                     </>
                   ) : (
                     <>
                       <Wand2 className="w-4 h-4 mr-2" />
-                      전체 시대 이미지 생성 (4장)
+                      전체 성장단계 이미지 생성 (4장)
                     </>
                   )}
                 </Button>
 
                 <div className="grid grid-cols-2 gap-2">
-                  {eraButtons.map((btn) => (
+                  {lifeStageButtons.map((btn) => (
                     <Button
-                      key={btn.era}
-                      onClick={() => handleGenerateSingleImage(btn.era)}
+                      key={btn.stage}
+                      onClick={() => handleGenerateSingleImage(btn.stage)}
                       disabled={isGenerating || !selectedPhoto}
-                      className={`${btn.color} text-white text-sm`}
-                      data-testid={`button-generate-${btn.era}`}
+                      className={`${btn.color} text-white text-sm flex flex-col py-2 h-auto`}
+                      data-testid={`button-generate-${btn.stage}`}
                     >
-                      {generatingEra === btn.era ? (
-                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-                      ) : (
-                        <Wand2 className="w-4 h-4 mr-1" />
-                      )}
-                      {btn.name}
+                      <div className="flex items-center">
+                        {generatingStage === btn.stage ? (
+                          <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                        ) : (
+                          <Wand2 className="w-4 h-4 mr-1" />
+                        )}
+                        {btn.name}
+                      </div>
+                      <span className="text-xs opacity-80">{btn.age}</span>
                     </Button>
                   ))}
                 </div>
@@ -541,18 +546,21 @@ export default function PhotoPage() {
                 {generatedImages.length > 0 && (
                   <div className="grid grid-cols-2 gap-3 mt-4">
                     {generatedImages.map((img) => (
-                      <div key={img.era} className="relative">
+                      <div key={img.lifeStage} className="relative">
                         {img.imageData ? (
                           <div className="space-y-1">
                             <img
                               src={img.imageData}
-                              alt={img.eraNameKr}
-                              className="w-full aspect-[3/4] object-cover rounded-lg shadow-md"
+                              alt={img.stageNameKr}
+                              className="w-full aspect-[3/4] object-cover rounded-lg shadow-md border-4 border-white"
+                              style={{ filter: 'sepia(0.1)' }}
                             />
-                            <p className="text-xs text-center font-medium text-purple-800">{img.eraNameKr}</p>
+                            <p className="text-xs text-center font-medium text-amber-800">
+                              {img.stageNameKr} ({img.ageRange})
+                            </p>
                           </div>
                         ) : (
-                          <div className="w-full aspect-[3/4] bg-gray-200 rounded-lg flex items-center justify-center">
+                          <div className="w-full aspect-[3/4] bg-gray-200 rounded-lg flex items-center justify-center border-4 border-white">
                             <p className="text-xs text-gray-500 text-center p-2">
                               {img.error || "생성 실패"}
                             </p>
@@ -656,7 +664,7 @@ export default function PhotoPage() {
                     headline={customHeadline || undefined}
                     drinkName={selectedDrink || undefined}
                     drinkTemperature={drinkTemperature || undefined}
-                    eraImages={generatedImages}
+                    lifeStageImages={generatedImages}
                   />
                   <div className="mt-6 flex justify-center gap-4">
                     <Button

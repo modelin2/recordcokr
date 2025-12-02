@@ -1,7 +1,8 @@
-interface EraImage {
-  era: string;
-  eraName: string;
-  eraNameKr: string;
+interface LifeStageImage {
+  lifeStage: string;
+  stageName: string;
+  stageNameKr: string;
+  ageRange: string;
   imageData: string | null;
   prompt: string;
   success: boolean;
@@ -15,7 +16,7 @@ interface NewspaperTemplateProps {
   headline?: string;
   drinkName?: string;
   drinkTemperature?: string;
-  eraImages?: EraImage[];
+  lifeStageImages?: LifeStageImage[];
 }
 
 function convertToKorean(name: string): string {
@@ -123,7 +124,7 @@ function convertToKorean(name: string): string {
   return result || '';
 }
 
-export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, eraImages = [] }: NewspaperTemplateProps) {
+export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, lifeStageImages = [] }: NewspaperTemplateProps) {
   const autoKoreanName = koreanName || convertToKorean(customerName);
   const displayName = autoKoreanName ? `${customerName} (${autoKoreanName})` : customerName;
   const today = new Date();
@@ -351,40 +352,44 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         </div>
       </div>
 
-      {/* AI Generated Era Images Section */}
-      {eraImages.length > 0 && eraImages.some(img => img.imageData) && (
+      {/* AI Generated Life Stage Images Section - Childhood Album */}
+      {lifeStageImages.length > 0 && lifeStageImages.some(img => img.imageData) && (
         <div className="mt-3 pt-3 border-t-4 border-black">
           <div className="text-center mb-3">
             <h2 className="text-lg font-black tracking-wider" style={{ fontFamily: "'Arial Black', sans-serif" }}>
-              ★ TIME TRAVEL PHOTOBOOK ★
+              ★ CHILDHOOD ALBUM ★
             </h2>
-            <p className="text-xs text-gray-600">시간을 넘어 빛나는 스타의 여정</p>
+            <p className="text-xs text-gray-600">음악과 함께한 어린 시절 성장 앨범</p>
           </div>
           
           <div className="grid grid-cols-4 gap-2">
-            {eraImages
+            {lifeStageImages
               .sort((a, b) => {
-                const order = ["1970s", "1980s", "1990s", "future"];
-                return order.indexOf(a.era) - order.indexOf(b.era);
+                const order = ["infancy", "kindergarten", "elementary", "middleschool"];
+                return order.indexOf(a.lifeStage) - order.indexOf(b.lifeStage);
               })
               .map((img) => (
-                <div key={img.era} className="border-2 border-black">
+                <div key={img.lifeStage} className="border-4 border-white shadow-md" style={{ backgroundColor: "#f5f0e1" }}>
                   {img.imageData ? (
                     <div>
                       <img 
                         src={img.imageData} 
-                        alt={img.eraNameKr}
+                        alt={img.stageNameKr}
                         className="w-full aspect-[3/4] object-cover"
-                        style={{ filter: img.era === "1970s" ? "sepia(30%)" : img.era === "future" ? "brightness(1.1)" : "none" }}
+                        style={{ 
+                          filter: img.lifeStage === "infancy" ? "sepia(40%) contrast(0.95)" : 
+                                  img.lifeStage === "kindergarten" ? "sepia(25%) saturate(0.9)" : 
+                                  img.lifeStage === "elementary" ? "sepia(15%)" : "sepia(5%)"
+                        }}
                       />
-                      <div className="bg-black text-white p-1 text-center">
-                        <p className="text-[9px] font-bold">{img.eraNameKr}</p>
-                        <p className="text-[7px] opacity-80">{img.eraName.split(":")[0]}</p>
+                      <div className="bg-amber-800 text-white p-1 text-center">
+                        <p className="text-[9px] font-bold">{img.stageNameKr}</p>
+                        <p className="text-[7px] opacity-80">{img.ageRange}</p>
                       </div>
                     </div>
                   ) : (
                     <div className="w-full aspect-[3/4] bg-gray-200 flex items-center justify-center">
-                      <p className="text-[8px] text-gray-500 text-center p-1">{img.eraNameKr}<br/>생성 대기</p>
+                      <p className="text-[8px] text-gray-500 text-center p-1">{img.stageNameKr}<br/>생성 대기</p>
                     </div>
                   )}
                 </div>
@@ -392,7 +397,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           </div>
           
           <div className="mt-2 text-center text-[9px] italic text-gray-600 border-t border-gray-300 pt-2">
-            "한 사람의 음악 여정이 시대를 초월해 전설이 되다" - AI가 예측한 {displayName}님의 과거와 미래
+            "음악을 사랑했던 어린 시절, 그 꿈이 오늘 이루어지다" - {displayName}님의 성장 앨범
           </div>
         </div>
       )}

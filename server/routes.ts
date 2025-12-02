@@ -16,114 +16,118 @@ const ai = new GoogleGenAI({
   }
 });
 
-// Era-based prompt configurations
-const eraPrompts = {
-  "1970s": {
-    name: "1970s: The Acoustic Folk Era",
-    nameKr: "낭만의 통기타 시대",
+// Life stage prompt configurations - childhood music journey
+const lifeStagePrompts = {
+  "infancy": {
+    name: "Infancy",
+    nameKr: "유아기",
+    ageRange: "0-2세",
     clothing: [
-      "wearing a retro plaid shirt and bell-bottom jeans",
-      "wearing a white turtleneck sweater and vintage scarf",
-      "wearing a denim jacket over a floral shirt",
-      "wearing an oversized beige coat and beret"
+      "wearing a cute baby onesie with musical notes pattern",
+      "wearing a soft pastel-colored baby outfit with a tiny bow tie",
+      "wearing a cozy knitted baby sweater and tiny pants",
+      "wearing an adorable baby romper with cartoon characters"
     ],
     pose: [
-      "playing an acoustic guitar passionately sitting on a wooden stool",
-      "holding a vinyl record cover and smiling shyly",
-      "playing a harmonica with closed eyes",
-      "sitting cross-legged on the grass reading a poem"
+      "sitting on a blanket holding a tiny acoustic guitar that is bigger than the baby, looking curious",
+      "sitting on the floor reaching for piano keys with tiny fingers, eyes wide with wonder",
+      "lying on a soft mat holding a colorful rattle like a microphone, giggling",
+      "sitting in a baby chair banging on a small toy drum with chubby hands"
     ],
     background: [
-      "background is an old 1970s Korean music cafe (Dabang) with wooden interiors",
-      "background is a sunny university campus lawn in 1975",
-      "background is a vintage radio DJ booth with a ON-AIR sign",
-      "background is a nostalgic brick wall alleyway in Seoul"
+      "background is a warm cozy living room with soft natural light from a window",
+      "background is a nursery room with pastel walls and wooden toys",
+      "background is a sunny playroom with stuffed animals",
+      "background is a family home interior with vintage wallpaper from the 80s"
     ],
     style: [
-      "sepia tone photograph, film grain, vintage aesthetic, warm lighting",
-      "black and white film photography, slightly blurred edges, retro mood",
-      "kodak film style, faded colors, nostalgic atmosphere"
+      "1980s home photography style, heavy sepia tone, faded colors, soft focus, nostalgic family album feel, slight yellowing, vintage Polaroid aesthetic",
+      "old film camera quality, warm brown tones, gentle blur, the photo looks like it was taken 30+ years ago",
+      "classic 80s baby photo style, overexposed highlights, muted pastel colors, authentic vintage snapshot"
     ]
   },
-  "1980s": {
-    name: "1980s: The Disco & Radio Star Era",
-    nameKr: "화려한 디스코 시대",
+  "kindergarten": {
+    name: "Kindergarten",
+    nameKr: "유치원",
+    ageRange: "5-6세",
     clothing: [
-      "wearing a sparkly disco jacket with huge shoulder pads",
-      "wearing a denim-on-denim outfit with a colorful bandana",
-      "wearing a bright neon tracksuit and headband",
-      "wearing a polka dot dress with big plastic earrings"
+      "wearing a cute kindergarten uniform with a yellow hat",
+      "wearing a colorful smock apron for art class",
+      "wearing a bright primary-colored outfit with cartoon patches",
+      "wearing comfortable play clothes with fun patterns"
     ],
     pose: [
-      "striking a disco dance pose with one finger pointing up",
-      "holding a pair of retro roller skates over the shoulder",
-      "posing with a large boombox on the shoulder",
-      "singing into a vintage standing microphone with dramatic expression"
+      "happily shaking a tambourine above head with a big innocent smile",
+      "playing a triangle instrument with concentration, tongue sticking out slightly",
+      "dancing with maracas in both hands during music time",
+      "singing into a toy microphone at a kindergarten talent show"
     ],
     background: [
-      "background is a flashy roller skating rink with disco balls",
-      "background is a neon-lit 80s dance stage with laser beams",
-      "background is a retro arcade room with pixel game machines",
-      "background is a colorful geometric pattern studio backdrop"
+      "background is a colorful kindergarten classroom with children's drawings on the wall",
+      "background is a kindergarten music room with small instruments",
+      "background is a school playground with other kids playing",
+      "background is a kindergarten stage decorated for a performance"
     ],
     style: [
-      "1980s flash photography, high exposure, vivid saturation, VHS glitch effect",
-      "retro pop art style, neon lighting, soft focus glow",
-      "vintage magazine cover style, bold colors, energetic vibe"
+      "early 1990s photo quality, slightly washed out colors, red-eye flash effect, typical school event photo aesthetic",
+      "90s disposable camera style, soft grain, warm but faded tones, authentic childhood memory feel",
+      "vintage school photo style, professional but dated lighting, classic portrait backdrop"
     ]
   },
-  "1990s": {
-    name: "1990s: The Y2K & Hip-Hop Era",
-    nameKr: "세기말 아이돌 시대",
+  "elementary": {
+    name: "Elementary School",
+    nameKr: "초등학교",
+    ageRange: "10-11세",
     clothing: [
-      "wearing extremely baggy hip-hop pants and an oversized hockey jersey",
-      "wearing a bucket hat and colorful ski goggles around the neck",
-      "wearing a shiny silver puffer jacket and cargo pants",
-      "wearing a white tracksuit with yellow tinted sunglasses"
+      "wearing a typical Korean elementary school uniform or casual school clothes",
+      "wearing a comfortable hoodie and jeans like a 2000s kid",
+      "wearing a school PE uniform with sneakers",
+      "wearing trendy early 2000s kid fashion with colorful accessories"
     ],
     pose: [
-      "looking down at the camera with a rebellious hip-hop hand sign",
-      "crouching down (slav squat) looking cool",
-      "jumping in the air with dynamic energy",
-      "standing with arms crossed looking tough"
+      "playing a recorder (리코더) with focused expression in music class",
+      "playing a melodica (멜로디언) at a school talent show",
+      "practicing keyboard/piano at home after school",
+      "strumming a small acoustic guitar learned from an after-school program"
     ],
     background: [
-      "background is a street wall covered in colorful graffiti art",
-      "background is a white studio space with harsh lighting",
-      "background is a subway station tunnel with blue lighting",
-      "background is a rainy street at night with city lights"
+      "background is a Korean elementary school music classroom with music notes posters",
+      "background is a school auditorium stage during a recital",
+      "background is a small study room at home with a keyboard",
+      "background is an after-school music academy practice room"
     ],
     style: [
-      "shot with a fisheye lens, 90s music video style, high contrast, cool temperature",
-      "film photography with date stamp 1998, street fashion snap, wide angle",
-      "Y2K aesthetic, cyber grunge atmosphere, dynamic composition"
+      "late 1990s to early 2000s photo style, slightly blurry digital camera quality, flash photography, authentic school event documentation",
+      "early digital camera aesthetic, slightly oversaturated colors, typical of first generation digital photos",
+      "2000s home video screenshot quality, warm indoor lighting, candid family moment feel"
     ]
   },
-  "future": {
-    name: "Future: The Global K-Pop Legend",
-    nameKr: "미래의 월드스타",
+  "middleschool": {
+    name: "Middle School",
+    nameKr: "중학교",
+    ageRange: "14-15세",
     clothing: [
-      "wearing a futuristic high-tech LED suit glowing blue",
-      "wearing a luxurious white suit with golden embroidery",
-      "wearing avant-garde fashion made of transparent holographic material",
-      "wearing a sleek cyber-punk leather outfit with tactical gear details"
+      "wearing a Korean middle school uniform with a blazer",
+      "wearing casual band practice clothes - graphic t-shirt and jeans",
+      "wearing a cool hoodie with headphones around neck",
+      "wearing trendy 2000s youth fashion, slightly rebellious style"
     ],
     pose: [
-      "singing passionately holding a crystal microphone, sweat dripping",
-      "waving to a massive crowd from a high stage platform",
-      "holding a golden music award trophy high above the head",
-      "standing confidently with arms wide open embracing the spotlight"
+      "playing electric guitar intensely in a school band practice room",
+      "sitting behind a drum set, drumsticks in hand, looking cool",
+      "singing passionately into a microphone at a school festival",
+      "playing bass guitar with friends in a garage band setup"
     ],
     background: [
-      "background is a massive stadium filled with millions of glowing light sticks",
-      "background is a futuristic Seoul skyline with flying cars and holograms",
-      "background is a giant LED screen displaying the customer's face",
-      "background is a dreamy stage with floating particles and confetti"
+      "background is a school band practice room with instruments and amplifiers",
+      "background is a small garage converted into a band practice space",
+      "background is a school festival stage with simple lighting",
+      "background is a music academy band room with posters of rock bands"
     ],
     style: [
-      "cinematic lighting, 8k resolution, photorealistic, masterpiece, epic scale, lens flare",
-      "cyberpunk atmosphere, neon blue and magenta lighting, detailed textures",
-      "concert photography, depth of field, bokeh effect, majestic mood"
+      "mid 2000s digital photo quality, decent resolution but still has that era's color processing, authentic youth band photo",
+      "2000s camera phone quality mixed with digital camera, casual snapshot aesthetic, energetic youth vibe",
+      "early social media era photo style, slightly over-processed colors, typical of Cyworld or early Facebook uploads"
     ]
   }
 };
@@ -132,14 +136,14 @@ function getRandomElement<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function generateTransformPromptForEra(era: keyof typeof eraPrompts): string {
-  const config = eraPrompts[era];
+function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompts): string {
+  const config = lifeStagePrompts[stage];
   const clothing = getRandomElement(config.clothing);
   const pose = getRandomElement(config.pose);
   const background = getRandomElement(config.background);
   const style = getRandomElement(config.style);
   
-  return `Transform this person in the photo into a ${era} music star style. Keep their face and identity exactly the same, but change their outfit and setting: ${clothing}, ${pose}, ${background}. Apply this visual style: ${style}. Make it look like an authentic ${era} photograph while preserving the person's facial features perfectly.`;
+  return `Transform the person in this photo into a ${config.ageRange} old child version of themselves. IMPORTANT: Keep the same facial features, just make them younger as a ${config.nameKr} (${config.name}) aged child. The child should be ${clothing}, ${pose}, ${background}. Apply authentic vintage photography style: ${style}. This should look like a real childhood photo from a family album, showing what this person looked like as a young child enjoying music.`;
 }
 
 // Simple session middleware for demo purposes
@@ -765,22 +769,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Image Generation API - Generate era-specific images using Gemini with source photo
+  // AI Image Generation API - Generate life stage images using Gemini with source photo
   app.post("/api/photos/generate-ai", requireAdmin, async (req, res) => {
     try {
-      const { era, sourceImageBase64 } = req.body;
+      const { lifeStage, sourceImageBase64 } = req.body;
       
-      if (!sourceImageBase64 || !era) {
-        return res.status(400).json({ message: "Source image and era are required" });
+      if (!sourceImageBase64 || !lifeStage) {
+        return res.status(400).json({ message: "Source image and life stage are required" });
       }
       
-      const validEras = ["1970s", "1980s", "1990s", "future"];
-      if (!validEras.includes(era)) {
-        return res.status(400).json({ message: "Invalid era. Must be one of: 1970s, 1980s, 1990s, future" });
+      const validStages = ["infancy", "kindergarten", "elementary", "middleschool"];
+      if (!validStages.includes(lifeStage)) {
+        return res.status(400).json({ message: "Invalid life stage. Must be one of: infancy, kindergarten, elementary, middleschool" });
       }
       
-      const prompt = generateTransformPromptForEra(era as keyof typeof eraPrompts);
-      console.log(`Generating ${era} image with prompt: ${prompt}`);
+      const prompt = generateTransformPromptForLifeStage(lifeStage as keyof typeof lifeStagePrompts);
+      console.log(`Generating ${lifeStage} image with prompt: ${prompt}`);
       
       const base64Data = sourceImageBase64.replace(/^data:image\/\w+;base64,/, '');
       const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
@@ -818,14 +822,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ message: "Failed to generate image", details: textResponse });
       }
       
-      const eraConfig = eraPrompts[era as keyof typeof eraPrompts];
+      const stageConfig = lifeStagePrompts[lifeStage as keyof typeof lifeStagePrompts];
       
       res.json({ 
         success: true, 
         imageData,
-        era,
-        eraName: eraConfig.name,
-        eraNameKr: eraConfig.nameKr,
+        lifeStage,
+        stageName: stageConfig.name,
+        stageNameKr: stageConfig.nameKr,
+        ageRange: stageConfig.ageRange,
         prompt
       });
     } catch (error: any) {
@@ -834,8 +839,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Generate all 4 era images at once using the uploaded source photo
-  app.post("/api/photos/generate-all-eras", requireAdmin, async (req, res) => {
+  // Generate all 4 life stage images at once using the uploaded source photo
+  app.post("/api/photos/generate-all-stages", requireAdmin, async (req, res) => {
     try {
       const { sourceImageBase64 } = req.body;
       
@@ -846,13 +851,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const base64Data = sourceImageBase64.replace(/^data:image\/\w+;base64,/, '');
       const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
       
-      const eras: (keyof typeof eraPrompts)[] = ["1970s", "1980s", "1990s", "future"];
+      const stages: (keyof typeof lifeStagePrompts)[] = ["infancy", "kindergarten", "elementary", "middleschool"];
       const results: any[] = [];
       
       // Generate images sequentially to avoid rate limiting
-      for (const era of eras) {
-        const prompt = generateTransformPromptForEra(era);
-        console.log(`Generating ${era} image with prompt: ${prompt}`);
+      for (const stage of stages) {
+        const prompt = generateTransformPromptForLifeStage(stage);
+        console.log(`Generating ${stage} image with prompt: ${prompt}`);
         
         try {
           const response = await ai.models.generateContent({
@@ -879,26 +884,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           }
           
-          const eraConfig = eraPrompts[era];
+          const stageConfig = lifeStagePrompts[stage];
           results.push({
-            era,
-            eraName: eraConfig.name,
-            eraNameKr: eraConfig.nameKr,
+            lifeStage: stage,
+            stageName: stageConfig.name,
+            stageNameKr: stageConfig.nameKr,
+            ageRange: stageConfig.ageRange,
             imageData,
             prompt,
             success: !!imageData
           });
-        } catch (eraError: any) {
-          console.error(`Error generating ${era} image:`, eraError);
-          const eraConfig = eraPrompts[era];
+        } catch (stageError: any) {
+          console.error(`Error generating ${stage} image:`, stageError);
+          const stageConfig = lifeStagePrompts[stage];
           results.push({
-            era,
-            eraName: eraConfig.name,
-            eraNameKr: eraConfig.nameKr,
+            lifeStage: stage,
+            stageName: stageConfig.name,
+            stageNameKr: stageConfig.nameKr,
+            ageRange: stageConfig.ageRange,
             imageData: null,
             prompt,
             success: false,
-            error: eraError.message
+            error: stageError.message
           });
         }
         
@@ -911,7 +918,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         results
       });
     } catch (error: any) {
-      console.error("Error generating all era images:", error);
+      console.error("Error generating all life stage images:", error);
       res.status(500).json({ message: "Failed to generate images", error: error.message });
     }
   });
