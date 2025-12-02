@@ -11,9 +11,16 @@ interface LifeStageImage {
   error?: string;
 }
 
-interface ImagePosition {
+export interface ImagePosition {
   x: number;
   y: number;
+}
+
+export interface ImagePositions {
+  main: ImagePosition;
+  infancy: ImagePosition;
+  middleschool: ImagePosition;
+  future: ImagePosition;
 }
 
 interface NewspaperTemplateProps {
@@ -24,6 +31,8 @@ interface NewspaperTemplateProps {
   drinkName?: string;
   drinkTemperature?: string;
   lifeStageImages?: LifeStageImage[];
+  imagePositions?: ImagePositions;
+  onPositionChange?: (positions: ImagePositions) => void;
 }
 
 function convertToKorean(name: string): string {
@@ -132,7 +141,14 @@ function convertToKorean(name: string): string {
   return result || '';
 }
 
-export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, lifeStageImages = [] }: NewspaperTemplateProps) {
+const defaultPositions: ImagePositions = {
+  main: { x: 50, y: 0 },
+  infancy: { x: 50, y: 0 },
+  middleschool: { x: 50, y: 0 },
+  future: { x: 50, y: 50 },
+};
+
+export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, lifeStageImages = [], imagePositions: externalPositions, onPositionChange }: NewspaperTemplateProps) {
   const autoKoreanName = koreanName || convertToKorean(customerName);
   const displayName = autoKoreanName ? `${autoKoreanName} (${customerName})` : customerName;
   
@@ -155,12 +171,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
   const middleschoolImage = sortedImages.find(img => img.lifeStage === "middleschool");
   const futureImage = sortedImages.find(img => img.lifeStage === "future");
 
-  const [imagePositions, setImagePositions] = useState<Record<string, ImagePosition>>({
-    main: { x: 50, y: 0 },
-    infancy: { x: 50, y: 0 },
-    middleschool: { x: 50, y: 0 },
-    future: { x: 50, y: 50 },
-  });
+  const imagePositions = externalPositions || defaultPositions;
 
   const [dragging, setDragging] = useState<string | null>(null);
   const dragStartRef = useRef<{ x: number; y: number; posX: number; posY: number } | null>(null);
@@ -168,12 +179,12 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
   const handleMouseDown = useCallback((imageKey: string, e: React.MouseEvent) => {
     e.preventDefault();
     setDragging(imageKey);
-    const pos = imagePositions[imageKey] || { x: 50, y: 50 };
+    const pos = imagePositions[imageKey as keyof ImagePositions] || { x: 50, y: 50 };
     dragStartRef.current = { x: e.clientX, y: e.clientY, posX: pos.x, posY: pos.y };
   }, [imagePositions]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!dragging || !dragStartRef.current) return;
+    if (!dragging || !dragStartRef.current || !onPositionChange) return;
     
     const deltaX = e.clientX - dragStartRef.current.x;
     const deltaY = e.clientY - dragStartRef.current.y;
@@ -181,11 +192,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
     const newX = Math.max(0, Math.min(100, dragStartRef.current.posX - deltaX * 0.3));
     const newY = Math.max(0, Math.min(100, dragStartRef.current.posY - deltaY * 0.3));
     
-    setImagePositions(prev => ({
-      ...prev,
+    onPositionChange({
+      ...imagePositions,
       [dragging]: { x: newX, y: newY }
-    }));
-  }, [dragging]);
+    });
+  }, [dragging, imagePositions, onPositionChange]);
 
   const handleMouseUp = useCallback(() => {
     setDragging(null);

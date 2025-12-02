@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image, Wand2, Loader2, Sparkles } from "lucide-react";
 import type { VisitorPhoto } from "@shared/schema";
-import NewspaperTemplate from "@/components/newspaper-template";
+import NewspaperTemplate, { type ImagePositions } from "@/components/newspaper-template";
 
 interface CustomerInfo {
   id: number;
@@ -48,6 +48,12 @@ export default function PhotoPage() {
   const [generatedImages, setGeneratedImages] = useState<LifeStageImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingStage, setGeneratingStage] = useState<string>("");
+  const [imagePositions, setImagePositions] = useState<ImagePositions>({
+    main: { x: 50, y: 0 },
+    infancy: { x: 50, y: 0 },
+    middleschool: { x: 50, y: 0 },
+    future: { x: 50, y: 50 },
+  });
 
   const { data: user, isLoading: userLoading } = useQuery<{ id: number; username: string; role: string }>({
     queryKey: ["/api/auth/user"],
@@ -376,6 +382,7 @@ export default function PhotoPage() {
             drinkName={selectedDrink || undefined}
             drinkTemperature={drinkTemperature || undefined}
             lifeStageImages={generatedImages}
+            imagePositions={imagePositions}
           />
         </div>
       )}
@@ -751,6 +758,8 @@ export default function PhotoPage() {
                     drinkName={selectedDrink || undefined}
                     drinkTemperature={drinkTemperature || undefined}
                     lifeStageImages={generatedImages}
+                    imagePositions={imagePositions}
+                    onPositionChange={setImagePositions}
                   />
                   <div className="mt-6 flex justify-center gap-4">
                     <Button
