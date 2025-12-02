@@ -164,7 +164,7 @@ export default function PhotoPage() {
     }, 500);
   };
 
-  const handleGenerateAllImages = async () => {
+  const handleGenerateAllImages = async (personCount: number = 1) => {
     if (!selectedPhoto) {
       toast({
         title: "사진 필요",
@@ -175,12 +175,13 @@ export default function PhotoPage() {
     }
 
     setIsGenerating(true);
-    setGeneratingStage("all");
+    setGeneratingStage(personCount === 2 ? "all-duo" : "all");
     setGeneratedImages([]);
 
     try {
       const response = await apiRequest("POST", "/api/photos/generate-all-stages", {
-        sourceImageBase64: selectedPhoto
+        sourceImageBase64: selectedPhoto,
+        personCount
       });
       
       const data = await response.json();
@@ -202,56 +203,6 @@ export default function PhotoPage() {
       });
     } finally {
       setIsGenerating(false);
-      setGeneratingStage("");
-    }
-  };
-
-  const handleGenerateSingleImage = async (stage: string) => {
-    if (!selectedPhoto) {
-      toast({
-        title: "사진 필요",
-        description: "AI 이미지 생성을 위해 먼저 사진을 업로드해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setGeneratingStage(stage);
-
-    try {
-      const response = await apiRequest("POST", "/api/photos/generate-ai", {
-        sourceImageBase64: selectedPhoto,
-        lifeStage: stage
-      });
-      
-      const data = await response.json();
-      
-      if (data.success && data.imageData) {
-        setGeneratedImages(prev => {
-          const filtered = prev.filter(img => img.lifeStage !== stage);
-          return [...filtered, {
-            lifeStage: data.lifeStage,
-            stageName: data.stageName,
-            stageNameKr: data.stageNameKr,
-            ageRange: data.ageRange,
-            imageData: data.imageData,
-            prompt: data.prompt,
-            success: true
-          }];
-        });
-        toast({
-          title: `${data.stageNameKr} 이미지 생성 완료`,
-        });
-      } else {
-        throw new Error(data.message || "이미지 생성 실패");
-      }
-    } catch (error: any) {
-      toast({
-        title: "AI 이미지 생성 실패",
-        description: error.message || "이미지 생성 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    } finally {
       setGeneratingStage("");
     }
   };
@@ -287,9 +238,8 @@ export default function PhotoPage() {
 
   const lifeStageButtons = [
     { stage: "infancy", name: "유아기", age: "0-2세", color: "bg-pink-500 hover:bg-pink-600" },
-    { stage: "kindergarten", name: "유치원", age: "5-6세", color: "bg-amber-500 hover:bg-amber-600" },
-    { stage: "elementary", name: "초등학교", age: "10-11세", color: "bg-green-500 hover:bg-green-600" },
     { stage: "middleschool", name: "중학교", age: "14-15세", color: "bg-blue-500 hover:bg-blue-600" },
+    { stage: "future", name: "미래", age: "월드스타", color: "bg-purple-500 hover:bg-purple-600" },
   ];
 
   return (
@@ -490,62 +440,90 @@ export default function PhotoPage() {
                         className="max-h-32 mx-auto rounded-lg shadow"
                       />
                       <p className="text-sm text-pink-700 font-medium">
-                        이 얼굴로 어린 시절 모습을 생성합니다
+                        유아기 → 중학교 → 미래 월드스타
                       </p>
                     </div>
                   ) : (
                     <div className="text-pink-600">
                       <Image className="w-10 h-10 mx-auto mb-2 opacity-50" />
                       <p className="text-sm">왼쪽에서 먼저 사진을 선택해주세요</p>
-                      <p className="text-xs text-pink-500 mt-1">AI가 유아기부터 중학교까지 성장앨범을 만들어드립니다</p>
+                      <p className="text-xs text-pink-500 mt-1">AI가 유아기부터 미래 월드스타까지 성장앨범을 만들어드립니다</p>
                     </div>
                   )}
                 </div>
 
-                <Button
-                  onClick={handleGenerateAllImages}
-                  disabled={isGenerating || !selectedPhoto}
-                  className="w-full bg-gradient-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 text-white"
-                  data-testid="button-generate-all"
-                >
-                  {isGenerating && generatingStage === "all" ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      성장앨범 생성 중... (약 1분 소요)
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 className="w-4 h-4 mr-2" />
-                      전체 성장단계 이미지 생성 (4장)
-                    </>
-                  )}
-                </Button>
+                {/* 1인용 생성 버튼 */}
+                <div className="space-y-2">
+                  <p className="text-xs text-center text-pink-700 font-medium">1명 사진용</p>
+                  <Button
+                    onClick={() => handleGenerateAllImages(1)}
+                    disabled={isGenerating || !selectedPhoto}
+                    className="w-full bg-gradient-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 text-white h-14"
+                    data-testid="button-generate-solo"
+                  >
+                    {isGenerating && generatingStage === "all" ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        1인 성장앨범 생성 중... (약 1분)
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <div className="flex items-center">
+                          <Wand2 className="w-5 h-5 mr-2" />
+                          1인 성장앨범 생성 (3장)
+                        </div>
+                        <span className="text-xs opacity-80">혼자 찍은 사진용</span>
+                      </div>
+                    )}
+                  </Button>
+                </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                {/* 2인용 생성 버튼 */}
+                <div className="space-y-2">
+                  <p className="text-xs text-center text-purple-700 font-medium">2명 사진용</p>
+                  <Button
+                    onClick={() => handleGenerateAllImages(2)}
+                    disabled={isGenerating || !selectedPhoto}
+                    className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white h-14"
+                    data-testid="button-generate-duo"
+                  >
+                    {isGenerating && generatingStage === "all-duo" ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        2인 성장앨범 생성 중... (약 1분)
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <div className="flex items-center">
+                          <Wand2 className="w-5 h-5 mr-2" />
+                          2인 성장앨범 생성 (3장)
+                        </div>
+                        <span className="text-xs opacity-80">두 명이 함께 찍은 사진용</span>
+                      </div>
+                    )}
+                  </Button>
+                </div>
+
+                {/* 생성 단계 미리보기 */}
+                <div className="grid grid-cols-3 gap-2 p-3 bg-white/30 rounded-lg border border-pink-100">
                   {lifeStageButtons.map((btn) => (
-                    <Button
-                      key={btn.stage}
-                      onClick={() => handleGenerateSingleImage(btn.stage)}
-                      disabled={isGenerating || !selectedPhoto}
-                      className={`${btn.color} text-white text-sm flex flex-col py-2 h-auto`}
-                      data-testid={`button-generate-${btn.stage}`}
-                    >
-                      <div className="flex items-center">
-                        {generatingStage === btn.stage ? (
-                          <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-                        ) : (
-                          <Wand2 className="w-4 h-4 mr-1" />
-                        )}
+                    <div key={btn.stage} className="text-center">
+                      <div className={`${btn.color} text-white text-xs py-1 px-2 rounded-full`}>
                         {btn.name}
                       </div>
-                      <span className="text-xs opacity-80">{btn.age}</span>
-                    </Button>
+                      <p className="text-[10px] text-gray-600 mt-1">{btn.age}</p>
+                    </div>
                   ))}
                 </div>
 
                 {generatedImages.length > 0 && (
-                  <div className="grid grid-cols-2 gap-3 mt-4">
-                    {generatedImages.map((img) => (
+                  <div className="grid grid-cols-3 gap-3 mt-4">
+                    {generatedImages
+                      .sort((a, b) => {
+                        const order = ["infancy", "middleschool", "future"];
+                        return order.indexOf(a.lifeStage) - order.indexOf(b.lifeStage);
+                      })
+                      .map((img) => (
                       <div key={img.lifeStage} className="relative">
                         {img.imageData ? (
                           <div className="space-y-1">
@@ -553,10 +531,13 @@ export default function PhotoPage() {
                               src={img.imageData}
                               alt={img.stageNameKr}
                               className="w-full aspect-[3/4] object-cover rounded-lg shadow-md border-4 border-white"
-                              style={{ filter: 'sepia(0.1)' }}
+                              style={{ filter: img.lifeStage === "infancy" ? 'sepia(0.3)' : img.lifeStage === "middleschool" ? 'sepia(0.1)' : 'none' }}
                             />
                             <p className="text-xs text-center font-medium text-amber-800">
-                              {img.stageNameKr} ({img.ageRange})
+                              {img.stageNameKr}
+                            </p>
+                            <p className="text-[10px] text-center text-gray-500">
+                              {img.ageRange}
                             </p>
                           </div>
                         ) : (

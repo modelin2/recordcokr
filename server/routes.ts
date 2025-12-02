@@ -16,7 +16,7 @@ const ai = new GoogleGenAI({
   }
 });
 
-// Life stage prompt configurations - childhood music journey
+// Life stage prompt configurations - childhood to future music journey
 const lifeStagePrompts = {
   "infancy": {
     name: "Infancy",
@@ -46,62 +46,6 @@ const lifeStagePrompts = {
       "classic 80s baby photo style, overexposed highlights, muted pastel colors, authentic vintage snapshot"
     ]
   },
-  "kindergarten": {
-    name: "Kindergarten",
-    nameKr: "유치원",
-    ageRange: "5-6세",
-    clothing: [
-      "wearing a cute kindergarten uniform with a yellow hat",
-      "wearing a colorful smock apron for art class",
-      "wearing a bright primary-colored outfit with cartoon patches",
-      "wearing comfortable play clothes with fun patterns"
-    ],
-    pose: [
-      "happily shaking a tambourine above head with a big innocent smile",
-      "playing a triangle instrument with concentration, tongue sticking out slightly",
-      "dancing with maracas in both hands during music time",
-      "singing into a toy microphone at a kindergarten talent show"
-    ],
-    background: [
-      "background is a colorful kindergarten classroom with children's drawings on the wall",
-      "background is a kindergarten music room with small instruments",
-      "background is a school playground with other kids playing",
-      "background is a kindergarten stage decorated for a performance"
-    ],
-    style: [
-      "early 1990s photo quality, slightly washed out colors, red-eye flash effect, typical school event photo aesthetic",
-      "90s disposable camera style, soft grain, warm but faded tones, authentic childhood memory feel",
-      "vintage school photo style, professional but dated lighting, classic portrait backdrop"
-    ]
-  },
-  "elementary": {
-    name: "Elementary School",
-    nameKr: "초등학교",
-    ageRange: "10-11세",
-    clothing: [
-      "wearing a typical Korean elementary school uniform or casual school clothes",
-      "wearing a comfortable hoodie and jeans like a 2000s kid",
-      "wearing a school PE uniform with sneakers",
-      "wearing trendy early 2000s kid fashion with colorful accessories"
-    ],
-    pose: [
-      "playing a recorder (리코더) with focused expression in music class",
-      "playing a melodica (멜로디언) at a school talent show",
-      "practicing keyboard/piano at home after school",
-      "strumming a small acoustic guitar learned from an after-school program"
-    ],
-    background: [
-      "background is a Korean elementary school music classroom with music notes posters",
-      "background is a school auditorium stage during a recital",
-      "background is a small study room at home with a keyboard",
-      "background is an after-school music academy practice room"
-    ],
-    style: [
-      "late 1990s to early 2000s photo style, slightly blurry digital camera quality, flash photography, authentic school event documentation",
-      "early digital camera aesthetic, slightly oversaturated colors, typical of first generation digital photos",
-      "2000s home video screenshot quality, warm indoor lighting, candid family moment feel"
-    ]
-  },
   "middleschool": {
     name: "Middle School",
     nameKr: "중학교",
@@ -129,6 +73,34 @@ const lifeStagePrompts = {
       "2000s camera phone quality mixed with digital camera, casual snapshot aesthetic, energetic youth vibe",
       "early social media era photo style, slightly over-processed colors, typical of Cyworld or early Facebook uploads"
     ]
+  },
+  "future": {
+    name: "Future Star",
+    nameKr: "미래",
+    ageRange: "월드스타",
+    clothing: [
+      "wearing a luxurious custom designer stage outfit with sparkling details",
+      "wearing a sleek all-black concert outfit with LED accents",
+      "wearing a glamorous award show dress/suit with elegant accessories",
+      "wearing a futuristic K-pop idol style outfit with holographic elements"
+    ],
+    pose: [
+      "performing on a massive stadium stage, holding a microphone with passion",
+      "receiving a music award trophy with tears of joy",
+      "waving to thousands of fans from a concert stage",
+      "singing emotionally with dramatic spotlight on face"
+    ],
+    background: [
+      "background is a sold-out stadium concert with thousands of glowing light sticks",
+      "background is a prestigious music award ceremony with red carpet",
+      "background is a world tour concert stage with massive LED screens",
+      "background is a dreamy stage with floating confetti and stage effects"
+    ],
+    style: [
+      "professional concert photography, cinematic lighting, 8K quality, dramatic lens flare, epic atmosphere",
+      "magazine cover quality, perfect lighting, high fashion editorial style",
+      "award show broadcast quality, glamorous lighting, celebrity portrait style"
+    ]
   }
 };
 
@@ -136,12 +108,23 @@ function getRandomElement<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompts): string {
+function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompts, personCount: number = 1): string {
   const config = lifeStagePrompts[stage];
   const clothing = getRandomElement(config.clothing);
   const pose = getRandomElement(config.pose);
   const background = getRandomElement(config.background);
   const style = getRandomElement(config.style);
+  
+  if (stage === "future") {
+    if (personCount === 2) {
+      return `Transform the TWO people in this photo into future K-pop superstars. IMPORTANT: Keep BOTH people's facial features exactly the same, just show them as successful music stars. Both people should be ${clothing}, ${pose}, ${background}. Apply this visual style: ${style}. Make it look like a real concert or award show photo featuring both of them together as a famous duo.`;
+    }
+    return `Transform the person in this photo into a future K-pop superstar. IMPORTANT: Keep the same facial features, just show them as a successful music star. They should be ${clothing}, ${pose}, ${background}. Apply this visual style: ${style}. Make it look like a real concert or award show photo.`;
+  }
+  
+  if (personCount === 2) {
+    return `Transform the TWO people in this photo into ${config.ageRange} old children versions of themselves. IMPORTANT: Keep BOTH people's facial features exactly the same, just make them younger as ${config.nameKr} (${config.name}) aged children. Both children should be ${clothing}, ${pose}, ${background}. Apply authentic vintage photography style: ${style}. This should look like a real childhood photo from a family album, showing both people as young children enjoying music together.`;
+  }
   
   return `Transform the person in this photo into a ${config.ageRange} old child version of themselves. IMPORTANT: Keep the same facial features, just make them younger as a ${config.nameKr} (${config.name}) aged child. The child should be ${clothing}, ${pose}, ${background}. Apply authentic vintage photography style: ${style}. This should look like a real childhood photo from a family album, showing what this person looked like as a young child enjoying music.`;
 }
@@ -839,10 +822,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Generate all 4 life stage images at once using the uploaded source photo
+  // Generate all 3 life stage images at once using the uploaded source photo (1 person)
   app.post("/api/photos/generate-all-stages", requireAdmin, async (req, res) => {
     try {
-      const { sourceImageBase64 } = req.body;
+      const { sourceImageBase64, personCount = 1 } = req.body;
       
       if (!sourceImageBase64) {
         return res.status(400).json({ message: "Source image is required" });
@@ -851,13 +834,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const base64Data = sourceImageBase64.replace(/^data:image\/\w+;base64,/, '');
       const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
       
-      const stages: (keyof typeof lifeStagePrompts)[] = ["infancy", "kindergarten", "elementary", "middleschool"];
+      // 3 stages: infancy, middleschool, future
+      const stages: (keyof typeof lifeStagePrompts)[] = ["infancy", "middleschool", "future"];
       const results: any[] = [];
       
       // Generate images sequentially to avoid rate limiting
       for (const stage of stages) {
-        const prompt = generateTransformPromptForLifeStage(stage);
-        console.log(`Generating ${stage} image with prompt: ${prompt}`);
+        const prompt = generateTransformPromptForLifeStage(stage, personCount);
+        console.log(`Generating ${stage} image (${personCount} person) with prompt: ${prompt}`);
         
         try {
           const response = await ai.models.generateContent({

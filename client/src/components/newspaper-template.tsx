@@ -352,20 +352,20 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         </div>
       </div>
 
-      {/* AI Generated Life Stage Images Section - Childhood Album */}
+      {/* AI Generated Life Stage Images Section - Growth Album */}
       {lifeStageImages.length > 0 && lifeStageImages.some(img => img.imageData) && (
         <div className="mt-3 pt-3 border-t-4 border-black">
           <div className="text-center mb-3">
             <h2 className="text-lg font-black tracking-wider" style={{ fontFamily: "'Arial Black', sans-serif" }}>
-              ★ CHILDHOOD ALBUM ★
+              ★ GROWTH ALBUM ★
             </h2>
-            <p className="text-xs text-gray-600">음악과 함께한 어린 시절 성장 앨범</p>
+            <p className="text-xs text-gray-600">유아기부터 월드스타까지, 음악과 함께한 여정</p>
           </div>
           
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-3 gap-3">
             {lifeStageImages
               .sort((a, b) => {
-                const order = ["infancy", "kindergarten", "elementary", "middleschool"];
+                const order = ["infancy", "middleschool", "future"];
                 return order.indexOf(a.lifeStage) - order.indexOf(b.lifeStage);
               })
               .map((img) => (
@@ -378,13 +378,12 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         className="w-full aspect-[3/4] object-cover"
                         style={{ 
                           filter: img.lifeStage === "infancy" ? "sepia(40%) contrast(0.95)" : 
-                                  img.lifeStage === "kindergarten" ? "sepia(25%) saturate(0.9)" : 
-                                  img.lifeStage === "elementary" ? "sepia(15%)" : "sepia(5%)"
+                                  img.lifeStage === "middleschool" ? "sepia(15%)" : "brightness(1.05)"
                         }}
                       />
-                      <div className="bg-amber-800 text-white p-1 text-center">
-                        <p className="text-[9px] font-bold">{img.stageNameKr}</p>
-                        <p className="text-[7px] opacity-80">{img.ageRange}</p>
+                      <div className={`${img.lifeStage === "future" ? "bg-purple-700" : "bg-amber-800"} text-white p-1 text-center`}>
+                        <p className="text-[10px] font-bold">{img.stageNameKr}</p>
+                        <p className="text-[8px] opacity-80">{img.ageRange}</p>
                       </div>
                     </div>
                   ) : (
@@ -397,7 +396,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           </div>
           
           <div className="mt-2 text-center text-[9px] italic text-gray-600 border-t border-gray-300 pt-2">
-            "음악을 사랑했던 어린 시절, 그 꿈이 오늘 이루어지다" - {displayName}님의 성장 앨범
+            "음악을 사랑했던 어린 시절, 그 꿈이 오늘 현실이 되다" - {displayName}님의 성장 스토리
           </div>
         </div>
       )}
