@@ -114,18 +114,23 @@ function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompt
   const background = getRandomElement(config.background);
   const style = getRandomElement(config.style);
   
+  // Strong identity preservation instructions
+  const identityPreservation = personCount === 2 
+    ? "CRITICAL IDENTITY PRESERVATION: There are exactly TWO people in this photo. You MUST keep BOTH people's exact HAIR COLOR (black, brown, blonde, etc.), HAIR STYLE (long, short, curly, straight), FACE SHAPE, EYE SHAPE, NOSE SHAPE, and SKIN TONE exactly the same. Do not change anyone's appearance - only age them appropriately. Both people must be clearly recognizable."
+    : "CRITICAL IDENTITY PRESERVATION: Keep the person's exact HAIR COLOR (black, brown, blonde, etc.), HAIR STYLE (long, short, curly, straight), FACE SHAPE, EYE SHAPE, NOSE SHAPE, and SKIN TONE exactly the same. Do not change their appearance - only age them appropriately. The person must be clearly recognizable.";
+  
   if (stage === "future") {
     if (personCount === 2) {
-      return `Transform the TWO people in this photo into famous Korean stars at an award ceremony wearing traditional hanbok. IMPORTANT: Keep BOTH people's facial features exactly the same. Men should wear traditional male hanbok (durumagi or baji-jeogori), women should wear traditional female hanbok (jeogori and chima). NOT modernized hanbok, traditional authentic hanbok only. Both people should be ${clothing}, ${pose}, ${background}. Apply this visual style: ${style}. Make it look like a prestigious award ceremony photo featuring both of them together as beloved Korean stars known for looking beautiful in traditional hanbok.`;
+      return `${identityPreservation} Transform these TWO people into famous Korean stars at an award ceremony wearing traditional hanbok. They have just been selected as "Best Hanbok Celebrities" and are waving to fans. Men wear traditional male hanbok (durumagi or baji-jeogori), women wear traditional female hanbok (jeogori and chima). NOT modernized hanbok. Both should be ${clothing}, ${pose}, ${background}. Style: ${style}. Show them as beloved stars receiving applause together.`;
     }
-    return `Transform the person in this photo into a famous Korean star at an award ceremony wearing traditional hanbok. IMPORTANT: Keep the same facial features. If the person appears male, dress them in traditional male hanbok (durumagi or baji-jeogori). If the person appears female, dress them in traditional female hanbok (jeogori and chima). NOT modernized hanbok, traditional authentic Korean hanbok only. They should be ${clothing}, ${pose}, ${background}. Apply this visual style: ${style}. Make it look like a prestigious award ceremony photo of a beloved Korean star known for looking beautiful in traditional hanbok.`;
+    return `${identityPreservation} Transform this person into a famous Korean star at an award ceremony wearing traditional hanbok. They have just been selected as "Best Hanbok Celebrity" and are waving to fans. If male, wear traditional male hanbok (durumagi). If female, wear traditional female hanbok (jeogori and chima). NOT modernized hanbok. They should be ${clothing}, ${pose}, ${background}. Style: ${style}. Show them as a beloved star receiving applause.`;
   }
   
   if (personCount === 2) {
-    return `Transform the TWO people in this photo into ${config.ageRange} old children versions of themselves. IMPORTANT: Keep BOTH people's facial features exactly the same, just make them younger as ${config.nameKr} (${config.name}) aged children. Both children should be ${clothing}, ${pose}, ${background}. Apply authentic vintage photography style: ${style}. This should look like a real childhood photo from a family album, showing both people as young children enjoying music together.`;
+    return `${identityPreservation} Transform these TWO people into ${config.ageRange} old children versions of themselves. Make them younger as ${config.nameKr} aged children but keep their exact hair color and facial features recognizable. Both children should be ${clothing}, ${pose}, ${background}. Apply vintage photography style: ${style}. This is a childhood photo from a family album showing both people as young children.`;
   }
   
-  return `Transform the person in this photo into a ${config.ageRange} old child version of themselves. IMPORTANT: Keep the same facial features, just make them younger as a ${config.nameKr} (${config.name}) aged child. The child should be ${clothing}, ${pose}, ${background}. Apply authentic vintage photography style: ${style}. This should look like a real childhood photo from a family album, showing what this person looked like as a young child enjoying music.`;
+  return `${identityPreservation} Transform this person into a ${config.ageRange} old child version of themselves. Make them younger as a ${config.nameKr} aged child but keep their exact hair color and facial features recognizable. The child should be ${clothing}, ${pose}, ${background}. Apply vintage photography style: ${style}. This is a childhood photo from a family album.`;
 }
 
 // Simple session middleware for demo purposes

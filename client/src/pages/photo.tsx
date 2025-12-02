@@ -338,6 +338,10 @@ export default function PhotoPage() {
     <>
       <style>{`
         @media print {
+          @page {
+            size: A3 portrait;
+            margin: 5mm;
+          }
           body * {
             visibility: hidden;
           }
@@ -349,6 +353,12 @@ export default function PhotoPage() {
             left: 0;
             top: 0;
             width: 100%;
+            max-width: 297mm;
+          }
+          .print-container {
+            width: 100%;
+            max-height: 410mm;
+            page-break-inside: avoid;
           }
         }
       `}</style>
