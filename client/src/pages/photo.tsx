@@ -207,8 +207,11 @@ export default function PhotoPage() {
 
   const handlePrint = (photo: VisitorPhoto) => {
     setPreviewPhoto(photo);
+    const originalTitle = document.title;
+    document.title = photo.customerName;
     setTimeout(() => {
       window.print();
+      document.title = originalTitle;
       markPrintedMutation.mutate(photo.id);
     }, 500);
   };

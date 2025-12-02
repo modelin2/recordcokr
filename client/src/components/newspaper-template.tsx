@@ -277,7 +277,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       />
                     </div>
                     <p className="text-[11px] mt-2 text-justify leading-snug">
-                      ▲ <span className="font-bold">{displayName}</span>의 가족이 공개한 어린 시절 사진. 이미 어린 나이에 음악적 재능을 보였다고 한다. "아기 때부터 음악만 틀어주면 웃었다"는 부모님의 증언이 화제다.
+                      ▲ 가족이 공개한 어린 시절 사진. 이미 어린 나이에 음악적 재능을 보였다고 한다. "아기 때부터 음악만 틀어주면 웃었다"는 부모님의 증언이 화제다.
                     </p>
                   </div>
                 )}
@@ -292,7 +292,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       />
                     </div>
                     <p className="text-[11px] mt-2 text-justify leading-snug">
-                      ▲ <span className="font-bold">{displayName}</span>의 중학교 시절 밴드부에서 활동하던 모습. 당시 담임 교사는 "음악 시간마다 눈이 빛났다"며 숨겨진 재능을 일찍이 알아봤다고 전했다.
+                      ▲ 중학교 시절 밴드부에서 활동하던 모습. 당시 담임 교사는 "음악 시간마다 눈이 빛났다"며 숨겨진 재능을 일찍이 알아봤다고 전했다.
                     </p>
                   </div>
                 )}
@@ -311,11 +311,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                   ★ {futureYear} 한복문화대상 ★
                 </div>
               </div>
-              <div className="border-2 border-black overflow-hidden" style={{ height: "220px" }}>
+              <div className="border-2 border-black overflow-hidden flex items-center justify-center bg-purple-50" style={{ height: "220px" }}>
                 <img 
                   src={futureImage.imageData} 
                   alt="한복 시상식"
-                  className="w-full h-full object-cover object-top"
+                  className="h-full object-contain"
                 />
               </div>
               <p className="text-[11px] mt-2 text-justify leading-snug">
