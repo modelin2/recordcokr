@@ -119,7 +119,43 @@ export default function PhotoPage() {
     },
   });
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const compressImage = (file: File, maxWidth: number = 1024, quality: number = 0.7): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new window.Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('Canvas context not available'));
+            return;
+          }
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressedDataUrl);
+        };
+        img.onerror = () => reject(new Error('Image load failed'));
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error('File read failed'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
@@ -131,11 +167,24 @@ export default function PhotoPage() {
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedPhoto(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        toast({
+          title: "이미지 처리 중...",
+          description: "AI 생성을 위해 이미지를 최적화하고 있습니다.",
+        });
+        const compressedImage = await compressImage(file, 1024, 0.7);
+        setSelectedPhoto(compressedImage);
+        toast({
+          title: "이미지 준비 완료",
+          description: "이미지가 최적화되었습니다.",
+        });
+      } catch (error) {
+        toast({
+          title: "이미지 처리 실패",
+          description: "이미지를 처리할 수 없습니다.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
