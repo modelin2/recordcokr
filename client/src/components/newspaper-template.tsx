@@ -1,3 +1,5 @@
+import { useState, useRef, useCallback } from "react";
+
 interface LifeStageImage {
   lifeStage: string;
   stageName: string;
@@ -7,6 +9,11 @@ interface LifeStageImage {
   prompt: string;
   success: boolean;
   error?: string;
+}
+
+interface ImagePosition {
+  x: number;
+  y: number;
 }
 
 interface NewspaperTemplateProps {
@@ -148,6 +155,43 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
   const middleschoolImage = sortedImages.find(img => img.lifeStage === "middleschool");
   const futureImage = sortedImages.find(img => img.lifeStage === "future");
 
+  const [imagePositions, setImagePositions] = useState<Record<string, ImagePosition>>({
+    main: { x: 50, y: 0 },
+    infancy: { x: 50, y: 0 },
+    middleschool: { x: 50, y: 0 },
+    future: { x: 50, y: 50 },
+  });
+
+  const [dragging, setDragging] = useState<string | null>(null);
+  const dragStartRef = useRef<{ x: number; y: number; posX: number; posY: number } | null>(null);
+
+  const handleMouseDown = useCallback((imageKey: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    setDragging(imageKey);
+    const pos = imagePositions[imageKey] || { x: 50, y: 50 };
+    dragStartRef.current = { x: e.clientX, y: e.clientY, posX: pos.x, posY: pos.y };
+  }, [imagePositions]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!dragging || !dragStartRef.current) return;
+    
+    const deltaX = e.clientX - dragStartRef.current.x;
+    const deltaY = e.clientY - dragStartRef.current.y;
+    
+    const newX = Math.max(0, Math.min(100, dragStartRef.current.posX - deltaX * 0.3));
+    const newY = Math.max(0, Math.min(100, dragStartRef.current.posY - deltaY * 0.3));
+    
+    setImagePositions(prev => ({
+      ...prev,
+      [dragging]: { x: newX, y: newY }
+    }));
+  }, [dragging]);
+
+  const handleMouseUp = useCallback(() => {
+    setDragging(null);
+    dragStartRef.current = null;
+  }, []);
+
   return (
     <div 
       className="bg-white w-full text-black print-container flex flex-col"
@@ -156,13 +200,16 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         minHeight: "100vh",
         padding: "16px",
       }}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
     >
       {/* K-POP BOARD Masthead */}
       <div className="border-b-4 border-black pb-3 mb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-16 h-16 bg-black flex items-center justify-center">
-              <span className="text-white font-black text-xl">RC</span>
+            <div className="w-16 h-16 border-2 border-black flex items-center justify-center">
+              <span className="text-black font-black text-xl">RC</span>
             </div>
             <span className="text-xs leading-tight text-black font-medium">
               SINCE<br/>2024
@@ -225,15 +272,25 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         {/* Left Column: Main Photo + Article (3 cols) */}
         <div className="col-span-3 flex flex-col">
           {/* Main Photo */}
-          <div className="border-2 border-black overflow-hidden" style={{ height: "320px" }}>
+          <div 
+            className="border-2 border-black overflow-hidden relative cursor-move print:cursor-default" 
+            style={{ height: "320px" }}
+            onMouseDown={(e) => handleMouseDown("main", e)}
+            title="드래그하여 사진 위치 조정"
+          >
             <img 
               src={photoData} 
               alt={customerName}
-              className="w-full h-full object-cover object-top"
+              className="w-full h-full object-cover select-none"
               style={{ 
                 filter: "grayscale(100%) contrast(1.2)",
+                objectPosition: `${imagePositions.main.x}% ${imagePositions.main.y}%`,
               }}
+              draggable={false}
             />
+            <div className="absolute bottom-1 right-1 bg-black/50 text-white text-[9px] px-1 rounded print:hidden">
+              ↔ 드래그
+            </div>
           </div>
           <p className="text-[11px] text-center mt-2 border-b border-black pb-2 font-medium">
             ▲ 10년 전 우연히 'Recording Cafe'를 방문해 첫 녹음에 도전하던 <span className="font-bold">{displayName}</span>. 
@@ -268,13 +325,25 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               <div className="grid grid-cols-2 gap-5">
                 {infancyImage?.imageData && (
                   <div>
-                    <div className="border-2 border-black overflow-hidden" style={{ height: "180px" }}>
+                    <div 
+                      className="border-2 border-black overflow-hidden relative cursor-move print:cursor-default" 
+                      style={{ height: "180px" }}
+                      onMouseDown={(e) => handleMouseDown("infancy", e)}
+                      title="드래그하여 사진 위치 조정"
+                    >
                       <img 
                         src={infancyImage.imageData} 
                         alt="유아 시절"
-                        className="w-full h-full object-cover object-top"
-                        style={{ filter: "sepia(30%)" }}
+                        className="w-full h-full object-cover select-none"
+                        style={{ 
+                          filter: "sepia(30%)",
+                          objectPosition: `${imagePositions.infancy.x}% ${imagePositions.infancy.y}%`,
+                        }}
+                        draggable={false}
                       />
+                      <div className="absolute bottom-1 right-1 bg-black/50 text-white text-[9px] px-1 rounded print:hidden">
+                        ↔ 드래그
+                      </div>
                     </div>
                     <p className="text-[11px] mt-2 text-justify leading-snug">
                       ▲ 가족이 공개한 어린 시절 사진. 이미 어린 나이에 음악적 재능을 보였다고 한다. "아기 때부터 음악만 틀어주면 웃었다"는 부모님의 증언이 화제다.
@@ -283,13 +352,25 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 )}
                 {middleschoolImage?.imageData && (
                   <div>
-                    <div className="border-2 border-black overflow-hidden" style={{ height: "180px" }}>
+                    <div 
+                      className="border-2 border-black overflow-hidden relative cursor-move print:cursor-default" 
+                      style={{ height: "180px" }}
+                      onMouseDown={(e) => handleMouseDown("middleschool", e)}
+                      title="드래그하여 사진 위치 조정"
+                    >
                       <img 
                         src={middleschoolImage.imageData} 
                         alt="중학교 시절"
-                        className="w-full h-full object-cover object-top"
-                        style={{ filter: "sepia(10%)" }}
+                        className="w-full h-full object-cover select-none"
+                        style={{ 
+                          filter: "sepia(10%)",
+                          objectPosition: `${imagePositions.middleschool.x}% ${imagePositions.middleschool.y}%`,
+                        }}
+                        draggable={false}
                       />
+                      <div className="absolute bottom-1 right-1 bg-black/50 text-white text-[9px] px-1 rounded print:hidden">
+                        ↔ 드래그
+                      </div>
                     </div>
                     <p className="text-[11px] mt-2 text-justify leading-snug">
                       ▲ 중학교 시절 밴드부에서 활동하던 모습. 당시 담임 교사는 "음악 시간마다 눈이 빛났다"며 숨겨진 재능을 일찍이 알아봤다고 전했다.
@@ -306,17 +387,29 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           {/* Award Photo */}
           {futureImage?.imageData && (
             <div className="mb-4">
-              <div className="bg-black text-white p-2 mb-2">
-                <div className="text-xs font-black text-center tracking-wider">
+              <div className="border-2 border-black p-2 mb-2">
+                <div className="text-xs font-black text-center tracking-wider text-black">
                   ★ {futureYear} 한복문화대상 ★
                 </div>
               </div>
-              <div className="border-2 border-black overflow-hidden flex items-center justify-center bg-purple-50" style={{ height: "220px" }}>
+              <div 
+                className="border-2 border-black overflow-hidden flex items-center justify-center bg-purple-50 relative cursor-move print:cursor-default" 
+                style={{ height: "220px" }}
+                onMouseDown={(e) => handleMouseDown("future", e)}
+                title="드래그하여 사진 위치 조정"
+              >
                 <img 
                   src={futureImage.imageData} 
                   alt="한복 시상식"
-                  className="h-full object-contain"
+                  className="h-full object-contain select-none"
+                  style={{
+                    objectPosition: `${imagePositions.future.x}% ${imagePositions.future.y}%`,
+                  }}
+                  draggable={false}
                 />
+                <div className="absolute bottom-1 right-1 bg-black/50 text-white text-[9px] px-1 rounded print:hidden">
+                  ↔ 드래그
+                </div>
               </div>
               <p className="text-[11px] mt-2 text-justify leading-snug">
                 ▲ 지난달 열린 '{futureYear} 한복문화대상'에서 대상을 수상한 <span className="font-bold">{displayName}</span>이 관객들에게 손을 흔들고 있다. 
