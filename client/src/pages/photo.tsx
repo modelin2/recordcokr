@@ -213,6 +213,37 @@ export default function PhotoPage() {
     }, 500);
   };
 
+  const compressBase64Image = (base64: string, maxWidth: number = 800, quality: number = 0.6): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Canvas context not available'));
+          return;
+        }
+        
+        ctx.drawImage(img, 0, 0, width, height);
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressedDataUrl);
+      };
+      img.onerror = () => reject(new Error('Image load failed'));
+      img.src = base64;
+    });
+  };
+
   const handleGenerateAllImages = async (personCount: number = 1) => {
     if (!selectedPhoto) {
       toast({
@@ -228,8 +259,20 @@ export default function PhotoPage() {
     setGeneratedImages([]);
 
     try {
+      // Check if image is too large (over 500KB base64) and compress if needed
+      let imageToSend = selectedPhoto;
+      const base64Size = (selectedPhoto.length * 3) / 4;
+      
+      if (base64Size > 500 * 1024) {
+        toast({
+          title: "이미지 최적화 중...",
+          description: "AI 생성을 위해 이미지를 압축하고 있습니다.",
+        });
+        imageToSend = await compressBase64Image(selectedPhoto, 800, 0.6);
+      }
+
       const response = await apiRequest("POST", "/api/photos/generate-all-stages", {
-        sourceImageBase64: selectedPhoto,
+        sourceImageBase64: imageToSend,
         personCount
       });
       
