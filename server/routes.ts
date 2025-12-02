@@ -5,6 +5,139 @@ import { spawn } from "child_process";
 import { unlink } from "fs/promises";
 import { insertBookingSchema, insertNaverBookingSchema, insertVisitorPhotoSchema } from "@shared/schema";
 import { z } from "zod";
+import { GoogleGenAI, Modality } from "@google/genai";
+
+// Initialize Gemini AI with Replit AI Integrations
+const ai = new GoogleGenAI({
+  apiKey: process.env.AI_INTEGRATIONS_GEMINI_API_KEY,
+  httpOptions: { baseUrl: process.env.AI_INTEGRATIONS_GEMINI_BASE_URL }
+});
+
+// Era-based prompt configurations
+const eraPrompts = {
+  "1970s": {
+    name: "1970s: The Acoustic Folk Era",
+    nameKr: "낭만의 통기타 시대",
+    clothing: [
+      "wearing a retro plaid shirt and bell-bottom jeans",
+      "wearing a white turtleneck sweater and vintage scarf",
+      "wearing a denim jacket over a floral shirt",
+      "wearing an oversized beige coat and beret"
+    ],
+    pose: [
+      "playing an acoustic guitar passionately sitting on a wooden stool",
+      "holding a vinyl record cover and smiling shyly",
+      "playing a harmonica with closed eyes",
+      "sitting cross-legged on the grass reading a poem"
+    ],
+    background: [
+      "background is an old 1970s Korean music cafe (Dabang) with wooden interiors",
+      "background is a sunny university campus lawn in 1975",
+      "background is a vintage radio DJ booth with a ON-AIR sign",
+      "background is a nostalgic brick wall alleyway in Seoul"
+    ],
+    style: [
+      "sepia tone photograph, film grain, vintage aesthetic, warm lighting",
+      "black and white film photography, slightly blurred edges, retro mood",
+      "kodak film style, faded colors, nostalgic atmosphere"
+    ]
+  },
+  "1980s": {
+    name: "1980s: The Disco & Radio Star Era",
+    nameKr: "화려한 디스코 시대",
+    clothing: [
+      "wearing a sparkly disco jacket with huge shoulder pads",
+      "wearing a denim-on-denim outfit with a colorful bandana",
+      "wearing a bright neon tracksuit and headband",
+      "wearing a polka dot dress with big plastic earrings"
+    ],
+    pose: [
+      "striking a disco dance pose with one finger pointing up",
+      "holding a pair of retro roller skates over the shoulder",
+      "posing with a large boombox on the shoulder",
+      "singing into a vintage standing microphone with dramatic expression"
+    ],
+    background: [
+      "background is a flashy roller skating rink with disco balls",
+      "background is a neon-lit 80s dance stage with laser beams",
+      "background is a retro arcade room with pixel game machines",
+      "background is a colorful geometric pattern studio backdrop"
+    ],
+    style: [
+      "1980s flash photography, high exposure, vivid saturation, VHS glitch effect",
+      "retro pop art style, neon lighting, soft focus glow",
+      "vintage magazine cover style, bold colors, energetic vibe"
+    ]
+  },
+  "1990s": {
+    name: "1990s: The Y2K & Hip-Hop Era",
+    nameKr: "세기말 아이돌 시대",
+    clothing: [
+      "wearing extremely baggy hip-hop pants and an oversized hockey jersey",
+      "wearing a bucket hat and colorful ski goggles around the neck",
+      "wearing a shiny silver puffer jacket and cargo pants",
+      "wearing a white tracksuit with yellow tinted sunglasses"
+    ],
+    pose: [
+      "looking down at the camera with a rebellious hip-hop hand sign",
+      "crouching down (slav squat) looking cool",
+      "jumping in the air with dynamic energy",
+      "standing with arms crossed looking tough"
+    ],
+    background: [
+      "background is a street wall covered in colorful graffiti art",
+      "background is a white studio space with harsh lighting",
+      "background is a subway station tunnel with blue lighting",
+      "background is a rainy street at night with city lights"
+    ],
+    style: [
+      "shot with a fisheye lens, 90s music video style, high contrast, cool temperature",
+      "film photography with date stamp 1998, street fashion snap, wide angle",
+      "Y2K aesthetic, cyber grunge atmosphere, dynamic composition"
+    ]
+  },
+  "future": {
+    name: "Future: The Global K-Pop Legend",
+    nameKr: "미래의 월드스타",
+    clothing: [
+      "wearing a futuristic high-tech LED suit glowing blue",
+      "wearing a luxurious white suit with golden embroidery",
+      "wearing avant-garde fashion made of transparent holographic material",
+      "wearing a sleek cyber-punk leather outfit with tactical gear details"
+    ],
+    pose: [
+      "singing passionately holding a crystal microphone, sweat dripping",
+      "waving to a massive crowd from a high stage platform",
+      "holding a golden music award trophy high above the head",
+      "standing confidently with arms wide open embracing the spotlight"
+    ],
+    background: [
+      "background is a massive stadium filled with millions of glowing light sticks",
+      "background is a futuristic Seoul skyline with flying cars and holograms",
+      "background is a giant LED screen displaying the customer's face",
+      "background is a dreamy stage with floating particles and confetti"
+    ],
+    style: [
+      "cinematic lighting, 8k resolution, photorealistic, masterpiece, epic scale, lens flare",
+      "cyberpunk atmosphere, neon blue and magenta lighting, detailed textures",
+      "concert photography, depth of field, bokeh effect, majestic mood"
+    ]
+  }
+};
+
+function getRandomElement<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generatePromptForEra(era: keyof typeof eraPrompts, customerDescription: string): string {
+  const config = eraPrompts[era];
+  const clothing = getRandomElement(config.clothing);
+  const pose = getRandomElement(config.pose);
+  const background = getRandomElement(config.background);
+  const style = getRandomElement(config.style);
+  
+  return `A photo of ${customerDescription}, ${clothing}, ${pose}, ${background}. ${style}`;
+}
 
 // Simple session middleware for demo purposes
 declare module 'express-session' {
@@ -626,6 +759,145 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching customers:", error);
       res.status(500).json({ message: "Failed to fetch customers" });
+    }
+  });
+
+  // AI Image Generation API - Generate era-specific images using Gemini nano banana
+  app.post("/api/photos/generate-ai", requireAdmin, async (req, res) => {
+    try {
+      const { customerDescription, era, sourceImageBase64 } = req.body;
+      
+      if (!customerDescription || !era) {
+        return res.status(400).json({ message: "Customer description and era are required" });
+      }
+      
+      const validEras = ["1970s", "1980s", "1990s", "future"];
+      if (!validEras.includes(era)) {
+        return res.status(400).json({ message: "Invalid era. Must be one of: 1970s, 1980s, 1990s, future" });
+      }
+      
+      const prompt = generatePromptForEra(era as keyof typeof eraPrompts, customerDescription);
+      console.log(`Generating ${era} image with prompt: ${prompt}`);
+      
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash-preview-05-20",
+        contents: [{ 
+          role: "user", 
+          parts: [{ text: prompt + " --ar 3:4" }] 
+        }],
+        config: {
+          responseModalities: [Modality.TEXT, Modality.IMAGE],
+        }
+      });
+      
+      let imageData = null;
+      let textResponse = "";
+      
+      if (response.candidates && response.candidates[0]?.content?.parts) {
+        for (const part of response.candidates[0].content.parts) {
+          if (part.inlineData?.mimeType?.startsWith("image/")) {
+            imageData = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+          }
+          if (part.text) {
+            textResponse = part.text;
+          }
+        }
+      }
+      
+      if (!imageData) {
+        console.log("No image generated, response:", textResponse);
+        return res.status(500).json({ message: "Failed to generate image", details: textResponse });
+      }
+      
+      const eraConfig = eraPrompts[era as keyof typeof eraPrompts];
+      
+      res.json({ 
+        success: true, 
+        imageData,
+        era,
+        eraName: eraConfig.name,
+        eraNameKr: eraConfig.nameKr,
+        prompt
+      });
+    } catch (error: any) {
+      console.error("Error generating AI image:", error);
+      res.status(500).json({ message: "Failed to generate AI image", error: error.message });
+    }
+  });
+
+  // Generate all 4 era images at once
+  app.post("/api/photos/generate-all-eras", requireAdmin, async (req, res) => {
+    try {
+      const { customerDescription } = req.body;
+      
+      if (!customerDescription) {
+        return res.status(400).json({ message: "Customer description is required" });
+      }
+      
+      const eras: (keyof typeof eraPrompts)[] = ["1970s", "1980s", "1990s", "future"];
+      const results: any[] = [];
+      
+      // Generate images sequentially to avoid rate limiting
+      for (const era of eras) {
+        const prompt = generatePromptForEra(era, customerDescription);
+        console.log(`Generating ${era} image with prompt: ${prompt}`);
+        
+        try {
+          const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash-preview-05-20",
+            contents: [{ 
+              role: "user", 
+              parts: [{ text: prompt + " --ar 3:4" }] 
+            }],
+            config: {
+              responseModalities: [Modality.TEXT, Modality.IMAGE],
+            }
+          });
+          
+          let imageData = null;
+          
+          if (response.candidates && response.candidates[0]?.content?.parts) {
+            for (const part of response.candidates[0].content.parts) {
+              if (part.inlineData?.mimeType?.startsWith("image/")) {
+                imageData = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+              }
+            }
+          }
+          
+          const eraConfig = eraPrompts[era];
+          results.push({
+            era,
+            eraName: eraConfig.name,
+            eraNameKr: eraConfig.nameKr,
+            imageData,
+            prompt,
+            success: !!imageData
+          });
+        } catch (eraError: any) {
+          console.error(`Error generating ${era} image:`, eraError);
+          const eraConfig = eraPrompts[era];
+          results.push({
+            era,
+            eraName: eraConfig.name,
+            eraNameKr: eraConfig.nameKr,
+            imageData: null,
+            prompt,
+            success: false,
+            error: eraError.message
+          });
+        }
+        
+        // Small delay between requests to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      res.json({ 
+        success: true, 
+        results
+      });
+    } catch (error: any) {
+      console.error("Error generating all era images:", error);
+      res.status(500).json({ message: "Failed to generate images", error: error.message });
     }
   });
 
