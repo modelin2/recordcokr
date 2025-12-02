@@ -49,10 +49,10 @@ export default function PhotoPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingStage, setGeneratingStage] = useState<string>("");
   const [imagePositions, setImagePositions] = useState<ImagePositions>({
-    main: { x: 50, y: 0 },
-    infancy: { x: 50, y: 0 },
-    middleschool: { x: 50, y: 0 },
-    future: { x: 50, y: 50 },
+    main: { x: 50, y: 0, scale: 1 },
+    infancy: { x: 50, y: 0, scale: 1 },
+    middleschool: { x: 50, y: 0, scale: 1 },
+    future: { x: 50, y: 50, scale: 1 },
   });
 
   const { data: user, isLoading: userLoading } = useQuery<{ id: number; username: string; role: string }>({

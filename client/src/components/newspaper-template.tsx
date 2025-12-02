@@ -14,6 +14,7 @@ interface LifeStageImage {
 export interface ImagePosition {
   x: number;
   y: number;
+  scale?: number;
 }
 
 export interface ImagePositions {
@@ -41,111 +42,212 @@ function convertToKorean(name: string): string {
   const isKorean = /[가-힣]/.test(name);
   if (isKorean) return '';
   
-  const phonemeMap: Record<string, string> = {
-    'tion': '션', 'sion': '션', 'cian': '션', 'tian': '션',
-    'ight': '아이트', 'ough': '오', 'ould': '울드', 'ound': '운드',
-    'ther': '더', 'this': '디스', 'that': '댓',
-    'chr': '크', 'sch': '스', 'tch': '치', 'dge': '지',
-    'ph': '프', 'th': '스', 'ch': '치', 'sh': '쉬', 'wh': '와',
-    'ck': '크', 'ng': '응', 'nk': '응크', 'qu': '쿼', 'wr': '르',
-    'kn': '느', 'gn': '느', 'gh': '', 'mb': '음브', 'mn': '음느',
-    'ee': '이', 'ea': '이', 'ie': '이', 'ey': '이', 'ay': '에이',
-    'ai': '에이', 'oa': '오', 'oe': '오', 'oo': '우', 'ou': '아우',
-    'ow': '오', 'ew': '유', 'ue': '유', 'au': '오', 'aw': '오',
-    'oi': '오이', 'oy': '오이', 'ar': '아', 'er': '어', 'ir': '어',
-    'or': '오', 'ur': '어', 'ce': '스', 'ci': '시', 'cy': '시',
-    'ge': '지', 'gi': '지', 'gy': '지', 'sc': '스',
-    'll': '을', 'ss': '스', 'tt': '트', 'ff': '프', 'pp': '프',
-    'bb': '브', 'dd': '드', 'gg': '그', 'nn': '은', 'mm': '음', 'rr': '르',
-    'a': '아', 'e': '에', 'i': '이', 'o': '오', 'u': '우', 'y': '이',
-    'b': '브', 'c': '크', 'd': '드', 'f': '프', 'g': '그', 'h': '흐',
-    'j': '제이', 'k': '크', 'l': '을', 'm': '음', 'n': '은', 'p': '프',
-    'q': '크', 'r': '르', 's': '스', 't': '트', 'v': '브', 'w': '우',
-    'x': '크스', 'z': '즈',
+  const commonNames: Record<string, string> = {
+    'patrick': '패트릭', 'patrix': '패트릭스', 'patricia': '패트리샤',
+    'michael': '마이클', 'mike': '마이크', 'michelle': '미셸',
+    'david': '데이비드', 'daniel': '다니엘', 'james': '제임스',
+    'john': '존', 'johnny': '조니', 'jonathan': '조나단',
+    'robert': '로버트', 'bob': '밥', 'bobby': '바비',
+    'william': '윌리엄', 'will': '윌', 'bill': '빌', 'billy': '빌리',
+    'richard': '리처드', 'rick': '릭', 'ricky': '리키', 'dick': '딕',
+    'joseph': '조셉', 'joe': '조', 'joey': '조이',
+    'thomas': '토마스', 'tom': '톰', 'tommy': '토미',
+    'christopher': '크리스토퍼', 'chris': '크리스',
+    'charles': '찰스', 'charlie': '찰리',
+    'matthew': '매튜', 'matt': '맷',
+    'anthony': '앤서니', 'tony': '토니',
+    'andrew': '앤드류', 'andy': '앤디',
+    'steven': '스티븐', 'steve': '스티브',
+    'kevin': '케빈', 'brian': '브라이언', 'ryan': '라이언',
+    'jason': '제이슨', 'justin': '저스틴', 'brandon': '브랜던',
+    'benjamin': '벤자민', 'ben': '벤', 'samuel': '사무엘', 'sam': '샘',
+    'alexander': '알렉산더', 'alex': '알렉스',
+    'nicholas': '니콜라스', 'nick': '닉',
+    'elizabeth': '엘리자베스', 'beth': '베스', 'lisa': '리사',
+    'jennifer': '제니퍼', 'jenny': '제니', 'jessica': '제시카',
+    'sarah': '사라', 'sara': '사라', 'emily': '에밀리', 'emma': '엠마',
+    'ashley': '애슐리', 'amanda': '아만다', 'nicole': '니콜',
+    'stephanie': '스테파니', 'lauren': '로렌', 'megan': '메건',
+    'rachel': '레이첼', 'hannah': '한나', 'olivia': '올리비아',
+    'sophia': '소피아', 'grace': '그레이스', 'victoria': '빅토리아',
+    'jacob': '제이콥', 'jack': '잭', 'jackson': '잭슨',
+    'ethan': '이든', 'noah': '노아', 'mason': '메이슨', 'lucas': '루카스',
+    'oliver': '올리버', 'henry': '헨리', 'max': '맥스', 'leo': '레오',
   };
   
+  const lowerName = name.toLowerCase().trim();
+  if (commonNames[lowerName]) {
+    return commonNames[lowerName];
+  }
+  
+  const nameParts = lowerName.split(/[\s\-]+/);
+  if (nameParts.length > 1) {
+    const convertedParts = nameParts.map(part => commonNames[part] || convertSingleName(part));
+    return convertedParts.join(' ');
+  }
+  
+  return convertSingleName(lowerName);
+}
+
+function convertSingleName(name: string): string {
+  const syllablePatterns: [RegExp, string][] = [
+    [/^patri/i, '패트리'], [/^patric/i, '패트릭'], [/^patr/i, '패트르'],
+    [/^pat/i, '패트'], [/^pet/i, '펫'], [/^pit/i, '핏'],
+    [/rick$/i, '릭'], [/rix$/i, '릭스'], [/ric$/i, '릭'],
+    [/tion$/i, '션'], [/sion$/i, '션'], [/cian$/i, '션'],
+    [/ick$/i, '익'], [/ack$/i, '액'], [/eck$/i, '엑'],
+    [/ine$/i, '인'], [/ene$/i, '엔'], [/ane$/i, '에인'],
+    [/son$/i, '슨'], [/sen$/i, '센'], [/man$/i, '만'], [/men$/i, '맨'],
+    [/ly$/i, '리'], [/ley$/i, '리'], [/lee$/i, '리'],
+    [/er$/i, '어'], [/or$/i, '어'], [/ar$/i, '아'],
+    [/ia$/i, '아'], [/ie$/i, '이'], [/y$/i, '이'],
+  ];
+
+  const consonantClusters: Record<string, string> = {
+    'chr': '크르', 'sch': '슈', 'tch': '치', 'dge': '지',
+    'str': '스트르', 'spr': '스프르', 'scr': '스크르',
+    'thr': '스르', 'phr': '프르', 'shr': '쉬르',
+    'bl': '블', 'br': '브르', 'cl': '클', 'cr': '크르',
+    'dr': '드르', 'fl': '플', 'fr': '프르', 'gl': '글',
+    'gr': '그르', 'pl': '플', 'pr': '프르', 'sl': '슬',
+    'sm': '스므', 'sn': '스느', 'sp': '스프', 'st': '스트',
+    'sw': '스웨', 'tr': '트르', 'tw': '트웨', 'wr': '르',
+    'ph': '프', 'th': '스', 'ch': '치', 'sh': '쉬', 'wh': '와',
+    'ck': '크', 'ng': '응', 'nk': '응크', 'qu': '쿠',
+    'kn': '느', 'gn': '느', 'gh': '', 'mb': '므', 'mn': '므느',
+  };
+
+  const vowelPatterns: Record<string, string> = {
+    'ough': '오', 'augh': '오', 'ould': '울드', 'ound': '운드',
+    'ight': '아이트', 'eigh': '에이',
+    'tion': '션', 'sion': '션', 'cian': '션',
+    'ee': '이', 'ea': '이', 'ie': '이', 'ei': '아이',
+    'oo': '우', 'ou': '아우', 'ow': '오', 'oi': '오이', 'oy': '오이',
+    'au': '오', 'aw': '오', 'ew': '유', 'ue': '유',
+    'ai': '에이', 'ay': '에이', 'ey': '이',
+    'oa': '오', 'oe': '오',
+  };
+
+  const basicMap: Record<string, string> = {
+    'a': '아', 'e': '에', 'i': '이', 'o': '오', 'u': '우',
+    'b': '브', 'c': '크', 'd': '드', 'f': '프', 'g': '그',
+    'h': '흐', 'j': '즈', 'k': '크', 'l': '을', 'm': '므',
+    'n': '느', 'p': '프', 'q': '크', 'r': '르', 's': '스',
+    't': '트', 'v': '브', 'w': '우', 'x': '크스', 'y': '이', 'z': '즈',
+  };
+
   const syllableMap: Record<string, string> = {
-    'la': '라', 'le': '레', 'li': '리', 'lo': '로', 'lu': '루', 'ly': '리',
-    'ra': '라', 're': '레', 'ri': '리', 'ro': '로', 'ru': '루', 'ry': '리',
-    'ma': '마', 'me': '메', 'mi': '미', 'mo': '모', 'mu': '무', 'my': '미',
-    'na': '나', 'ne': '네', 'ni': '니', 'no': '노', 'nu': '누', 'ny': '니',
-    'ba': '바', 'be': '베', 'bi': '비', 'bo': '보', 'bu': '부', 'by': '비',
-    'pa': '파', 'pe': '페', 'pi': '피', 'po': '포', 'pu': '푸', 'py': '피',
-    'da': '다', 'de': '데', 'di': '디', 'do': '도', 'du': '두', 'dy': '디',
-    'ta': '타', 'te': '테', 'ti': '티', 'to': '토', 'tu': '투', 'ty': '티',
-    'ga': '가', 'ge': '게', 'gi': '기', 'go': '고', 'gu': '구', 'gy': '지',
-    'ka': '카', 'ke': '케', 'ki': '키', 'ko': '코', 'ku': '쿠', 'ky': '키',
-    'sa': '사', 'se': '세', 'si': '시', 'so': '소', 'su': '수', 'sy': '시',
-    'za': '자', 'ze': '제', 'zi': '지', 'zo': '조', 'zu': '주', 'zy': '지',
-    'fa': '파', 'fe': '페', 'fi': '피', 'fo': '포', 'fu': '푸', 'fy': '피',
-    'va': '바', 've': '베', 'vi': '비', 'vo': '보', 'vu': '부', 'vy': '비',
-    'ha': '하', 'he': '헤', 'hi': '히', 'ho': '호', 'hu': '후', 'hy': '히',
-    'ja': '자', 'je': '제', 'ji': '지', 'jo': '조', 'ju': '주', 'jy': '지',
-    'wa': '와', 'we': '웨', 'wi': '위', 'wo': '워', 'wu': '우',
-    'ya': '야', 'ye': '예', 'yi': '이', 'yo': '요', 'yu': '유',
-    'ca': '카', 'co': '코', 'cu': '쿠',
+    'la': '라', 'le': '레', 'li': '리', 'lo': '로', 'lu': '루',
+    'ra': '라', 're': '레', 'ri': '리', 'ro': '로', 'ru': '루',
+    'ma': '마', 'me': '메', 'mi': '미', 'mo': '모', 'mu': '무',
+    'na': '나', 'ne': '네', 'ni': '니', 'no': '노', 'nu': '누',
+    'ba': '바', 'be': '베', 'bi': '비', 'bo': '보', 'bu': '부',
+    'pa': '파', 'pe': '페', 'pi': '피', 'po': '포', 'pu': '푸',
+    'da': '다', 'de': '데', 'di': '디', 'do': '도', 'du': '두',
+    'ta': '타', 'te': '테', 'ti': '티', 'to': '토', 'tu': '투',
+    'ga': '가', 'ge': '게', 'gi': '기', 'go': '고', 'gu': '구',
+    'ka': '카', 'ke': '케', 'ki': '키', 'ko': '코', 'ku': '쿠',
+    'sa': '사', 'se': '세', 'si': '시', 'so': '소', 'su': '수',
+    'za': '자', 'ze': '제', 'zi': '지', 'zo': '조', 'zu': '주',
+    'fa': '파', 'fe': '페', 'fi': '피', 'fo': '포', 'fu': '푸',
+    'va': '바', 've': '베', 'vi': '비', 'vo': '보', 'vu': '부',
+    'ha': '하', 'he': '헤', 'hi': '히', 'ho': '호', 'hu': '후',
+    'ja': '자', 'je': '제', 'ji': '지', 'jo': '조', 'ju': '주',
+    'wa': '와', 'we': '웨', 'wi': '위', 'wo': '워',
+    'ya': '야', 'ye': '예', 'yo': '요', 'yu': '유',
+    'ca': '카', 'ce': '세', 'ci': '시', 'co': '코', 'cu': '쿠',
     'cha': '차', 'che': '체', 'chi': '치', 'cho': '초', 'chu': '추',
-    'sha': '샤', 'she': '쉬', 'shi': '시', 'sho': '쇼', 'shu': '슈',
+    'sha': '샤', 'she': '셰', 'shi': '시', 'sho': '쇼', 'shu': '슈',
     'tha': '타', 'the': '더', 'thi': '시', 'tho': '소', 'thu': '수',
-    'tra': '트라', 'tre': '트레', 'tri': '트리', 'tro': '트로', 'tru': '트루',
-    'pra': '프라', 'pre': '프레', 'pri': '프리', 'pro': '프로', 'pru': '프루',
-    'bra': '브라', 'bre': '브레', 'bri': '브리', 'bro': '브로', 'bru': '브루',
-    'cra': '크라', 'cre': '크레', 'cri': '크리', 'cro': '크로', 'cru': '크루',
-    'gra': '그라', 'gre': '그레', 'gri': '그리', 'gro': '그로', 'gru': '그루',
-    'dra': '드라', 'dre': '드레', 'dri': '드리', 'dro': '드로', 'dru': '드루',
-    'fla': '플라', 'fle': '플레', 'fli': '플리', 'flo': '플로', 'flu': '플루',
-    'cla': '클라', 'cle': '클레', 'cli': '클리', 'clo': '클로', 'clu': '클루',
-    'sta': '스타', 'ste': '스테', 'sti': '스티', 'sto': '스토', 'stu': '스투',
-    'sca': '스카', 'sce': '스케', 'sci': '사이', 'sco': '스코', 'scu': '스쿠',
-    'lla': '야', 'lle': '예', 'lli': '이', 'llo': '요', 'llu': '유',
     'an': '안', 'en': '엔', 'in': '인', 'on': '온', 'un': '운',
     'al': '알', 'el': '엘', 'il': '일', 'ol': '올', 'ul': '울',
-    'am': '암', 'em': '엠', 'im': '임', 'om': '옴', 'um': '움',
-    'ar': '아르', 'er': '어', 'ir': '어', 'or': '오르', 'ur': '어',
-    'as': '아스', 'es': '에스', 'is': '이스', 'os': '오스', 'us': '우스',
-    'at': '앳', 'et': '엣', 'it': '잇', 'ot': '옷', 'ut': '웃',
-    'ck': '크', 'sk': '스크', 'sp': '스프', 'st': '스트', 'str': '스트르',
-    'nd': '은드', 'nt': '은트', 'mp': '음프', 'nk': '응크',
   };
-  
+
   let result = '';
-  const lower = name.toLowerCase().trim();
+  let remaining = name.toLowerCase();
+
+  for (const [pattern, replacement] of syllablePatterns) {
+    if (pattern.test(remaining)) {
+      const match = remaining.match(pattern);
+      if (match) {
+        if (pattern.source.startsWith('^')) {
+          result += replacement;
+          remaining = remaining.slice(match[0].length);
+        } else if (pattern.source.endsWith('$')) {
+          const beforeMatch = remaining.slice(0, remaining.length - match[0].length);
+          remaining = beforeMatch;
+          result = processRemaining(remaining, consonantClusters, vowelPatterns, syllableMap, basicMap) + replacement;
+          return cleanupResult(result);
+        }
+      }
+    }
+  }
+
+  result += processRemaining(remaining, consonantClusters, vowelPatterns, syllableMap, basicMap);
+  return cleanupResult(result);
+}
+
+function processRemaining(
+  text: string,
+  consonantClusters: Record<string, string>,
+  vowelPatterns: Record<string, string>,
+  syllableMap: Record<string, string>,
+  basicMap: Record<string, string>
+): string {
+  let result = '';
   let i = 0;
-  
-  while (i < lower.length) {
+
+  while (i < text.length) {
     let matched = false;
-    
-    for (let len = 4; len >= 1; len--) {
-      const substr = lower.substring(i, i + len);
+
+    for (let len = 4; len >= 2; len--) {
+      const substr = text.substring(i, i + len);
+      if (vowelPatterns[substr]) {
+        result += vowelPatterns[substr];
+        i += len;
+        matched = true;
+        break;
+      }
+      if (consonantClusters[substr]) {
+        result += consonantClusters[substr];
+        i += len;
+        matched = true;
+        break;
+      }
       if (syllableMap[substr]) {
         result += syllableMap[substr];
         i += len;
         matched = true;
         break;
       }
-      if (phonemeMap[substr]) {
-        result += phonemeMap[substr];
-        i += len;
-        matched = true;
-        break;
-      }
     }
-    
+
     if (!matched) {
+      const char = text[i];
+      if (basicMap[char]) {
+        result += basicMap[char];
+      }
       i++;
     }
   }
-  
-  result = result.replace(/으으/g, '으').replace(/은은/g, '은').replace(/음음/g, '음');
-  
-  return result || '';
+
+  return result;
+}
+
+function cleanupResult(result: string): string {
+  return result
+    .replace(/으으+/g, '으')
+    .replace(/스스+/g, '스')
+    .replace(/르르+/g, '르')
+    .replace(/느느+/g, '느')
+    .replace(/므므+/g, '므');
 }
 
 const defaultPositions: ImagePositions = {
-  main: { x: 50, y: 0 },
-  infancy: { x: 50, y: 0 },
-  middleschool: { x: 50, y: 0 },
-  future: { x: 50, y: 50 },
+  main: { x: 50, y: 0, scale: 1 },
+  infancy: { x: 50, y: 0, scale: 1 },
+  middleschool: { x: 50, y: 0, scale: 1 },
+  future: { x: 50, y: 50, scale: 1 },
 };
 
 export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, lifeStageImages = [], imagePositions: externalPositions, onPositionChange }: NewspaperTemplateProps) {
@@ -202,6 +304,20 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
     setDragging(null);
     dragStartRef.current = null;
   }, []);
+
+  const handleWheel = useCallback((imageKey: string, e: React.WheelEvent) => {
+    if (!onPositionChange) return;
+    e.preventDefault();
+    
+    const currentScale = imagePositions[imageKey as keyof ImagePositions]?.scale || 1;
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    const newScale = Math.max(0.5, Math.min(3, currentScale + delta));
+    
+    onPositionChange({
+      ...imagePositions,
+      [imageKey]: { ...imagePositions[imageKey as keyof ImagePositions], scale: newScale }
+    });
+  }, [imagePositions, onPositionChange]);
 
   return (
     <div 
@@ -407,7 +523,8 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 className="border-2 border-black overflow-hidden flex items-center justify-center bg-purple-50 relative cursor-move print:cursor-default" 
                 style={{ height: "220px" }}
                 onMouseDown={(e) => handleMouseDown("future", e)}
-                title="드래그하여 사진 위치 조정"
+                onWheel={(e) => handleWheel("future", e)}
+                title="드래그: 위치 조정 / 휠: 확대/축소"
               >
                 <img 
                   src={futureImage.imageData} 
@@ -415,11 +532,12 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                   className="h-full object-contain select-none"
                   style={{
                     objectPosition: `${imagePositions.future.x}% ${imagePositions.future.y}%`,
+                    transform: `scale(${imagePositions.future.scale || 1})`,
                   }}
                   draggable={false}
                 />
                 <div className="absolute bottom-1 right-1 bg-black/50 text-white text-[9px] px-1 rounded print:hidden">
-                  ↔ 드래그
+                  ↔ 드래그 / 🔍 휠
                 </div>
               </div>
               <p className="text-[11px] mt-2 text-justify leading-snug">
@@ -458,16 +576,6 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               "10년 전 그 작은 카페에서 시작된 꿈이 오늘 이렇게 이루어졌습니다. 녹음실에서 처음 마이크를 잡았을 때의 떨림을 아직도 기억합니다."
             </p>
             <p className="text-[10px] text-right mt-3 font-bold">- {displayName} 수상 소감 중</p>
-          </div>
-
-          {/* Related News Box */}
-          <div className="border-2 border-black p-3 mb-4">
-            <div className="text-[11px] font-black border-b border-black pb-1 mb-2">[관련 기사]</div>
-            <ul className="text-[10px] space-y-1.5">
-              <li>• "{displayName}, 한류 스타 중 '가장 한복이 잘 어울리는 스타' 1위 선정"</li>
-              <li>• "Recording Cafe, 10주년 맞아 역대 녹음 고객 사진전 개최"</li>
-              <li>• "한복문화대상 수상 연예인들의 공통점은? '열정'"</li>
-            </ul>
           </div>
 
           {/* Weather */}
