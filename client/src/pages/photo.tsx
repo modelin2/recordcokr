@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image, Wand2, Loader2, Sparkles } from "lucide-react";
@@ -45,7 +44,6 @@ export default function PhotoPage() {
   const [customHeadline, setCustomHeadline] = useState<string>("");
   const [previewPhoto, setPreviewPhoto] = useState<VisitorPhoto | null>(null);
   const [previewKoreanName, setPreviewKoreanName] = useState<string>("");
-  const [customerDescription, setCustomerDescription] = useState<string>("");
   const [generatedImages, setGeneratedImages] = useState<EraImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingEra, setGeneratingEra] = useState<string>("");
@@ -166,10 +164,10 @@ export default function PhotoPage() {
   };
 
   const handleGenerateAllImages = async () => {
-    if (!customerDescription.trim()) {
+    if (!selectedPhoto) {
       toast({
-        title: "고객 특징 입력 필요",
-        description: "AI 이미지 생성을 위해 고객 특징을 영어로 입력해주세요.",
+        title: "사진 필요",
+        description: "AI 이미지 생성을 위해 먼저 사진을 업로드해주세요.",
         variant: "destructive",
       });
       return;
@@ -181,7 +179,7 @@ export default function PhotoPage() {
 
     try {
       const response = await apiRequest("POST", "/api/photos/generate-all-eras", {
-        customerDescription: customerDescription.trim()
+        sourceImageBase64: selectedPhoto
       });
       
       const data = await response.json();
@@ -208,10 +206,10 @@ export default function PhotoPage() {
   };
 
   const handleGenerateSingleImage = async (era: string) => {
-    if (!customerDescription.trim()) {
+    if (!selectedPhoto) {
       toast({
-        title: "고객 특징 입력 필요",
-        description: "AI 이미지 생성을 위해 고객 특징을 영어로 입력해주세요.",
+        title: "사진 필요",
+        description: "AI 이미지 생성을 위해 먼저 사진을 업로드해주세요.",
         variant: "destructive",
       });
       return;
@@ -221,7 +219,7 @@ export default function PhotoPage() {
 
     try {
       const response = await apiRequest("POST", "/api/photos/generate-ai", {
-        customerDescription: customerDescription.trim(),
+        sourceImageBase64: selectedPhoto,
         era
       });
       
@@ -481,23 +479,30 @@ export default function PhotoPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-6">
-                <div>
-                  <Label className="text-purple-900 font-medium">고객 특징 (영어로 입력)</Label>
-                  <Textarea
-                    placeholder="예: A happy young woman with long black hair and glasses"
-                    value={customerDescription}
-                    onChange={(e) => setCustomerDescription(e.target.value)}
-                    className="mt-2 bg-white border-purple-300 min-h-[80px]"
-                    data-testid="input-customer-description"
-                  />
-                  <p className="text-xs text-purple-600 mt-1">
-                    고객의 특징을 영어로 간단하게 설명해주세요. AI가 4개의 시대별 이미지를 생성합니다.
-                  </p>
+                <div className="text-center p-4 bg-white/50 rounded-lg border border-purple-200">
+                  {selectedPhoto ? (
+                    <div className="space-y-2">
+                      <img 
+                        src={selectedPhoto} 
+                        alt="선택된 사진" 
+                        className="max-h-32 mx-auto rounded-lg shadow"
+                      />
+                      <p className="text-sm text-purple-700 font-medium">
+                        이 사진을 기반으로 시대별 이미지를 생성합니다
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-purple-600">
+                      <Image className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">왼쪽에서 먼저 사진을 선택해주세요</p>
+                      <p className="text-xs text-purple-500 mt-1">업로드한 사진을 AI가 시대별 스타일로 합성합니다</p>
+                    </div>
+                  )}
                 </div>
 
                 <Button
                   onClick={handleGenerateAllImages}
-                  disabled={isGenerating || !customerDescription.trim()}
+                  disabled={isGenerating || !selectedPhoto}
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
                   data-testid="button-generate-all"
                 >
@@ -519,7 +524,7 @@ export default function PhotoPage() {
                     <Button
                       key={btn.era}
                       onClick={() => handleGenerateSingleImage(btn.era)}
-                      disabled={isGenerating || !customerDescription.trim()}
+                      disabled={isGenerating || !selectedPhoto}
                       className={`${btn.color} text-white text-sm`}
                       data-testid={`button-generate-${btn.era}`}
                     >

@@ -129,14 +129,14 @@ function getRandomElement<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function generatePromptForEra(era: keyof typeof eraPrompts, customerDescription: string): string {
+function generateTransformPromptForEra(era: keyof typeof eraPrompts): string {
   const config = eraPrompts[era];
   const clothing = getRandomElement(config.clothing);
   const pose = getRandomElement(config.pose);
   const background = getRandomElement(config.background);
   const style = getRandomElement(config.style);
   
-  return `A photo of ${customerDescription}, ${clothing}, ${pose}, ${background}. ${style}`;
+  return `Transform this person in the photo into a ${era} music star style. Keep their face and identity exactly the same, but change their outfit and setting: ${clothing}, ${pose}, ${background}. Apply this visual style: ${style}. Make it look like an authentic ${era} photograph while preserving the person's facial features perfectly.`;
 }
 
 // Simple session middleware for demo purposes
@@ -762,13 +762,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Image Generation API - Generate era-specific images using Gemini nano banana
+  // AI Image Generation API - Generate era-specific images using Gemini with source photo
   app.post("/api/photos/generate-ai", requireAdmin, async (req, res) => {
     try {
-      const { customerDescription, era, sourceImageBase64 } = req.body;
+      const { era, sourceImageBase64 } = req.body;
       
-      if (!customerDescription || !era) {
-        return res.status(400).json({ message: "Customer description and era are required" });
+      if (!sourceImageBase64 || !era) {
+        return res.status(400).json({ message: "Source image and era are required" });
       }
       
       const validEras = ["1970s", "1980s", "1990s", "future"];
@@ -776,14 +776,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid era. Must be one of: 1970s, 1980s, 1990s, future" });
       }
       
-      const prompt = generatePromptForEra(era as keyof typeof eraPrompts, customerDescription);
+      const prompt = generateTransformPromptForEra(era as keyof typeof eraPrompts);
       console.log(`Generating ${era} image with prompt: ${prompt}`);
       
+      const base64Data = sourceImageBase64.replace(/^data:image\/\w+;base64,/, '');
+      const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
+      
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-preview-05-20",
+        model: "gemini-2.0-flash-exp",
         contents: [{ 
           role: "user", 
-          parts: [{ text: prompt + " --ar 3:4" }] 
+          parts: [
+            { inlineData: { mimeType, data: base64Data } },
+            { text: prompt }
+          ] 
         }],
         config: {
           responseModalities: [Modality.TEXT, Modality.IMAGE],
@@ -825,29 +831,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Generate all 4 era images at once
+  // Generate all 4 era images at once using the uploaded source photo
   app.post("/api/photos/generate-all-eras", requireAdmin, async (req, res) => {
     try {
-      const { customerDescription } = req.body;
+      const { sourceImageBase64 } = req.body;
       
-      if (!customerDescription) {
-        return res.status(400).json({ message: "Customer description is required" });
+      if (!sourceImageBase64) {
+        return res.status(400).json({ message: "Source image is required" });
       }
+      
+      const base64Data = sourceImageBase64.replace(/^data:image\/\w+;base64,/, '');
+      const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
       
       const eras: (keyof typeof eraPrompts)[] = ["1970s", "1980s", "1990s", "future"];
       const results: any[] = [];
       
       // Generate images sequentially to avoid rate limiting
       for (const era of eras) {
-        const prompt = generatePromptForEra(era, customerDescription);
+        const prompt = generateTransformPromptForEra(era);
         console.log(`Generating ${era} image with prompt: ${prompt}`);
         
         try {
           const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-preview-05-20",
+            model: "gemini-2.0-flash-exp",
             contents: [{ 
               role: "user", 
-              parts: [{ text: prompt + " --ar 3:4" }] 
+              parts: [
+                { inlineData: { mimeType, data: base64Data } },
+                { text: prompt }
+              ] 
             }],
             config: {
               responseModalities: [Modality.TEXT, Modality.IMAGE],
