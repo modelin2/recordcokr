@@ -10,7 +10,10 @@ import { GoogleGenAI, Modality } from "@google/genai";
 // Initialize Gemini AI with Replit AI Integrations
 const ai = new GoogleGenAI({
   apiKey: process.env.AI_INTEGRATIONS_GEMINI_API_KEY,
-  httpOptions: { baseUrl: process.env.AI_INTEGRATIONS_GEMINI_BASE_URL }
+  httpOptions: { 
+    apiVersion: "",
+    baseUrl: process.env.AI_INTEGRATIONS_GEMINI_BASE_URL 
+  }
 });
 
 // Era-based prompt configurations
@@ -783,7 +786,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
       
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash-exp",
+        model: "gemini-2.5-flash-image",
         contents: [{ 
           role: "user", 
           parts: [
@@ -853,7 +856,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         try {
           const response = await ai.models.generateContent({
-            model: "gemini-2.0-flash-exp",
+            model: "gemini-2.5-flash-image",
             contents: [{ 
               role: "user", 
               parts: [
