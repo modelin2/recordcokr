@@ -197,13 +197,13 @@ export default function EnhancedBookingSection() {
       };
 
       const response = await apiRequest("POST", "/api/bookings", bookingData);
-      return response.json();
+      return { json: await response.json(), selectedAddons: data.selectedAddons };
     },
     onSuccess: (response) => {
       console.log('Booking creation response:', response);
       
       // Extract bookingId from response
-      const bookingId = response.id;
+      const bookingId = response.json.id;
       console.log('Extracted bookingId:', bookingId);
       
       if (!bookingId) {
@@ -216,12 +216,32 @@ export default function EnhancedBookingSection() {
         return;
       }
 
-      // Booking complete - no payment processing
-      toast({
-        title: "Booking Confirmed!",
-        description: `Booking #${bookingId} has been successfully received. We will contact you soon.`,
-        duration: 5000,
-      });
+      // Open PayPal links for selected addons
+      const selectedAddonIds = response.selectedAddons || [];
+      const selectedAddonNames = selectedAddonIds
+        .map((id: number) => addons.find(a => a.id === id)?.name)
+        .filter((name: string | undefined): name is string => !!name && !!paypalLinks[name]);
+      
+      if (selectedAddonNames.length > 0) {
+        // Open PayPal links for each selected addon with payment link
+        selectedAddonNames.forEach((name: string, index: number) => {
+          setTimeout(() => {
+            window.open(paypalLinks[name], '_blank');
+          }, index * 500); // Stagger opening to prevent popup blocking
+        });
+        
+        toast({
+          title: "Booking Confirmed!",
+          description: `Booking #${bookingId} confirmed. PayPal payment pages opened for your selected services.`,
+          duration: 7000,
+        });
+      } else {
+        toast({
+          title: "Booking Confirmed!",
+          description: `Booking #${bookingId} has been successfully received. We will contact you soon.`,
+          duration: 5000,
+        });
+      }
       
       // Reset form and selections
       form.reset();
@@ -738,9 +758,6 @@ export default function EnhancedBookingSection() {
                                         <Checkbox
                                           checked={field.value?.includes(addon.id)}
                                           onCheckedChange={(checked) => {
-                                            if (checked && hasPaypalLink) {
-                                              window.open(paypalLinks[addon.name], '_blank');
-                                            }
                                             return checked
                                               ? field.onChange([...field.value, addon.id])
                                               : field.onChange(
