@@ -571,45 +571,45 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           )}
 
           {/* Advertisement Section */}
-          <div className="border-2 border-black p-2 mb-2 bg-gray-50">
-            <div className="text-[9px] font-black text-center border-b border-black pb-1 mb-1">ADVERTISEMENT</div>
-            <div className="text-[10px] font-bold text-center">🎵 GLOBAL MUSIC DISTRIBUTION</div>
-            <p className="text-[9px] text-center leading-tight">
-              Release your music worldwide. Earn 100% royalties for life.
+          <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
+            <div className="text-[8px] font-black text-center border-b border-black pb-0.5 mb-1">ADVERTISEMENT</div>
+            <div className="text-[9px] font-bold text-center">🎵 GLOBAL MUSIC DISTRIBUTION</div>
+            <p className="text-[8px] text-center leading-tight">
+              Let your music be heard around the world. Distribute your tracks to Spotify, Apple Music, YouTube Music, and more. Earn the same royalty rates as signed artists—deposited directly to your account, for life.
             </p>
-            <div className="text-[10px] font-black text-center">record.co.kr</div>
+            <div className="text-[9px] font-black text-center">record.co.kr</div>
           </div>
 
-          <div className="border-2 border-black p-2 mb-2 bg-gray-50">
-            <div className="text-[10px] font-bold text-center">🛍️ DUTY FREE VIP</div>
-            <p className="text-[9px] text-center leading-tight">
-              Instant VIP. Up to 15% extra discount. Scan QR below.
+          <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
+            <div className="text-[9px] font-bold text-center">🛍️ DUTY FREE VIP</div>
+            <p className="text-[8px] text-center leading-tight">
+              All Recording Cafe customers get instant VIP registration. Unlock VIP status and enjoy up to 15% extra discount at duty-free shops. Claim your benefits now.
             </p>
-            <div className="text-[10px] font-black text-center">vip.sc.kr</div>
+            <div className="text-[9px] font-black text-center">vip.sc.kr</div>
           </div>
 
-          <div className="border-2 border-black p-2 mb-2 bg-gray-50">
-            <div className="text-[10px] font-bold text-center">🏢 KOREA BUSINESS SETUP</div>
-            <p className="text-[9px] text-center leading-tight">
-              Company incorporation & virtual office address. "Yes, Hello?"
+          <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
+            <div className="text-[9px] font-bold text-center">🏢 KOREA BUSINESS SETUP</div>
+            <p className="text-[8px] text-center leading-tight">
+              Create "Made in Korea" products. Start your company in Korea. From company incorporation to business address services—all in one place. Entering the Korean market has never been easier.
             </p>
-            <div className="text-[10px] font-black text-center">center.sc.kr</div>
+            <div className="text-[9px] font-black text-center">korea.sc.kr</div>
           </div>
 
-          <div className="border-2 border-black p-2 mb-2 bg-gray-50">
-            <div className="text-[10px] font-bold text-center">💎 K-BEAUTY & PLASTIC SURGERY</div>
-            <p className="text-[9px] text-center leading-tight">
-              20% discount on dermatology & plastic surgery in Korea.
+          <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
+            <div className="text-[9px] font-bold text-center">💎 K-BEAUTY & PLASTIC SURGERY</div>
+            <p className="text-[8px] text-center leading-tight">
+              Discover true beauty in the home of K-Beauty. Get 20% off at Korea's top dermatology clinics and plastic surgery centers.
             </p>
-            <div className="text-[10px] font-black text-center">beauty.sc.kr</div>
+            <div className="text-[9px] font-black text-center">beauty.sc.kr</div>
           </div>
 
-          <div className="border-2 border-black p-2 flex-1 bg-gray-50 flex flex-col justify-center">
-            <div className="text-[10px] font-bold text-center">💕 FIND TRUE LOVE</div>
-            <p className="text-[9px] text-center leading-tight">
-              Meet your soulmate. International matchmaking.
+          <div className="border-2 border-black p-1.5 flex-1 bg-gray-50 flex flex-col justify-center">
+            <div className="text-[9px] font-bold text-center">💕 FIND TRUE LOVE</div>
+            <p className="text-[8px] text-center leading-tight">
+              Cross borders. Meet someone from Korea. Professional matchmakers connecting you with Korean singles for meaningful relationships.
             </p>
-            <div className="text-[10px] font-black text-center">truelove.ai.kr</div>
+            <div className="text-[9px] font-black text-center">truelove.ai.kr</div>
           </div>
         </div>
       </div>
