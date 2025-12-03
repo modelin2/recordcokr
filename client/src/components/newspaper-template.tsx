@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import logoImage from "@assets/레코딩카페-한글로고_1764752093894.png";
 
 interface LifeStageImage {
   lifeStage: string;
@@ -375,7 +376,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
 
           <div className="text-right">
             <img 
-              src="/assets/레코딩카페-한글로고_1764752093894.png" 
+              src={logoImage} 
               alt="Recording Cafe" 
               className="h-14 object-contain"
             />
