@@ -373,11 +373,12 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             </div>
           </div>
 
-          <div className="text-right text-[11px] text-black leading-tight">
-            <div className="border-2 border-black p-2">
-              <div className="font-black text-base">QR</div>
-              <div className="font-bold text-[10px]">SCAN</div>
-            </div>
+          <div className="text-right">
+            <img 
+              src="/assets/레코딩카페-한글로고_1764752093894.png" 
+              alt="Recording Cafe" 
+              className="h-14 object-contain"
+            />
           </div>
         </div>
         
