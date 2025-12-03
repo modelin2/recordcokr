@@ -12,7 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Coffee, Music, ShoppingBag, Sparkles, ExternalLink } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { CalendarIcon, Coffee, Music, ShoppingBag, Sparkles, ExternalLink, CheckCircle, CreditCard } from "lucide-react";
 import { format } from "date-fns";
 
 // PayPal payment links for additional services
@@ -80,6 +81,11 @@ const bookingFormSchema = z.object({
 
 type BookingForm = z.infer<typeof bookingFormSchema>;
 
+interface PaymentModalData {
+  bookingId: number;
+  selectedServices: { name: string; price: number; paypalLink: string }[];
+}
+
 export default function EnhancedBookingSection() {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
@@ -87,6 +93,7 @@ export default function EnhancedBookingSection() {
   const [loadingTimes, setLoadingTimes] = useState(false);
   const [bookingStep, setBookingStep] = useState<"select-type" | "booking-form">("select-type");
   const [selectedBookingType, setSelectedBookingType] = useState<"direct" | "klook">();
+  const [paymentModal, setPaymentModal] = useState<PaymentModalData | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -216,24 +223,23 @@ export default function EnhancedBookingSection() {
         return;
       }
 
-      // Open PayPal links for selected addons
+      // Check for selected addons with PayPal links
       const selectedAddonIds = response.selectedAddons || [];
-      const selectedAddonNames = selectedAddonIds
-        .map((id: number) => addons.find(a => a.id === id)?.name)
-        .filter((name: string | undefined): name is string => !!name && !!paypalLinks[name]);
+      const selectedServices = selectedAddonIds
+        .map((id: number) => {
+          const addon = addons.find(a => a.id === id);
+          if (addon && paypalLinks[addon.name]) {
+            return { name: addon.name, price: addon.price, paypalLink: paypalLinks[addon.name] };
+          }
+          return null;
+        })
+        .filter((service): service is { name: string; price: number; paypalLink: string } => service !== null);
       
-      if (selectedAddonNames.length > 0) {
-        // Open PayPal links for each selected addon with payment link
-        selectedAddonNames.forEach((name: string, index: number) => {
-          setTimeout(() => {
-            window.open(paypalLinks[name], '_blank');
-          }, index * 500); // Stagger opening to prevent popup blocking
-        });
-        
-        toast({
-          title: "Booking Confirmed!",
-          description: `Booking #${bookingId} confirmed. PayPal payment pages opened for your selected services.`,
-          duration: 7000,
+      if (selectedServices.length > 0) {
+        // Show payment modal with buttons
+        setPaymentModal({
+          bookingId,
+          selectedServices,
         });
       } else {
         toast({
@@ -862,6 +868,60 @@ export default function EnhancedBookingSection() {
           </Card>
         </div>
       </div>
+      {/* Payment Modal */}
+      <Dialog open={!!paymentModal} onOpenChange={(open) => !open && setPaymentModal(null)}>
+        <DialogContent className="sm:max-w-md bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-white text-xl">
+              <CheckCircle className="h-6 w-6 text-green-400" />
+              Booking Confirmed!
+            </DialogTitle>
+            <DialogDescription className="text-gray-300">
+              Booking #{paymentModal?.bookingId} has been successfully received.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+              <p className="text-yellow-400 text-sm font-medium mb-2">
+                💳 Payment Required for Additional Services
+              </p>
+              <p className="text-gray-300 text-sm">
+                Please click each button below to complete payment via PayPal. 
+                If a new window doesn't open, please check your popup blocker settings.
+              </p>
+            </div>
+            
+            <div className="space-y-3">
+              {paymentModal?.selectedServices.map((service, index) => (
+                <div key={index} className="flex items-center justify-between bg-white/5 rounded-lg p-3">
+                  <div>
+                    <p className="text-white font-medium">{service.name}</p>
+                    <p className="text-yellow-400 text-sm">₩{service.price.toLocaleString()}</p>
+                  </div>
+                  <Button
+                    onClick={() => window.open(service.paypalLink, '_blank')}
+                    className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    Pay with PayPal
+                  </Button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="pt-4 border-t border-gray-700">
+              <Button
+                onClick={() => setPaymentModal(null)}
+                variant="outline"
+                className="w-full border-gray-600 text-gray-300 hover:bg-gray-700"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
