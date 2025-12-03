@@ -415,10 +415,11 @@ export default function PhotoPage() {
                 <h1 className="text-xl font-bold">기념 사진 출력</h1>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Camera className="w-5 h-5" />
-              <span className="text-sm">Recording Cafe</span>
-            </div>
+            <img 
+              src="/assets/레코딩카페-한글로고_1764752093894.png" 
+              alt="Recording Cafe" 
+              className="h-10 object-contain"
+            />
           </div>
         </div>
 
