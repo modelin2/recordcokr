@@ -12,8 +12,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Coffee, Music, ShoppingBag, Sparkles } from "lucide-react";
+import { CalendarIcon, Coffee, Music, ShoppingBag, Sparkles, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
+
+// PayPal payment links for additional services
+const paypalLinks: Record<string, string> = {
+  "Recording Video - Raw footage only": "https://www.paypal.com/ncp/payment/KCAEA9TSL4UDC",
+  "Recording Video - Edited with song": "https://www.paypal.com/ncp/payment/A555WXMCPFUP8",
+  "LP Record Production": "https://www.paypal.com/ncp/payment/93R6M35YLRQPL",
+  "Full Track Mixing": "https://www.paypal.com/ncp/payment/ZAAE5ZA56ABRW",
+  "Global Distribution": "https://www.paypal.com/ncp/payment/N6WJ29SGK4ZLG",
+};
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -719,6 +728,7 @@ export default function EnhancedBookingSection() {
                                 control={form.control}
                                 name="selectedAddons"
                                 render={({ field }) => {
+                                  const hasPaypalLink = paypalLinks[addon.name];
                                   return (
                                     <FormItem
                                       key={addon.id}
@@ -728,6 +738,9 @@ export default function EnhancedBookingSection() {
                                         <Checkbox
                                           checked={field.value?.includes(addon.id)}
                                           onCheckedChange={(checked) => {
+                                            if (checked && hasPaypalLink) {
+                                              window.open(paypalLinks[addon.name], '_blank');
+                                            }
                                             return checked
                                               ? field.onChange([...field.value, addon.id])
                                               : field.onChange(
@@ -738,16 +751,26 @@ export default function EnhancedBookingSection() {
                                           }}
                                         />
                                       </FormControl>
-                                      <div className="space-y-1 leading-none">
-                                        <FormLabel className="text-white font-semibold">
-                                          {addon.name}
-                                        </FormLabel>
+                                      <div className="space-y-1 leading-none flex-1">
+                                        <div className="flex items-center gap-2">
+                                          <FormLabel className="text-white font-semibold">
+                                            {addon.name}
+                                          </FormLabel>
+                                          {hasPaypalLink && (
+                                            <ExternalLink className="h-3 w-3 text-yellow-400" />
+                                          )}
+                                        </div>
                                         <p className="text-sm text-gray-300">
                                           {addon.description}
                                         </p>
                                         <p className="text-lg font-bold text-yellow-400">
                                           ₩{addon.price.toLocaleString()}
                                         </p>
+                                        {hasPaypalLink && (
+                                          <p className="text-xs text-green-400">
+                                            PayPal payment available
+                                          </p>
+                                        )}
                                       </div>
                                     </FormItem>
                                   )
