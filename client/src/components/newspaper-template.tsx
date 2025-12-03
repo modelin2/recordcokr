@@ -571,29 +571,45 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           )}
 
           {/* Advertisement Section */}
-          <div className="border-2 border-black p-3 mb-3 bg-gray-50">
-            <div className="text-[10px] font-black text-center border-b border-black pb-1 mb-2">ADVERTISEMENT</div>
-            <div className="text-xs font-bold text-center mb-1">🎵 GLOBAL MUSIC DISTRIBUTION</div>
-            <p className="text-[10px] text-center leading-snug mb-2">
-              Release your music on Spotify, YouTube & more worldwide. Earn 100% royalties just like the artists do — for life.
+          <div className="border-2 border-black p-2 mb-2 bg-gray-50">
+            <div className="text-[9px] font-black text-center border-b border-black pb-1 mb-1">ADVERTISEMENT</div>
+            <div className="text-[10px] font-bold text-center">🎵 GLOBAL MUSIC DISTRIBUTION</div>
+            <p className="text-[9px] text-center leading-tight">
+              Release your music worldwide. Earn 100% royalties for life.
             </p>
-            <div className="text-[11px] font-black text-center">record.co.kr</div>
+            <div className="text-[10px] font-black text-center">record.co.kr</div>
           </div>
 
-          <div className="border-2 border-black p-3 mb-3 bg-gray-50">
-            <div className="text-xs font-bold text-center mb-1">🛍️ DUTY FREE VIP</div>
-            <p className="text-[10px] text-center leading-snug mb-2">
-              Instant VIP registration. Get up to 15% additional discount. Scan the QR code below.
+          <div className="border-2 border-black p-2 mb-2 bg-gray-50">
+            <div className="text-[10px] font-bold text-center">🛍️ DUTY FREE VIP</div>
+            <p className="text-[9px] text-center leading-tight">
+              Instant VIP. Up to 15% extra discount. Scan QR below.
             </p>
-            <div className="text-[11px] font-black text-center">vip.sc.kr</div>
+            <div className="text-[10px] font-black text-center">vip.sc.kr</div>
           </div>
 
-          <div className="border-2 border-black p-3 flex-1 bg-gray-50 flex flex-col justify-center">
-            <div className="text-xs font-bold text-center mb-1">💕 FIND TRUE LOVE</div>
-            <p className="text-[10px] text-center leading-snug mb-2">
-              Meet your soulmate. International matchmaking service.
+          <div className="border-2 border-black p-2 mb-2 bg-gray-50">
+            <div className="text-[10px] font-bold text-center">🏢 KOREA BUSINESS SETUP</div>
+            <p className="text-[9px] text-center leading-tight">
+              Company incorporation & virtual office address. "Yes, Hello?"
             </p>
-            <div className="text-[11px] font-black text-center">truelove.ai.kr</div>
+            <div className="text-[10px] font-black text-center">center.sc.kr</div>
+          </div>
+
+          <div className="border-2 border-black p-2 mb-2 bg-gray-50">
+            <div className="text-[10px] font-bold text-center">💎 K-BEAUTY & PLASTIC SURGERY</div>
+            <p className="text-[9px] text-center leading-tight">
+              20% discount on dermatology & plastic surgery in Korea.
+            </p>
+            <div className="text-[10px] font-black text-center">beauty.sc.kr</div>
+          </div>
+
+          <div className="border-2 border-black p-2 flex-1 bg-gray-50 flex flex-col justify-center">
+            <div className="text-[10px] font-bold text-center">💕 FIND TRUE LOVE</div>
+            <p className="text-[9px] text-center leading-tight">
+              Meet your soulmate. International matchmaking.
+            </p>
+            <div className="text-[10px] font-black text-center">truelove.ai.kr</div>
           </div>
         </div>
       </div>
