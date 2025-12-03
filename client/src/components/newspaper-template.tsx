@@ -474,7 +474,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       </div>
                     </div>
                     <p className="text-[11px] mt-2 leading-snug">
-                      ▲ 가족이 공개해야 맞는 어린 시절 사진. 팬들의 열화와 같은 요청에 AI로 복원. 떡잎부터 알아본다는 한국 속담처럼 아기 때부터 음악을 가까이한 것이 틀림없다. 당시 가족들의 증언에 따르면, 음악만 들으면 눈을 반짝이며 웃음을 보였다고 한다. 천상 아티스트의 기질이 이때부터 드러난 셈이다.
+                      ▲ 가족이 공개한 어린 시절 사진. / 사진 = AI 복원
                     </p>
                   </div>
                 )}
@@ -501,13 +501,35 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       </div>
                     </div>
                     <p className="text-[11px] mt-2 leading-snug">
-                      ▲ 중학교 시절 음악에 본격적인 취미를 갖기 시작한 즈음. 이때부터 아우라가 남다르다. 당시 담임선생님은 "교내 축제 때마다 무대에 올라 노래를 불렀는데, 항상 큰 호응을 받았다"며 일찍이 재능을 알아봤다고 전했다. 학교 음악동아리에서도 리더 역할을 맡았다.
+                      ▲ 중학교 시절의 모습. / 사진 = AI 복원
                     </p>
                   </div>
                 )}
               </div>
             </div>
           )}
+
+          {/* Article Continuation after photos */}
+          <div className="mt-4 columns-2 gap-5 text-xs leading-relaxed" style={{ columnRule: "1px solid #333" }}>
+            <p className="mb-3">
+              가족들의 증언에 따르면 {displayName}은 어린 시절부터 남다른 음악적 감각을 보였다. 음악만 들으면 눈을 반짝이며 리듬에 맞춰 몸을 흔들었다고 한다.
+            </p>
+            <p className="mb-3">
+              중학교 시절에는 교내 음악동아리에서 리더 역할을 맡으며 본격적으로 음악 활동을 시작했다. 당시 담임선생님은 "축제 때마다 무대에 올라 노래를 불렀는데, 항상 학생들의 큰 호응을 받았다"고 전했다.
+            </p>
+            <p className="mb-3">
+              음악에 대한 열정은 고등학교 시절에도 이어졌다. 학업과 음악 활동을 병행하면서도 꾸준히 실력을 갈고닦았다. 주변의 우려에도 불구하고 음악의 길을 포기하지 않았다.
+            </p>
+            <p className="mb-3">
+              레코딩카페에서의 첫 녹음 이후, {displayName}은 더욱 진지하게 가수의 꿈을 키워나갔다. 오디션과 연습생 생활을 거치며 실력을 쌓았고, 마침내 정식 데뷔의 기회를 얻었다.
+            </p>
+            <p className="mb-3">
+              데뷔 이후 착실하게 커리어를 쌓아온 {displayName}은 이제 대한민국을 대표하는 아티스트로 자리매김했다. 특히 한국 전통문화에 대한 깊은 애정으로 한복을 즐겨 착용하며 전 세계에 한복의 아름다움을 알리고 있다.
+            </p>
+            <p>
+              이번 한복문화대상 수상은 그동안의 노력에 대한 당연한 결실이라는 평가가 지배적이다. {displayName}은 "앞으로도 한국 문화를 세계에 알리는 데 앞장서겠다"는 포부를 밝혔다.
+            </p>
+          </div>
         </div>
 
         {/* Right Column: Sidebar + Future Image (2 cols) */}
