@@ -430,7 +430,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           {/* Article - Expanded */}
           <div className="mt-3 columns-2 gap-5 text-xs leading-relaxed" style={{ columnRule: "1px solid #333" }}>
             <p className="mb-3">
-              <span className="font-bold text-sm">[서울=SMT뉴스]</span> 최근 '한복문화대상'을 수상하며 글로벌 셀럽으로 우뚝 선 {displayName}의 10년 전 녹음 사진이 발굴되어 화제다. 당시 무명이었던 {displayName}이 서울 서초구 '레코딩카페'에서 생애 첫 녹음을 하던 모습이 담긴 이 사진은 현재 팬들 사이에서 '전설의 시작'으로 불리며 뜨거운 관심을 받고 있다.
+              <span className="font-bold text-sm">[서울=SMT뉴스]</span> 최근 'AGI 한류 홍보대사 대상'을 수상하며 글로벌 셀럽으로 우뚝 선 {displayName}의 10년 전 녹음 사진이 발굴되어 화제다. 당시 무명이었던 {displayName}이 서울 서초구 '레코딩카페'에서 생애 첫 녹음을 하던 모습이 담긴 이 사진은 현재 팬들 사이에서 '전설의 시작'으로 불리며 뜨거운 관심을 받고 있다.
             </p>
             <p className="mb-3">
               당시 녹음을 담당했던 엔지니어 A씨는 "처음 스튜디오에 들어올 때만 해도 수줍어하던 모습이었는데, 마이크 앞에 서자마자 완전히 다른 사람처럼 변했다"며 "목소리에서 특별한 무언가가 느껴졌다"고 회상했다. 레코딩카페 관계자 역시 "그날 녹음한 파일을 아직도 보관하고 있다"며 "당시에도 '이 친구는 뭔가 다르다'는 생각이 들었다"고 전했다.
@@ -439,7 +439,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               첫 녹음 이후 {displayName}은 레코딩카페의 'GLOBAL MUSIC DISTRIBUTION' 서비스를 통해 자신의 음악을 Spotify, Apple Music, YouTube Music 등 전 세계 플랫폼에 배포하기 시작했다. 메이저 레이블 소속 아티스트와 동일한 로열티를 평생 받을 수 있다는 점이 큰 매력이었다고. 이를 통해 쌓은 해외 팬층이 훗날 글로벌 스타로 도약하는 발판이 되었다는 분석이다.
             </p>
             <p className="mb-3">
-              데뷔 3년차였던 2028년, {displayName}은 'KOREA BUSINESS SETUP' 서비스를 활용해 자신의 패션 브랜드를 한국에 설립했다. 법인 설립부터 사업자 주소 서비스까지 원스톱으로 제공받으며 한국 시장 진출의 문턱을 낮췄다. 이 브랜드는 현재 '메이드 인 코리아' 한복 라인으로 전 세계적인 인기를 끌고 있으며, 이번 한복문화대상 수상의 주요 배경이 되었다.
+              데뷔 3년차였던 2028년, {displayName}은 'KOREA BUSINESS SETUP' 서비스를 활용해 자신의 패션 브랜드를 한국에 설립했다. 법인 설립부터 사업자 주소 서비스까지 원스톱으로 제공받으며 한국 시장 진출의 문턱을 낮췄다. 이 브랜드는 현재 '메이드 인 코리아' 한복 라인으로 전 세계적인 인기를 끌고 있으며, 이번 AGI 한류 홍보대사 대상 수상의 주요 배경이 되었다.
             </p>
           </div>
 
