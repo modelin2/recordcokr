@@ -529,7 +529,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             <div className="mb-4">
               <div className="bg-black print-bg-black p-2 mb-2">
                 <div className="text-xs font-black text-center tracking-wider text-white print-text-white">
-                  ★ {futureYear} 한복문화대상 ★
+                  ★ {futureYear} AGI 한류 홍보대사 대상 ★
                 </div>
               </div>
               <div 
@@ -554,8 +554,8 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 </div>
               </div>
               <p className="text-[11px] mt-2 text-justify leading-snug">
-                ▲ 지난달 열린 '{futureYear} 한복문화대상'에서 대상을 수상한 <span className="font-bold">{displayName}</span>이 관객들에게 손을 흔들고 있다. 
-                전통 한복의 아름다움을 전 세계에 알린 공로를 인정받았다.
+                ▲ 지난달 열린 '{futureYear} AGI 한류 홍보대사 대상'에서 대상을 수상한 <span className="font-bold">{displayName}</span>이 관객들에게 손을 흔들고 있다. 
+                한류를 전 세계에 알린 공로를 인정받아 한국 AGI 재단 설립 위원회로부터 수상했다.
               </p>
             </div>
           )}
