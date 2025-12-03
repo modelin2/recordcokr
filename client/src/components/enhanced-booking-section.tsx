@@ -924,8 +924,7 @@ export default function EnhancedBookingSection() {
                   setSelectedBookingType(undefined);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                variant="outline"
-                className="w-full border-gray-600 text-gray-300 hover:bg-gray-700"
+                className="w-full bg-white text-gray-900 hover:bg-gray-100 font-semibold"
               >
                 Close
               </Button>
