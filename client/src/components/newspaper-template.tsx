@@ -565,7 +565,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             <div className="text-[8px] font-black text-center border-b border-black pb-0.5 mb-1">ADVERTISEMENT</div>
             <div className="text-[9px] font-bold text-center">🎵 GLOBAL MUSIC DISTRIBUTION</div>
             <p className="text-[8px] text-center leading-tight">
-              Let your music be heard around the world. Distribute your tracks to Spotify, Apple Music, YouTube Music, and more. Earn the same royalty rates as signed artists—deposited directly to your account, for life.
+              Distribute your music to Spotify, Apple Music, YouTube Music, Instagram, TikTok and more. Earn the same royalty rates as K-pop artists—for life.
             </p>
             <div className="text-[9px] font-black text-center">record.co.kr</div>
           </div>
