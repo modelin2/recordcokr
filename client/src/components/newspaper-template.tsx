@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import logoImage from "@assets/레코딩카페-한글로고_1764752093894.png";
+import logoImage from "@assets/레코딩카페-한글로고_1764752892828.png";
 
 interface LifeStageImage {
   lifeStage: string;
