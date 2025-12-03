@@ -236,31 +236,33 @@ export default function EnhancedBookingSection() {
         .filter((service): service is { name: string; price: number; paypalLink: string } => service !== null);
       
       if (selectedServices.length > 0) {
-        // Show payment modal with buttons
+        // Show payment modal with buttons - don't reset form yet
         setPaymentModal({
           bookingId,
           selectedServices,
         });
+        // Invalidate queries to refresh data
+        queryClient.invalidateQueries({ queryKey: ['/api/timeslots'] });
       } else {
         toast({
           title: "Booking Confirmed!",
           description: `Booking #${bookingId} has been successfully received. We will contact you soon.`,
           duration: 5000,
         });
+        
+        // Reset form and selections only when no payment modal
+        form.reset();
+        setSelectedDate(undefined);
+        setAvailableTimes([]);
+        setBookingStep("select-type");
+        setSelectedBookingType(undefined);
+        
+        // Invalidate queries to refresh data
+        queryClient.invalidateQueries({ queryKey: ['/api/timeslots'] });
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-      
-      // Reset form and selections
-      form.reset();
-      setSelectedDate(undefined);
-      setAvailableTimes([]);
-      setBookingStep("select-type");
-      setSelectedBookingType(undefined);
-      
-      // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ['/api/timeslots'] });
-      
-      // Optional: Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     onError: (error: any) => {
       toast({
@@ -912,7 +914,16 @@ export default function EnhancedBookingSection() {
             
             <div className="pt-4 border-t border-gray-700">
               <Button
-                onClick={() => setPaymentModal(null)}
+                onClick={() => {
+                  setPaymentModal(null);
+                  // Reset form and go back to selection after closing modal
+                  form.reset();
+                  setSelectedDate(undefined);
+                  setAvailableTimes([]);
+                  setBookingStep("select-type");
+                  setSelectedBookingType(undefined);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 variant="outline"
                 className="w-full border-gray-600 text-gray-300 hover:bg-gray-700"
               >
