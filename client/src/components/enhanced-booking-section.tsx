@@ -17,8 +17,8 @@ import { format } from "date-fns";
 
 // PayPal payment links for additional services
 const paypalLinks: Record<string, string> = {
-  "Recording Video - Raw footage only": "https://www.paypal.com/ncp/payment/KCAEA9TSL4UDC",
-  "Recording Video - Edited with song": "https://www.paypal.com/ncp/payment/A555WXMCPFUP8",
+  "Recording Video (Raw)": "https://www.paypal.com/ncp/payment/KCAEA9TSL4UDC",
+  "Recording Video (Edited)": "https://www.paypal.com/ncp/payment/A555WXMCPFUP8",
   "LP Record Production": "https://www.paypal.com/ncp/payment/93R6M35YLRQPL",
   "Full Track Mixing": "https://www.paypal.com/ncp/payment/ZAAE5ZA56ABRW",
   "Global Distribution": "https://www.paypal.com/ncp/payment/N6WJ29SGK4ZLG",
