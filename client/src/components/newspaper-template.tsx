@@ -570,52 +570,30 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             </div>
           )}
 
-          {/* Profile Box */}
-          <div className="border-2 border-black p-3 mb-4">
-            <div className="text-xs font-black border-b-2 border-black pb-2 mb-3">PROFILE</div>
-            <div className="space-y-2 text-[11px]">
-              <div className="flex justify-between gap-2">
-                <span className="shrink-0">Artist</span>
-                <span className="font-bold text-right">{displayName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>데뷔</span>
-                <span>{today.getFullYear()}년</span>
-              </div>
-              <div className="flex justify-between">
-                <span>수상</span>
-                <span className="font-bold">한복문화대상</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Quote Box */}
-          <div className="border-2 border-black p-4 mb-4 bg-gray-50">
-            <p className="text-xs italic text-center leading-relaxed">
-              "10년 전 그 작은 카페에서 시작된 꿈이 오늘 이렇게 이루어졌습니다. 녹음실에서 처음 마이크를 잡았을 때의 떨림을 아직도 기억합니다."
+          {/* Advertisement Section */}
+          <div className="border-2 border-black p-3 mb-3 bg-gray-50">
+            <div className="text-[10px] font-black text-center border-b border-black pb-1 mb-2">ADVERTISEMENT</div>
+            <div className="text-xs font-bold text-center mb-1">🎵 GLOBAL MUSIC DISTRIBUTION</div>
+            <p className="text-[10px] text-center leading-snug mb-2">
+              Release your music on Spotify, YouTube & more worldwide. Earn 100% royalties just like the artists do — for life.
             </p>
-            <p className="text-[10px] text-right mt-3 font-bold">- {displayName} 수상 소감 중</p>
+            <div className="text-[11px] font-black text-center">record.co.kr</div>
           </div>
 
-          {/* Weather */}
-          <div className="border-2 border-black p-3 mb-4">
-            <div className="text-[11px] font-bold">[오늘의 날씨]</div>
-            <div className="text-xs mt-1">맑음 ☀️ 축하하기 좋은 날</div>
-            <div className="text-[10px] text-gray-600 mt-1">서울 최고 22°C / 최저 14°C</div>
+          <div className="border-2 border-black p-3 mb-3 bg-gray-50">
+            <div className="text-xs font-bold text-center mb-1">🛍️ DUTY FREE VIP</div>
+            <p className="text-[10px] text-center leading-snug mb-2">
+              Instant VIP registration. Get up to 15% additional discount. Scan the QR code below.
+            </p>
+            <div className="text-[11px] font-black text-center">vip.sc.kr</div>
           </div>
 
-          {/* Drink Section */}
-          <div className="border-2 border-black p-4 bg-gray-50 flex-1 flex flex-col justify-center">
-            <div className="text-xs font-black text-center">[10년 전 그날의 음료]</div>
-            <div className="text-lg font-bold text-center mt-3">
-              ☕ {drinkTemperature === "iced" ? "Iced " : drinkTemperature === "hot" ? "Hot " : ""}{drinkName || "아메리카노"}
-            </div>
-            <div className="text-[11px] text-gray-600 italic text-center mt-3">
-              "성공의 첫 걸음은 이 한 잔과 함께"
-            </div>
-            <div className="text-[10px] text-center mt-2 text-gray-500">
-              레코딩카페 시그니처 메뉴
-            </div>
+          <div className="border-2 border-black p-3 flex-1 bg-gray-50 flex flex-col justify-center">
+            <div className="text-xs font-bold text-center mb-1">💕 FIND TRUE LOVE</div>
+            <p className="text-[10px] text-center leading-snug mb-2">
+              Meet your soulmate. International matchmaking service.
+            </p>
+            <div className="text-[11px] font-black text-center">truelove.ai.kr</div>
           </div>
         </div>
       </div>
