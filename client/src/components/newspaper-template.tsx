@@ -34,6 +34,7 @@ interface NewspaperTemplateProps {
   lifeStageImages?: LifeStageImage[];
   imagePositions?: ImagePositions;
   onPositionChange?: (positions: ImagePositions) => void;
+  customerId?: number;
 }
 
 function convertToKorean(name: string): string {
@@ -250,7 +251,7 @@ const defaultPositions: ImagePositions = {
   future: { x: 50, y: 50, scale: 1 },
 };
 
-export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, lifeStageImages = [], imagePositions: externalPositions, onPositionChange }: NewspaperTemplateProps) {
+export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, lifeStageImages = [], imagePositions: externalPositions, onPositionChange, customerId }: NewspaperTemplateProps) {
   const autoKoreanName = koreanName || convertToKorean(customerName);
   const displayName = autoKoreanName ? `${autoKoreanName} (${customerName})` : customerName;
   
@@ -382,8 +383,8 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         
         <div className="flex justify-between items-center text-xs text-black mt-3 border-t-2 border-black pt-2 font-medium">
           <span>{futureDateKr} ({futureDateEn})</span>
-          <span>No. {volumeNumber} (특별호)</span>
-          <span className="font-bold">무가지</span>
+          <span>No. {customerId || 1} (특별호)</span>
+          <span className="font-bold">가격 : 0.00011 BTC</span>
         </div>
       </div>
 
@@ -421,11 +422,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           </div>
           <p className="text-[11px] text-center mt-2 border-b border-black pb-2 font-medium">
             ▲ 10년 전 우연히 '레코딩카페'를 방문해 첫 녹음에 도전하던 <span className="font-bold">{displayName}</span>. 
-            이 사진이 최근 스튜디오 자료실에서 발굴되어 화제다. / 사진 = SMT 자료실
+            이 사진이 최근 미러클부스 자료실에서 발굴되어 화제다. / 사진 = RCT 자료실
           </p>
           
           {/* Article - Expanded */}
-          <div className="mt-3 columns-2 gap-5 text-justify text-xs leading-relaxed" style={{ columnRule: "1px solid #333" }}>
+          <div className="mt-3 columns-2 gap-5 text-xs leading-relaxed" style={{ columnRule: "1px solid #333" }}>
             <p className="mb-3">
               <span className="font-bold text-sm">[서울=SMT뉴스]</span> 최근 '한복이 가장 잘 어울리는 스타'로 선정되어 화제를 모으고 있는 {displayName}의 과거 녹음 사진이 발굴되어 팬들의 뜨거운 관심을 받고 있다.
             </p>
@@ -472,8 +473,8 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         ↔ 드래그
                       </div>
                     </div>
-                    <p className="text-[11px] mt-2 text-justify leading-snug">
-                      ▲ 가족이 공개한 어린 시절 사진. 이미 어린 나이에 음악적 재능을 보였다고 한다. "아기 때부터 음악만 틀어주면 웃었다"는 부모님의 증언이 화제다.
+                    <p className="text-[11px] mt-2 leading-snug">
+                      ▲ 가족이 공개해야 맞는 어린 시절 사진. 팬들의 열화와 같은 요청에 AI로 복원. 떡잎부터 알아본다는 한국 속담처럼 아기 때부터 음악을 가까이한 것이 틀림없다.
                     </p>
                   </div>
                 )}
@@ -499,8 +500,8 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         ↔ 드래그
                       </div>
                     </div>
-                    <p className="text-[11px] mt-2 text-justify leading-snug">
-                      ▲ 중학교 시절 밴드부에서 활동하던 모습. 당시 담임 교사는 "음악 시간마다 눈이 빛났다"며 숨겨진 재능을 일찍이 알아봤다고 전했다.
+                    <p className="text-[11px] mt-2 leading-snug">
+                      ▲ 중학교 시절 음악에 본격적인 취미를 갖기 시작한 즈음. 이때부터 아우라가 남다르다.
                     </p>
                   </div>
                 )}

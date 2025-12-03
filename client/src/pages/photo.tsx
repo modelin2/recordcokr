@@ -392,6 +392,7 @@ export default function PhotoPage() {
             drinkTemperature={drinkTemperature || undefined}
             lifeStageImages={generatedImages}
             imagePositions={imagePositions}
+            customerId={customers.find(c => c.name === previewPhoto.customerName)?.id}
           />
         </div>
       )}
@@ -769,6 +770,7 @@ export default function PhotoPage() {
                     lifeStageImages={generatedImages}
                     imagePositions={imagePositions}
                     onPositionChange={setImagePositions}
+                    customerId={customers.find(c => c.name === selectedCustomerName)?.id}
                   />
                   <div className="mt-6 flex justify-center gap-4">
                     <Button
