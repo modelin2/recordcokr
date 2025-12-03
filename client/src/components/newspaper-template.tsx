@@ -336,8 +336,8 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       <div className="border-b-4 border-black pb-3 mb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-16 h-16 border-2 border-black flex items-center justify-center">
-              <span className="text-black font-black text-xl">RC</span>
+            <div className="w-16 h-16 bg-black flex items-center justify-center">
+              <span className="text-white font-black text-xl">RC</span>
             </div>
             <span className="text-xs leading-tight text-black font-medium">
               SINCE<br/>2024
@@ -515,8 +515,8 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           {/* Award Photo */}
           {futureImage?.imageData && (
             <div className="mb-4">
-              <div className="border-2 border-black p-2 mb-2">
-                <div className="text-xs font-black text-center tracking-wider text-black">
+              <div className="bg-black p-2 mb-2">
+                <div className="text-xs font-black text-center tracking-wider text-white">
                   ★ {futureYear} 한복문화대상 ★
                 </div>
               </div>

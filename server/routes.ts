@@ -114,10 +114,10 @@ function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompt
   const background = getRandomElement(config.background);
   const style = getRandomElement(config.style);
   
-  // Strong identity preservation instructions
+  // Strong identity preservation instructions - especially critical for infant/child transformations
   const identityPreservation = personCount === 2 
-    ? "CRITICAL IDENTITY PRESERVATION: There are exactly TWO people in this photo. You MUST keep BOTH people's exact HAIR COLOR (black, brown, blonde, etc.), HAIR STYLE (long, short, curly, straight), FACE SHAPE, EYE SHAPE, NOSE SHAPE, and SKIN TONE exactly the same. Do not change anyone's appearance - only age them appropriately. Both people must be clearly recognizable."
-    : "CRITICAL IDENTITY PRESERVATION: Keep the person's exact HAIR COLOR (black, brown, blonde, etc.), HAIR STYLE (long, short, curly, straight), FACE SHAPE, EYE SHAPE, NOSE SHAPE, and SKIN TONE exactly the same. Do not change their appearance - only age them appropriately. The person must be clearly recognizable.";
+    ? "CRITICAL IDENTITY PRESERVATION: There are exactly TWO people in this photo. You MUST keep BOTH people's exact HAIR COLOR (black, brown, blonde, etc.), HAIR STYLE (long, short, curly, straight), FACE SHAPE, EYE SHAPE, EYE COLOR, NOSE SHAPE, LIP SHAPE, and SKIN TONE exactly the same. The facial structure and features must remain recognizable as the same person - only make them younger. Do not change anyone's core facial identity - just the age. Both people must be immediately recognizable as their younger selves."
+    : "CRITICAL IDENTITY PRESERVATION: You MUST keep this person's exact HAIR COLOR (black, brown, blonde, red, etc.), HAIR TEXTURE (straight, wavy, curly), FACE SHAPE (round, oval, square, heart), EYE SHAPE, EYE COLOR, NOSE SHAPE, LIP SHAPE, EYEBROW SHAPE, and SKIN TONE exactly the same. The facial proportions and distinctive features must remain clearly recognizable. This must look like the SAME PERSON at a younger age - the identity transformation should be believable as their real childhood photo. Do not substitute with a generic baby/child face - preserve their unique facial characteristics.";
   
   if (stage === "future") {
     if (personCount === 2) {
@@ -127,10 +127,10 @@ function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompt
   }
   
   if (personCount === 2) {
-    return `${identityPreservation} Transform these TWO people into ${config.ageRange} old children versions of themselves. Make them younger as ${config.nameKr} aged children but keep their exact hair color and facial features recognizable. Both children should be ${clothing}, ${pose}, ${background}. Apply vintage photography style: ${style}. This is a childhood photo from a family album showing both people as young children.`;
+    return `${identityPreservation} Transform these TWO people into ${config.ageRange} old children versions of themselves. Make them younger as ${config.nameKr} aged children. IMPORTANT: The child versions must have the SAME facial bone structure, eye shape, nose shape, and hair color as the original adults. Both children should be ${clothing}, ${pose}, ${background}. Apply vintage photography style: ${style}. This is a childhood photo from a family album showing both people as young children - they should look like believable baby versions of the adults in the source photo.`;
   }
   
-  return `${identityPreservation} Transform this person into a ${config.ageRange} old child version of themselves. Make them younger as a ${config.nameKr} aged child but keep their exact hair color and facial features recognizable. The child should be ${clothing}, ${pose}, ${background}. Apply vintage photography style: ${style}. This is a childhood photo from a family album.`;
+  return `${identityPreservation} Transform this person into a ${config.ageRange} old child version of themselves. IMPORTANT: The child must have the SAME facial bone structure, eye shape, nose shape, lip shape, and especially the SAME HAIR COLOR AND TEXTURE as the original adult. The baby/child face should clearly share genetic traits with the adult - imagine this is their REAL childhood photo. The child should be ${clothing}, ${pose}, ${background}. Apply vintage photography style: ${style}. This should look like an authentic childhood photo that could be from this person's family album.`;
 }
 
 // Simple session middleware for demo purposes

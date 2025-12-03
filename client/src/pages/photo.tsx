@@ -8,9 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image, Wand2, Loader2, Sparkles } from "lucide-react";
+import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image, Wand2, Loader2, Sparkles, Download } from "lucide-react";
 import type { VisitorPhoto } from "@shared/schema";
 import NewspaperTemplate, { type ImagePositions } from "@/components/newspaper-template";
+import html2canvas from "html2canvas";
 
 interface CustomerInfo {
   id: number;
@@ -38,6 +39,7 @@ export default function PhotoPage() {
   const searchString = useSearch();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [selectedCustomerName, setSelectedCustomerName] = useState<string>("");
   const [koreanName, setKoreanName] = useState<string>("");
@@ -229,6 +231,41 @@ export default function PhotoPage() {
       document.title = originalTitle;
       markPrintedMutation.mutate(photo.id);
     }, 500);
+  };
+
+  const handleDownload = async () => {
+    if (!previewRef.current || !selectedCustomerName) return;
+    
+    try {
+      toast({
+        title: "이미지 생성 중...",
+        description: "잠시만 기다려주세요.",
+      });
+
+      const canvas = await html2canvas(previewRef.current, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+      });
+
+      const link = document.createElement('a');
+      link.download = `${selectedCustomerName}_기념사진.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+      toast({
+        title: "다운로드 완료",
+        description: `${selectedCustomerName}_기념사진.png 파일이 저장되었습니다.`,
+      });
+    } catch (error) {
+      console.error('Download error:', error);
+      toast({
+        title: "다운로드 실패",
+        description: "이미지 다운로드에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
   };
 
   const compressBase64Image = (base64: string, maxWidth: number = 800, quality: number = 0.6): Promise<string> => {
@@ -760,18 +797,20 @@ export default function PhotoPage() {
             <CardContent className="p-6">
               {selectedPhoto && selectedCustomerName ? (
                 <div className="max-w-4xl mx-auto">
-                  <NewspaperTemplate
-                    customerName={selectedCustomerName}
-                    koreanName={koreanName || undefined}
-                    photoData={selectedPhoto}
-                    headline={customHeadline || undefined}
-                    drinkName={selectedDrink || undefined}
-                    drinkTemperature={drinkTemperature || undefined}
-                    lifeStageImages={generatedImages}
-                    imagePositions={imagePositions}
-                    onPositionChange={setImagePositions}
-                    customerId={customers.find(c => c.name === selectedCustomerName)?.id}
-                  />
+                  <div ref={previewRef}>
+                    <NewspaperTemplate
+                      customerName={selectedCustomerName}
+                      koreanName={koreanName || undefined}
+                      photoData={selectedPhoto}
+                      headline={customHeadline || undefined}
+                      drinkName={selectedDrink || undefined}
+                      drinkTemperature={drinkTemperature || undefined}
+                      lifeStageImages={generatedImages}
+                      imagePositions={imagePositions}
+                      onPositionChange={setImagePositions}
+                      customerId={customers.find(c => c.name === selectedCustomerName)?.id}
+                    />
+                  </div>
                   <div className="mt-6 flex justify-center gap-4">
                     <Button
                       onClick={() => {
@@ -793,6 +832,14 @@ export default function PhotoPage() {
                     >
                       <Printer className="w-5 h-5 mr-2" />
                       미리보기 출력하기
+                    </Button>
+                    <Button
+                      onClick={handleDownload}
+                      className="bg-green-700 hover:bg-green-800 text-white px-8 py-3 text-lg"
+                      data-testid="button-download-preview"
+                    >
+                      <Download className="w-5 h-5 mr-2" />
+                      이미지 다운로드
                     </Button>
                   </div>
                 </div>
