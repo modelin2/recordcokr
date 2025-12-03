@@ -75,9 +75,9 @@ const lifeStagePrompts = {
     ]
   },
   "future": {
-    name: "Hanbok Star",
+    name: "Hallyu Ambassador",
     nameKr: "미래",
-    ageRange: "한복스타",
+    ageRange: "한류 홍보대사",
     clothing: [
       "wearing a gorgeous traditional Korean hanbok (jeogori and chima for women, durumagi and baji for men) with luxurious silk fabric and intricate embroidery, NOT modernized hanbok",
       "wearing an elegant authentic Korean traditional hanbok with beautiful color combinations like pink jeogori with blue chima or navy durumagi, with golden embroidery details",
@@ -117,13 +117,13 @@ function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompt
   // Identity preservation for FUTURE stage - keep as ADULT, do NOT make younger
   if (stage === "future") {
     const futureIdentity = personCount === 2 
-      ? "CRITICAL: Keep BOTH people as ADULTS. Do NOT make them younger or children. Preserve their exact adult appearance, HAIR COLOR, HAIR STYLE, FACE SHAPE, EYE SHAPE, NOSE SHAPE, and SKIN TONE. They must look like the same adults from the original photo, just wearing hanbok."
-      : "CRITICAL: Keep this person as an ADULT. Do NOT make them younger or a child. Preserve their exact adult appearance, HAIR COLOR, HAIR STYLE, FACE SHAPE, EYE SHAPE, NOSE SHAPE, and SKIN TONE. They must look like the same adult from the original photo, just wearing hanbok.";
+      ? "CRITICAL: Keep BOTH people as ADULTS. Do NOT make them younger or children. Preserve their exact adult appearance, HAIR COLOR, HAIR STYLE, FACE SHAPE, EYE SHAPE, NOSE SHAPE, and SKIN TONE. They must look like the same adults from the original photo, just wearing hanbok. NO TEXT, NO WORDS, NO LETTERS in the image."
+      : "CRITICAL: Keep this person as an ADULT. Do NOT make them younger or a child. Preserve their exact adult appearance, HAIR COLOR, HAIR STYLE, FACE SHAPE, EYE SHAPE, NOSE SHAPE, and SKIN TONE. They must look like the same adult from the original photo, just wearing hanbok. NO TEXT, NO WORDS, NO LETTERS in the image.";
     
     if (personCount === 2) {
-      return `${futureIdentity} Transform these TWO ADULT people into famous Korean stars at an award ceremony wearing traditional hanbok. They have just been selected as "Best Hanbok Celebrities" and are waving to fans. Men wear traditional male hanbok (durumagi or baji-jeogori), women wear traditional female hanbok (jeogori and chima). NOT modernized hanbok. Both should be ${clothing}, ${pose}, ${background}. Style: ${style}. Show them as beloved ADULT stars receiving applause together.`;
+      return `${futureIdentity} Transform these TWO ADULT people into famous Korean Hallyu ambassadors at an award ceremony wearing traditional hanbok. They are waving gracefully to fans at the ceremony. Men wear traditional male hanbok (durumagi or baji-jeogori), women wear traditional female hanbok (jeogori and chima). NOT modernized hanbok. Both should be ${clothing}, ${pose}, ${background}. Style: ${style}. Show them as beloved ADULT stars receiving applause together. IMPORTANT: Do not include any text, words, banners, signs, or letters anywhere in the image.`;
     }
-    return `${futureIdentity} Transform this ADULT person into a famous Korean star at an award ceremony wearing traditional hanbok. They have just been selected as "Best Hanbok Celebrity" and are waving to fans. If male, wear traditional male hanbok (durumagi). If female, wear traditional female hanbok (jeogori and chima). NOT modernized hanbok. They should be ${clothing}, ${pose}, ${background}. Style: ${style}. Show them as a beloved ADULT star receiving applause.`;
+    return `${futureIdentity} Transform this ADULT person into a famous Korean Hallyu ambassador at an award ceremony wearing traditional hanbok. They are waving gracefully to fans at the ceremony. If male, wear traditional male hanbok (durumagi). If female, wear traditional female hanbok (jeogori and chima). NOT modernized hanbok. They should be ${clothing}, ${pose}, ${background}. Style: ${style}. Show them as a beloved ADULT star receiving applause. IMPORTANT: Do not include any text, words, banners, signs, or letters anywhere in the image.`;
   }
   
   // Identity preservation for CHILD stages - make younger while preserving features
