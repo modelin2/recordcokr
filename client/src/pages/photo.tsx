@@ -262,6 +262,39 @@ export default function PhotoPage() {
     });
   };
 
+  const compressUntilSmallEnough = async (base64Image: string, maxSizeKB: number = 500): Promise<string> => {
+    let currentImage = base64Image;
+    let attempts = 0;
+    const maxAttempts = 5;
+    const compressionSteps = [
+      { maxWidth: 1024, quality: 0.7 },
+      { maxWidth: 800, quality: 0.6 },
+      { maxWidth: 600, quality: 0.5 },
+      { maxWidth: 500, quality: 0.4 },
+      { maxWidth: 400, quality: 0.3 },
+    ];
+
+    while (attempts < maxAttempts) {
+      const base64Size = (currentImage.length * 3) / 4;
+      const sizeKB = Math.round(base64Size / 1024);
+      
+      if (base64Size <= maxSizeKB * 1024) {
+        console.log(`Image compressed to ${sizeKB}KB after ${attempts} attempts`);
+        return currentImage;
+      }
+
+      const step = compressionSteps[Math.min(attempts, compressionSteps.length - 1)];
+      console.log(`Compressing image (attempt ${attempts + 1}): ${sizeKB}KB -> target ${maxSizeKB}KB, using ${step.maxWidth}px @ ${step.quality}`);
+      
+      currentImage = await compressBase64Image(currentImage, step.maxWidth, step.quality);
+      attempts++;
+    }
+
+    const finalSize = Math.round((currentImage.length * 3) / 4 / 1024);
+    console.log(`Final image size after max compression: ${finalSize}KB`);
+    return currentImage;
+  };
+
   const handleGenerateAllImages = async (personCount: number = 1) => {
     if (!selectedPhoto) {
       toast({
@@ -277,17 +310,23 @@ export default function PhotoPage() {
     setGeneratedImages([]);
 
     try {
-      // Check if image is too large (over 500KB base64) and compress if needed
-      let imageToSend = selectedPhoto;
+      // Always compress to ensure image is small enough for AI generation
       const base64Size = (selectedPhoto.length * 3) / 4;
+      const sizeKB = Math.round(base64Size / 1024);
       
-      if (base64Size > 500 * 1024) {
-        toast({
-          title: "이미지 최적화 중...",
-          description: "AI 생성을 위해 이미지를 압축하고 있습니다.",
-        });
-        imageToSend = await compressBase64Image(selectedPhoto, 800, 0.6);
-      }
+      toast({
+        title: "이미지 최적화 중...",
+        description: `원본 크기: ${sizeKB}KB - AI 생성을 위해 최적화합니다.`,
+      });
+      
+      // Compress until small enough (max 500KB for reliable AI processing)
+      const imageToSend = await compressUntilSmallEnough(selectedPhoto, 500);
+      const finalSizeKB = Math.round((imageToSend.length * 3) / 4 / 1024);
+      
+      toast({
+        title: "이미지 준비 완료",
+        description: `최적화된 크기: ${finalSizeKB}KB - AI 생성을 시작합니다.`,
+      });
 
       const response = await apiRequest("POST", "/api/photos/generate-all-stages", {
         sourceImageBase64: imageToSend,
