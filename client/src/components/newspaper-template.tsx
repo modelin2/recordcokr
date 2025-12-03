@@ -474,7 +474,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       </div>
                     </div>
                     <p className="text-[11px] mt-2 leading-snug">
-                      ▲ 가족이 공개한 어린 시절 사진. / 사진 = AI 복원
+                      ▲ 가족이 공개해야 맞는 어린 시절 사진. 팬들의 열화와 같은 요청에 AI로 복원. 떡잎부터 알아본다는 한국 속담처럼 아기 때부터 음악을 가까이한 것이 틀림없다.
                     </p>
                   </div>
                 )}
@@ -501,7 +501,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       </div>
                     </div>
                     <p className="text-[11px] mt-2 leading-snug">
-                      ▲ 중학교 시절의 모습. / 사진 = AI 복원
+                      ▲ 중학교 시절 음악에 본격적인 취미를 갖기 시작한 즈음. 이때부터 아우라가 남다르다.
                     </p>
                   </div>
                 )}
