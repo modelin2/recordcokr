@@ -378,7 +378,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             <img 
               src={logoImage} 
               alt="Recording Cafe" 
-              className="h-14 object-contain"
+              className="h-20 object-contain"
             />
           </div>
         </div>
