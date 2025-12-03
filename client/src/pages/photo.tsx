@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,6 +35,7 @@ interface LifeStageImage {
 
 export default function PhotoPage() {
   const [, setLocation] = useLocation();
+  const searchString = useSearch();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
@@ -63,6 +64,14 @@ export default function PhotoPage() {
     queryKey: ["/api/photos/customers/list"],
     enabled: !!user,
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchString);
+    const customerName = params.get("customer");
+    if (customerName) {
+      setSelectedCustomerName(customerName);
+    }
+  }, [searchString]);
 
   const { data: photos = [], isLoading: photosLoading } = useQuery<VisitorPhoto[]>({
     queryKey: ["/api/photos"],

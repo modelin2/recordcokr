@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
-import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut } from "lucide-react";
+import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut, Camera } from "lucide-react";
 import type { Booking } from "@shared/schema";
 import { format } from "date-fns";
 import { Copy } from "lucide-react";
@@ -566,6 +566,17 @@ Recording Cafe Team`
                           <SelectItem value="cancelled">Cancelled</SelectItem>
                         </SelectContent>
                       </Select>
+                      
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setLocation(`/photo?customer=${encodeURIComponent(booking.name)}`)}
+                        className="text-white border-white/40 hover:bg-white/20 bg-white/5"
+                        data-testid={`btn-photo-${booking.id}`}
+                      >
+                        <Camera className="h-4 w-4 mr-2" />
+                        사진출력
+                      </Button>
                       
                       <Dialog>
                         <DialogTrigger asChild>
