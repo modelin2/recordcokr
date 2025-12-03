@@ -122,3 +122,17 @@
 .animate-glow {
   animation: glow 2s ease-in-out infinite alternate;
 }
+
+/* Print styles for newspaper template */
+@media print {
+  .print-bg-black {
+    background-color: #000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  
+  .print-text-white {
+    color: #fff !important;
+  }
+}

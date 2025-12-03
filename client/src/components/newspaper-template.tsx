@@ -336,8 +336,8 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       <div className="border-b-4 border-black pb-3 mb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-16 h-16 bg-black flex items-center justify-center">
-              <span className="text-white font-black text-xl">RC</span>
+            <div className="w-16 h-16 bg-black print-bg-black flex items-center justify-center">
+              <span className="text-white print-text-white font-black text-xl">RC</span>
             </div>
             <span className="text-xs leading-tight text-black font-medium">
               SINCE<br/>2024
@@ -474,7 +474,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       </div>
                     </div>
                     <p className="text-[11px] mt-2 leading-snug">
-                      ▲ 가족이 공개해야 맞는 어린 시절 사진. 팬들의 열화와 같은 요청에 AI로 복원. 떡잎부터 알아본다는 한국 속담처럼 아기 때부터 음악을 가까이한 것이 틀림없다.
+                      ▲ 가족이 공개해야 맞는 어린 시절 사진. 팬들의 열화와 같은 요청에 AI로 복원. 떡잎부터 알아본다는 한국 속담처럼 아기 때부터 음악을 가까이한 것이 틀림없다. 당시 가족들의 증언에 따르면, 음악만 들으면 눈을 반짝이며 웃음을 보였다고 한다. 천상 아티스트의 기질이 이때부터 드러난 셈이다.
                     </p>
                   </div>
                 )}
@@ -501,7 +501,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       </div>
                     </div>
                     <p className="text-[11px] mt-2 leading-snug">
-                      ▲ 중학교 시절 음악에 본격적인 취미를 갖기 시작한 즈음. 이때부터 아우라가 남다르다.
+                      ▲ 중학교 시절 음악에 본격적인 취미를 갖기 시작한 즈음. 이때부터 아우라가 남다르다. 당시 담임선생님은 "교내 축제 때마다 무대에 올라 노래를 불렀는데, 항상 큰 호응을 받았다"며 일찍이 재능을 알아봤다고 전했다. 학교 음악동아리에서도 리더 역할을 맡았다.
                     </p>
                   </div>
                 )}
@@ -515,8 +515,8 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           {/* Award Photo */}
           {futureImage?.imageData && (
             <div className="mb-4">
-              <div className="bg-black p-2 mb-2">
-                <div className="text-xs font-black text-center tracking-wider text-white">
+              <div className="bg-black print-bg-black p-2 mb-2">
+                <div className="text-xs font-black text-center tracking-wider text-white print-text-white">
                   ★ {futureYear} 한복문화대상 ★
                 </div>
               </div>
@@ -594,25 +594,6 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             <div className="text-[10px] text-center mt-2 text-gray-500">
               레코딩카페 시그니처 메뉴
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Banner */}
-      <div className="mt-5 pt-4 border-t-4 border-black">
-        <div className="flex items-center justify-between p-4 bg-gray-50 border-2 border-black">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-black flex items-center justify-center">
-              <span className="text-white font-black text-base">RC</span>
-            </div>
-            <div>
-              <p className="text-base font-black">Recording Cafe</p>
-              <p className="text-[11px] text-gray-700">서울 서초구 강남대로 107길 21. 2층</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="font-bold text-xs">@recordingcafe 팔로우하면 1타임 무료!</p>
-            <p className="font-bold text-xs">#RecordingCafe #꿈의시작</p>
           </div>
         </div>
       </div>
