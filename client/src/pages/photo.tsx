@@ -580,7 +580,7 @@ export default function PhotoPage() {
                 <Button
                   onClick={handleUpload}
                   disabled={!selectedPhoto || !selectedCustomerName || uploadMutation.isPending}
-                  className="w-full bg-amber-800 hover:bg-amber-900 text-white"
+                  className="w-full bg-amber-800 hover:bg-amber-900 text-white hidden"
                   data-testid="button-upload"
                 >
                   {uploadMutation.isPending ? (
