@@ -265,13 +265,16 @@ export default function PhotoPage() {
   const compressUntilSmallEnough = async (base64Image: string, maxSizeKB: number = 2000): Promise<string> => {
     let currentImage = base64Image;
     let attempts = 0;
-    const maxAttempts = 4;
-    // Keep quality high for better AI face recognition
+    const maxAttempts = 8;
     const compressionSteps = [
       { maxWidth: 1600, quality: 0.85 },
       { maxWidth: 1400, quality: 0.8 },
       { maxWidth: 1200, quality: 0.75 },
       { maxWidth: 1024, quality: 0.7 },
+      { maxWidth: 900, quality: 0.65 },
+      { maxWidth: 800, quality: 0.6 },
+      { maxWidth: 700, quality: 0.55 },
+      { maxWidth: 600, quality: 0.5 },
     ];
 
     while (attempts < maxAttempts) {
