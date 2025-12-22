@@ -112,7 +112,7 @@ export default function NaverBooking() {
 
   const createBookingMutation = useMutation({
     mutationFn: async (data: NaverBookingForm) => {
-      return await apiRequest("/api/naver/bookings", "POST", {
+      return await apiRequest("POST", "/api/naver/bookings", {
         ...data,
         bookingType: "naver",
       });
