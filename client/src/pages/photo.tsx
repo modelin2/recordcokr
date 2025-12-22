@@ -44,6 +44,7 @@ export default function PhotoPage() {
   const [selectedDrink, setSelectedDrink] = useState<string>("");
   const [drinkTemperature, setDrinkTemperature] = useState<string>("");
   const [customHeadline, setCustomHeadline] = useState<string>("");
+  const [selectedGender, setSelectedGender] = useState<string>("auto");
   const [previewPhoto, setPreviewPhoto] = useState<VisitorPhoto | null>(null);
   const [previewKoreanName, setPreviewKoreanName] = useState<string>("");
   const [generatedImages, setGeneratedImages] = useState<LifeStageImage[]>([]);
@@ -342,7 +343,8 @@ export default function PhotoPage() {
 
       const response = await apiRequest("POST", "/api/photos/generate-all-stages", {
         sourceImageBase64: imageToSend,
-        personCount
+        personCount,
+        gender: selectedGender !== "auto" ? selectedGender : undefined
       });
       
       const data = await response.json();
@@ -575,6 +577,24 @@ export default function PhotoPage() {
                     className="mt-2 bg-white border-amber-600"
                     data-testid="input-headline"
                   />
+                </div>
+
+                <div>
+                  <Label className="text-amber-900 font-medium">성별 선택 (AI 이미지 생성용)</Label>
+                  <Select 
+                    value={selectedGender} 
+                    onValueChange={setSelectedGender}
+                  >
+                    <SelectTrigger className="mt-2 bg-white border-amber-600" data-testid="select-gender">
+                      <SelectValue placeholder="성별 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="auto">자동 인식</SelectItem>
+                      <SelectItem value="male">남성 (Male)</SelectItem>
+                      <SelectItem value="female">여성 (Female)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-amber-600 mt-1">긴 머리 남성은 '남성'을 직접 선택해주세요</p>
                 </div>
 
                 <Button

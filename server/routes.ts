@@ -107,12 +107,19 @@ function getRandomElement<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompts, personCount: number = 1): string {
+function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompts, personCount: number = 1, gender?: string): string {
   const config = lifeStagePrompts[stage];
   const clothing = getRandomElement(config.clothing);
   const pose = getRandomElement(config.pose);
   const background = getRandomElement(config.background);
   const style = getRandomElement(config.style);
+  
+  // Gender instruction for AI - helps with long-haired males being misidentified
+  const genderInstruction = gender === "male" 
+    ? "CRITICAL GENDER: This person is MALE. Even if they have long hair, they are a MAN/BOY. Generate male-appropriate clothing and appearance. Do NOT create female features or clothing."
+    : gender === "female"
+    ? "CRITICAL GENDER: This person is FEMALE. Generate female-appropriate clothing and appearance."
+    : "";
   
   // Identity preservation for FUTURE stage - keep as ADULT, do NOT make younger
   if (stage === "future") {
@@ -123,7 +130,14 @@ function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompt
     if (personCount === 2) {
       return `${futureIdentity} Transform these TWO ADULT people into famous Korean Hallyu ambassadors at an award ceremony wearing traditional hanbok. They are waving gracefully to fans at the ceremony. Men wear traditional male hanbok (durumagi or baji-jeogori), women wear traditional female hanbok (jeogori and chima). NOT modernized hanbok. Both should be ${clothing}, ${pose}, ${background}. Style: ${style}. Show them as beloved ADULT stars receiving applause together. IMPORTANT: Do not include any text, words, banners, signs, or letters anywhere in the image.`;
     }
-    return `${futureIdentity} Transform this ADULT person into a famous Korean Hallyu ambassador at an award ceremony wearing traditional hanbok. They are waving gracefully to fans at the ceremony. If male, wear traditional male hanbok (durumagi). If female, wear traditional female hanbok (jeogori and chima). NOT modernized hanbok. They should be ${clothing}, ${pose}, ${background}. Style: ${style}. Show them as a beloved ADULT star receiving applause. IMPORTANT: Do not include any text, words, banners, signs, or letters anywhere in the image.`;
+    
+    const genderHanbok = gender === "male" 
+      ? "This person is MALE - he must wear traditional MALE hanbok (durumagi or baji-jeogori). NOT female hanbok."
+      : gender === "female"
+      ? "This person is FEMALE - she must wear traditional FEMALE hanbok (jeogori and chima)."
+      : "If male, wear traditional male hanbok (durumagi). If female, wear traditional female hanbok (jeogori and chima).";
+    
+    return `${genderInstruction} ${futureIdentity} Transform this ADULT person into a famous Korean Hallyu ambassador at an award ceremony wearing traditional hanbok. They are waving gracefully to fans at the ceremony. ${genderHanbok} NOT modernized hanbok. They should be ${clothing}, ${pose}, ${background}. Style: ${style}. Show them as a beloved ADULT star receiving applause. IMPORTANT: Do not include any text, words, banners, signs, or letters anywhere in the image.`;
   }
   
   // Identity preservation for CHILD stages - make younger while preserving features
@@ -131,11 +145,17 @@ function generateTransformPromptForLifeStage(stage: keyof typeof lifeStagePrompt
     ? "CRITICAL IDENTITY PRESERVATION: There are exactly TWO people in this photo. You MUST keep BOTH people's exact HAIR COLOR (black, brown, blonde, etc.), HAIR STYLE (long, short, curly, straight), FACE SHAPE, EYE SHAPE, EYE COLOR, NOSE SHAPE, LIP SHAPE, and SKIN TONE exactly the same. The facial structure and features must remain recognizable as the same person - only make them younger. Do not change anyone's core facial identity - just the age. Both people must be immediately recognizable as their younger selves."
     : "CRITICAL IDENTITY PRESERVATION: You MUST keep this person's exact HAIR COLOR (black, brown, blonde, red, etc.), HAIR TEXTURE (straight, wavy, curly), FACE SHAPE (round, oval, square, heart), EYE SHAPE, EYE COLOR, NOSE SHAPE, LIP SHAPE, EYEBROW SHAPE, and SKIN TONE exactly the same. The facial proportions and distinctive features must remain clearly recognizable. This must look like the SAME PERSON at a younger age - the identity transformation should be believable as their real childhood photo. Do not substitute with a generic baby/child face - preserve their unique facial characteristics.";
   
+  const genderChildNote = gender === "male" 
+    ? "This child is a BOY. Generate a male baby/boy with appropriate clothing and appearance."
+    : gender === "female"
+    ? "This child is a GIRL. Generate a female baby/girl with appropriate clothing and appearance."
+    : "";
+  
   if (personCount === 2) {
     return `${childIdentity} Transform these TWO people into ${config.ageRange} old children versions of themselves. Make them younger as ${config.nameKr} aged children. IMPORTANT: The child versions must have the SAME facial bone structure, eye shape, nose shape, and hair color as the original adults. Both children should be ${clothing}, ${pose}, ${background}. Apply vintage photography style: ${style}. This is a childhood photo from a family album showing both people as young children - they should look like believable baby versions of the adults in the source photo.`;
   }
   
-  return `${childIdentity} Transform this person into a ${config.ageRange} old child version of themselves. IMPORTANT: The child must have the SAME facial bone structure, eye shape, nose shape, lip shape, and especially the SAME HAIR COLOR AND TEXTURE as the original adult. The baby/child face should clearly share genetic traits with the adult - imagine this is their REAL childhood photo. The child should be ${clothing}, ${pose}, ${background}. Apply vintage photography style: ${style}. This should look like an authentic childhood photo that could be from this person's family album.`;
+  return `${genderInstruction} ${genderChildNote} ${childIdentity} Transform this person into a ${config.ageRange} old child version of themselves. IMPORTANT: The child must have the SAME facial bone structure, eye shape, nose shape, lip shape, and especially the SAME HAIR COLOR AND TEXTURE as the original adult. The baby/child face should clearly share genetic traits with the adult - imagine this is their REAL childhood photo. The child should be ${clothing}, ${pose}, ${background}. Apply vintage photography style: ${style}. This should look like an authentic childhood photo that could be from this person's family album.`;
 }
 
 // Simple session middleware for demo purposes
@@ -834,7 +854,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate all 3 life stage images at once using the uploaded source photo (1 person)
   app.post("/api/photos/generate-all-stages", requireAdmin, async (req, res) => {
     try {
-      const { sourceImageBase64, personCount = 1 } = req.body;
+      const { sourceImageBase64, personCount = 1, gender } = req.body;
       
       if (!sourceImageBase64) {
         return res.status(400).json({ message: "Source image is required" });
@@ -849,8 +869,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Generate images sequentially to avoid rate limiting
       for (const stage of stages) {
-        const prompt = generateTransformPromptForLifeStage(stage, personCount);
-        console.log(`Generating ${stage} image (${personCount} person) with prompt: ${prompt}`);
+        const prompt = generateTransformPromptForLifeStage(stage, personCount, gender);
+        console.log(`Generating ${stage} image (${personCount} person, gender: ${gender || 'auto'}) with prompt: ${prompt}`);
         
         try {
           const response = await ai.models.generateContent({
