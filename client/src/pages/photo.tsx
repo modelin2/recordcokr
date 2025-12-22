@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image, Wand2, Loader2, Sparkles } from "lucide-react";
+import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image, Wand2, Loader2, Sparkles, RefreshCw, Plus } from "lucide-react";
 import type { VisitorPhoto } from "@shared/schema";
 import NewspaperTemplate, { type ImagePositions } from "@/components/newspaper-template";
 
@@ -50,6 +50,7 @@ export default function PhotoPage() {
   const [generatedImages, setGeneratedImages] = useState<LifeStageImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingStage, setGeneratingStage] = useState<string>("");
+  const [regeneratingStage, setRegeneratingStage] = useState<string>("");
   const [imagePositions, setImagePositions] = useState<ImagePositions>({
     main: { x: 50, y: 0, scale: 1 },
     infancy: { x: 50, y: 0, scale: 1 },
@@ -367,6 +368,79 @@ export default function PhotoPage() {
     } finally {
       setIsGenerating(false);
       setGeneratingStage("");
+    }
+  };
+
+  const handleRegenerateSingleStage = async (stage: string, personCount: number = 1) => {
+    if (!selectedPhoto) {
+      toast({
+        title: "사진 필요",
+        description: "재생성을 위해 사진이 필요합니다.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setRegeneratingStage(stage);
+
+    try {
+      const base64Size = (selectedPhoto.length * 3) / 4;
+      const sizeKB = Math.round(base64Size / 1024);
+      
+      let imageToSend = selectedPhoto;
+      
+      if (sizeKB > 2000) {
+        imageToSend = await compressUntilSmallEnough(selectedPhoto, 2000);
+      }
+
+      const stageNames: Record<string, string> = {
+        infancy: "유아기",
+        middleschool: "중학교",
+        future: "미래"
+      };
+
+      toast({
+        title: `${stageNames[stage]} 이미지 생성 중...`,
+        description: "잠시만 기다려주세요.",
+      });
+
+      const response = await apiRequest("POST", "/api/photos/generate-single-stage", {
+        sourceImageBase64: imageToSend,
+        stage,
+        personCount,
+        gender: selectedGender !== "auto" ? selectedGender : undefined
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.result) {
+        setGeneratedImages(prev => {
+          const existing = prev.filter(img => img.lifeStage !== stage);
+          return [...existing, data.result];
+        });
+        toast({
+          title: "이미지 생성 완료",
+          description: `${stageNames[stage]} 이미지가 생성되었습니다.`,
+        });
+      } else {
+        setGeneratedImages(prev => {
+          const existing = prev.filter(img => img.lifeStage !== stage);
+          return [...existing, data.result];
+        });
+        toast({
+          title: "생성 실패",
+          description: data.result?.error || "이미지 생성에 실패했습니다.",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "이미지 생성 실패",
+        description: error.message || "이미지 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setRegeneratingStage("");
     }
   };
 
@@ -732,12 +806,46 @@ export default function PhotoPage() {
                             <p className="text-[10px] text-center text-gray-500">
                               {img.ageRange}
                             </p>
+                            <Button
+                              onClick={() => handleRegenerateSingleStage(img.lifeStage, 1)}
+                              disabled={isGenerating || regeneratingStage !== ""}
+                              size="sm"
+                              variant="outline"
+                              className="w-full text-xs h-7 border-amber-500 text-amber-700 hover:bg-amber-50"
+                              data-testid={`button-regenerate-${img.lifeStage}`}
+                            >
+                              {regeneratingStage === img.lifeStage ? (
+                                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                              ) : (
+                                <RefreshCw className="w-3 h-3 mr-1" />
+                              )}
+                              재생성
+                            </Button>
                           </div>
                         ) : (
-                          <div className="w-full aspect-[3/4] bg-gray-200 rounded-lg flex items-center justify-center border-4 border-white">
-                            <p className="text-xs text-gray-500 text-center p-2">
-                              {img.error || "생성 실패"}
+                          <div className="space-y-1">
+                            <div className="w-full aspect-[3/4] bg-gray-200 rounded-lg flex items-center justify-center border-4 border-white">
+                              <p className="text-xs text-gray-500 text-center p-2">
+                                {img.error || "생성 실패"}
+                              </p>
+                            </div>
+                            <p className="text-xs text-center font-medium text-gray-600">
+                              {img.stageNameKr}
                             </p>
+                            <Button
+                              onClick={() => handleRegenerateSingleStage(img.lifeStage, 1)}
+                              disabled={isGenerating || regeneratingStage !== ""}
+                              size="sm"
+                              className="w-full text-xs h-7 bg-green-600 hover:bg-green-700 text-white"
+                              data-testid={`button-retry-${img.lifeStage}`}
+                            >
+                              {regeneratingStage === img.lifeStage ? (
+                                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                              ) : (
+                                <Plus className="w-3 h-3 mr-1" />
+                              )}
+                              추가생성
+                            </Button>
                           </div>
                         )}
                       </div>

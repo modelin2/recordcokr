@@ -936,6 +936,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Generate a single life stage image (for retry/regenerate)
+  app.post("/api/photos/generate-single-stage", requireAdmin, async (req, res) => {
+    try {
+      const { sourceImageBase64, stage, personCount = 1, gender } = req.body;
+      
+      if (!sourceImageBase64) {
+        return res.status(400).json({ message: "Source image is required" });
+      }
+      
+      if (!stage || !["infancy", "middleschool", "future"].includes(stage)) {
+        return res.status(400).json({ message: "Valid stage is required (infancy, middleschool, future)" });
+      }
+      
+      const base64Data = sourceImageBase64.replace(/^data:image\/\w+;base64,/, '');
+      const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
+      
+      const prompt = generateTransformPromptForLifeStage(stage as keyof typeof lifeStagePrompts, personCount, gender);
+      console.log(`Regenerating ${stage} image (${personCount} person, gender: ${gender || 'auto'}) with prompt: ${prompt}`);
+      
+      try {
+        const response = await ai.models.generateContent({
+          model: "gemini-2.5-flash-image",
+          contents: [{ 
+            role: "user", 
+            parts: [
+              { inlineData: { mimeType, data: base64Data } },
+              { text: prompt }
+            ] 
+          }],
+          config: {
+            responseModalities: [Modality.TEXT, Modality.IMAGE],
+          }
+        });
+        
+        let imageData = null;
+        
+        if (response.candidates && response.candidates[0]?.content?.parts) {
+          for (const part of response.candidates[0].content.parts) {
+            if (part.inlineData?.mimeType?.startsWith("image/")) {
+              imageData = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+            }
+          }
+        }
+        
+        const stageConfig = lifeStagePrompts[stage as keyof typeof lifeStagePrompts];
+        res.json({
+          success: !!imageData,
+          result: {
+            lifeStage: stage,
+            stageName: stageConfig.name,
+            stageNameKr: stageConfig.nameKr,
+            ageRange: stageConfig.ageRange,
+            imageData,
+            prompt,
+            success: !!imageData
+          }
+        });
+      } catch (stageError: any) {
+        console.error(`Error regenerating ${stage} image:`, stageError);
+        const stageConfig = lifeStagePrompts[stage as keyof typeof lifeStagePrompts];
+        res.json({
+          success: false,
+          result: {
+            lifeStage: stage,
+            stageName: stageConfig.name,
+            stageNameKr: stageConfig.nameKr,
+            ageRange: stageConfig.ageRange,
+            imageData: null,
+            prompt,
+            success: false,
+            error: stageError.message
+          }
+        });
+      }
+    } catch (error: any) {
+      console.error("Error generating single life stage image:", error);
+      res.status(500).json({ message: "Failed to generate image", error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
