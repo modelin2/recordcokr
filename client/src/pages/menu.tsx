@@ -498,7 +498,7 @@ export default function MenuPage() {
 
   if (isComplete) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-purple-50 to-cyan-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-rose-200 via-purple-200 to-indigo-200 flex items-center justify-center p-4">
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
           <div className="w-32 h-32 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
             <Check className="w-16 h-16 text-white" />
@@ -514,7 +514,7 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-purple-50 to-cyan-50 text-gray-800 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-rose-200 via-purple-200 to-indigo-200 text-gray-800 flex flex-col">
       <Dialog open={!!detailModal} onOpenChange={() => setDetailModal(null)}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
@@ -752,23 +752,23 @@ export default function MenuPage() {
       </div>
 
       {step > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-gray-200 p-4 shadow-lg">
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-purple-300 p-4 shadow-2xl">
           <div className="max-w-4xl mx-auto flex items-center justify-between">
-            <Button variant="outline" size="lg" onClick={() => paginate(-1)} className="border-gray-300 text-gray-700 hover:bg-gray-100 px-6 py-5" data-testid="button-back">
-              <ArrowLeft className="w-5 h-5 mr-2" />{t.back}
+            <Button variant="outline" size="lg" onClick={() => paginate(-1)} className="border-2 border-gray-400 text-gray-700 hover:bg-gray-100 px-8 py-6 text-lg font-semibold" data-testid="button-back">
+              <ArrowLeft className="w-6 h-6 mr-2" />{t.back}
             </Button>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               {[1,2,3,4,5,6].map(i => (
-                <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === step ? "bg-pink-500 w-6" : i < step ? "bg-green-500" : "bg-gray-300"}`} />
+                <div key={i} className={`h-3 rounded-full transition-all ${i === step ? "bg-pink-500 w-8" : i < step ? "bg-green-500 w-3" : "bg-gray-400 w-3"}`} />
               ))}
             </div>
             {step < 6 ? (
-              <Button size="lg" onClick={() => paginate(1)} disabled={!canProceed()} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-6 py-5" data-testid="button-next">
-                {t.next}<ArrowRight className="w-5 h-5 ml-2" />
+              <Button size="lg" onClick={() => paginate(1)} disabled={!canProceed()} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-6 text-lg font-semibold shadow-lg" data-testid="button-next">
+                {t.next}<ArrowRight className="w-6 h-6 ml-2" />
               </Button>
             ) : (
-              <Button size="lg" onClick={handleSubmit} disabled={bookingMutation.isPending} className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-5" data-testid="button-submit">
-                {bookingMutation.isPending ? "Loading..." : <><Check className="w-5 h-5 mr-2" />{t.selectComplete}</>}
+              <Button size="lg" onClick={handleSubmit} disabled={bookingMutation.isPending} className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-6 text-lg font-semibold shadow-lg" data-testid="button-submit">
+                {bookingMutation.isPending ? "Loading..." : <><Check className="w-6 h-6 mr-2" />{t.selectComplete}</>}
               </Button>
             )}
           </div>
