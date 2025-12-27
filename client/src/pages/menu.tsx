@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { 
   Globe, Coffee, Music, User, Check, ArrowRight, ArrowLeft,
-  Headphones, Video, Disc, Share2, Play, Minus, Plus, Pause, Info, X
+  Headphones, Video, Disc, Share2, Play, Minus, Plus, Pause, Info, X,
+  Calendar as CalendarIcon, Clock, Users, Home
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImage from "@assets/레코딩카페-한글로고_1764752892828.png";
@@ -39,19 +41,36 @@ const drinkCatalog = [
   { id: "iced-tea", hasTemp: false, hotOnly: false },
 ];
 
-const bookingSources = [
-  { id: "naver", ko: "Naver 예약자", en: "Naver Booking", ja: "Naver予約", zh: "Naver预约" },
-  { id: "klook", ko: "Klook 예약자", en: "Klook Booking", ja: "Klook予約", zh: "Klook预约" },
-  { id: "kkday", ko: "KKday 예약자", en: "KKday Booking", ja: "KKday予約", zh: "KKday预约" },
-  { id: "creatrip", ko: "Creatrip 예약자", en: "Creatrip Booking", ja: "Creatrip予約", zh: "Creatrip预约" },
-  { id: "trip", ko: "Trip.com 예약자", en: "Trip.com Booking", ja: "Trip.com予約", zh: "Trip.com预约" },
-  { id: "datepop", ko: "데이트팝 예약자", en: "DatePop Booking", ja: "DatePop予約", zh: "DatePop预约" },
-  { id: "homepage", ko: "홈페이지 예약자", en: "Website Booking", ja: "ホームページ予約", zh: "官网预约" },
+const platformSources = [
+  { id: "naver", ko: "Naver", en: "Naver", ja: "Naver", zh: "Naver" },
+  { id: "klook", ko: "Klook", en: "Klook", ja: "Klook", zh: "Klook" },
+  { id: "kkday", ko: "KKday", en: "KKday", ja: "KKday", zh: "KKday" },
+  { id: "creatrip", ko: "Creatrip", en: "Creatrip", ja: "Creatrip", zh: "Creatrip" },
+  { id: "trip", ko: "Trip.com", en: "Trip.com", ja: "Trip.com", zh: "Trip.com" },
+  { id: "datepop", ko: "데이트팝", en: "DatePop", ja: "DatePop", zh: "DatePop" },
+];
+
+const timeSlots = [
+  "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+  "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+  "16:00", "16:30", "17:00", "17:30", "18:00", "18:30",
+  "19:00", "19:30", "20:00", "20:30", "21:00", "21:30",
 ];
 
 const translations: Record<Language, {
   selectLanguage: string;
   welcome: string;
+  selectBookingPath: string;
+  existingReservation: string;
+  existingReservationDesc: string;
+  newReservation: string;
+  newReservationDesc: string;
+  selectPlatform: string;
+  selectPlatformDesc: string;
+  selectDateTime: string;
+  selectDateTimeDesc: string;
+  selectDate: string;
+  selectTime: string;
   selectDrink: string;
   drinks: Record<string, string>;
   hot: string;
@@ -65,7 +84,6 @@ const translations: Record<Language, {
   phonePlaceholder: string;
   email: string;
   emailPlaceholder: string;
-  bookingSource: string;
   mixingService: string;
   mixingDesc: string;
   videoService: string;
@@ -93,6 +111,17 @@ const translations: Record<Language, {
   ko: {
     selectLanguage: "언어를 선택하세요",
     welcome: "레코딩 카페",
+    selectBookingPath: "예약 유형을 선택하세요",
+    existingReservation: "기존 예약자",
+    existingReservationDesc: "다른 플랫폼에서 이미 예약하셨나요?",
+    newReservation: "처음 예약자",
+    newReservationDesc: "지금 바로 예약하시겠어요?",
+    selectPlatform: "예약하신 플랫폼을 선택하세요",
+    selectPlatformDesc: "어디에서 예약하셨나요?",
+    selectDateTime: "날짜와 시간 선택",
+    selectDateTimeDesc: "원하시는 녹음 일정을 선택하세요",
+    selectDate: "날짜 선택",
+    selectTime: "시간 선택",
     selectDrink: "음료 선택",
     drinks: {
       "coffee": "커피",
@@ -120,7 +149,6 @@ const translations: Record<Language, {
     phonePlaceholder: "전화번호를 입력하세요",
     email: "이메일",
     emailPlaceholder: "이메일을 입력하세요",
-    bookingSource: "예약 경로",
     mixingService: "믹싱 서비스",
     mixingDesc: "녹음 후 어떤 수준의 믹싱을 원하시나요?",
     videoService: "비디오 서비스",
@@ -166,6 +194,17 @@ const translations: Record<Language, {
   en: {
     selectLanguage: "Select Language",
     welcome: "Recording Cafe",
+    selectBookingPath: "Select Booking Type",
+    existingReservation: "Existing Reservation",
+    existingReservationDesc: "Already booked on another platform?",
+    newReservation: "New Reservation",
+    newReservationDesc: "Book now for the first time?",
+    selectPlatform: "Select your booking platform",
+    selectPlatformDesc: "Where did you book?",
+    selectDateTime: "Select Date & Time",
+    selectDateTimeDesc: "Choose your preferred recording schedule",
+    selectDate: "Select Date",
+    selectTime: "Select Time",
     selectDrink: "Select Drinks",
     drinks: {
       "coffee": "Coffee",
@@ -193,7 +232,6 @@ const translations: Record<Language, {
     phonePlaceholder: "Enter phone number",
     email: "Email",
     emailPlaceholder: "Enter your email",
-    bookingSource: "Booking Source",
     mixingService: "Mixing Service",
     mixingDesc: "What level of mixing do you want?",
     videoService: "Video Service",
@@ -239,6 +277,17 @@ const translations: Record<Language, {
   ja: {
     selectLanguage: "言語を選択",
     welcome: "レコーディングカフェ",
+    selectBookingPath: "予約タイプを選択",
+    existingReservation: "既存予約者",
+    existingReservationDesc: "他のプラットフォームで予約済みですか？",
+    newReservation: "新規予約",
+    newReservationDesc: "今すぐ予約しますか？",
+    selectPlatform: "予約したプラットフォームを選択",
+    selectPlatformDesc: "どこで予約しましたか？",
+    selectDateTime: "日時選択",
+    selectDateTimeDesc: "ご希望の録音スケジュールをお選びください",
+    selectDate: "日付選択",
+    selectTime: "時間選択",
     selectDrink: "ドリンク選択",
     drinks: {
       "coffee": "コーヒー",
@@ -266,7 +315,6 @@ const translations: Record<Language, {
     phonePlaceholder: "電話番号を入力",
     email: "メール",
     emailPlaceholder: "メールを入力",
-    bookingSource: "予約経路",
     mixingService: "ミキシング",
     mixingDesc: "どのレベルのミキシングをご希望ですか？",
     videoService: "ビデオサービス",
@@ -312,6 +360,17 @@ const translations: Record<Language, {
   zh: {
     selectLanguage: "选择语言",
     welcome: "录音咖啡厅",
+    selectBookingPath: "选择预约类型",
+    existingReservation: "已有预约",
+    existingReservationDesc: "已在其他平台预约？",
+    newReservation: "新预约",
+    newReservationDesc: "现在预约？",
+    selectPlatform: "选择预约平台",
+    selectPlatformDesc: "您在哪里预约的？",
+    selectDateTime: "选择日期和时间",
+    selectDateTimeDesc: "请选择您想要的录音时间",
+    selectDate: "选择日期",
+    selectTime: "选择时间",
     selectDrink: "选择饮料",
     drinks: {
       "coffee": "咖啡",
@@ -339,7 +398,6 @@ const translations: Record<Language, {
     phonePlaceholder: "输入电话号码",
     email: "邮箱",
     emailPlaceholder: "输入邮箱",
-    bookingSource: "预约渠道",
     mixingService: "混音服务",
     mixingDesc: "您想要什么级别的混音？",
     videoService: "视频服务",
@@ -394,12 +452,15 @@ const languageOptions = [
 export default function MenuPage() {
   const [step, setStep] = useState(0);
   const [language, setLanguage] = useState<Language | null>(null);
+  const [bookingPath, setBookingPath] = useState<"existing" | "homepage" | null>(null);
+  const [selectedPlatform, setSelectedPlatform] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState<string>("");
   const [drinkOrders, setDrinkOrders] = useState<DrinkOrder[]>([]);
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [bookingSource, setBookingSource] = useState<string>("");
   const [selectedMixing, setSelectedMixing] = useState<string>("raw");
   const [selectedVideo, setSelectedVideo] = useState<string>("self");
   const [wantsAlbum, setWantsAlbum] = useState(false);
@@ -464,7 +525,7 @@ export default function MenuPage() {
   };
 
   const handleSubmit = () => {
-    if (!name || !phone || !email || !bookingSource) {
+    if (!name || !phone || !email) {
       toast({ title: t.required, description: "Please fill all required fields", variant: "destructive" });
       return;
     }
@@ -483,11 +544,18 @@ export default function MenuPage() {
     if (wantsAlbum) selectedAddons.push(5);
     if (wantsLP) selectedAddons.push(6);
 
-    const sourceLabel = bookingSources.find(s => s.id === bookingSource)?.[language || "ko"] || bookingSource;
+    let namePrefix = "";
+    if (bookingPath === "existing" && selectedPlatform) {
+      const platform = platformSources.find(s => s.id === selectedPlatform);
+      namePrefix = platform ? `[${platform[language || "ko"]}] ` : "";
+    } else if (bookingPath === "homepage" && selectedDate && selectedTime) {
+      const dateStr = `${selectedDate.getMonth() + 1}/${selectedDate.getDate()}`;
+      namePrefix = `[Homepage ${dateStr} ${selectedTime}] `;
+    }
 
     bookingMutation.mutate({
       bookingType: "direct",
-      name: `[${sourceLabel}] ${name}`,
+      name: `${namePrefix}${name}`,
       email: email || "no-email@example.com",
       phone,
       selectedDrink: drinkSummary,
@@ -505,7 +573,11 @@ export default function MenuPage() {
   };
 
   const canProceed = () => {
-    if (step === 2) return name !== "" && phone !== "" && email !== "" && bookingSource !== "";
+    if (step === 2) {
+      if (bookingPath === "existing") return selectedPlatform !== "";
+      if (bookingPath === "homepage") return selectedDate !== undefined && selectedTime !== "";
+    }
+    if (step === 4) return name !== "" && phone !== "" && email !== "";
     return true;
   };
 
@@ -524,7 +596,7 @@ export default function MenuPage() {
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-4">{t.success}</h1>
           <p className="text-xl text-gray-600 mb-8">{t.successMessage}</p>
-          <Button onClick={() => { setIsComplete(false); setStep(0); setLanguage(null); setDrinkOrders([]); setYoutubeUrl(""); setName(""); setPhone(""); setEmail(""); setBookingSource(""); setSelectedMixing("raw"); setSelectedVideo("self"); setWantsAlbum(false); setWantsLP(false); }} size="lg" className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-12 py-6 text-xl">
+          <Button onClick={() => { setIsComplete(false); setStep(0); setLanguage(null); setBookingPath(null); setSelectedPlatform(""); setSelectedDate(undefined); setSelectedTime(""); setDrinkOrders([]); setYoutubeUrl(""); setName(""); setPhone(""); setEmail(""); setSelectedMixing("raw"); setSelectedVideo("self"); setWantsAlbum(false); setWantsLP(false); }} size="lg" className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-12 py-6 text-xl">
             {t.back}
           </Button>
         </motion.div>
@@ -571,6 +643,120 @@ export default function MenuPage() {
           )}
 
           {step === 1 && (
+            <motion.div key="booking-path" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-2xl">
+              <div className="text-center mb-10">
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">{t.selectBookingPath}</h1>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card 
+                  className={`cursor-pointer transition-all hover:shadow-xl ${bookingPath === "existing" ? "border-2 border-purple-500 bg-purple-50 shadow-lg" : "bg-white/80 border-gray-200 hover:border-purple-300"}`} 
+                  onClick={() => { setBookingPath("existing"); setTimeout(() => paginate(1), 200); }}
+                  data-testid="button-existing-reservation"
+                >
+                  <CardContent className="p-8 text-center">
+                    <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                      <Users className="w-10 h-10 text-white" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{t.existingReservation}</h2>
+                    <p className="text-gray-600">{t.existingReservationDesc}</p>
+                  </CardContent>
+                </Card>
+                <Card 
+                  className={`cursor-pointer transition-all hover:shadow-xl ${bookingPath === "homepage" ? "border-2 border-pink-500 bg-pink-50 shadow-lg" : "bg-white/80 border-gray-200 hover:border-pink-300"}`} 
+                  onClick={() => { setBookingPath("homepage"); setTimeout(() => paginate(1), 200); }}
+                  data-testid="button-new-reservation"
+                >
+                  <CardContent className="p-8 text-center">
+                    <div className="w-20 h-20 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                      <Home className="w-10 h-10 text-white" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{t.newReservation}</h2>
+                    <p className="text-gray-600">{t.newReservationDesc}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 2 && bookingPath === "existing" && (
+            <motion.div key="platform" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-2xl">
+              <div className="text-center mb-8">
+                <Users className="w-10 h-10 text-purple-500 mx-auto mb-2" />
+                <h1 className="text-2xl font-bold text-gray-800">{t.selectPlatform}</h1>
+                <p className="text-gray-600 mt-2">{t.selectPlatformDesc}</p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {platformSources.map(source => (
+                  <Card 
+                    key={source.id}
+                    className={`cursor-pointer transition-all ${selectedPlatform === source.id ? "border-2 border-purple-500 bg-purple-50 shadow-lg" : "bg-white/80 border-gray-200 hover:border-purple-300 hover:shadow-md"}`}
+                    onClick={() => setSelectedPlatform(source.id)}
+                    data-testid={`button-platform-${source.id}`}
+                  >
+                    <CardContent className="p-6 text-center">
+                      {selectedPlatform === source.id && (
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center shadow-md">
+                          <Check className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                      <span className="text-lg font-semibold text-gray-800">{source[language || "ko"]}</span>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {step === 2 && bookingPath === "homepage" && (
+            <motion.div key="datetime" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-4xl">
+              <div className="text-center mb-6">
+                <CalendarIcon className="w-10 h-10 text-pink-500 mx-auto mb-2" />
+                <h1 className="text-2xl font-bold text-gray-800">{t.selectDateTime}</h1>
+                <p className="text-gray-600 mt-2">{t.selectDateTimeDesc}</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="bg-white/80 border-gray-200">
+                  <CardContent className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                      <CalendarIcon className="w-5 h-5 text-pink-500" />
+                      {t.selectDate}
+                    </h3>
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate}
+                      disabled={(date) => date < new Date() || date.getDay() === 0}
+                      className="rounded-md border mx-auto"
+                    />
+                  </CardContent>
+                </Card>
+                <Card className="bg-white/80 border-gray-200">
+                  <CardContent className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-pink-500" />
+                      {t.selectTime}
+                    </h3>
+                    <div className="grid grid-cols-4 gap-2 max-h-[300px] overflow-y-auto">
+                      {timeSlots.map(time => (
+                        <Button
+                          key={time}
+                          variant={selectedTime === time ? "default" : "outline"}
+                          size="sm"
+                          className={`${selectedTime === time ? "bg-pink-500 hover:bg-pink-600 text-white" : "border-gray-300 hover:border-pink-400"}`}
+                          onClick={() => setSelectedTime(time)}
+                          data-testid={`button-time-${time.replace(":", "")}`}
+                        >
+                          {time}
+                        </Button>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 3 && (
             <motion.div key="drink" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-5xl">
               <div className="text-center mb-6">
                 <Coffee className="w-10 h-10 text-amber-600 mx-auto mb-2" />
@@ -632,7 +818,7 @@ export default function MenuPage() {
             </motion.div>
           )}
 
-          {step === 2 && (
+          {step === 4 && (
             <motion.div key="info" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-xl">
               <div className="text-center mb-6">
                 <User className="w-10 h-10 text-purple-500 mx-auto mb-2" />
@@ -656,34 +842,12 @@ export default function MenuPage() {
                     <label className="text-sm font-medium text-gray-700 mb-2 block">{t.email} *</label>
                     <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t.emailPlaceholder} className="bg-white border-gray-300 text-gray-800 placeholder:text-gray-400 h-12" data-testid="input-email" />
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-3 block">{t.bookingSource} *</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {bookingSources.map(source => (
-                        <label 
-                          key={source.id} 
-                          className={`flex items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${bookingSource === source.id ? "border-purple-500 bg-purple-50" : "border-gray-200 hover:border-gray-300 bg-white"}`}
-                        >
-                          <input 
-                            type="radio" 
-                            name="bookingSource" 
-                            value={source.id} 
-                            checked={bookingSource === source.id} 
-                            onChange={(e) => setBookingSource(e.target.value)} 
-                            className="w-4 h-4 text-purple-600"
-                            data-testid={`radio-source-${source.id}`}
-                          />
-                          <span className="text-sm text-gray-700">{source[language || "ko"]}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </motion.div>
           )}
 
-          {step === 3 && (
+          {step === 5 && (
             <motion.div key="mixing" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-4xl">
               <div className="text-center mb-6">
                 <Headphones className="w-10 h-10 text-cyan-500 mx-auto mb-2" />
@@ -716,7 +880,7 @@ export default function MenuPage() {
             </motion.div>
           )}
 
-          {step === 4 && (
+          {step === 6 && (
             <motion.div key="video" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-3xl">
               <div className="text-center mb-6">
                 <Video className="w-10 h-10 text-rose-500 mx-auto mb-2" />
@@ -748,7 +912,7 @@ export default function MenuPage() {
             </motion.div>
           )}
 
-          {step === 5 && (
+          {step === 7 && (
             <motion.div key="extra" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-2xl">
               <div className="text-center mb-6">
                 <Share2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
@@ -831,7 +995,7 @@ export default function MenuPage() {
             </motion.div>
           )}
 
-          {step === 6 && (
+          {step === 8 && (
             <motion.div key="confirm" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-xl">
               <div className="text-center mb-6">
                 <Check className="w-10 h-10 text-green-500 mx-auto mb-2" />
@@ -885,11 +1049,11 @@ export default function MenuPage() {
               <ArrowLeft className="w-6 h-6 mr-2" />{t.back}
             </Button>
             <div className="flex items-center gap-2">
-              {[1,2,3,4,5,6].map(i => (
-                <div key={i} className={`h-3 rounded-full transition-all ${i === step ? "bg-pink-500 w-8" : i < step ? "bg-green-500 w-3" : "bg-gray-400 w-3"}`} />
+              {[1,2,3,4,5,6,7,8].map(i => (
+                <div key={i} className={`h-2 rounded-full transition-all ${i === step ? "bg-pink-500 w-6" : i < step ? "bg-green-500 w-2" : "bg-gray-400 w-2"}`} />
               ))}
             </div>
-            {step < 6 ? (
+            {step < 8 ? (
               <Button size="lg" onClick={() => paginate(1)} disabled={!canProceed()} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-6 text-lg font-semibold shadow-lg" data-testid="button-next">
                 {t.next}<ArrowRight className="w-6 h-6 ml-2" />
               </Button>
