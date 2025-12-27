@@ -26,17 +26,27 @@ const getDrinkKey = (id: string, temp: "hot" | "iced" | "none") => `${id}-${temp
 const drinkCatalog = [
   { id: "coffee", hasTemp: true, hotOnly: false },
   { id: "coffee-decaf", hasTemp: true, hotOnly: false },
-  { id: "lemonade", hasTemp: false, hotOnly: false },
-  { id: "strawberry-ade", hasTemp: false, hotOnly: false },
-  { id: "orange-ade", hasTemp: false, hotOnly: false },
-  { id: "grapefruit-ade", hasTemp: false, hotOnly: false },
-  { id: "iced-tea", hasTemp: false, hotOnly: false },
   { id: "green-tea", hasTemp: true, hotOnly: false },
   { id: "hibiscus", hasTemp: true, hotOnly: false },
   { id: "earl-grey", hasTemp: true, hotOnly: false },
   { id: "peppermint", hasTemp: true, hotOnly: false },
   { id: "chamomile", hasTemp: true, hotOnly: false },
   { id: "hot-chocolate", hasTemp: false, hotOnly: true },
+  { id: "lemonade", hasTemp: false, hotOnly: false },
+  { id: "strawberry-ade", hasTemp: false, hotOnly: false },
+  { id: "orange-ade", hasTemp: false, hotOnly: false },
+  { id: "grapefruit-ade", hasTemp: false, hotOnly: false },
+  { id: "iced-tea", hasTemp: false, hotOnly: false },
+];
+
+const bookingSources = [
+  { id: "naver", ko: "Naver 예약자", en: "Naver Booking", ja: "Naver予約", zh: "Naver预约" },
+  { id: "klook", ko: "Klook 예약자", en: "Klook Booking", ja: "Klook予約", zh: "Klook预约" },
+  { id: "kkday", ko: "KKday 예약자", en: "KKday Booking", ja: "KKday予約", zh: "KKday预约" },
+  { id: "creatrip", ko: "Creatrip 예약자", en: "Creatrip Booking", ja: "Creatrip予約", zh: "Creatrip预约" },
+  { id: "trip", ko: "Trip.com 예약자", en: "Trip.com Booking", ja: "Trip.com予約", zh: "Trip.com预约" },
+  { id: "datepop", ko: "데이트팝 예약자", en: "DatePop Booking", ja: "DatePop予約", zh: "DatePop预约" },
+  { id: "homepage", ko: "홈페이지 예약자", en: "Website Booking", ja: "ホームページ予約", zh: "官网预约" },
 ];
 
 const translations: Record<Language, {
@@ -55,6 +65,7 @@ const translations: Record<Language, {
   phonePlaceholder: string;
   email: string;
   emailPlaceholder: string;
+  bookingSource: string;
   mixingService: string;
   mixingDesc: string;
   videoService: string;
@@ -109,6 +120,7 @@ const translations: Record<Language, {
     phonePlaceholder: "전화번호를 입력하세요",
     email: "이메일",
     emailPlaceholder: "이메일을 입력하세요",
+    bookingSource: "예약 경로",
     mixingService: "믹싱 서비스",
     mixingDesc: "녹음 후 어떤 수준의 믹싱을 원하시나요?",
     videoService: "비디오 서비스",
@@ -181,6 +193,7 @@ const translations: Record<Language, {
     phonePlaceholder: "Enter phone number",
     email: "Email",
     emailPlaceholder: "Enter your email",
+    bookingSource: "Booking Source",
     mixingService: "Mixing Service",
     mixingDesc: "What level of mixing do you want?",
     videoService: "Video Service",
@@ -253,6 +266,7 @@ const translations: Record<Language, {
     phonePlaceholder: "電話番号を入力",
     email: "メール",
     emailPlaceholder: "メールを入力",
+    bookingSource: "予約経路",
     mixingService: "ミキシング",
     mixingDesc: "どのレベルのミキシングをご希望ですか？",
     videoService: "ビデオサービス",
@@ -325,6 +339,7 @@ const translations: Record<Language, {
     phonePlaceholder: "输入电话号码",
     email: "邮箱",
     emailPlaceholder: "输入邮箱",
+    bookingSource: "预约渠道",
     mixingService: "混音服务",
     mixingDesc: "您想要什么级别的混音？",
     videoService: "视频服务",
@@ -384,6 +399,7 @@ export default function MenuPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [bookingSource, setBookingSource] = useState<string>("");
   const [selectedMixing, setSelectedMixing] = useState<string>("raw");
   const [selectedVideo, setSelectedVideo] = useState<string>("self");
   const [wantsAlbum, setWantsAlbum] = useState(false);
@@ -448,7 +464,7 @@ export default function MenuPage() {
   };
 
   const handleSubmit = () => {
-    if (!name || !phone || !email) {
+    if (!name || !phone || !email || !bookingSource) {
       toast({ title: t.required, description: "Please fill all required fields", variant: "destructive" });
       return;
     }
@@ -467,10 +483,12 @@ export default function MenuPage() {
     if (wantsAlbum) selectedAddons.push(5);
     if (wantsLP) selectedAddons.push(6);
 
+    const sourceLabel = bookingSources.find(s => s.id === bookingSource)?.[language || "ko"] || bookingSource;
+
     bookingMutation.mutate({
       bookingType: "direct",
-      name,
-      email,
+      name: `[${sourceLabel}] ${name}`,
+      email: email || "no-email@example.com",
       phone,
       selectedDrink: drinkSummary,
       drinkTemperature: "mixed",
@@ -487,7 +505,7 @@ export default function MenuPage() {
   };
 
   const canProceed = () => {
-    if (step === 2) return name !== "" && phone !== "" && email !== "";
+    if (step === 2) return name !== "" && phone !== "" && email !== "" && bookingSource !== "";
     return true;
   };
 
@@ -506,7 +524,7 @@ export default function MenuPage() {
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-4">{t.success}</h1>
           <p className="text-xl text-gray-600 mb-8">{t.successMessage}</p>
-          <Button onClick={() => { setIsComplete(false); setStep(0); setLanguage(null); setDrinkOrders([]); setYoutubeUrl(""); setName(""); setPhone(""); setEmail(""); setSelectedMixing("raw"); setSelectedVideo("self"); setWantsAlbum(false); setWantsLP(false); }} size="lg" className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-12 py-6 text-xl">
+          <Button onClick={() => { setIsComplete(false); setStep(0); setLanguage(null); setDrinkOrders([]); setYoutubeUrl(""); setName(""); setPhone(""); setEmail(""); setBookingSource(""); setSelectedMixing("raw"); setSelectedVideo("self"); setWantsAlbum(false); setWantsLP(false); }} size="lg" className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-12 py-6 text-xl">
             {t.back}
           </Button>
         </motion.div>
@@ -637,6 +655,28 @@ export default function MenuPage() {
                   <div>
                     <label className="text-sm font-medium text-gray-700 mb-2 block">{t.email} *</label>
                     <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t.emailPlaceholder} className="bg-white border-gray-300 text-gray-800 placeholder:text-gray-400 h-12" data-testid="input-email" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-3 block">{t.bookingSource} *</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {bookingSources.map(source => (
+                        <label 
+                          key={source.id} 
+                          className={`flex items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${bookingSource === source.id ? "border-purple-500 bg-purple-50" : "border-gray-200 hover:border-gray-300 bg-white"}`}
+                        >
+                          <input 
+                            type="radio" 
+                            name="bookingSource" 
+                            value={source.id} 
+                            checked={bookingSource === source.id} 
+                            onChange={(e) => setBookingSource(e.target.value)} 
+                            className="w-4 h-4 text-purple-600"
+                            data-testid={`radio-source-${source.id}`}
+                          />
+                          <span className="text-sm text-gray-700">{source[language || "ko"]}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
