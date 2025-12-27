@@ -17,9 +17,11 @@ type Language = "ko" | "en" | "ja" | "zh";
 
 interface DrinkOrder {
   id: string;
-  quantity: number;
   temperature: "hot" | "iced" | "none";
+  quantity: number;
 }
+
+const getDrinkKey = (id: string, temp: "hot" | "iced" | "none") => `${id}-${temp}`;
 
 const drinkCatalog = [
   { id: "coffee", hasTemp: true, hotOnly: false },
@@ -426,25 +428,23 @@ export default function MenuPage() {
     return `₩${price.toLocaleString()}`;
   };
 
-  const getDrinkOrder = (drinkId: string) => drinkOrders.find(o => o.id === drinkId);
+  const getDrinkQty = (drinkId: string, temp: "hot" | "iced" | "none") => {
+    const order = drinkOrders.find(o => o.id === drinkId && o.temperature === temp);
+    return order?.quantity || 0;
+  };
 
-  const updateDrinkQuantity = (drinkId: string, delta: number, drink: typeof drinkCatalog[0]) => {
+  const updateDrinkQuantity = (drinkId: string, temp: "hot" | "iced" | "none", delta: number) => {
     setDrinkOrders(prev => {
-      const existing = prev.find(o => o.id === drinkId);
+      const existing = prev.find(o => o.id === drinkId && o.temperature === temp);
       if (existing) {
         const newQty = Math.max(0, existing.quantity + delta);
-        if (newQty === 0) return prev.filter(o => o.id !== drinkId);
-        return prev.map(o => o.id === drinkId ? { ...o, quantity: newQty } : o);
+        if (newQty === 0) return prev.filter(o => !(o.id === drinkId && o.temperature === temp));
+        return prev.map(o => (o.id === drinkId && o.temperature === temp) ? { ...o, quantity: newQty } : o);
       } else if (delta > 0) {
-        const defaultTemp = drink.hotOnly ? "hot" : (drink.hasTemp ? "iced" : "none");
-        return [...prev, { id: drinkId, quantity: 1, temperature: defaultTemp as any }];
+        return [...prev, { id: drinkId, temperature: temp, quantity: 1 }];
       }
       return prev;
     });
-  };
-
-  const updateDrinkTemp = (drinkId: string, temp: "hot" | "iced") => {
-    setDrinkOrders(prev => prev.map(o => o.id === drinkId ? { ...o, temperature: temp } : o));
   };
 
   const handleSubmit = () => {
@@ -455,7 +455,8 @@ export default function MenuPage() {
 
     const drinkSummary = drinkOrders.map(o => {
       const drinkName = t.drinks[o.id] || o.id;
-      return `${drinkName} x${o.quantity}${o.temperature !== "none" ? ` (${o.temperature})` : ""}`;
+      const tempLabel = o.temperature === "hot" ? " (hot)" : o.temperature === "iced" ? " (iced)" : "";
+      return `${drinkName} x${o.quantity}${tempLabel}`;
     }).join(", ") || "none";
 
     const selectedAddons: number[] = [];
@@ -557,25 +558,52 @@ export default function MenuPage() {
                 <Coffee className="w-10 h-10 text-amber-600 mx-auto mb-2" />
                 <h1 className="text-2xl font-bold text-gray-800">{t.selectDrink}</h1>
               </div>
-              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 max-h-[55vh] overflow-y-auto p-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[55vh] overflow-y-auto p-2">
                 {drinkCatalog.map((drink) => {
-                  const order = getDrinkOrder(drink.id);
-                  const qty = order?.quantity || 0;
+                  const hotQty = getDrinkQty(drink.id, "hot");
+                  const icedQty = getDrinkQty(drink.id, "iced");
+                  const noneQty = getDrinkQty(drink.id, "none");
+                  const totalQty = hotQty + icedQty + noneQty;
+                  
                   return (
-                    <Card key={drink.id} className={`bg-white/80 border-gray-200 transition-all ${qty > 0 ? "border-pink-500 bg-pink-50 shadow-md" : "hover:shadow-md"}`}>
+                    <Card key={drink.id} className={`bg-white/80 border-gray-200 transition-all ${totalQty > 0 ? "border-pink-500 bg-pink-50 shadow-md" : "hover:shadow-md"}`}>
                       <CardContent className="p-3">
-                        <div className="text-center mb-2">
+                        <div className="text-center mb-3">
                           <span className="text-sm font-medium text-gray-700 block">{t.drinks[drink.id]}</span>
                         </div>
-                        <div className="flex items-center justify-center gap-1 mb-2">
-                          <Button variant="outline" size="sm" className="h-9 w-9 p-0 border-gray-300 text-gray-700 hover:bg-gray-100" onClick={() => updateDrinkQuantity(drink.id, -1, drink)} disabled={qty === 0}><Minus className="w-4 h-4" /></Button>
-                          <span className="w-8 text-center font-bold text-lg">{qty}</span>
-                          <Button variant="outline" size="sm" className="h-9 w-9 p-0 border-gray-300 text-gray-700 hover:bg-gray-100" onClick={() => updateDrinkQuantity(drink.id, 1, drink)}><Plus className="w-4 h-4" /></Button>
-                        </div>
-                        {qty > 0 && drink.hasTemp && !drink.hotOnly && (
-                          <div className="flex gap-1 justify-center">
-                            <Button variant={order?.temperature === "hot" ? "default" : "outline"} size="sm" onClick={() => updateDrinkTemp(drink.id, "hot")} className={`text-xs h-7 px-3 ${order?.temperature === "hot" ? "bg-red-500 hover:bg-red-600 text-white" : "border-gray-300 text-gray-600"}`}>{t.hot}</Button>
-                            <Button variant={order?.temperature === "iced" ? "default" : "outline"} size="sm" onClick={() => updateDrinkTemp(drink.id, "iced")} className={`text-xs h-7 px-3 ${order?.temperature === "iced" ? "bg-blue-500 hover:bg-blue-600 text-white" : "border-gray-300 text-gray-600"}`}>{t.iced}</Button>
+                        {drink.hasTemp && !drink.hotOnly ? (
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between bg-red-50 rounded-lg px-2 py-1">
+                              <span className="text-xs font-medium text-red-600">{t.hot}</span>
+                              <div className="flex items-center gap-1">
+                                <Button variant="outline" size="sm" className="h-7 w-7 p-0 border-red-300 text-red-600 hover:bg-red-100" onClick={() => updateDrinkQuantity(drink.id, "hot", -1)} disabled={hotQty === 0}><Minus className="w-3 h-3" /></Button>
+                                <span className="w-6 text-center font-bold text-sm">{hotQty}</span>
+                                <Button variant="outline" size="sm" className="h-7 w-7 p-0 border-red-300 text-red-600 hover:bg-red-100" onClick={() => updateDrinkQuantity(drink.id, "hot", 1)}><Plus className="w-3 h-3" /></Button>
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between bg-blue-50 rounded-lg px-2 py-1">
+                              <span className="text-xs font-medium text-blue-600">{t.iced}</span>
+                              <div className="flex items-center gap-1">
+                                <Button variant="outline" size="sm" className="h-7 w-7 p-0 border-blue-300 text-blue-600 hover:bg-blue-100" onClick={() => updateDrinkQuantity(drink.id, "iced", -1)} disabled={icedQty === 0}><Minus className="w-3 h-3" /></Button>
+                                <span className="w-6 text-center font-bold text-sm">{icedQty}</span>
+                                <Button variant="outline" size="sm" className="h-7 w-7 p-0 border-blue-300 text-blue-600 hover:bg-blue-100" onClick={() => updateDrinkQuantity(drink.id, "iced", 1)}><Plus className="w-3 h-3" /></Button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : drink.hotOnly ? (
+                          <div className="flex items-center justify-between bg-red-50 rounded-lg px-2 py-1">
+                            <span className="text-xs font-medium text-red-600">{t.hot}</span>
+                            <div className="flex items-center gap-1">
+                              <Button variant="outline" size="sm" className="h-7 w-7 p-0 border-red-300 text-red-600 hover:bg-red-100" onClick={() => updateDrinkQuantity(drink.id, "hot", -1)} disabled={hotQty === 0}><Minus className="w-3 h-3" /></Button>
+                              <span className="w-6 text-center font-bold text-sm">{hotQty}</span>
+                              <Button variant="outline" size="sm" className="h-7 w-7 p-0 border-red-300 text-red-600 hover:bg-red-100" onClick={() => updateDrinkQuantity(drink.id, "hot", 1)}><Plus className="w-3 h-3" /></Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center gap-1">
+                            <Button variant="outline" size="sm" className="h-8 w-8 p-0 border-gray-300 text-gray-700 hover:bg-gray-100" onClick={() => updateDrinkQuantity(drink.id, "none", -1)} disabled={noneQty === 0}><Minus className="w-4 h-4" /></Button>
+                            <span className="w-8 text-center font-bold text-lg">{noneQty}</span>
+                            <Button variant="outline" size="sm" className="h-8 w-8 p-0 border-gray-300 text-gray-700 hover:bg-gray-100" onClick={() => updateDrinkQuantity(drink.id, "none", 1)}><Plus className="w-4 h-4" /></Button>
                           </div>
                         )}
                       </CardContent>
@@ -624,7 +652,12 @@ export default function MenuPage() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {t.mixingOptions.map((opt) => (
-                  <Card key={opt.id} className={`cursor-pointer transition-all ${selectedMixing === opt.id ? "border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-gray-200 hover:shadow-md"}`} onClick={() => setSelectedMixing(opt.id)}>
+                  <Card key={opt.id} className={`cursor-pointer transition-all relative ${selectedMixing === opt.id ? "border-2 border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-gray-300"}`} onClick={() => setSelectedMixing(opt.id)}>
+                    {selectedMixing === opt.id && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center shadow-md">
+                        <Check className="w-4 h-4 text-white" />
+                      </div>
+                    )}
                     <CardContent className="p-4 text-center">
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${selectedMixing === opt.id ? "bg-cyan-500" : "bg-gray-200"}`}>
                         <Headphones className={`w-6 h-6 ${selectedMixing === opt.id ? "text-white" : "text-gray-600"}`} />
@@ -652,7 +685,12 @@ export default function MenuPage() {
               </div>
               <div className="grid grid-cols-3 gap-4">
                 {t.videoOptions.map((opt) => (
-                  <Card key={opt.id} className={`cursor-pointer transition-all ${selectedVideo === opt.id ? "border-rose-500 bg-rose-50 shadow-lg" : "bg-white/80 border-gray-200 hover:shadow-md"}`} onClick={() => setSelectedVideo(opt.id)}>
+                  <Card key={opt.id} className={`cursor-pointer transition-all relative ${selectedVideo === opt.id ? "border-2 border-rose-500 bg-rose-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-gray-300"}`} onClick={() => setSelectedVideo(opt.id)}>
+                    {selectedVideo === opt.id && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 rounded-full flex items-center justify-center shadow-md">
+                        <Check className="w-4 h-4 text-white" />
+                      </div>
+                    )}
                     <CardContent className="p-4 text-center">
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${selectedVideo === opt.id ? "bg-rose-500" : "bg-gray-200"}`}>
                         <Video className={`w-6 h-6 ${selectedVideo === opt.id ? "text-white" : "text-gray-600"}`} />
@@ -677,7 +715,12 @@ export default function MenuPage() {
                 <h1 className="text-2xl font-bold text-gray-800">{t.albumService} & {t.lpService}</h1>
               </div>
               <div className="space-y-4">
-                <Card className={`cursor-pointer transition-all ${wantsAlbum ? "border-emerald-500 bg-emerald-50 shadow-lg" : "bg-white/80 border-gray-200 hover:shadow-md"}`} onClick={() => setWantsAlbum(!wantsAlbum)}>
+                <Card className={`cursor-pointer transition-all relative ${wantsAlbum ? "border-2 border-emerald-500 bg-emerald-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-gray-300"}`} onClick={() => setWantsAlbum(!wantsAlbum)}>
+                  {wantsAlbum && (
+                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center shadow-md">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                  )}
                   <CardContent className="p-5">
                     <div className="flex items-center gap-4 mb-4">
                       <div className={`w-14 h-14 rounded-full flex items-center justify-center ${wantsAlbum ? "bg-emerald-500" : "bg-gray-200"}`}>
@@ -689,7 +732,7 @@ export default function MenuPage() {
                       </div>
                       <p className="text-2xl font-bold text-pink-600">{formatPrice(t.albumOption.price)}</p>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 mt-3">
+                    <div className="flex flex-wrap gap-2 mt-3">
                       {t.albumOption.features.map((feature, idx) => (
                         <Button 
                           key={idx} 
@@ -702,19 +745,46 @@ export default function MenuPage() {
                           {feature.title}
                         </Button>
                       ))}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="border-emerald-300 text-emerald-600 hover:bg-emerald-50 text-xs h-auto py-2 px-3"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Play className="w-3 h-3 mr-1" />
+                        {t.listenSample}
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
-                <Card className={`cursor-pointer transition-all ${wantsLP ? "border-amber-500 bg-amber-50 shadow-lg" : "bg-white/80 border-gray-200 hover:shadow-md"}`} onClick={() => setWantsLP(!wantsLP)}>
-                  <CardContent className="p-5 flex items-center gap-4">
-                    <div className={`w-14 h-14 rounded-full flex items-center justify-center ${wantsLP ? "bg-amber-500" : "bg-gray-200"}`}>
-                      <Disc className={`w-7 h-7 ${wantsLP ? "text-white" : "text-gray-600"}`} />
+                <Card className={`cursor-pointer transition-all relative ${wantsLP ? "border-2 border-amber-500 bg-amber-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-gray-300"}`} onClick={() => setWantsLP(!wantsLP)}>
+                  {wantsLP && (
+                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
+                      <Check className="w-4 h-4 text-white" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-xl text-gray-800">{t.lpOption.name}</h3>
-                      <p className="text-sm text-gray-500">{t.lpOption.desc}</p>
+                  )}
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-14 h-14 rounded-full flex items-center justify-center ${wantsLP ? "bg-amber-500" : "bg-gray-200"}`}>
+                        <Disc className={`w-7 h-7 ${wantsLP ? "text-white" : "text-gray-600"}`} />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-xl text-gray-800">{t.lpOption.name}</h3>
+                        <p className="text-sm text-gray-500">{t.lpOption.desc}</p>
+                      </div>
+                      <p className="text-2xl font-bold text-pink-600">{formatPrice(t.lpOption.price)}</p>
                     </div>
-                    <p className="text-2xl font-bold text-pink-600">{formatPrice(t.lpOption.price)}</p>
+                    <div className="mt-3 flex justify-end">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="border-amber-300 text-amber-600 hover:bg-amber-50 text-xs h-auto py-2 px-3"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Play className="w-3 h-3 mr-1" />
+                        {t.watchSample}
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -734,13 +804,30 @@ export default function MenuPage() {
                   <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.email}</span><span className="text-gray-800">{email}</span></div>
                   <div className="py-2 border-b border-gray-200">
                     <span className="text-gray-500 block mb-1">{t.selectDrink}</span>
-                    <span className="text-xs text-gray-800">{drinkOrders.length > 0 ? drinkOrders.map(o => `${t.drinks[o.id]} x${o.quantity}`).join(", ") : "-"}</span>
+                    <span className="text-xs text-gray-800">
+                      {drinkOrders.length > 0 ? drinkOrders.map(o => {
+                        const tempLabel = o.temperature === "hot" ? ` (${t.hot})` : o.temperature === "iced" ? ` (${t.iced})` : "";
+                        return `${t.drinks[o.id]} x${o.quantity}${tempLabel}`;
+                      }).join(", ") : "-"}
+                    </span>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.mixingService}</span><span className="text-gray-800">{t.mixingOptions.find(o => o.id === selectedMixing)?.name}</span></div>
-                  <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.videoService}</span><span className="text-gray-800">{t.videoOptions.find(o => o.id === selectedVideo)?.name}</span></div>
-                  {wantsAlbum && <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.albumOption.name}</span><span className="text-pink-600">{formatPrice(t.albumOption.price)}</span></div>}
-                  {wantsLP && <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.lpOption.name}</span><span className="text-pink-600">{formatPrice(t.lpOption.price)}</span></div>}
-                  <div className="flex justify-between py-4 text-2xl font-bold">
+                  <div className="flex justify-between py-2 border-b border-gray-200">
+                    <span className="text-gray-500">{t.mixingService}</span>
+                    <div className="text-right">
+                      <span className="text-gray-800">{t.mixingOptions.find(o => o.id === selectedMixing)?.name}</span>
+                      <span className="ml-2 text-pink-600 font-medium">{formatPrice(t.mixingOptions.find(o => o.id === selectedMixing)?.price || 0)}</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-gray-200">
+                    <span className="text-gray-500">{t.videoService}</span>
+                    <div className="text-right">
+                      <span className="text-gray-800">{t.videoOptions.find(o => o.id === selectedVideo)?.name}</span>
+                      <span className="ml-2 text-pink-600 font-medium">{formatPrice(t.videoOptions.find(o => o.id === selectedVideo)?.price || 0)}</span>
+                    </div>
+                  </div>
+                  {wantsAlbum && <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.albumOption.name}</span><span className="text-pink-600 font-medium">{formatPrice(t.albumOption.price)}</span></div>}
+                  {wantsLP && <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.lpOption.name}</span><span className="text-pink-600 font-medium">{formatPrice(t.lpOption.price)}</span></div>}
+                  <div className="flex justify-between py-4 text-2xl font-bold bg-gradient-to-r from-purple-50 to-pink-50 -mx-5 px-5 rounded-b-lg">
                     <span className="text-purple-600">{t.total}</span>
                     <span className="text-pink-600">{formatPrice(calculateTotal())}</span>
                   </div>
