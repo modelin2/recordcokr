@@ -7,6 +7,7 @@ import Home from "@/pages/home";
 import FranchisePage from "@/pages/franchise";
 import FAQPage from "@/pages/faq";
 import NaverBooking from "@/pages/naver-booking";
+import MenuPage from "@/pages/menu";
 import Admin from "@/pages/admin";
 import LoginPage from "@/pages/login";
 import UserManagement from "@/pages/user-management";
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/franchise" component={FranchisePage} />
       <Route path="/faq" component={FAQPage} />
       <Route path="/naver-booking" component={NaverBooking} />
+      <Route path="/menu" component={MenuPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/admin">
         <ProtectedRoute requireAdmin={true}>
