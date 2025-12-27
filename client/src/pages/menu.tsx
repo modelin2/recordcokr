@@ -10,7 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { 
   Globe, Coffee, Music, User, Check, ArrowRight, ArrowLeft,
   Headphones, Video, Disc, Share2, Play, Minus, Plus, Pause, Info, X,
-  Calendar as CalendarIcon, Clock, Users, Home, Sparkles
+  Calendar as CalendarIcon, Clock, Users, Home, Sparkles, Star
 } from "lucide-react";
 import { SiSpotify, SiApplemusic, SiTiktok, SiInstagram, SiYoutube } from "react-icons/si";
 import { motion, AnimatePresence } from "framer-motion";
@@ -107,7 +107,7 @@ const translations: Record<Language, {
   mixingOptions: { id: string; name: string; price: number; desc: string }[];
   videoOptions: { id: string; name: string; price: number; desc: string }[];
   albumOption: { name: string; price: number; desc: string; features: { title: string; desc: string }[] };
-  proAlbumOption: { name: string; price: number; desc: string };
+  proAlbumOption: { name: string; price: number; desc: string; features: { title: string; desc: string }[] };
   lpOption: { name: string; price: number; desc: string };
 }> = {
   ko: {
@@ -191,7 +191,14 @@ const translations: Record<Language, {
         { title: "평생 저작권료 라이센스", desc: "발매된 음원에서 발생하는 스트리밍 수익을 평생 받으실 수 있습니다. Spotify, Apple Music 등에서 재생될 때마다 저작권료가 적립됩니다." },
       ]
     },
-    proAlbumOption: { name: "전문가 앨범 발매", price: 500000, desc: "음반 발매 경험자, 음악 전공자를 위한 전문가 트랙. 반주 제작 레퍼런스 제공 및 전문적인 커뮤니케이션을 통해 디지털 자산을 구축합니다" },
+    proAlbumOption: { name: "전문가 앨범 발매", price: 500000, desc: "음반 발매 경험자, 음악 전공자를 위한 전문가 트랙", features: [
+      { title: "리메이크 라이선스 취득", desc: "원곡 저작권자의 공식 허가를 받아 합법적으로 음원을 발매합니다" },
+      { title: "반주 새롭게 제작", desc: "전문 작곡가가 원곡의 느낌을 살린 새로운 MR을 제작합니다" },
+      { title: "앨범표지 디자인", desc: "전문 디자이너가 세련된 앨범 커버를 디자인합니다" },
+      { title: "평생 저작권료 라이센스", desc: "발매 후 발생하는 모든 저작권료를 평생 받을 수 있습니다" },
+      { title: "레퍼런스 기반 맞춤 제작", desc: "고객이 제공하는 레퍼런스를 바탕으로 원하는 스타일의 반주를 정교하게 제작합니다" },
+      { title: "전문 커뮤니케이션", desc: "음악 전문가와 1:1 상담을 통해 디테일한 요구사항을 반영합니다" },
+    ] },
     lpOption: { name: "LP 레코드 제작", price: 300000, desc: "나만의 LP 레코드 제작 (4-6주 소요)" },
   },
   en: {
@@ -275,7 +282,14 @@ const translations: Record<Language, {
         { title: "Lifetime Royalty License", desc: "Receive streaming revenue for life from your released music. Earn royalties every time your song plays on Spotify, Apple Music, etc." },
       ]
     },
-    proAlbumOption: { name: "Pro Album Release", price: 500000, desc: "Expert track for experienced artists and music majors. Provide references for backing track production and build your digital assets through professional communication" },
+    proAlbumOption: { name: "Pro Album Release", price: 500000, desc: "Expert track for experienced artists and music majors", features: [
+      { title: "Remake License", desc: "Obtain official permission from the original copyright holder for legal music release" },
+      { title: "New Backing Track", desc: "Professional composer creates new MR that captures the original feel" },
+      { title: "Album Cover Design", desc: "Professional designer creates stylish album cover" },
+      { title: "Lifetime Royalty License", desc: "Receive all royalties generated from the released music for life" },
+      { title: "Reference-Based Production", desc: "Create precisely styled backing tracks based on references you provide" },
+      { title: "Expert Communication", desc: "1:1 consultation with music experts to reflect detailed requirements" },
+    ] },
     lpOption: { name: "LP Record Production", price: 300000, desc: "Create your own LP record (4-6 weeks)" },
   },
   ja: {
@@ -359,7 +373,14 @@ const translations: Record<Language, {
         { title: "生涯ロイヤリティライセンス", desc: "リリースした音源からのストリーミング収益を一生受け取れます。" },
       ]
     },
-    proAlbumOption: { name: "プロアルバムリリース", price: 500000, desc: "音楽経験者・音楽専攻者向けのプロトラック。バッキングトラック制作のリファレンス提供と専門的なコミュニケーションでデジタル資産を構築" },
+    proAlbumOption: { name: "プロアルバムリリース", price: 500000, desc: "音楽経験者・音楽専攻者向けのプロトラック", features: [
+      { title: "リメイクライセンス取得", desc: "原曲著作権者の公式許可を得て合法的に音源をリリース" },
+      { title: "新規バッキングトラック制作", desc: "プロの作曲家が原曲の雰囲気を活かした新しいMRを制作" },
+      { title: "アルバムカバーデザイン", desc: "プロのデザイナーが洗練されたアルバムカバーをデザイン" },
+      { title: "永久ロイヤリティライセンス", desc: "リリース後に発生する全ての著作権料を永久に受け取れます" },
+      { title: "リファレンス基盤カスタム制作", desc: "お客様提供のリファレンスを基にご希望スタイルのバッキングトラックを精密制作" },
+      { title: "専門コミュニケーション", desc: "音楽専門家との1:1相談で細かい要望を反映" },
+    ] },
     lpOption: { name: "LPレコード制作", price: 300000, desc: "オリジナルLP制作（4-6週間）" },
   },
   zh: {
@@ -443,7 +464,14 @@ const translations: Record<Language, {
         { title: "终身版税许可", desc: "终身获得发行音乐的流媒体收入。" },
       ]
     },
-    proAlbumOption: { name: "专业专辑发行", price: 500000, desc: "专为有发行经验的音乐人和音乐专业人士打造。提供伴奏制作参考，通过专业沟通构建您的数字资产" },
+    proAlbumOption: { name: "专业专辑发行", price: 500000, desc: "专为有发行经验的音乐人和音乐专业人士打造", features: [
+      { title: "翻唱授权获取", desc: "获得原曲版权所有者的官方许可，合法发行音源" },
+      { title: "新编伴奏制作", desc: "专业作曲家制作保留原曲感觉的全新MR" },
+      { title: "专辑封面设计", desc: "专业设计师设计精美的专辑封面" },
+      { title: "终身版税授权", desc: "发行后产生的所有版税终身归您所有" },
+      { title: "参考定制制作", desc: "根据您提供的参考资料精确制作所需风格的伴奏" },
+      { title: "专业沟通", desc: "与音乐专家一对一咨询，反映详细需求" },
+    ] },
     lpOption: { name: "LP唱片制作", price: 300000, desc: "制作您自己的LP唱片（4-6周）" },
   },
 };
@@ -862,9 +890,9 @@ export default function MenuPage() {
                 <h1 className="text-2xl font-bold text-gray-800">{t.mixingService}</h1>
                 <p className="text-gray-600 mt-2">{t.mixingDesc}</p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="flex flex-wrap justify-center gap-4">
                 {t.mixingOptions.map((opt) => (
-                  <Card key={opt.id} className={`cursor-pointer transition-all relative ${selectedMixing === opt.id ? "border-2 border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-gray-300"}`} onClick={() => setSelectedMixing(opt.id)}>
+                  <Card key={opt.id} className={`cursor-pointer transition-all relative w-48 ${selectedMixing === opt.id ? "border-2 border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-gray-300"}`} onClick={() => setSelectedMixing(opt.id)}>
                     {selectedMixing === opt.id && (
                       <div className="absolute -top-2 -right-2 w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center shadow-md">
                         <Check className="w-4 h-4 text-white" />
@@ -1037,17 +1065,72 @@ export default function MenuPage() {
                         <Sparkles className={`w-8 h-8 ${wantsProAlbum ? "text-white" : "text-gray-600"}`} />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-bold text-2xl text-gray-800 mb-1">{t.proAlbumOption.name}</h3>
-                        <p className="text-sm text-gray-500">{t.proAlbumOption.desc}</p>
-                        <div className="mt-3 flex items-center gap-2">
-                          <span className="px-3 py-1 bg-violet-200 text-violet-800 rounded-full text-xs font-semibold">{language === "ko" ? "전문가 트랙" : "Pro Track"}</span>
-                          <span className="px-3 py-1 bg-purple-200 text-purple-800 rounded-full text-xs font-semibold">{language === "ko" ? "맞춤 제작" : "Customized"}</span>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-bold text-2xl text-gray-800">{t.proAlbumOption.name}</h3>
+                          <span className="px-2 py-0.5 bg-violet-500 text-white rounded-full text-xs font-bold">PRO</span>
                         </div>
+                        <p className="text-sm text-gray-500">{t.proAlbumOption.desc}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-3xl font-bold text-pink-600">{formatPrice(t.proAlbumOption.price)}</p>
                         <p className="text-xs text-gray-400 mt-1">{language === "ko" ? "부가세 포함" : "Tax included"}</p>
                       </div>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-2 justify-center">
+                      {["spotify", "appleMusic", "tiktok", "instagram", "youtube"].map((platform) => (
+                        <div key={platform} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center shadow-sm">
+                          {platform === "spotify" && <SiSpotify className="w-5 h-5 text-[#1DB954]" />}
+                          {platform === "appleMusic" && <SiApplemusic className="w-5 h-5 text-[#FA243C]" />}
+                          {platform === "tiktok" && <SiTiktok className="w-5 h-5 text-black" />}
+                          {platform === "instagram" && <SiInstagram className="w-5 h-5 text-[#E4405F]" />}
+                          {platform === "youtube" && <SiYoutube className="w-5 h-5 text-[#FF0000]" />}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {t.proAlbumOption.features.map((feature, idx) => (
+                        <motion.div
+                          key={idx}
+                          whileHover={{ scale: 1.03, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`p-3 rounded-xl cursor-pointer transition-all shadow-md ${
+                            idx < 4 
+                              ? idx === 0 ? "bg-gradient-to-br from-violet-100 to-purple-200 border-2 border-violet-300 hover:border-violet-500" :
+                                idx === 1 ? "bg-gradient-to-br from-blue-100 to-cyan-200 border-2 border-blue-300 hover:border-blue-500" :
+                                idx === 2 ? "bg-gradient-to-br from-amber-100 to-orange-200 border-2 border-amber-300 hover:border-amber-500" :
+                                "bg-gradient-to-br from-rose-100 to-pink-200 border-2 border-rose-300 hover:border-rose-500"
+                              : "bg-gradient-to-br from-emerald-100 to-teal-200 border-2 border-emerald-300 hover:border-emerald-500"
+                          }`}
+                          onClick={(e) => { e.stopPropagation(); setDetailModal(feature); }}
+                          data-testid={`button-pro-feature-${idx}`}
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            {idx >= 4 && <Star className="w-4 h-4 text-emerald-600" />}
+                            {idx < 4 && <Sparkles className={`w-4 h-4 ${
+                              idx === 0 ? "text-violet-600" :
+                              idx === 1 ? "text-blue-600" :
+                              idx === 2 ? "text-amber-600" :
+                              "text-rose-600"
+                            }`} />}
+                            <span className="text-xs font-bold text-gray-700">{feature.title}</span>
+                          </div>
+                          <p className="text-[10px] text-gray-500 line-clamp-2">{feature.desc}</p>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    <div className="mt-4 flex justify-center">
+                      <Button 
+                        variant="outline" 
+                        size="lg" 
+                        className="border-2 border-violet-400 text-violet-600 hover:bg-violet-100 font-semibold px-6 shadow-md"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Play className="w-4 h-4 mr-2" />
+                        {t.listenSample}
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
