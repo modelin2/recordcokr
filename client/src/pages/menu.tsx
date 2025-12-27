@@ -107,6 +107,7 @@ const translations: Record<Language, {
   mixingOptions: { id: string; name: string; price: number; desc: string }[];
   videoOptions: { id: string; name: string; price: number; desc: string }[];
   albumOption: { name: string; price: number; desc: string; features: { title: string; desc: string }[] };
+  proAlbumOption: { name: string; price: number; desc: string };
   lpOption: { name: string; price: number; desc: string };
 }> = {
   ko: {
@@ -170,26 +171,27 @@ const translations: Record<Language, {
     required: "필수 입력",
     close: "닫기",
     mixingOptions: [
-      { id: "raw", name: "녹음 원본", price: 0, desc: "믹싱 없이 녹음 원본 그대로 제공" },
       { id: "basic", name: "기본 믹싱", price: 0, desc: "음량 조절, 기본 EQ, 리버브 적용" },
       { id: "ai", name: "AI 보정", price: 20000, desc: "AI 기반 피치 보정, 타이밍 조절 추가" },
       { id: "engineer", name: "엔지니어 수동", price: 100000, desc: "전문 엔지니어의 세밀한 수동 믹싱" },
     ],
     videoOptions: [
-      { id: "self", name: "셀프 촬영", price: 0, desc: "스탠드 제공, 직접 촬영" },
-      { id: "cameraman", name: "촬영기사 촬영", price: 20000, desc: "전문 촬영기사가 원본 영상 제공" },
-      { id: "full", name: "촬영 + 편집", price: 100000, desc: "촬영기사 촬영 후 전문 편집까지" },
+      { id: "self", name: "셀프 촬영", price: 0, desc: "셀피용 스탠드 제공, 자신의 휴대폰으로 직접 촬영" },
+      { id: "cameraman", name: "촬영기사 촬영", price: 20000, desc: "전문 촬영기사가 당신이 노래하는 모습을 DSLR 카메라로 촬영합니다. 원본파일을 촬영일 당일 밤 12시까지 이메일로 보내드립니다" },
+      { id: "full", name: "촬영 + 편집", price: 100000, desc: "촬영기사 촬영 후 전문 편집까지 완료하여 노래하는 뮤직비디오를 완성해 드립니다. (제작기간 7일~10일. 이메일로 보내드립니다)" },
     ],
     albumOption: { 
       name: "앨범 발매", 
       price: 200000, 
-      desc: "Spotify, Apple Music 등 전 세계 150개 플랫폼 배포",
+      desc: "KPOP 가수처럼 동일한 방식으로 전세계 음원사이트에 오늘 녹음한 곡을 발매하세요",
       features: [
+        { title: "리메이크 라이선스 취득", desc: "원곡을 리메이크하여 합법적으로 음원을 발매할 수 있는 라이선스를 취득해 드립니다. 저작권 걱정 없이 안전하게 음원을 배포하세요." },
         { title: "반주 새롭게 제작", desc: "AI 기반으로 원곡의 반주를 새롭게 제작하여 저작권 걱정 없이 사용할 수 있습니다. 원곡과 유사하지만 완전히 새로운 반주로 안전하게 음원을 발매하세요." },
         { title: "앨범표지 디자인", desc: "전문 디자이너가 고객님만의 앨범 커버를 제작해 드립니다. K-POP 스타일의 세련된 디자인으로 스트리밍 플랫폼에서 돋보이는 앨범을 만들어 보세요." },
         { title: "평생 저작권료 라이센스", desc: "발매된 음원에서 발생하는 스트리밍 수익을 평생 받으실 수 있습니다. Spotify, Apple Music 등에서 재생될 때마다 저작권료가 적립됩니다." },
       ]
     },
+    proAlbumOption: { name: "전문가 앨범 발매", price: 500000, desc: "음반 발매 경험자, 음악 전공자를 위한 전문가 트랙. 반주 제작 레퍼런스 제공 및 전문적인 커뮤니케이션을 통해 디지털 자산을 구축합니다" },
     lpOption: { name: "LP 레코드 제작", price: 300000, desc: "나만의 LP 레코드 제작 (4-6주 소요)" },
   },
   en: {
@@ -253,26 +255,27 @@ const translations: Record<Language, {
     required: "Required",
     close: "Close",
     mixingOptions: [
-      { id: "raw", name: "Raw Recording", price: 0, desc: "Original recording without mixing" },
       { id: "basic", name: "Basic Mixing", price: 0, desc: "Volume adjustment, basic EQ, reverb" },
       { id: "ai", name: "AI Enhancement", price: 20000, desc: "AI-based pitch correction and timing" },
       { id: "engineer", name: "Engineer Manual", price: 100000, desc: "Professional engineer's detailed mixing" },
     ],
     videoOptions: [
-      { id: "self", name: "Self Recording", price: 0, desc: "Stand provided, record yourself" },
-      { id: "cameraman", name: "Cameraman", price: 20000, desc: "Professional cameraman, raw footage" },
-      { id: "full", name: "Filming + Editing", price: 100000, desc: "Cameraman + professional editing" },
+      { id: "self", name: "Self Recording", price: 0, desc: "Selfie stand provided, record with your own phone" },
+      { id: "cameraman", name: "Cameraman", price: 20000, desc: "Professional cameraman films you singing with DSLR camera. Raw files sent via email by midnight on the recording day" },
+      { id: "full", name: "Filming + Editing", price: 100000, desc: "Cameraman filming + professional editing to create your singing music video. (7-10 days production, sent via email)" },
     ],
     albumOption: { 
       name: "Album Release", 
       price: 200000, 
-      desc: "Distribute to 150+ platforms worldwide",
+      desc: "Release your song on global music platforms just like K-POP artists",
       features: [
+        { title: "Remake License Acquisition", desc: "We acquire the license for you to legally release a remake of the original song. Distribute your music safely without copyright concerns." },
         { title: "New Backing Track Production", desc: "AI-based recreation of original backing tracks for copyright-free use. Release your music safely with a new instrumental similar to the original." },
         { title: "Album Cover Design", desc: "Professional designers create your unique album cover. Stand out on streaming platforms with K-POP style sophisticated design." },
         { title: "Lifetime Royalty License", desc: "Receive streaming revenue for life from your released music. Earn royalties every time your song plays on Spotify, Apple Music, etc." },
       ]
     },
+    proAlbumOption: { name: "Pro Album Release", price: 500000, desc: "Expert track for experienced artists and music majors. Provide references for backing track production and build your digital assets through professional communication" },
     lpOption: { name: "LP Record Production", price: 300000, desc: "Create your own LP record (4-6 weeks)" },
   },
   ja: {
@@ -336,26 +339,27 @@ const translations: Record<Language, {
     required: "必須",
     close: "閉じる",
     mixingOptions: [
-      { id: "raw", name: "録音原本", price: 0, desc: "ミキシングなしの原本提供" },
       { id: "basic", name: "基本ミキシング", price: 0, desc: "音量調整、基本EQ、リバーブ" },
       { id: "ai", name: "AI補正", price: 20000, desc: "AIベースのピッチ・タイミング補正" },
       { id: "engineer", name: "エンジニア手動", price: 100000, desc: "プロエンジニアの詳細ミキシング" },
     ],
     videoOptions: [
-      { id: "self", name: "セルフ撮影", price: 0, desc: "スタンド提供、自分で撮影" },
-      { id: "cameraman", name: "カメラマン撮影", price: 20000, desc: "プロカメラマン、原本映像" },
-      { id: "full", name: "撮影+編集", price: 100000, desc: "カメラマン撮影後プロ編集" },
+      { id: "self", name: "セルフ撮影", price: 0, desc: "セルフィースタンド提供、ご自身のスマホで撮影" },
+      { id: "cameraman", name: "カメラマン撮影", price: 20000, desc: "プロカメラマンがDSLRカメラで撮影。原本ファイルを撮影日当日深夜12時までにメールでお送りします" },
+      { id: "full", name: "撮影+編集", price: 100000, desc: "カメラマン撮影後プロ編集まで完了してミュージックビデオを制作します。（制作期間7-10日、メールでお届け）" },
     ],
     albumOption: { 
       name: "アルバムリリース", 
       price: 200000, 
-      desc: "世界150以上のプラットフォームに配信",
+      desc: "K-POPアーティストと同じ方法で世界中の音楽サイトに本日の録音をリリース",
       features: [
+        { title: "リメイクライセンス取得", desc: "オリジナル曲をリメイクして合法的に音源をリリースできるライセンスを取得します。著作権の心配なく安全に配信できます。" },
         { title: "新規バッキングトラック制作", desc: "AIベースで原曲のバッキングトラックを新規制作し、著作権の心配なく使用できます。" },
         { title: "アルバムカバーデザイン", desc: "プロのデザイナーがあなただけのアルバムカバーを制作します。" },
         { title: "生涯ロイヤリティライセンス", desc: "リリースした音源からのストリーミング収益を一生受け取れます。" },
       ]
     },
+    proAlbumOption: { name: "プロアルバムリリース", price: 500000, desc: "音楽経験者・音楽専攻者向けのプロトラック。バッキングトラック制作のリファレンス提供と専門的なコミュニケーションでデジタル資産を構築" },
     lpOption: { name: "LPレコード制作", price: 300000, desc: "オリジナルLP制作（4-6週間）" },
   },
   zh: {
@@ -419,26 +423,27 @@ const translations: Record<Language, {
     required: "必填",
     close: "关闭",
     mixingOptions: [
-      { id: "raw", name: "录音原版", price: 0, desc: "无混音的原始录音" },
       { id: "basic", name: "基础混音", price: 0, desc: "音量调整、基本EQ、混响" },
       { id: "ai", name: "AI修正", price: 20000, desc: "AI音高和时间修正" },
       { id: "engineer", name: "工程师手动", price: 100000, desc: "专业工程师的细致混音" },
     ],
     videoOptions: [
-      { id: "self", name: "自拍", price: 0, desc: "提供支架，自己拍摄" },
-      { id: "cameraman", name: "摄影师拍摄", price: 20000, desc: "专业摄影师，原始视频" },
-      { id: "full", name: "拍摄+剪辑", price: 100000, desc: "摄影师拍摄后专业剪辑" },
+      { id: "self", name: "自拍", price: 0, desc: "提供自拍支架，用自己的手机拍摄" },
+      { id: "cameraman", name: "摄影师拍摄", price: 20000, desc: "专业摄影师用DSLR相机拍摄您唱歌的样子。原始文件将在录制当天午夜前通过邮件发送" },
+      { id: "full", name: "拍摄+剪辑", price: 100000, desc: "摄影师拍摄后完成专业剪辑，制作您的音乐视频。（制作周期7-10天，邮件发送）" },
     ],
     albumOption: { 
       name: "专辑发行", 
       price: 200000, 
-      desc: "发行到全球150多个平台",
+      desc: "像K-POP艺人一样在全球音乐平台发行今天录制的歌曲",
       features: [
+        { title: "翻唱许可证取得", desc: "为您取得合法翻唱发行原曲的许可证。无版权顾虑，安全发行。" },
         { title: "全新伴奏制作", desc: "基于AI重新制作原曲伴奏，无版权顾虑。" },
         { title: "专辑封面设计", desc: "专业设计师为您制作独特的专辑封面。" },
         { title: "终身版税许可", desc: "终身获得发行音乐的流媒体收入。" },
       ]
     },
+    proAlbumOption: { name: "专业专辑发行", price: 500000, desc: "专为有发行经验的音乐人和音乐专业人士打造。提供伴奏制作参考，通过专业沟通构建您的数字资产" },
     lpOption: { name: "LP唱片制作", price: 300000, desc: "制作您自己的LP唱片（4-6周）" },
   },
 };
@@ -462,9 +467,10 @@ export default function MenuPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [selectedMixing, setSelectedMixing] = useState<string>("raw");
+  const [selectedMixing, setSelectedMixing] = useState<string>("basic");
   const [selectedVideo, setSelectedVideo] = useState<string>("self");
   const [wantsAlbum, setWantsAlbum] = useState(false);
+  const [wantsProAlbum, setWantsProAlbum] = useState(false);
   const [wantsLP, setWantsLP] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
@@ -497,6 +503,7 @@ export default function MenuPage() {
     if (mixingOption) total += mixingOption.price;
     if (videoOption) total += videoOption.price;
     if (wantsAlbum) total += t.albumOption.price;
+    if (wantsProAlbum) total += t.proAlbumOption.price;
     if (wantsLP) total += t.lpOption.price;
     return total;
   };
@@ -1015,6 +1022,37 @@ export default function MenuPage() {
                 </Card>
 
                 <Card 
+                  className={`cursor-pointer transition-all relative overflow-hidden ${wantsProAlbum ? "border-3 border-violet-500 bg-gradient-to-br from-violet-50 to-purple-100 shadow-2xl scale-[1.02]" : "bg-white/90 border-2 border-gray-200 hover:shadow-xl hover:border-violet-300 hover:scale-[1.01]"}`} 
+                  onClick={() => setWantsProAlbum(!wantsProAlbum)}
+                  data-testid="card-pro-album"
+                >
+                  {wantsProAlbum && (
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-violet-500 rounded-full flex items-center justify-center shadow-lg z-10">
+                      <Check className="w-5 h-5 text-white" />
+                    </div>
+                  )}
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-5">
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg ${wantsProAlbum ? "bg-gradient-to-br from-violet-400 to-purple-600" : "bg-gradient-to-br from-gray-200 to-gray-300"}`}>
+                        <Sparkles className={`w-8 h-8 ${wantsProAlbum ? "text-white" : "text-gray-600"}`} />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-2xl text-gray-800 mb-1">{t.proAlbumOption.name}</h3>
+                        <p className="text-sm text-gray-500">{t.proAlbumOption.desc}</p>
+                        <div className="mt-3 flex items-center gap-2">
+                          <span className="px-3 py-1 bg-violet-200 text-violet-800 rounded-full text-xs font-semibold">{language === "ko" ? "전문가 트랙" : "Pro Track"}</span>
+                          <span className="px-3 py-1 bg-purple-200 text-purple-800 rounded-full text-xs font-semibold">{language === "ko" ? "맞춤 제작" : "Customized"}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-3xl font-bold text-pink-600">{formatPrice(t.proAlbumOption.price)}</p>
+                        <p className="text-xs text-gray-400 mt-1">{language === "ko" ? "부가세 포함" : "Tax included"}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card 
                   className={`cursor-pointer transition-all relative overflow-hidden ${wantsLP ? "border-3 border-amber-500 bg-gradient-to-br from-amber-50 to-orange-100 shadow-2xl scale-[1.02]" : "bg-white/90 border-2 border-gray-200 hover:shadow-xl hover:border-amber-300 hover:scale-[1.01]"}`} 
                   onClick={() => setWantsLP(!wantsLP)}
                   data-testid="card-lp"
@@ -1094,6 +1132,7 @@ export default function MenuPage() {
                     </div>
                   </div>
                   {wantsAlbum && <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.albumOption.name}</span><span className="text-pink-600 font-medium">{formatPrice(t.albumOption.price)}</span></div>}
+                  {wantsProAlbum && <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.proAlbumOption.name}</span><span className="text-pink-600 font-medium">{formatPrice(t.proAlbumOption.price)}</span></div>}
                   {wantsLP && <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.lpOption.name}</span><span className="text-pink-600 font-medium">{formatPrice(t.lpOption.price)}</span></div>}
                   <div className="flex justify-between py-4 text-2xl font-bold bg-gradient-to-r from-purple-50 to-pink-50 -mx-5 px-5 rounded-b-lg">
                     <span className="text-purple-600">{t.total}</span>
