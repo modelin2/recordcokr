@@ -10,8 +10,9 @@ import { apiRequest } from "@/lib/queryClient";
 import { 
   Globe, Coffee, Music, User, Check, ArrowRight, ArrowLeft,
   Headphones, Video, Disc, Share2, Play, Minus, Plus, Pause, Info, X,
-  Calendar as CalendarIcon, Clock, Users, Home
+  Calendar as CalendarIcon, Clock, Users, Home, Sparkles
 } from "lucide-react";
+import { SiSpotify, SiApplemusic, SiTiktok, SiInstagram, SiYoutube } from "react-icons/si";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImage from "@assets/레코딩카페-한글로고_1764752892828.png";
 
@@ -913,79 +914,142 @@ export default function MenuPage() {
           )}
 
           {step === 7 && (
-            <motion.div key="extra" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-2xl">
+            <motion.div key="extra" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-3xl">
               <div className="text-center mb-6">
                 <Share2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
                 <h1 className="text-2xl font-bold text-gray-800">{t.albumService} & {t.lpService}</h1>
               </div>
-              <div className="space-y-4">
-                <Card className={`cursor-pointer transition-all relative ${wantsAlbum ? "border-2 border-emerald-500 bg-emerald-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-gray-300"}`} onClick={() => setWantsAlbum(!wantsAlbum)}>
+              <div className="space-y-6">
+                <Card 
+                  className={`cursor-pointer transition-all relative overflow-hidden ${wantsAlbum ? "border-3 border-emerald-500 bg-gradient-to-br from-emerald-50 to-green-100 shadow-2xl scale-[1.02]" : "bg-white/90 border-2 border-gray-200 hover:shadow-xl hover:border-emerald-300 hover:scale-[1.01]"}`} 
+                  onClick={() => setWantsAlbum(!wantsAlbum)}
+                  data-testid="card-album"
+                >
                   {wantsAlbum && (
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center shadow-md">
-                      <Check className="w-4 h-4 text-white" />
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg z-10">
+                      <Check className="w-5 h-5 text-white" />
                     </div>
                   )}
-                  <CardContent className="p-5">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className={`w-14 h-14 rounded-full flex items-center justify-center ${wantsAlbum ? "bg-emerald-500" : "bg-gray-200"}`}>
-                        <Share2 className={`w-7 h-7 ${wantsAlbum ? "text-white" : "text-gray-600"}`} />
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-5 mb-5">
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg ${wantsAlbum ? "bg-gradient-to-br from-emerald-400 to-green-600" : "bg-gradient-to-br from-gray-200 to-gray-300"}`}>
+                        <Share2 className={`w-8 h-8 ${wantsAlbum ? "text-white" : "text-gray-600"}`} />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-bold text-xl text-gray-800">{t.albumOption.name}</h3>
+                        <h3 className="font-bold text-2xl text-gray-800 mb-1">{t.albumOption.name}</h3>
                         <p className="text-sm text-gray-500">{t.albumOption.desc}</p>
                       </div>
-                      <p className="text-2xl font-bold text-pink-600">{formatPrice(t.albumOption.price)}</p>
+                      <div className="text-right">
+                        <p className="text-3xl font-bold text-pink-600">{formatPrice(t.albumOption.price)}</p>
+                        <p className="text-xs text-gray-400 mt-1">{language === "ko" ? "부가세 포함" : "Tax included"}</p>
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-2 mt-3">
+                    
+                    <div className="bg-white/60 rounded-xl p-4 mb-4">
+                      <p className="text-xs text-gray-500 mb-3 font-medium">{language === "ko" ? "전 세계 음원 플랫폼에 배포" : "Distribute to global music platforms"}</p>
+                      <div className="flex items-center justify-center gap-4 flex-wrap">
+                        <div className="flex items-center gap-2 bg-black rounded-full px-4 py-2 shadow-md hover:scale-105 transition-transform cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                          <SiSpotify className="w-5 h-5 text-[#1DB954]" />
+                          <span className="text-white text-sm font-medium">Spotify</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full px-4 py-2 shadow-md hover:scale-105 transition-transform cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                          <SiApplemusic className="w-5 h-5 text-white" />
+                          <span className="text-white text-sm font-medium">Apple Music</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-black rounded-full px-4 py-2 shadow-md hover:scale-105 transition-transform cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                          <SiTiktok className="w-5 h-5 text-white" />
+                          <span className="text-white text-sm font-medium">TikTok</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full px-4 py-2 shadow-md hover:scale-105 transition-transform cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                          <SiInstagram className="w-5 h-5 text-white" />
+                          <span className="text-white text-sm font-medium">Instagram</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-red-600 rounded-full px-4 py-2 shadow-md hover:scale-105 transition-transform cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                          <SiYoutube className="w-5 h-5 text-white" />
+                          <span className="text-white text-sm font-medium">YouTube</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       {t.albumOption.features.map((feature, idx) => (
-                        <Button 
-                          key={idx} 
-                          variant="outline" 
-                          size="sm" 
-                          className="border-gray-300 text-gray-600 hover:bg-gray-100 text-xs h-auto py-2 px-3"
+                        <motion.div
+                          key={idx}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`p-3 rounded-xl cursor-pointer transition-all shadow-md ${
+                            idx === 0 ? "bg-gradient-to-br from-violet-100 to-purple-200 border-2 border-violet-300 hover:border-violet-500" :
+                            idx === 1 ? "bg-gradient-to-br from-blue-100 to-cyan-200 border-2 border-blue-300 hover:border-blue-500" :
+                            idx === 2 ? "bg-gradient-to-br from-amber-100 to-orange-200 border-2 border-amber-300 hover:border-amber-500" :
+                            "bg-gradient-to-br from-rose-100 to-pink-200 border-2 border-rose-300 hover:border-rose-500"
+                          }`}
                           onClick={(e) => { e.stopPropagation(); setDetailModal(feature); }}
+                          data-testid={`button-feature-${idx}`}
                         >
-                          <Info className="w-3 h-3 mr-1" />
-                          {feature.title}
-                        </Button>
+                          <div className="flex items-center gap-2 mb-1">
+                            <Sparkles className={`w-4 h-4 ${
+                              idx === 0 ? "text-violet-600" :
+                              idx === 1 ? "text-blue-600" :
+                              idx === 2 ? "text-amber-600" :
+                              "text-rose-600"
+                            }`} />
+                            <span className="text-xs font-bold text-gray-700">{feature.title}</span>
+                          </div>
+                          <p className="text-[10px] text-gray-500 line-clamp-2">{feature.desc}</p>
+                        </motion.div>
                       ))}
+                    </div>
+
+                    <div className="mt-4 flex justify-center">
                       <Button 
                         variant="outline" 
-                        size="sm" 
-                        className="border-emerald-300 text-emerald-600 hover:bg-emerald-50 text-xs h-auto py-2 px-3"
+                        size="lg" 
+                        className="border-2 border-emerald-400 text-emerald-600 hover:bg-emerald-100 font-semibold px-6 shadow-md"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Play className="w-3 h-3 mr-1" />
+                        <Play className="w-4 h-4 mr-2" />
                         {t.listenSample}
                       </Button>
                     </div>
                   </CardContent>
                 </Card>
-                <Card className={`cursor-pointer transition-all relative ${wantsLP ? "border-2 border-amber-500 bg-amber-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-gray-300"}`} onClick={() => setWantsLP(!wantsLP)}>
+
+                <Card 
+                  className={`cursor-pointer transition-all relative overflow-hidden ${wantsLP ? "border-3 border-amber-500 bg-gradient-to-br from-amber-50 to-orange-100 shadow-2xl scale-[1.02]" : "bg-white/90 border-2 border-gray-200 hover:shadow-xl hover:border-amber-300 hover:scale-[1.01]"}`} 
+                  onClick={() => setWantsLP(!wantsLP)}
+                  data-testid="card-lp"
+                >
                   {wantsLP && (
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
-                      <Check className="w-4 h-4 text-white" />
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center shadow-lg z-10">
+                      <Check className="w-5 h-5 text-white" />
                     </div>
                   )}
-                  <CardContent className="p-5">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-14 h-14 rounded-full flex items-center justify-center ${wantsLP ? "bg-amber-500" : "bg-gray-200"}`}>
-                        <Disc className={`w-7 h-7 ${wantsLP ? "text-white" : "text-gray-600"}`} />
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-5">
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg ${wantsLP ? "bg-gradient-to-br from-amber-400 to-orange-600" : "bg-gradient-to-br from-gray-200 to-gray-300"}`}>
+                        <Disc className={`w-8 h-8 ${wantsLP ? "text-white animate-spin" : "text-gray-600"}`} style={{ animationDuration: "3s" }} />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-bold text-xl text-gray-800">{t.lpOption.name}</h3>
+                        <h3 className="font-bold text-2xl text-gray-800 mb-1">{t.lpOption.name}</h3>
                         <p className="text-sm text-gray-500">{t.lpOption.desc}</p>
+                        <div className="mt-3 flex items-center gap-2">
+                          <span className="px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-xs font-semibold">{language === "ko" ? "빈티지 감성" : "Vintage Style"}</span>
+                          <span className="px-3 py-1 bg-orange-200 text-orange-800 rounded-full text-xs font-semibold">{language === "ko" ? "소장가치" : "Collectible"}</span>
+                        </div>
                       </div>
-                      <p className="text-2xl font-bold text-pink-600">{formatPrice(t.lpOption.price)}</p>
+                      <div className="text-right">
+                        <p className="text-3xl font-bold text-pink-600">{formatPrice(t.lpOption.price)}</p>
+                        <p className="text-xs text-gray-400 mt-1">{language === "ko" ? "배송비 별도" : "Shipping extra"}</p>
+                      </div>
                     </div>
-                    <div className="mt-3 flex justify-end">
+                    <div className="mt-4 flex justify-end">
                       <Button 
                         variant="outline" 
-                        size="sm" 
-                        className="border-amber-300 text-amber-600 hover:bg-amber-50 text-xs h-auto py-2 px-3"
+                        size="lg" 
+                        className="border-2 border-amber-400 text-amber-600 hover:bg-amber-100 font-semibold px-6 shadow-md"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Play className="w-3 h-3 mr-1" />
+                        <Play className="w-4 h-4 mr-2" />
                         {t.watchSample}
                       </Button>
                     </div>
