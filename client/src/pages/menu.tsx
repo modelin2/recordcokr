@@ -115,7 +115,7 @@ const translations: Record<Language, {
     welcome: "레코딩 카페",
     selectBookingPath: "예약 유형을 선택하세요",
     existingReservation: "기존 예약자",
-    existingReservationDesc: "다른 플랫폼에서 이미 예약하셨나요?",
+    existingReservationDesc: "다른 플랫폼(클룩, 네이버 등)에서 이미 예약하셨나요?",
     newReservation: "처음 예약자",
     newReservationDesc: "지금 바로 예약하시겠어요?",
     selectPlatform: "예약하신 플랫폼을 선택하세요",
@@ -151,7 +151,7 @@ const translations: Record<Language, {
     phonePlaceholder: "전화번호를 입력하세요",
     email: "이메일",
     emailPlaceholder: "이메일을 입력하세요",
-    mixingService: "믹싱 서비스",
+    mixingService: "사운드 보정 서비스",
     mixingDesc: "녹음 후 어떤 수준의 믹싱을 원하시나요?",
     videoService: "비디오 서비스",
     videoDesc: "녹음 영상을 어떻게 촬영하시겠어요?",
@@ -171,19 +171,19 @@ const translations: Record<Language, {
     required: "필수 입력",
     close: "닫기",
     mixingOptions: [
-      { id: "basic", name: "기본 믹싱", price: 0, desc: "음량 조절, 기본 EQ, 리버브 적용" },
-      { id: "ai", name: "AI 보정", price: 20000, desc: "AI 기반 피치 보정, 타이밍 조절 추가" },
-      { id: "engineer", name: "엔지니어 수동", price: 100000, desc: "전문 엔지니어의 세밀한 수동 믹싱" },
+      { id: "basic", name: "기본", price: 0, desc: "음량 조절, 기본 EQ, 리버브 적용" },
+      { id: "ai", name: "AI 보정", price: 20000, desc: "틀린 음정, 박자를 AI 로 자동 수정합니다." },
+      { id: "engineer", name: "전문가 보정", price: 100000, desc: "틀린 음정, 박자를 전문가가 수동으로 하나하나 수정합니다." },
     ],
     videoOptions: [
       { id: "self", name: "셀프 촬영", price: 0, desc: "셀피용 스탠드 제공, 자신의 휴대폰으로 직접 촬영" },
-      { id: "cameraman", name: "촬영기사 촬영", price: 20000, desc: "전문 촬영기사가 당신이 노래하는 모습을 DSLR 카메라로 촬영합니다. 원본파일을 촬영일 당일 밤 12시까지 이메일로 보내드립니다" },
-      { id: "full", name: "촬영 + 편집", price: 100000, desc: "촬영기사 촬영 후 전문 편집까지 완료하여 노래하는 뮤직비디오를 완성해 드립니다. (제작기간 7일~10일. 이메일로 보내드립니다)" },
+      { id: "cameraman", name: "촬영기사 촬영", price: 20000, desc: "촬영기사가 당신이 노래하는 모습을 DSLR 카메라로 촬영합니다." },
+      { id: "full", name: "촬영기사 촬영 + 편집", price: 100000, desc: "촬영기사 촬영 후 편집까지 완료하여 뮤직비디오를 완성합니다." },
     ],
     albumOption: { 
       name: "앨범 발매", 
       price: 200000, 
-      desc: "KPOP 가수처럼 동일한 방식으로 전세계 음원사이트에 오늘 녹음한 곡을 발매하세요",
+      desc: "K-POP 가수처럼 전세계 음원 사이트에 발매해드립니다.",
       features: [
         { title: "리메이크 라이선스 취득", desc: "원곡을 리메이크하여 합법적으로 음원을 발매할 수 있는 라이선스를 취득해 드립니다. 저작권 걱정 없이 안전하게 음원을 배포하세요." },
         { title: "반주 새롭게 제작", desc: "AI 기반으로 원곡의 반주를 새롭게 제작하여 저작권 걱정 없이 사용할 수 있습니다. 원곡과 유사하지만 완전히 새로운 반주로 안전하게 음원을 발매하세요." },
@@ -191,7 +191,7 @@ const translations: Record<Language, {
         { title: "평생 저작권료 라이센스", desc: "발매된 음원에서 발생하는 스트리밍 수익을 평생 받으실 수 있습니다. Spotify, Apple Music 등에서 재생될 때마다 저작권료가 적립됩니다." },
       ]
     },
-    proAlbumOption: { name: "전문가 앨범 발매", price: 500000, desc: "음반 발매 경험자, 음악 전공자를 위한 전문가 트랙", features: [
+    proAlbumOption: { name: "전문가 앨범 발매", price: 500000, desc: "음악 전공자 or 프로들을 위한 전문 발매 서비스", features: [
       { title: "리메이크 라이선스 취득", desc: "원곡 저작권자의 공식 허가를 받아 합법적으로 음원을 발매합니다" },
       { title: "반주 새롭게 제작", desc: "전문 작곡가가 원곡의 느낌을 살린 새로운 MR을 제작합니다" },
       { title: "앨범표지 디자인", desc: "전문 디자이너가 세련된 앨범 커버를 디자인합니다" },
@@ -199,7 +199,7 @@ const translations: Record<Language, {
       { title: "레퍼런스 기반 맞춤 제작", desc: "고객이 제공하는 레퍼런스를 바탕으로 원하는 스타일의 반주를 정교하게 제작합니다" },
       { title: "전문 커뮤니케이션", desc: "음악 전문가와 1:1 상담을 통해 디테일한 요구사항을 반영합니다" },
     ] },
-    lpOption: { name: "LP 레코드 제작", price: 300000, desc: "나만의 LP 레코드 제작 (4-6주 소요)" },
+    lpOption: { name: "LP 레코드 제작", price: 300000, desc: "물리적 레코드판을 만들어 집주소로 배송해드립니다." },
   },
   en: {
     selectLanguage: "Select Language",
@@ -242,7 +242,7 @@ const translations: Record<Language, {
     phonePlaceholder: "Enter phone number",
     email: "Email",
     emailPlaceholder: "Enter your email",
-    mixingService: "Mixing Service",
+    mixingService: "Sound Correction Service",
     mixingDesc: "What level of mixing do you want?",
     videoService: "Video Service",
     videoDesc: "How would you like to record your video?",
@@ -262,19 +262,19 @@ const translations: Record<Language, {
     required: "Required",
     close: "Close",
     mixingOptions: [
-      { id: "basic", name: "Basic Mixing", price: 0, desc: "Volume adjustment, basic EQ, reverb" },
-      { id: "ai", name: "AI Enhancement", price: 20000, desc: "AI-based pitch correction and timing" },
-      { id: "engineer", name: "Engineer Manual", price: 100000, desc: "Professional engineer's detailed mixing" },
+      { id: "basic", name: "Basic", price: 0, desc: "Volume adjustment, basic EQ, reverb" },
+      { id: "ai", name: "AI Correction", price: 20000, desc: "AI automatically corrects wrong pitch and timing." },
+      { id: "engineer", name: "Expert Correction", price: 100000, desc: "Expert manually corrects each wrong pitch and timing." },
     ],
     videoOptions: [
       { id: "self", name: "Self Recording", price: 0, desc: "Selfie stand provided, record with your own phone" },
-      { id: "cameraman", name: "Cameraman", price: 20000, desc: "Professional cameraman films you singing with DSLR camera. Raw files sent via email by midnight on the recording day" },
-      { id: "full", name: "Filming + Editing", price: 100000, desc: "Cameraman filming + professional editing to create your singing music video. (7-10 days production, sent via email)" },
+      { id: "cameraman", name: "Cameraman", price: 20000, desc: "Cameraman films you singing with DSLR camera." },
+      { id: "full", name: "Cameraman + Editing", price: 100000, desc: "Cameraman filming + editing to complete your music video." },
     ],
     albumOption: { 
       name: "Album Release", 
       price: 200000, 
-      desc: "Release your song on global music platforms just like K-POP artists",
+      desc: "Release on global music platforms like K-POP artists.",
       features: [
         { title: "Remake License Acquisition", desc: "We acquire the license for you to legally release a remake of the original song. Distribute your music safely without copyright concerns." },
         { title: "New Backing Track Production", desc: "AI-based recreation of original backing tracks for copyright-free use. Release your music safely with a new instrumental similar to the original." },
@@ -282,7 +282,7 @@ const translations: Record<Language, {
         { title: "Lifetime Royalty License", desc: "Receive streaming revenue for life from your released music. Earn royalties every time your song plays on Spotify, Apple Music, etc." },
       ]
     },
-    proAlbumOption: { name: "Pro Album Release", price: 500000, desc: "Expert track for experienced artists and music majors", features: [
+    proAlbumOption: { name: "Pro Album Release", price: 500000, desc: "Professional release service for music majors or pros", features: [
       { title: "Remake License", desc: "Obtain official permission from the original copyright holder for legal music release" },
       { title: "New Backing Track", desc: "Professional composer creates new MR that captures the original feel" },
       { title: "Album Cover Design", desc: "Professional designer creates stylish album cover" },
@@ -290,7 +290,7 @@ const translations: Record<Language, {
       { title: "Reference-Based Production", desc: "Create precisely styled backing tracks based on references you provide" },
       { title: "Expert Communication", desc: "1:1 consultation with music experts to reflect detailed requirements" },
     ] },
-    lpOption: { name: "LP Record Production", price: 300000, desc: "Create your own LP record (4-6 weeks)" },
+    lpOption: { name: "LP Record Production", price: 300000, desc: "Physical record delivered to your address." },
   },
   ja: {
     selectLanguage: "言語を選択",
@@ -333,7 +333,7 @@ const translations: Record<Language, {
     phonePlaceholder: "電話番号を入力",
     email: "メール",
     emailPlaceholder: "メールを入力",
-    mixingService: "ミキシング",
+    mixingService: "サウンド補正サービス",
     mixingDesc: "どのレベルのミキシングをご希望ですか？",
     videoService: "ビデオサービス",
     videoDesc: "動画の撮影方法を選択してください",
@@ -353,19 +353,19 @@ const translations: Record<Language, {
     required: "必須",
     close: "閉じる",
     mixingOptions: [
-      { id: "basic", name: "基本ミキシング", price: 0, desc: "音量調整、基本EQ、リバーブ" },
-      { id: "ai", name: "AI補正", price: 20000, desc: "AIベースのピッチ・タイミング補正" },
-      { id: "engineer", name: "エンジニア手動", price: 100000, desc: "プロエンジニアの詳細ミキシング" },
+      { id: "basic", name: "基本", price: 0, desc: "音量調整、基本EQ、リバーブ" },
+      { id: "ai", name: "AI補正", price: 20000, desc: "間違った音程・リズムをAIが自動修正します。" },
+      { id: "engineer", name: "専門家補正", price: 100000, desc: "間違った音程・リズムを専門家が手動で修正します。" },
     ],
     videoOptions: [
       { id: "self", name: "セルフ撮影", price: 0, desc: "セルフィースタンド提供、ご自身のスマホで撮影" },
-      { id: "cameraman", name: "カメラマン撮影", price: 20000, desc: "プロカメラマンがDSLRカメラで撮影。原本ファイルを撮影日当日深夜12時までにメールでお送りします" },
-      { id: "full", name: "撮影+編集", price: 100000, desc: "カメラマン撮影後プロ編集まで完了してミュージックビデオを制作します。（制作期間7-10日、メールでお届け）" },
+      { id: "cameraman", name: "カメラマン撮影", price: 20000, desc: "カメラマンがDSLRカメラで撮影します。" },
+      { id: "full", name: "カメラマン撮影+編集", price: 100000, desc: "カメラマン撮影後、編集まで完了してミュージックビデオを制作します。" },
     ],
     albumOption: { 
       name: "アルバムリリース", 
       price: 200000, 
-      desc: "K-POPアーティストと同じ方法で世界中の音楽サイトに本日の録音をリリース",
+      desc: "K-POPアーティストのように世界中の音楽サイトにリリースします。",
       features: [
         { title: "リメイクライセンス取得", desc: "オリジナル曲をリメイクして合法的に音源をリリースできるライセンスを取得します。著作権の心配なく安全に配信できます。" },
         { title: "新規バッキングトラック制作", desc: "AIベースで原曲のバッキングトラックを新規制作し、著作権の心配なく使用できます。" },
@@ -373,7 +373,7 @@ const translations: Record<Language, {
         { title: "生涯ロイヤリティライセンス", desc: "リリースした音源からのストリーミング収益を一生受け取れます。" },
       ]
     },
-    proAlbumOption: { name: "プロアルバムリリース", price: 500000, desc: "音楽経験者・音楽専攻者向けのプロトラック", features: [
+    proAlbumOption: { name: "プロアルバムリリース", price: 500000, desc: "音楽専攻者・プロ向けの専門リリースサービス", features: [
       { title: "リメイクライセンス取得", desc: "原曲著作権者の公式許可を得て合法的に音源をリリース" },
       { title: "新規バッキングトラック制作", desc: "プロの作曲家が原曲の雰囲気を活かした新しいMRを制作" },
       { title: "アルバムカバーデザイン", desc: "プロのデザイナーが洗練されたアルバムカバーをデザイン" },
@@ -381,7 +381,7 @@ const translations: Record<Language, {
       { title: "リファレンス基盤カスタム制作", desc: "お客様提供のリファレンスを基にご希望スタイルのバッキングトラックを精密制作" },
       { title: "専門コミュニケーション", desc: "音楽専門家との1:1相談で細かい要望を反映" },
     ] },
-    lpOption: { name: "LPレコード制作", price: 300000, desc: "オリジナルLP制作（4-6週間）" },
+    lpOption: { name: "LPレコード制作", price: 300000, desc: "物理レコードを作成し、ご自宅に配送します。" },
   },
   zh: {
     selectLanguage: "选择语言",
@@ -424,7 +424,7 @@ const translations: Record<Language, {
     phonePlaceholder: "输入电话号码",
     email: "邮箱",
     emailPlaceholder: "输入邮箱",
-    mixingService: "混音服务",
+    mixingService: "声音校正服务",
     mixingDesc: "您想要什么级别的混音？",
     videoService: "视频服务",
     videoDesc: "您想如何录制视频？",
@@ -444,19 +444,19 @@ const translations: Record<Language, {
     required: "必填",
     close: "关闭",
     mixingOptions: [
-      { id: "basic", name: "基础混音", price: 0, desc: "音量调整、基本EQ、混响" },
-      { id: "ai", name: "AI修正", price: 20000, desc: "AI音高和时间修正" },
-      { id: "engineer", name: "工程师手动", price: 100000, desc: "专业工程师的细致混音" },
+      { id: "basic", name: "基础", price: 0, desc: "音量调整、基本EQ、混响" },
+      { id: "ai", name: "AI校正", price: 20000, desc: "AI自动修正错误的音高和节拍。" },
+      { id: "engineer", name: "专家校正", price: 100000, desc: "专家手动逐一修正错误的音高和节拍。" },
     ],
     videoOptions: [
       { id: "self", name: "自拍", price: 0, desc: "提供自拍支架，用自己的手机拍摄" },
-      { id: "cameraman", name: "摄影师拍摄", price: 20000, desc: "专业摄影师用DSLR相机拍摄您唱歌的样子。原始文件将在录制当天午夜前通过邮件发送" },
-      { id: "full", name: "拍摄+剪辑", price: 100000, desc: "摄影师拍摄后完成专业剪辑，制作您的音乐视频。（制作周期7-10天，邮件发送）" },
+      { id: "cameraman", name: "摄影师拍摄", price: 20000, desc: "摄影师用DSLR相机拍摄您唱歌的样子。" },
+      { id: "full", name: "摄影师拍摄+剪辑", price: 100000, desc: "摄影师拍摄后完成剪辑，制作您的音乐视频。" },
     ],
     albumOption: { 
       name: "专辑发行", 
       price: 200000, 
-      desc: "像K-POP艺人一样在全球音乐平台发行今天录制的歌曲",
+      desc: "像K-POP艺人一样在全球音乐平台发行。",
       features: [
         { title: "翻唱许可证取得", desc: "为您取得合法翻唱发行原曲的许可证。无版权顾虑，安全发行。" },
         { title: "全新伴奏制作", desc: "基于AI重新制作原曲伴奏，无版权顾虑。" },
@@ -464,7 +464,7 @@ const translations: Record<Language, {
         { title: "终身版税许可", desc: "终身获得发行音乐的流媒体收入。" },
       ]
     },
-    proAlbumOption: { name: "专业专辑发行", price: 500000, desc: "专为有发行经验的音乐人和音乐专业人士打造", features: [
+    proAlbumOption: { name: "专业专辑发行", price: 500000, desc: "音乐专业人士或专业人员的专业发行服务", features: [
       { title: "翻唱授权获取", desc: "获得原曲版权所有者的官方许可，合法发行音源" },
       { title: "新编伴奏制作", desc: "专业作曲家制作保留原曲感觉的全新MR" },
       { title: "专辑封面设计", desc: "专业设计师设计精美的专辑封面" },
@@ -472,7 +472,7 @@ const translations: Record<Language, {
       { title: "参考定制制作", desc: "根据您提供的参考资料精确制作所需风格的伴奏" },
       { title: "专业沟通", desc: "与音乐专家一对一咨询，反映详细需求" },
     ] },
-    lpOption: { name: "LP唱片制作", price: 300000, desc: "制作您自己的LP唱片（4-6周）" },
+    lpOption: { name: "LP唱片制作", price: 300000, desc: "制作物理唱片并邮寄到您的地址。" },
   },
 };
 
@@ -889,19 +889,15 @@ export default function MenuPage() {
           {step === 5 && (
             <motion.div key="mixing" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
               <div className="text-center mb-4">
-                <Headphones className="w-8 h-8 text-cyan-500 mx-auto mb-2" />
                 <h1 className="text-xl font-bold text-gray-800">{t.mixingService}</h1>
                 <p className="text-xs text-gray-500 mt-1">{language === "ko" ? "하나를 선택해주세요" : "Please select one"}</p>
               </div>
               <div className="space-y-3">
                 {t.mixingOptions.map((opt) => (
                   <Card key={opt.id} className={`cursor-pointer transition-all ${selectedMixing === opt.id ? "border-2 border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-cyan-300"}`} onClick={() => setSelectedMixing(opt.id)}>
-                    <CardContent className="p-4 flex items-center gap-4">
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedMixing === opt.id ? "border-cyan-500 bg-cyan-500" : "border-gray-300 bg-white"}`}>
+                    <CardContent className="p-4 flex items-center gap-3">
+                      <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedMixing === opt.id ? "border-cyan-500 bg-cyan-500" : "border-gray-300 bg-white"}`}>
                         {selectedMixing === opt.id && <Check className="w-4 h-4 text-white" />}
-                      </div>
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${selectedMixing === opt.id ? "bg-cyan-500" : "bg-gray-200"}`}>
-                        <Headphones className={`w-5 h-5 ${selectedMixing === opt.id ? "text-white" : "text-gray-600"}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-base text-gray-800">{opt.name}</h3>
@@ -918,19 +914,15 @@ export default function MenuPage() {
           {step === 6 && (
             <motion.div key="video" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
               <div className="text-center mb-4">
-                <Video className="w-8 h-8 text-rose-500 mx-auto mb-2" />
                 <h1 className="text-xl font-bold text-gray-800">{t.videoService}</h1>
                 <p className="text-xs text-gray-500 mt-1">{language === "ko" ? "하나를 선택해주세요" : "Please select one"}</p>
               </div>
               <div className="space-y-3">
                 {t.videoOptions.map((opt) => (
                   <Card key={opt.id} className={`cursor-pointer transition-all ${selectedVideo === opt.id ? "border-2 border-rose-500 bg-rose-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-rose-300"}`} onClick={() => setSelectedVideo(opt.id)}>
-                    <CardContent className="p-4 flex items-center gap-4">
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedVideo === opt.id ? "border-rose-500 bg-rose-500" : "border-gray-300 bg-white"}`}>
+                    <CardContent className="p-4 flex items-center gap-3">
+                      <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedVideo === opt.id ? "border-rose-500 bg-rose-500" : "border-gray-300 bg-white"}`}>
                         {selectedVideo === opt.id && <Check className="w-4 h-4 text-white" />}
-                      </div>
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${selectedVideo === opt.id ? "bg-rose-500" : "bg-gray-200"}`}>
-                        <Video className={`w-5 h-5 ${selectedVideo === opt.id ? "text-white" : "text-gray-600"}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-base text-gray-800">{opt.name}</h3>
@@ -947,7 +939,6 @@ export default function MenuPage() {
           {step === 7 && (
             <motion.div key="extra" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
               <div className="text-center mb-4">
-                <Share2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
                 <h1 className="text-xl font-bold text-gray-800">{t.albumService}</h1>
                 <p className="text-xs text-gray-500 mt-1">{language === "ko" ? "선택 사항입니다 (복수 선택 가능)" : "Optional (multiple selection allowed)"}</p>
               </div>
@@ -957,12 +948,9 @@ export default function MenuPage() {
                   onClick={() => setWantsAlbum(!wantsAlbum)}
                   data-testid="card-album"
                 >
-                  <CardContent className="p-4 flex items-center gap-4">
+                  <CardContent className="p-4 flex items-center gap-3">
                     <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${wantsAlbum ? "border-emerald-500 bg-emerald-500" : "border-gray-300 bg-white"}`}>
                       {wantsAlbum && <Check className="w-4 h-4 text-white" />}
-                    </div>
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${wantsAlbum ? "bg-emerald-500" : "bg-gray-200"}`}>
-                      <Share2 className={`w-5 h-5 ${wantsAlbum ? "text-white" : "text-gray-600"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-base text-gray-800">{t.albumOption.name}</h3>
@@ -977,12 +965,9 @@ export default function MenuPage() {
                   onClick={() => setWantsProAlbum(!wantsProAlbum)}
                   data-testid="card-pro-album"
                 >
-                  <CardContent className="p-4 flex items-center gap-4">
+                  <CardContent className="p-4 flex items-center gap-3">
                     <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${wantsProAlbum ? "border-violet-500 bg-violet-500" : "border-gray-300 bg-white"}`}>
                       {wantsProAlbum && <Check className="w-4 h-4 text-white" />}
-                    </div>
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${wantsProAlbum ? "bg-violet-500" : "bg-gray-200"}`}>
-                      <Sparkles className={`w-5 h-5 ${wantsProAlbum ? "text-white" : "text-gray-600"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -1000,12 +985,9 @@ export default function MenuPage() {
                   onClick={() => setWantsLP(!wantsLP)}
                   data-testid="card-lp"
                 >
-                  <CardContent className="p-4 flex items-center gap-4">
+                  <CardContent className="p-4 flex items-center gap-3">
                     <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${wantsLP ? "border-amber-500 bg-amber-500" : "border-gray-300 bg-white"}`}>
                       {wantsLP && <Check className="w-4 h-4 text-white" />}
-                    </div>
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${wantsLP ? "bg-amber-500" : "bg-gray-200"}`}>
-                      <Disc className={`w-5 h-5 ${wantsLP ? "text-white" : "text-gray-600"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-base text-gray-800">{t.lpOption.name}</h3>
