@@ -183,7 +183,7 @@ const translations: Record<Language, {
     albumOption: { 
       name: "앨범 발매", 
       price: 200000, 
-      desc: "K-POP 가수처럼 전세계 음원 사이트(유튜브, 스포티파이, 틱톡, 인스타그램 등)에 발매. (새롭게 반주 제작, 앨범 자켓 이미지 제작 포함)",
+      desc: "K-POP 가수처럼 전세계 음원 사이트(유튜브, 스포티파이, 틱톡, 인스타그램 등)에 발매\n(새롭게 반주 제작 + 앨범 자켓 이미지 제작 + 저작권료 수집 대행)",
       features: [
         { title: "리메이크 라이선스 취득", desc: "원곡을 리메이크하여 합법적으로 음원을 발매할 수 있는 라이선스를 취득해 드립니다. 저작권 걱정 없이 안전하게 음원을 배포하세요." },
         { title: "반주 새롭게 제작", desc: "AI 기반으로 원곡의 반주를 새롭게 제작하여 저작권 걱정 없이 사용할 수 있습니다. 원곡과 유사하지만 완전히 새로운 반주로 안전하게 음원을 발매하세요." },
@@ -191,7 +191,7 @@ const translations: Record<Language, {
         { title: "평생 저작권료 라이센스", desc: "발매된 음원에서 발생하는 스트리밍 수익을 평생 받으실 수 있습니다. Spotify, Apple Music 등에서 재생될 때마다 저작권료가 적립됩니다." },
       ]
     },
-    proAlbumOption: { name: "전문가 앨범 발매", price: 500000, desc: "음악 전공자 or 프로들을 위한 전문 발매 서비스 (원하는 스타일의 반주 제작, 앨범 자켓 이미지 제작 포함, 수정 2회 포함)", features: [
+    proAlbumOption: { name: "전문가 앨범 발매", price: 500000, desc: "음악 전공자 or 프로들을 위한 전문 발매 서비스\n(원하는 스타일의 반주 제작 + 앨범 자켓 이미지 제작 + 저작권료 수집 대행 + 수정 2회)", features: [
       { title: "리메이크 라이선스 취득", desc: "원곡 저작권자의 공식 허가를 받아 합법적으로 음원을 발매합니다" },
       { title: "반주 새롭게 제작", desc: "전문 작곡가가 원곡의 느낌을 살린 새로운 MR을 제작합니다" },
       { title: "앨범표지 디자인", desc: "전문 디자이너가 세련된 앨범 커버를 디자인합니다" },
@@ -961,7 +961,7 @@ export default function MenuPage() {
                         <h3 className="font-bold text-base text-gray-800">{t.albumOption.name}</h3>
                         <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.albumOption.price)}</p>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">{t.albumOption.desc}</p>
+                      <p className="text-xs text-gray-500 mt-1 whitespace-pre-line">{t.albumOption.desc}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -983,7 +983,7 @@ export default function MenuPage() {
                         </div>
                         <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.proAlbumOption.price)}</p>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">{t.proAlbumOption.desc}</p>
+                      <p className="text-xs text-gray-500 mt-1 whitespace-pre-line">{t.proAlbumOption.desc}</p>
                     </div>
                   </CardContent>
                 </Card>
