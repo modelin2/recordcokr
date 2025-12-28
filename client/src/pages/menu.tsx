@@ -884,31 +884,28 @@ export default function MenuPage() {
           )}
 
           {step === 5 && (
-            <motion.div key="mixing" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-4xl">
-              <div className="text-center mb-6">
-                <Headphones className="w-10 h-10 text-cyan-500 mx-auto mb-2" />
-                <h1 className="text-2xl font-bold text-gray-800">{t.mixingService}</h1>
-                <p className="text-gray-600 mt-2">{t.mixingDesc}</p>
+            <motion.div key="mixing" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
+              <div className="text-center mb-4">
+                <Headphones className="w-8 h-8 text-cyan-500 mx-auto mb-2" />
+                <h1 className="text-xl font-bold text-gray-800">{t.mixingService}</h1>
               </div>
-              <div className="flex flex-wrap justify-center gap-4">
+              <div className="space-y-3">
                 {t.mixingOptions.map((opt) => (
-                  <Card key={opt.id} className={`cursor-pointer transition-all relative w-48 ${selectedMixing === opt.id ? "border-2 border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-gray-300"}`} onClick={() => setSelectedMixing(opt.id)}>
+                  <Card key={opt.id} className={`cursor-pointer transition-all relative ${selectedMixing === opt.id ? "border-2 border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md"}`} onClick={() => setSelectedMixing(opt.id)}>
                     {selectedMixing === opt.id && (
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center shadow-md">
+                      <div className="absolute top-3 right-3 w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center">
                         <Check className="w-4 h-4 text-white" />
                       </div>
                     )}
-                    <CardContent className="p-4 text-center">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${selectedMixing === opt.id ? "bg-cyan-500" : "bg-gray-200"}`}>
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${selectedMixing === opt.id ? "bg-cyan-500" : "bg-gray-200"}`}>
                         <Headphones className={`w-6 h-6 ${selectedMixing === opt.id ? "text-white" : "text-gray-600"}`} />
                       </div>
-                      <h3 className="font-bold text-base mb-1 text-gray-800">{opt.name}</h3>
-                      <p className={`text-xl font-bold mb-2 ${opt.price === 0 ? "text-green-600" : "text-pink-600"}`}>{formatPrice(opt.price)}</p>
-                      <p className="text-xs text-gray-500">{opt.desc}</p>
-                      <Button variant="outline" size="sm" className="mt-3 border-gray-300 text-gray-600 hover:bg-gray-100" onClick={(e) => { e.stopPropagation(); setPlayingAudio(playingAudio === opt.id ? null : opt.id); }}>
-                        {playingAudio === opt.id ? <Pause className="w-3 h-3 mr-1" /> : <Play className="w-3 h-3 mr-1" />}
-                        {t.listenSample}
-                      </Button>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-base text-gray-800">{opt.name}</h3>
+                        <p className="text-xs text-gray-500 line-clamp-2">{opt.desc}</p>
+                      </div>
+                      <p className={`text-lg font-bold flex-shrink-0 ${opt.price === 0 ? "text-green-600" : "text-pink-600"}`}>{formatPrice(opt.price)}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -917,30 +914,28 @@ export default function MenuPage() {
           )}
 
           {step === 6 && (
-            <motion.div key="video" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-3xl">
-              <div className="text-center mb-6">
-                <Video className="w-10 h-10 text-rose-500 mx-auto mb-2" />
-                <h1 className="text-2xl font-bold text-gray-800">{t.videoService}</h1>
-                <p className="text-gray-600 mt-2">{t.videoDesc}</p>
+            <motion.div key="video" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
+              <div className="text-center mb-4">
+                <Video className="w-8 h-8 text-rose-500 mx-auto mb-2" />
+                <h1 className="text-xl font-bold text-gray-800">{t.videoService}</h1>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-3">
                 {t.videoOptions.map((opt) => (
-                  <Card key={opt.id} className={`cursor-pointer transition-all relative ${selectedVideo === opt.id ? "border-2 border-rose-500 bg-rose-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-gray-300"}`} onClick={() => setSelectedVideo(opt.id)}>
+                  <Card key={opt.id} className={`cursor-pointer transition-all relative ${selectedVideo === opt.id ? "border-2 border-rose-500 bg-rose-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md"}`} onClick={() => setSelectedVideo(opt.id)}>
                     {selectedVideo === opt.id && (
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 rounded-full flex items-center justify-center shadow-md">
+                      <div className="absolute top-3 right-3 w-6 h-6 bg-rose-500 rounded-full flex items-center justify-center">
                         <Check className="w-4 h-4 text-white" />
                       </div>
                     )}
-                    <CardContent className="p-4 text-center">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${selectedVideo === opt.id ? "bg-rose-500" : "bg-gray-200"}`}>
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${selectedVideo === opt.id ? "bg-rose-500" : "bg-gray-200"}`}>
                         <Video className={`w-6 h-6 ${selectedVideo === opt.id ? "text-white" : "text-gray-600"}`} />
                       </div>
-                      <h3 className="font-bold text-base mb-1 text-gray-800">{opt.name}</h3>
-                      <p className={`text-xl font-bold mb-2 ${opt.price === 0 ? "text-green-600" : "text-pink-600"}`}>{formatPrice(opt.price)}</p>
-                      <p className="text-xs text-gray-500">{opt.desc}</p>
-                      <Button variant="outline" size="sm" className="mt-3 border-gray-300 text-gray-600 hover:bg-gray-100" onClick={(e) => e.stopPropagation()}>
-                        <Play className="w-3 h-3 mr-1" />{t.watchSample}
-                      </Button>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-base text-gray-800">{opt.name}</h3>
+                        <p className="text-xs text-gray-500 line-clamp-2">{opt.desc}</p>
+                      </div>
+                      <p className={`text-lg font-bold flex-shrink-0 ${opt.price === 0 ? "text-green-600" : "text-pink-600"}`}>{formatPrice(opt.price)}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -949,231 +944,79 @@ export default function MenuPage() {
           )}
 
           {step === 7 && (
-            <motion.div key="extra" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-3xl">
-              <div className="text-center mb-6">
-                <Share2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
-                <h1 className="text-2xl font-bold text-gray-800">{t.albumService} & {t.lpService}</h1>
+            <motion.div key="extra" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
+              <div className="text-center mb-4">
+                <Share2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
+                <h1 className="text-xl font-bold text-gray-800">{t.albumService}</h1>
+                <p className="text-xs text-gray-500 mt-1">{language === "ko" ? "선택 사항입니다 (복수 선택 가능)" : "Optional (multiple selection allowed)"}</p>
               </div>
-              <div className="space-y-6">
+              <div className="space-y-3">
                 <Card 
-                  className={`cursor-pointer transition-all relative overflow-hidden ${wantsAlbum ? "border-3 border-emerald-500 bg-gradient-to-br from-emerald-50 to-green-100 shadow-2xl scale-[1.02]" : "bg-white/90 border-2 border-gray-200 hover:shadow-xl hover:border-emerald-300 hover:scale-[1.01]"}`} 
+                  className={`cursor-pointer transition-all relative ${wantsAlbum ? "border-2 border-emerald-500 bg-emerald-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md"}`} 
                   onClick={() => setWantsAlbum(!wantsAlbum)}
                   data-testid="card-album"
                 >
                   {wantsAlbum && (
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg z-10">
-                      <Check className="w-5 h-5 text-white" />
+                    <div className="absolute top-3 right-3 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                      <Check className="w-4 h-4 text-white" />
                     </div>
                   )}
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-5 mb-5">
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg ${wantsAlbum ? "bg-gradient-to-br from-emerald-400 to-green-600" : "bg-gradient-to-br from-gray-200 to-gray-300"}`}>
-                        <Share2 className={`w-8 h-8 ${wantsAlbum ? "text-white" : "text-gray-600"}`} />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-2xl text-gray-800 mb-1">{t.albumOption.name}</h3>
-                        <p className="text-sm text-gray-500">{t.albumOption.desc}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-3xl font-bold text-pink-600">{formatPrice(t.albumOption.price)}</p>
-                        <p className="text-xs text-gray-400 mt-1">{language === "ko" ? "부가세 포함" : "Tax included"}</p>
-                      </div>
+                  <CardContent className="p-4 flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${wantsAlbum ? "bg-emerald-500" : "bg-gray-200"}`}>
+                      <Share2 className={`w-6 h-6 ${wantsAlbum ? "text-white" : "text-gray-600"}`} />
                     </div>
-                    
-                    <div className="bg-white/60 rounded-xl p-4 mb-4">
-                      <p className="text-xs text-gray-500 mb-3 font-medium">{language === "ko" ? "전 세계 음원 플랫폼에 배포" : "Distribute to global music platforms"}</p>
-                      <div className="flex items-center justify-center gap-4 flex-wrap">
-                        <div className="flex items-center gap-2 bg-black rounded-full px-4 py-2 shadow-md hover:scale-105 transition-transform cursor-pointer" onClick={(e) => e.stopPropagation()}>
-                          <SiSpotify className="w-5 h-5 text-[#1DB954]" />
-                          <span className="text-white text-sm font-medium">Spotify</span>
-                        </div>
-                        <div className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full px-4 py-2 shadow-md hover:scale-105 transition-transform cursor-pointer" onClick={(e) => e.stopPropagation()}>
-                          <SiApplemusic className="w-5 h-5 text-white" />
-                          <span className="text-white text-sm font-medium">Apple Music</span>
-                        </div>
-                        <div className="flex items-center gap-2 bg-black rounded-full px-4 py-2 shadow-md hover:scale-105 transition-transform cursor-pointer" onClick={(e) => e.stopPropagation()}>
-                          <SiTiktok className="w-5 h-5 text-white" />
-                          <span className="text-white text-sm font-medium">TikTok</span>
-                        </div>
-                        <div className="flex items-center gap-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full px-4 py-2 shadow-md hover:scale-105 transition-transform cursor-pointer" onClick={(e) => e.stopPropagation()}>
-                          <SiInstagram className="w-5 h-5 text-white" />
-                          <span className="text-white text-sm font-medium">Instagram</span>
-                        </div>
-                        <div className="flex items-center gap-2 bg-red-600 rounded-full px-4 py-2 shadow-md hover:scale-105 transition-transform cursor-pointer" onClick={(e) => e.stopPropagation()}>
-                          <SiYoutube className="w-5 h-5 text-white" />
-                          <span className="text-white text-sm font-medium">YouTube</span>
-                        </div>
-                      </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-base text-gray-800">{t.albumOption.name}</h3>
+                      <p className="text-xs text-gray-500 line-clamp-2">{t.albumOption.desc}</p>
                     </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {t.albumOption.features.map((feature, idx) => (
-                        <motion.div
-                          key={idx}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className={`p-3 rounded-xl cursor-pointer transition-all shadow-md ${
-                            idx === 0 ? "bg-gradient-to-br from-violet-100 to-purple-200 border-2 border-violet-300 hover:border-violet-500" :
-                            idx === 1 ? "bg-gradient-to-br from-blue-100 to-cyan-200 border-2 border-blue-300 hover:border-blue-500" :
-                            idx === 2 ? "bg-gradient-to-br from-amber-100 to-orange-200 border-2 border-amber-300 hover:border-amber-500" :
-                            "bg-gradient-to-br from-rose-100 to-pink-200 border-2 border-rose-300 hover:border-rose-500"
-                          }`}
-                          onClick={(e) => { e.stopPropagation(); setDetailModal(feature); }}
-                          data-testid={`button-feature-${idx}`}
-                        >
-                          <div className="flex items-center gap-2 mb-1">
-                            <Sparkles className={`w-4 h-4 ${
-                              idx === 0 ? "text-violet-600" :
-                              idx === 1 ? "text-blue-600" :
-                              idx === 2 ? "text-amber-600" :
-                              "text-rose-600"
-                            }`} />
-                            <span className="text-xs font-bold text-gray-700">{feature.title}</span>
-                          </div>
-                          <p className="text-[10px] text-gray-500 line-clamp-2">{feature.desc}</p>
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    <div className="mt-4 flex justify-center">
-                      <Button 
-                        variant="outline" 
-                        size="lg" 
-                        className="border-2 border-emerald-400 text-emerald-600 hover:bg-emerald-100 font-semibold px-6 shadow-md"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Play className="w-4 h-4 mr-2" />
-                        {t.listenSample}
-                      </Button>
-                    </div>
+                    <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.albumOption.price)}</p>
                   </CardContent>
                 </Card>
 
                 <Card 
-                  className={`cursor-pointer transition-all relative overflow-hidden ${wantsProAlbum ? "border-3 border-violet-500 bg-gradient-to-br from-violet-50 to-purple-100 shadow-2xl scale-[1.02]" : "bg-white/90 border-2 border-gray-200 hover:shadow-xl hover:border-violet-300 hover:scale-[1.01]"}`} 
+                  className={`cursor-pointer transition-all relative ${wantsProAlbum ? "border-2 border-violet-500 bg-violet-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md"}`} 
                   onClick={() => setWantsProAlbum(!wantsProAlbum)}
                   data-testid="card-pro-album"
                 >
                   {wantsProAlbum && (
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-violet-500 rounded-full flex items-center justify-center shadow-lg z-10">
-                      <Check className="w-5 h-5 text-white" />
+                    <div className="absolute top-3 right-3 w-6 h-6 bg-violet-500 rounded-full flex items-center justify-center">
+                      <Check className="w-4 h-4 text-white" />
                     </div>
                   )}
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-5">
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg ${wantsProAlbum ? "bg-gradient-to-br from-violet-400 to-purple-600" : "bg-gradient-to-br from-gray-200 to-gray-300"}`}>
-                        <Sparkles className={`w-8 h-8 ${wantsProAlbum ? "text-white" : "text-gray-600"}`} />
+                  <CardContent className="p-4 flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${wantsProAlbum ? "bg-violet-500" : "bg-gray-200"}`}>
+                      <Sparkles className={`w-6 h-6 ${wantsProAlbum ? "text-white" : "text-gray-600"}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-base text-gray-800">{t.proAlbumOption.name}</h3>
+                        <span className="px-1.5 py-0.5 bg-violet-500 text-white rounded text-[10px] font-bold">PRO</span>
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-2xl text-gray-800">{t.proAlbumOption.name}</h3>
-                          <span className="px-2 py-0.5 bg-violet-500 text-white rounded-full text-xs font-bold">PRO</span>
-                        </div>
-                        <p className="text-sm text-gray-500">{t.proAlbumOption.desc}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-3xl font-bold text-pink-600">{formatPrice(t.proAlbumOption.price)}</p>
-                        <p className="text-xs text-gray-400 mt-1">{language === "ko" ? "부가세 포함" : "Tax included"}</p>
-                      </div>
+                      <p className="text-xs text-gray-500 line-clamp-2">{t.proAlbumOption.desc}</p>
                     </div>
-
-                    <div className="mt-4 flex flex-wrap gap-2 justify-center">
-                      {["spotify", "appleMusic", "tiktok", "instagram", "youtube"].map((platform) => (
-                        <div key={platform} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center shadow-sm">
-                          {platform === "spotify" && <SiSpotify className="w-5 h-5 text-[#1DB954]" />}
-                          {platform === "appleMusic" && <SiApplemusic className="w-5 h-5 text-[#FA243C]" />}
-                          {platform === "tiktok" && <SiTiktok className="w-5 h-5 text-black" />}
-                          {platform === "instagram" && <SiInstagram className="w-5 h-5 text-[#E4405F]" />}
-                          {platform === "youtube" && <SiYoutube className="w-5 h-5 text-[#FF0000]" />}
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-2">
-                      {t.proAlbumOption.features.map((feature, idx) => (
-                        <motion.div
-                          key={idx}
-                          whileHover={{ scale: 1.03, y: -2 }}
-                          whileTap={{ scale: 0.98 }}
-                          className={`p-3 rounded-xl cursor-pointer transition-all shadow-md ${
-                            idx < 4 
-                              ? idx === 0 ? "bg-gradient-to-br from-violet-100 to-purple-200 border-2 border-violet-300 hover:border-violet-500" :
-                                idx === 1 ? "bg-gradient-to-br from-blue-100 to-cyan-200 border-2 border-blue-300 hover:border-blue-500" :
-                                idx === 2 ? "bg-gradient-to-br from-amber-100 to-orange-200 border-2 border-amber-300 hover:border-amber-500" :
-                                "bg-gradient-to-br from-rose-100 to-pink-200 border-2 border-rose-300 hover:border-rose-500"
-                              : "bg-gradient-to-br from-emerald-100 to-teal-200 border-2 border-emerald-300 hover:border-emerald-500"
-                          }`}
-                          onClick={(e) => { e.stopPropagation(); setDetailModal(feature); }}
-                          data-testid={`button-pro-feature-${idx}`}
-                        >
-                          <div className="flex items-center gap-2 mb-1">
-                            {idx >= 4 && <Star className="w-4 h-4 text-emerald-600" />}
-                            {idx < 4 && <Sparkles className={`w-4 h-4 ${
-                              idx === 0 ? "text-violet-600" :
-                              idx === 1 ? "text-blue-600" :
-                              idx === 2 ? "text-amber-600" :
-                              "text-rose-600"
-                            }`} />}
-                            <span className="text-xs font-bold text-gray-700">{feature.title}</span>
-                          </div>
-                          <p className="text-[10px] text-gray-500 line-clamp-2">{feature.desc}</p>
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    <div className="mt-4 flex justify-center">
-                      <Button 
-                        variant="outline" 
-                        size="lg" 
-                        className="border-2 border-violet-400 text-violet-600 hover:bg-violet-100 font-semibold px-6 shadow-md"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Play className="w-4 h-4 mr-2" />
-                        {t.listenSample}
-                      </Button>
-                    </div>
+                    <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.proAlbumOption.price)}</p>
                   </CardContent>
                 </Card>
 
                 <Card 
-                  className={`cursor-pointer transition-all relative overflow-hidden ${wantsLP ? "border-3 border-amber-500 bg-gradient-to-br from-amber-50 to-orange-100 shadow-2xl scale-[1.02]" : "bg-white/90 border-2 border-gray-200 hover:shadow-xl hover:border-amber-300 hover:scale-[1.01]"}`} 
+                  className={`cursor-pointer transition-all relative ${wantsLP ? "border-2 border-amber-500 bg-amber-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md"}`} 
                   onClick={() => setWantsLP(!wantsLP)}
                   data-testid="card-lp"
                 >
                   {wantsLP && (
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center shadow-lg z-10">
-                      <Check className="w-5 h-5 text-white" />
+                    <div className="absolute top-3 right-3 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center">
+                      <Check className="w-4 h-4 text-white" />
                     </div>
                   )}
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-5">
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg ${wantsLP ? "bg-gradient-to-br from-amber-400 to-orange-600" : "bg-gradient-to-br from-gray-200 to-gray-300"}`}>
-                        <Disc className={`w-8 h-8 ${wantsLP ? "text-white animate-spin" : "text-gray-600"}`} style={{ animationDuration: "3s" }} />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-2xl text-gray-800 mb-1">{t.lpOption.name}</h3>
-                        <p className="text-sm text-gray-500">{t.lpOption.desc}</p>
-                        <div className="mt-3 flex items-center gap-2">
-                          <span className="px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-xs font-semibold">{language === "ko" ? "빈티지 감성" : "Vintage Style"}</span>
-                          <span className="px-3 py-1 bg-orange-200 text-orange-800 rounded-full text-xs font-semibold">{language === "ko" ? "소장가치" : "Collectible"}</span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-3xl font-bold text-pink-600">{formatPrice(t.lpOption.price)}</p>
-                        <p className="text-xs text-gray-400 mt-1">{language === "ko" ? "배송비 별도" : "Shipping extra"}</p>
-                      </div>
+                  <CardContent className="p-4 flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${wantsLP ? "bg-amber-500" : "bg-gray-200"}`}>
+                      <Disc className={`w-6 h-6 ${wantsLP ? "text-white" : "text-gray-600"}`} />
                     </div>
-                    <div className="mt-4 flex justify-end">
-                      <Button 
-                        variant="outline" 
-                        size="lg" 
-                        className="border-2 border-amber-400 text-amber-600 hover:bg-amber-100 font-semibold px-6 shadow-md"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Play className="w-4 h-4 mr-2" />
-                        {t.watchSample}
-                      </Button>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-base text-gray-800">{t.lpOption.name}</h3>
+                      <p className="text-xs text-gray-500 line-clamp-2">{t.lpOption.desc}</p>
                     </div>
+                    <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.lpOption.price)}</p>
                   </CardContent>
                 </Card>
               </div>
@@ -1229,23 +1072,23 @@ export default function MenuPage() {
       </div>
 
       {step > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-purple-300 p-4 shadow-2xl">
-          <div className="max-w-4xl mx-auto flex items-center justify-between">
-            <Button variant="outline" size="lg" onClick={() => paginate(-1)} className="border-2 border-gray-400 text-gray-700 hover:bg-gray-100 px-8 py-6 text-lg font-semibold" data-testid="button-back">
-              <ArrowLeft className="w-6 h-6 mr-2" />{t.back}
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-purple-300 p-3 shadow-2xl">
+          <div className="max-w-4xl mx-auto flex items-center justify-between gap-2">
+            <Button variant="outline" size="sm" onClick={() => paginate(-1)} className="border-2 border-gray-400 text-gray-700 hover:bg-gray-100 px-4 py-2 text-sm font-semibold flex-shrink-0" data-testid="button-back">
+              <ArrowLeft className="w-4 h-4 mr-1" />{t.back}
             </Button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 flex-shrink overflow-hidden">
               {[1,2,3,4,5,6,7,8].map(i => (
-                <div key={i} className={`h-2 rounded-full transition-all ${i === step ? "bg-pink-500 w-6" : i < step ? "bg-green-500 w-2" : "bg-gray-400 w-2"}`} />
+                <div key={i} className={`h-1.5 rounded-full transition-all ${i === step ? "bg-pink-500 w-4" : i < step ? "bg-green-500 w-1.5" : "bg-gray-400 w-1.5"}`} />
               ))}
             </div>
             {step < 8 ? (
-              <Button size="lg" onClick={() => paginate(1)} disabled={!canProceed()} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-6 text-lg font-semibold shadow-lg" data-testid="button-next">
-                {t.next}<ArrowRight className="w-6 h-6 ml-2" />
+              <Button size="sm" onClick={() => paginate(1)} disabled={!canProceed()} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-4 py-2 text-sm font-semibold shadow-lg flex-shrink-0" data-testid="button-next">
+                {t.next}<ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             ) : (
-              <Button size="lg" onClick={handleSubmit} disabled={bookingMutation.isPending} className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-6 text-lg font-semibold shadow-lg" data-testid="button-submit">
-                {bookingMutation.isPending ? "Loading..." : <><Check className="w-6 h-6 mr-2" />{t.selectComplete}</>}
+              <Button size="sm" onClick={handleSubmit} disabled={bookingMutation.isPending} className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-2 text-sm font-semibold shadow-lg flex-shrink-0" data-testid="button-submit">
+                {bookingMutation.isPending ? "..." : <><Check className="w-4 h-4 mr-1" />{t.selectComplete}</>}
               </Button>
             )}
           </div>
