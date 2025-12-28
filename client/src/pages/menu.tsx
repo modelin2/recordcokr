@@ -177,8 +177,8 @@ const translations: Record<Language, {
     ],
     videoOptions: [
       { id: "self", name: "셀프 촬영", price: 0, desc: "셀피용 스탠드 제공, 자신의 휴대폰으로 직접 촬영" },
-      { id: "cameraman", name: "셀프 + 촬영기사 촬영", price: 20000, desc: "촬영기사가 당신이 노래하는 모습을 DSLR카메라로 촬영. 원본 파일 제공" },
-      { id: "full", name: "셀프 + 촬영기사 + 편집", price: 100000, desc: "촬영기사 촬영 후 편집까지 완료하여 뮤직비디오를 완성. 원본파일 + 완성파일 제공" },
+      { id: "cameraman", name: "셀프 + 촬영기사 촬영", price: 20000, desc: "촬영기사가 당신이 노래하는 모습을 DSLR카메라로 촬영\n(원본 파일 제공)" },
+      { id: "full", name: "셀프 + 촬영기사 + 편집", price: 100000, desc: "촬영기사 촬영 후 편집까지 완료하여 뮤직비디오를 완성\n(원본파일 + 완성파일 제공)" },
     ],
     albumOption: { 
       name: "앨범 발매", 
