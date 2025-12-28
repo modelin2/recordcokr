@@ -682,22 +682,22 @@ export default function MenuPage() {
           )}
 
           {step === 1 && (
-            <motion.div key="booking-path" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-2xl">
-              <div className="text-center mb-10">
-                <h1 className="text-3xl font-bold text-gray-800 mb-2">{t.selectBookingPath}</h1>
+            <motion.div key="booking-path" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-2xl px-4">
+              <div className="text-center mb-6 md:mb-10">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{t.selectBookingPath}</h1>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <Card 
                   className={`cursor-pointer transition-all hover:shadow-xl ${bookingPath === "existing" ? "border-2 border-purple-500 bg-purple-50 shadow-lg" : "bg-white/80 border-gray-200 hover:border-purple-300"}`} 
                   onClick={() => { setBookingPath("existing"); setTimeout(() => paginate(1), 200); }}
                   data-testid="button-existing-reservation"
                 >
-                  <CardContent className="p-8 text-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                      <Users className="w-10 h-10 text-white" />
+                  <CardContent className="p-6 md:p-8 text-center">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg">
+                      <Users className="w-8 h-8 md:w-10 md:h-10 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{t.existingReservation}</h2>
-                    <p className="text-gray-600">{t.existingReservationDesc}</p>
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-1 md:mb-2">{t.existingReservation}</h2>
+                    <p className="text-sm md:text-base text-gray-600">{t.existingReservationDesc}</p>
                   </CardContent>
                 </Card>
                 <Card 
@@ -705,12 +705,12 @@ export default function MenuPage() {
                   onClick={() => { setBookingPath("homepage"); setTimeout(() => paginate(1), 200); }}
                   data-testid="button-new-reservation"
                 >
-                  <CardContent className="p-8 text-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                      <Home className="w-10 h-10 text-white" />
+                  <CardContent className="p-6 md:p-8 text-center">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg">
+                      <Home className="w-8 h-8 md:w-10 md:h-10 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{t.newReservation}</h2>
-                    <p className="text-gray-600">{t.newReservationDesc}</p>
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-1 md:mb-2">{t.newReservation}</h2>
+                    <p className="text-sm md:text-base text-gray-600">{t.newReservationDesc}</p>
                   </CardContent>
                 </Card>
               </div>
@@ -895,15 +895,17 @@ export default function MenuPage() {
               <div className="space-y-3">
                 {t.mixingOptions.map((opt) => (
                   <Card key={opt.id} className={`cursor-pointer transition-all ${selectedMixing === opt.id ? "border-2 border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-cyan-300"}`} onClick={() => setSelectedMixing(opt.id)}>
-                    <CardContent className="p-4 flex items-center gap-3">
-                      <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedMixing === opt.id ? "border-cyan-500 bg-cyan-500" : "border-gray-300 bg-white"}`}>
+                    <CardContent className="p-4 flex items-start gap-3">
+                      <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all mt-0.5 ${selectedMixing === opt.id ? "border-cyan-500 bg-cyan-500" : "border-gray-300 bg-white"}`}>
                         {selectedMixing === opt.id && <Check className="w-4 h-4 text-white" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-base text-gray-800">{opt.name}</h3>
-                        <p className="text-xs text-gray-500 line-clamp-2">{opt.desc}</p>
+                        <div className="flex items-center justify-between gap-2">
+                          <h3 className="font-bold text-base text-gray-800">{opt.name}</h3>
+                          <p className={`text-lg font-bold flex-shrink-0 ${opt.price === 0 ? "text-green-600" : "text-pink-600"}`}>{formatPrice(opt.price)}</p>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">{opt.desc}</p>
                       </div>
-                      <p className={`text-lg font-bold flex-shrink-0 ${opt.price === 0 ? "text-green-600" : "text-pink-600"}`}>{formatPrice(opt.price)}</p>
                     </CardContent>
                   </Card>
                 ))}
