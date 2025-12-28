@@ -172,18 +172,18 @@ const translations: Record<Language, {
     close: "닫기",
     mixingOptions: [
       { id: "basic", name: "기본", price: 0, desc: "음량 조절, 기본 EQ, 리버브 적용" },
-      { id: "ai", name: "AI 보정", price: 20000, desc: "틀린 음정, 박자를 AI 로 자동 수정합니다." },
-      { id: "engineer", name: "전문가 보정", price: 100000, desc: "틀린 음정, 박자를 전문가가 수동으로 하나하나 수정합니다." },
+      { id: "ai", name: "기본 + AI 보정", price: 20000, desc: "틀린 음정, 박자를 AI로 자동 수정" },
+      { id: "engineer", name: "기본 + 전문가 보정", price: 100000, desc: "틀린 음정, 박자를 전문가가 하나하나 수작업으로 수정" },
     ],
     videoOptions: [
       { id: "self", name: "셀프 촬영", price: 0, desc: "셀피용 스탠드 제공, 자신의 휴대폰으로 직접 촬영" },
-      { id: "cameraman", name: "촬영기사 촬영", price: 20000, desc: "촬영기사가 당신이 노래하는 모습을 DSLR 카메라로 촬영합니다." },
-      { id: "full", name: "촬영기사 촬영 + 편집", price: 100000, desc: "촬영기사 촬영 후 편집까지 완료하여 뮤직비디오를 완성합니다." },
+      { id: "cameraman", name: "촬영기사 촬영", price: 20000, desc: "촬영기사가 당신이 노래하는 모습을 DSLR카메라로 촬영. 원본 파일 제공" },
+      { id: "full", name: "촬영기사 촬영 + 편집", price: 100000, desc: "촬영기사 촬영 후 편집까지 완료하여 뮤직비디오를 완성. 원본파일 + 완성파일 제공" },
     ],
     albumOption: { 
       name: "앨범 발매", 
       price: 200000, 
-      desc: "K-POP 가수처럼 전세계 음원 사이트에 발매해드립니다.",
+      desc: "K-POP 가수처럼 전세계 음원 사이트(유튜브, 스포티파이, 틱톡, 인스타그램 등)에 발매. (새롭게 반주 제작, 앨범 자켓 이미지 제작 포함)",
       features: [
         { title: "리메이크 라이선스 취득", desc: "원곡을 리메이크하여 합법적으로 음원을 발매할 수 있는 라이선스를 취득해 드립니다. 저작권 걱정 없이 안전하게 음원을 배포하세요." },
         { title: "반주 새롭게 제작", desc: "AI 기반으로 원곡의 반주를 새롭게 제작하여 저작권 걱정 없이 사용할 수 있습니다. 원곡과 유사하지만 완전히 새로운 반주로 안전하게 음원을 발매하세요." },
@@ -191,7 +191,7 @@ const translations: Record<Language, {
         { title: "평생 저작권료 라이센스", desc: "발매된 음원에서 발생하는 스트리밍 수익을 평생 받으실 수 있습니다. Spotify, Apple Music 등에서 재생될 때마다 저작권료가 적립됩니다." },
       ]
     },
-    proAlbumOption: { name: "전문가 앨범 발매", price: 500000, desc: "음악 전공자 or 프로들을 위한 전문 발매 서비스", features: [
+    proAlbumOption: { name: "전문가 앨범 발매", price: 500000, desc: "음악 전공자 or 프로들을 위한 전문 발매 서비스 (원하는 스타일의 반주 제작, 앨범 자켓 이미지 제작 포함, 수정 2회 포함)", features: [
       { title: "리메이크 라이선스 취득", desc: "원곡 저작권자의 공식 허가를 받아 합법적으로 음원을 발매합니다" },
       { title: "반주 새롭게 제작", desc: "전문 작곡가가 원곡의 느낌을 살린 새로운 MR을 제작합니다" },
       { title: "앨범표지 디자인", desc: "전문 디자이너가 세련된 앨범 커버를 디자인합니다" },
