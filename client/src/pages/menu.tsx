@@ -177,8 +177,8 @@ const translations: Record<Language, {
     ],
     videoOptions: [
       { id: "self", name: "셀프 촬영", price: 0, desc: "셀피용 스탠드 제공, 자신의 휴대폰으로 직접 촬영" },
-      { id: "cameraman", name: "촬영기사 촬영", price: 20000, desc: "촬영기사가 당신이 노래하는 모습을 DSLR카메라로 촬영. 원본 파일 제공" },
-      { id: "full", name: "촬영기사 촬영 + 편집", price: 100000, desc: "촬영기사 촬영 후 편집까지 완료하여 뮤직비디오를 완성. 원본파일 + 완성파일 제공" },
+      { id: "cameraman", name: "셀프 + 촬영기사 촬영", price: 20000, desc: "촬영기사가 당신이 노래하는 모습을 DSLR카메라로 촬영. 원본 파일 제공" },
+      { id: "full", name: "셀프 + 촬영기사 + 편집", price: 100000, desc: "촬영기사 촬영 후 편집까지 완료하여 뮤직비디오를 완성. 원본파일 + 완성파일 제공" },
     ],
     albumOption: { 
       name: "앨범 발매", 
@@ -920,15 +920,17 @@ export default function MenuPage() {
               <div className="space-y-3">
                 {t.videoOptions.map((opt) => (
                   <Card key={opt.id} className={`cursor-pointer transition-all ${selectedVideo === opt.id ? "border-2 border-rose-500 bg-rose-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-rose-300"}`} onClick={() => setSelectedVideo(opt.id)}>
-                    <CardContent className="p-4 flex items-center gap-3">
-                      <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedVideo === opt.id ? "border-rose-500 bg-rose-500" : "border-gray-300 bg-white"}`}>
+                    <CardContent className="p-4 flex items-start gap-3">
+                      <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all mt-0.5 ${selectedVideo === opt.id ? "border-rose-500 bg-rose-500" : "border-gray-300 bg-white"}`}>
                         {selectedVideo === opt.id && <Check className="w-4 h-4 text-white" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-base text-gray-800">{opt.name}</h3>
-                        <p className="text-xs text-gray-500 line-clamp-2">{opt.desc}</p>
+                        <div className="flex items-center justify-between gap-2">
+                          <h3 className="font-bold text-base text-gray-800">{opt.name}</h3>
+                          <p className={`text-lg font-bold flex-shrink-0 ${opt.price === 0 ? "text-green-600" : "text-pink-600"}`}>{formatPrice(opt.price)}</p>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">{opt.desc}</p>
                       </div>
-                      <p className={`text-lg font-bold flex-shrink-0 ${opt.price === 0 ? "text-green-600" : "text-pink-600"}`}>{formatPrice(opt.price)}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -948,15 +950,17 @@ export default function MenuPage() {
                   onClick={() => setWantsAlbum(!wantsAlbum)}
                   data-testid="card-album"
                 >
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${wantsAlbum ? "border-emerald-500 bg-emerald-500" : "border-gray-300 bg-white"}`}>
+                  <CardContent className="p-4 flex items-start gap-3">
+                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all mt-0.5 ${wantsAlbum ? "border-emerald-500 bg-emerald-500" : "border-gray-300 bg-white"}`}>
                       {wantsAlbum && <Check className="w-4 h-4 text-white" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-base text-gray-800">{t.albumOption.name}</h3>
-                      <p className="text-xs text-gray-500 line-clamp-2">{t.albumOption.desc}</p>
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="font-bold text-base text-gray-800">{t.albumOption.name}</h3>
+                        <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.albumOption.price)}</p>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">{t.albumOption.desc}</p>
                     </div>
-                    <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.albumOption.price)}</p>
                   </CardContent>
                 </Card>
 
@@ -965,18 +969,20 @@ export default function MenuPage() {
                   onClick={() => setWantsProAlbum(!wantsProAlbum)}
                   data-testid="card-pro-album"
                 >
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${wantsProAlbum ? "border-violet-500 bg-violet-500" : "border-gray-300 bg-white"}`}>
+                  <CardContent className="p-4 flex items-start gap-3">
+                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all mt-0.5 ${wantsProAlbum ? "border-violet-500 bg-violet-500" : "border-gray-300 bg-white"}`}>
                       {wantsProAlbum && <Check className="w-4 h-4 text-white" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-base text-gray-800">{t.proAlbumOption.name}</h3>
-                        <span className="px-1.5 py-0.5 bg-violet-500 text-white rounded text-[10px] font-bold">PRO</span>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-base text-gray-800">{t.proAlbumOption.name}</h3>
+                          <span className="px-1.5 py-0.5 bg-violet-500 text-white rounded text-[10px] font-bold">PRO</span>
+                        </div>
+                        <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.proAlbumOption.price)}</p>
                       </div>
-                      <p className="text-xs text-gray-500 line-clamp-2">{t.proAlbumOption.desc}</p>
+                      <p className="text-xs text-gray-500 mt-1">{t.proAlbumOption.desc}</p>
                     </div>
-                    <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.proAlbumOption.price)}</p>
                   </CardContent>
                 </Card>
 
@@ -985,15 +991,17 @@ export default function MenuPage() {
                   onClick={() => setWantsLP(!wantsLP)}
                   data-testid="card-lp"
                 >
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${wantsLP ? "border-amber-500 bg-amber-500" : "border-gray-300 bg-white"}`}>
+                  <CardContent className="p-4 flex items-start gap-3">
+                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all mt-0.5 ${wantsLP ? "border-amber-500 bg-amber-500" : "border-gray-300 bg-white"}`}>
                       {wantsLP && <Check className="w-4 h-4 text-white" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-base text-gray-800">{t.lpOption.name}</h3>
-                      <p className="text-xs text-gray-500 line-clamp-2">{t.lpOption.desc}</p>
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="font-bold text-base text-gray-800">{t.lpOption.name}</h3>
+                        <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.lpOption.price)}</p>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">{t.lpOption.desc}</p>
                     </div>
-                    <p className="text-lg font-bold text-pink-600 flex-shrink-0">{formatPrice(t.lpOption.price)}</p>
                   </CardContent>
                 </Card>
               </div>
