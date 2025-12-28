@@ -104,6 +104,8 @@ const translations: Record<Language, {
   successMessage: string;
   required: string;
   close: string;
+  selectOne: string;
+  optionalMultiple: string;
   mixingOptions: { id: string; name: string; price: number; desc: string }[];
   videoOptions: { id: string; name: string; price: number; desc: string }[];
   albumOption: { name: string; price: number; desc: string; features: { title: string; desc: string }[] };
@@ -170,6 +172,8 @@ const translations: Record<Language, {
     successMessage: "선택이 완료되었습니다. 즐거운 레코딩 되세요!",
     required: "필수 입력",
     close: "닫기",
+    selectOne: "하나를 선택해주세요",
+    optionalMultiple: "선택 사항입니다 (복수 선택 가능)",
     mixingOptions: [
       { id: "basic", name: "기본", price: 0, desc: "음량 조절, 기본 EQ, 리버브 적용" },
       { id: "ai", name: "기본 + AI 보정", price: 20000, desc: "틀린 음정, 박자를 AI로 자동 수정" },
@@ -206,7 +210,7 @@ const translations: Record<Language, {
     welcome: "Recording Cafe",
     selectBookingPath: "Select Booking Type",
     existingReservation: "Existing Reservation",
-    existingReservationDesc: "Already booked on another platform?",
+    existingReservationDesc: "Already booked on another platform (Klook, Naver, etc.)?",
     newReservation: "New Reservation",
     newReservationDesc: "Book now for the first time?",
     selectPlatform: "Select your booking platform",
@@ -261,6 +265,8 @@ const translations: Record<Language, {
     successMessage: "Your selection is complete. Enjoy your recording!",
     required: "Required",
     close: "Close",
+    selectOne: "Please select one",
+    optionalMultiple: "Optional (multiple selection allowed)",
     mixingOptions: [
       { id: "basic", name: "Basic", price: 0, desc: "Volume adjustment, basic EQ, reverb applied" },
       { id: "ai", name: "Basic + AI Correction", price: 20000, desc: "AI automatically corrects wrong pitch and timing" },
@@ -297,7 +303,7 @@ const translations: Record<Language, {
     welcome: "レコーディングカフェ",
     selectBookingPath: "予約タイプを選択",
     existingReservation: "既存予約者",
-    existingReservationDesc: "他のプラットフォームで予約済みですか？",
+    existingReservationDesc: "他のプラットフォーム（Klook、Naver等）で既に予約済みですか？",
     newReservation: "新規予約",
     newReservationDesc: "今すぐ予約しますか？",
     selectPlatform: "予約したプラットフォームを選択",
@@ -352,6 +358,8 @@ const translations: Record<Language, {
     successMessage: "選択が完了しました。レコーディングをお楽しみください！",
     required: "必須",
     close: "閉じる",
+    selectOne: "1つを選択してください",
+    optionalMultiple: "任意（複数選択可能）",
     mixingOptions: [
       { id: "basic", name: "基本", price: 0, desc: "音量調整、基本EQ、リバーブ適用" },
       { id: "ai", name: "基本 + AI補正", price: 20000, desc: "間違った音程・リズムをAIが自動修正" },
@@ -388,7 +396,7 @@ const translations: Record<Language, {
     welcome: "录音咖啡厅",
     selectBookingPath: "选择预约类型",
     existingReservation: "已有预约",
-    existingReservationDesc: "已在其他平台预约？",
+    existingReservationDesc: "已在其他平台（Klook、Naver等）预约？",
     newReservation: "新预约",
     newReservationDesc: "现在预约？",
     selectPlatform: "选择预约平台",
@@ -443,6 +451,8 @@ const translations: Record<Language, {
     successMessage: "选择已完成。祝您录音愉快！",
     required: "必填",
     close: "关闭",
+    selectOne: "请选择一项",
+    optionalMultiple: "可选（可多选）",
     mixingOptions: [
       { id: "basic", name: "基础", price: 0, desc: "音量调整、基本EQ、混响应用" },
       { id: "ai", name: "基础 + AI校正", price: 20000, desc: "AI自动修正错误的音高和节拍" },
@@ -890,7 +900,7 @@ export default function MenuPage() {
             <motion.div key="mixing" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
               <div className="text-center mb-4">
                 <h1 className="text-xl font-bold text-gray-800">{t.mixingService}</h1>
-                <p className="text-xs text-gray-500 mt-1">{language === "ko" ? "하나를 선택해주세요" : "Please select one"}</p>
+                <p className="text-xs text-gray-500 mt-1">{t.selectOne}</p>
               </div>
               <div className="space-y-3">
                 {t.mixingOptions.map((opt) => (
@@ -917,7 +927,7 @@ export default function MenuPage() {
             <motion.div key="video" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
               <div className="text-center mb-4">
                 <h1 className="text-xl font-bold text-gray-800">{t.videoService}</h1>
-                <p className="text-xs text-gray-500 mt-1">{language === "ko" ? "하나를 선택해주세요" : "Please select one"}</p>
+                <p className="text-xs text-gray-500 mt-1">{t.selectOne}</p>
               </div>
               <div className="space-y-3">
                 {t.videoOptions.map((opt) => (
@@ -944,7 +954,7 @@ export default function MenuPage() {
             <motion.div key="extra" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
               <div className="text-center mb-4">
                 <h1 className="text-xl font-bold text-gray-800">{t.albumService}</h1>
-                <p className="text-xs text-gray-500 mt-1">{language === "ko" ? "선택 사항입니다 (복수 선택 가능)" : "Optional (multiple selection allowed)"}</p>
+                <p className="text-xs text-gray-500 mt-1">{t.optionalMultiple}</p>
               </div>
               <div className="space-y-3">
                 <Card 
