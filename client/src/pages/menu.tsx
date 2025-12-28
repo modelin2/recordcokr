@@ -262,19 +262,19 @@ const translations: Record<Language, {
     required: "Required",
     close: "Close",
     mixingOptions: [
-      { id: "basic", name: "Basic", price: 0, desc: "Volume adjustment, basic EQ, reverb" },
-      { id: "ai", name: "AI Correction", price: 20000, desc: "AI automatically corrects wrong pitch and timing." },
-      { id: "engineer", name: "Expert Correction", price: 100000, desc: "Expert manually corrects each wrong pitch and timing." },
+      { id: "basic", name: "Basic", price: 0, desc: "Volume adjustment, basic EQ, reverb applied" },
+      { id: "ai", name: "Basic + AI Correction", price: 20000, desc: "AI automatically corrects wrong pitch and timing" },
+      { id: "engineer", name: "Basic + Expert Correction", price: 100000, desc: "Expert manually corrects each wrong pitch and timing one by one" },
     ],
     videoOptions: [
       { id: "self", name: "Self Recording", price: 0, desc: "Selfie stand provided, record with your own phone" },
-      { id: "cameraman", name: "Cameraman", price: 20000, desc: "Cameraman films you singing with DSLR camera." },
-      { id: "full", name: "Cameraman + Editing", price: 100000, desc: "Cameraman filming + editing to complete your music video." },
+      { id: "cameraman", name: "Self + Cameraman", price: 20000, desc: "Cameraman films you singing with DSLR camera\n(Original files provided)" },
+      { id: "full", name: "Self + Cameraman + Editing", price: 100000, desc: "Cameraman filming + editing to complete your music video\n(Original + Finished files provided)" },
     ],
     albumOption: { 
       name: "Album Release", 
       price: 200000, 
-      desc: "Release on global music platforms like K-POP artists.",
+      desc: "Release on global music sites (YouTube, Spotify, TikTok, Instagram, etc.) like K-POP artists\n(New backing track + Album cover design + Royalty income)",
       features: [
         { title: "Remake License Acquisition", desc: "We acquire the license for you to legally release a remake of the original song. Distribute your music safely without copyright concerns." },
         { title: "New Backing Track Production", desc: "AI-based recreation of original backing tracks for copyright-free use. Release your music safely with a new instrumental similar to the original." },
@@ -282,7 +282,7 @@ const translations: Record<Language, {
         { title: "Lifetime Royalty License", desc: "Receive streaming revenue for life from your released music. Earn royalties every time your song plays on Spotify, Apple Music, etc." },
       ]
     },
-    proAlbumOption: { name: "Pro Album Release", price: 500000, desc: "Professional release service for music majors or pros", features: [
+    proAlbumOption: { name: "Pro Album Release", price: 500000, desc: "Professional release service for music majors or pros\n(Custom style backing track + Album cover design + Royalty income + 2 revisions)", features: [
       { title: "Remake License", desc: "Obtain official permission from the original copyright holder for legal music release" },
       { title: "New Backing Track", desc: "Professional composer creates new MR that captures the original feel" },
       { title: "Album Cover Design", desc: "Professional designer creates stylish album cover" },
@@ -353,19 +353,19 @@ const translations: Record<Language, {
     required: "必須",
     close: "閉じる",
     mixingOptions: [
-      { id: "basic", name: "基本", price: 0, desc: "音量調整、基本EQ、リバーブ" },
-      { id: "ai", name: "AI補正", price: 20000, desc: "間違った音程・リズムをAIが自動修正します。" },
-      { id: "engineer", name: "専門家補正", price: 100000, desc: "間違った音程・リズムを専門家が手動で修正します。" },
+      { id: "basic", name: "基本", price: 0, desc: "音量調整、基本EQ、リバーブ適用" },
+      { id: "ai", name: "基本 + AI補正", price: 20000, desc: "間違った音程・リズムをAIが自動修正" },
+      { id: "engineer", name: "基本 + 専門家補正", price: 100000, desc: "間違った音程・リズムを専門家が一つ一つ手作業で修正" },
     ],
     videoOptions: [
       { id: "self", name: "セルフ撮影", price: 0, desc: "セルフィースタンド提供、ご自身のスマホで撮影" },
-      { id: "cameraman", name: "カメラマン撮影", price: 20000, desc: "カメラマンがDSLRカメラで撮影します。" },
-      { id: "full", name: "カメラマン撮影+編集", price: 100000, desc: "カメラマン撮影後、編集まで完了してミュージックビデオを制作します。" },
+      { id: "cameraman", name: "セルフ + カメラマン撮影", price: 20000, desc: "カメラマンがあなたの歌う姿をDSLRカメラで撮影\n(オリジナルファイル提供)" },
+      { id: "full", name: "セルフ + カメラマン + 編集", price: 100000, desc: "カメラマン撮影後、編集まで完了してミュージックビデオを制作\n(オリジナル + 完成ファイル提供)" },
     ],
     albumOption: { 
       name: "アルバムリリース", 
       price: 200000, 
-      desc: "K-POPアーティストのように世界中の音楽サイトにリリースします。",
+      desc: "K-POPアーティストのように世界中の音楽サイト（YouTube、Spotify、TikTok、Instagram等）にリリース\n(新規バッキングトラック + アルバムカバー制作 + 印税収益発生)",
       features: [
         { title: "リメイクライセンス取得", desc: "オリジナル曲をリメイクして合法的に音源をリリースできるライセンスを取得します。著作権の心配なく安全に配信できます。" },
         { title: "新規バッキングトラック制作", desc: "AIベースで原曲のバッキングトラックを新規制作し、著作権の心配なく使用できます。" },
@@ -373,7 +373,7 @@ const translations: Record<Language, {
         { title: "生涯ロイヤリティライセンス", desc: "リリースした音源からのストリーミング収益を一生受け取れます。" },
       ]
     },
-    proAlbumOption: { name: "プロアルバムリリース", price: 500000, desc: "音楽専攻者・プロ向けの専門リリースサービス", features: [
+    proAlbumOption: { name: "プロアルバムリリース", price: 500000, desc: "音楽専攻者・プロ向けの専門リリースサービス\n(お好みスタイルのバッキングトラック + アルバムカバー制作 + 印税収益発生 + 修正2回)", features: [
       { title: "リメイクライセンス取得", desc: "原曲著作権者の公式許可を得て合法的に音源をリリース" },
       { title: "新規バッキングトラック制作", desc: "プロの作曲家が原曲の雰囲気を活かした新しいMRを制作" },
       { title: "アルバムカバーデザイン", desc: "プロのデザイナーが洗練されたアルバムカバーをデザイン" },
@@ -444,19 +444,19 @@ const translations: Record<Language, {
     required: "必填",
     close: "关闭",
     mixingOptions: [
-      { id: "basic", name: "基础", price: 0, desc: "音量调整、基本EQ、混响" },
-      { id: "ai", name: "AI校正", price: 20000, desc: "AI自动修正错误的音高和节拍。" },
-      { id: "engineer", name: "专家校正", price: 100000, desc: "专家手动逐一修正错误的音高和节拍。" },
+      { id: "basic", name: "基础", price: 0, desc: "音量调整、基本EQ、混响应用" },
+      { id: "ai", name: "基础 + AI校正", price: 20000, desc: "AI自动修正错误的音高和节拍" },
+      { id: "engineer", name: "基础 + 专家校正", price: 100000, desc: "专家逐一手工修正错误的音高和节拍" },
     ],
     videoOptions: [
       { id: "self", name: "自拍", price: 0, desc: "提供自拍支架，用自己的手机拍摄" },
-      { id: "cameraman", name: "摄影师拍摄", price: 20000, desc: "摄影师用DSLR相机拍摄您唱歌的样子。" },
-      { id: "full", name: "摄影师拍摄+剪辑", price: 100000, desc: "摄影师拍摄后完成剪辑，制作您的音乐视频。" },
+      { id: "cameraman", name: "自拍 + 摄影师", price: 20000, desc: "摄影师用DSLR相机拍摄您唱歌的样子\n(提供原始文件)" },
+      { id: "full", name: "自拍 + 摄影师 + 剪辑", price: 100000, desc: "摄影师拍摄后完成剪辑，制作您的音乐视频\n(提供原始文件 + 完成文件)" },
     ],
     albumOption: { 
       name: "专辑发行", 
       price: 200000, 
-      desc: "像K-POP艺人一样在全球音乐平台发行。",
+      desc: "像K-POP艺人一样在全球音乐网站（YouTube、Spotify、TikTok、Instagram等）发行\n(全新伴奏制作 + 专辑封面设计 + 版税收入)",
       features: [
         { title: "翻唱许可证取得", desc: "为您取得合法翻唱发行原曲的许可证。无版权顾虑，安全发行。" },
         { title: "全新伴奏制作", desc: "基于AI重新制作原曲伴奏，无版权顾虑。" },
@@ -464,7 +464,7 @@ const translations: Record<Language, {
         { title: "终身版税许可", desc: "终身获得发行音乐的流媒体收入。" },
       ]
     },
-    proAlbumOption: { name: "专业专辑发行", price: 500000, desc: "音乐专业人士或专业人员的专业发行服务", features: [
+    proAlbumOption: { name: "专业专辑发行", price: 500000, desc: "音乐专业人士或专业人员的专业发行服务\n(定制风格伴奏制作 + 专辑封面设计 + 版税收入 + 2次修改)", features: [
       { title: "翻唱授权获取", desc: "获得原曲版权所有者的官方许可，合法发行音源" },
       { title: "新编伴奏制作", desc: "专业作曲家制作保留原曲感觉的全新MR" },
       { title: "专辑封面设计", desc: "专业设计师设计精美的专辑封面" },
