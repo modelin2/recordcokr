@@ -609,11 +609,14 @@ export default function MenuPage() {
   };
 
   const canProceed = () => {
+    if (step === 1) return bookingPath !== null;
     if (step === 2) {
       if (bookingPath === "existing") return selectedPlatform !== "";
       if (bookingPath === "homepage") return selectedDate !== undefined && selectedTime !== "";
     }
     if (step === 4) return name !== "" && phone !== "" && email !== "";
+    if (step === 5) return selectedMixing !== "";
+    if (step === 6) return selectedVideo !== "";
     return true;
   };
 
@@ -888,18 +891,17 @@ export default function MenuPage() {
               <div className="text-center mb-4">
                 <Headphones className="w-8 h-8 text-cyan-500 mx-auto mb-2" />
                 <h1 className="text-xl font-bold text-gray-800">{t.mixingService}</h1>
+                <p className="text-xs text-gray-500 mt-1">{language === "ko" ? "하나를 선택해주세요" : "Please select one"}</p>
               </div>
               <div className="space-y-3">
                 {t.mixingOptions.map((opt) => (
-                  <Card key={opt.id} className={`cursor-pointer transition-all relative ${selectedMixing === opt.id ? "border-2 border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md"}`} onClick={() => setSelectedMixing(opt.id)}>
-                    {selectedMixing === opt.id && (
-                      <div className="absolute top-3 right-3 w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center">
-                        <Check className="w-4 h-4 text-white" />
-                      </div>
-                    )}
+                  <Card key={opt.id} className={`cursor-pointer transition-all ${selectedMixing === opt.id ? "border-2 border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-cyan-300"}`} onClick={() => setSelectedMixing(opt.id)}>
                     <CardContent className="p-4 flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${selectedMixing === opt.id ? "bg-cyan-500" : "bg-gray-200"}`}>
-                        <Headphones className={`w-6 h-6 ${selectedMixing === opt.id ? "text-white" : "text-gray-600"}`} />
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedMixing === opt.id ? "border-cyan-500 bg-cyan-500" : "border-gray-300 bg-white"}`}>
+                        {selectedMixing === opt.id && <Check className="w-4 h-4 text-white" />}
+                      </div>
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${selectedMixing === opt.id ? "bg-cyan-500" : "bg-gray-200"}`}>
+                        <Headphones className={`w-5 h-5 ${selectedMixing === opt.id ? "text-white" : "text-gray-600"}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-base text-gray-800">{opt.name}</h3>
@@ -918,18 +920,17 @@ export default function MenuPage() {
               <div className="text-center mb-4">
                 <Video className="w-8 h-8 text-rose-500 mx-auto mb-2" />
                 <h1 className="text-xl font-bold text-gray-800">{t.videoService}</h1>
+                <p className="text-xs text-gray-500 mt-1">{language === "ko" ? "하나를 선택해주세요" : "Please select one"}</p>
               </div>
               <div className="space-y-3">
                 {t.videoOptions.map((opt) => (
-                  <Card key={opt.id} className={`cursor-pointer transition-all relative ${selectedVideo === opt.id ? "border-2 border-rose-500 bg-rose-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md"}`} onClick={() => setSelectedVideo(opt.id)}>
-                    {selectedVideo === opt.id && (
-                      <div className="absolute top-3 right-3 w-6 h-6 bg-rose-500 rounded-full flex items-center justify-center">
-                        <Check className="w-4 h-4 text-white" />
-                      </div>
-                    )}
+                  <Card key={opt.id} className={`cursor-pointer transition-all ${selectedVideo === opt.id ? "border-2 border-rose-500 bg-rose-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-rose-300"}`} onClick={() => setSelectedVideo(opt.id)}>
                     <CardContent className="p-4 flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${selectedVideo === opt.id ? "bg-rose-500" : "bg-gray-200"}`}>
-                        <Video className={`w-6 h-6 ${selectedVideo === opt.id ? "text-white" : "text-gray-600"}`} />
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedVideo === opt.id ? "border-rose-500 bg-rose-500" : "border-gray-300 bg-white"}`}>
+                        {selectedVideo === opt.id && <Check className="w-4 h-4 text-white" />}
+                      </div>
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${selectedVideo === opt.id ? "bg-rose-500" : "bg-gray-200"}`}>
+                        <Video className={`w-5 h-5 ${selectedVideo === opt.id ? "text-white" : "text-gray-600"}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-base text-gray-800">{opt.name}</h3>
@@ -952,18 +953,16 @@ export default function MenuPage() {
               </div>
               <div className="space-y-3">
                 <Card 
-                  className={`cursor-pointer transition-all relative ${wantsAlbum ? "border-2 border-emerald-500 bg-emerald-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md"}`} 
+                  className={`cursor-pointer transition-all ${wantsAlbum ? "border-2 border-emerald-500 bg-emerald-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-emerald-300"}`} 
                   onClick={() => setWantsAlbum(!wantsAlbum)}
                   data-testid="card-album"
                 >
-                  {wantsAlbum && (
-                    <div className="absolute top-3 right-3 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                  )}
                   <CardContent className="p-4 flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${wantsAlbum ? "bg-emerald-500" : "bg-gray-200"}`}>
-                      <Share2 className={`w-6 h-6 ${wantsAlbum ? "text-white" : "text-gray-600"}`} />
+                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${wantsAlbum ? "border-emerald-500 bg-emerald-500" : "border-gray-300 bg-white"}`}>
+                      {wantsAlbum && <Check className="w-4 h-4 text-white" />}
+                    </div>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${wantsAlbum ? "bg-emerald-500" : "bg-gray-200"}`}>
+                      <Share2 className={`w-5 h-5 ${wantsAlbum ? "text-white" : "text-gray-600"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-base text-gray-800">{t.albumOption.name}</h3>
@@ -974,18 +973,16 @@ export default function MenuPage() {
                 </Card>
 
                 <Card 
-                  className={`cursor-pointer transition-all relative ${wantsProAlbum ? "border-2 border-violet-500 bg-violet-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md"}`} 
+                  className={`cursor-pointer transition-all ${wantsProAlbum ? "border-2 border-violet-500 bg-violet-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-violet-300"}`} 
                   onClick={() => setWantsProAlbum(!wantsProAlbum)}
                   data-testid="card-pro-album"
                 >
-                  {wantsProAlbum && (
-                    <div className="absolute top-3 right-3 w-6 h-6 bg-violet-500 rounded-full flex items-center justify-center">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                  )}
                   <CardContent className="p-4 flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${wantsProAlbum ? "bg-violet-500" : "bg-gray-200"}`}>
-                      <Sparkles className={`w-6 h-6 ${wantsProAlbum ? "text-white" : "text-gray-600"}`} />
+                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${wantsProAlbum ? "border-violet-500 bg-violet-500" : "border-gray-300 bg-white"}`}>
+                      {wantsProAlbum && <Check className="w-4 h-4 text-white" />}
+                    </div>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${wantsProAlbum ? "bg-violet-500" : "bg-gray-200"}`}>
+                      <Sparkles className={`w-5 h-5 ${wantsProAlbum ? "text-white" : "text-gray-600"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -999,18 +996,16 @@ export default function MenuPage() {
                 </Card>
 
                 <Card 
-                  className={`cursor-pointer transition-all relative ${wantsLP ? "border-2 border-amber-500 bg-amber-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md"}`} 
+                  className={`cursor-pointer transition-all ${wantsLP ? "border-2 border-amber-500 bg-amber-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-amber-300"}`} 
                   onClick={() => setWantsLP(!wantsLP)}
                   data-testid="card-lp"
                 >
-                  {wantsLP && (
-                    <div className="absolute top-3 right-3 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                  )}
                   <CardContent className="p-4 flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${wantsLP ? "bg-amber-500" : "bg-gray-200"}`}>
-                      <Disc className={`w-6 h-6 ${wantsLP ? "text-white" : "text-gray-600"}`} />
+                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${wantsLP ? "border-amber-500 bg-amber-500" : "border-gray-300 bg-white"}`}>
+                      {wantsLP && <Check className="w-4 h-4 text-white" />}
+                    </div>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${wantsLP ? "bg-amber-500" : "bg-gray-200"}`}>
+                      <Disc className={`w-5 h-5 ${wantsLP ? "text-white" : "text-gray-600"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-base text-gray-800">{t.lpOption.name}</h3>
