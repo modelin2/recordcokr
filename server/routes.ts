@@ -1016,12 +1016,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Price configuration for services (in KRW)
+  const servicePrices = {
+    mixing: {
+      basic: 0,
+      ai: 20000,
+      engineer: 100000
+    },
+    video: {
+      self: 0,
+      cameraman: 20000,
+      full: 100000
+    },
+    album: 200000,
+    proAlbum: 500000,
+    lp: 300000
+  };
+
+  // Valid option IDs for validation
+  const validMixingOptions = ['basic', 'ai', 'engineer'];
+  const validVideoOptions = ['self', 'cameraman', 'full'];
+
+  // Calculate total price on server side for security
+  const calculateServerTotal = (bookingData: {
+    selectedMixing: string;
+    selectedVideo: string;
+    wantsAlbum: boolean;
+    wantsProAlbum: boolean;
+    wantsLP: boolean;
+  }): { total: number; valid: boolean; error?: string } => {
+    // Validate mixing option
+    if (!validMixingOptions.includes(bookingData.selectedMixing)) {
+      return { total: 0, valid: false, error: `Invalid mixing option: ${bookingData.selectedMixing}` };
+    }
+    // Validate video option
+    if (!validVideoOptions.includes(bookingData.selectedVideo)) {
+      return { total: 0, valid: false, error: `Invalid video option: ${bookingData.selectedVideo}` };
+    }
+
+    let total = 0;
+    const mixingPrice = servicePrices.mixing[bookingData.selectedMixing as keyof typeof servicePrices.mixing];
+    const videoPrice = servicePrices.video[bookingData.selectedVideo as keyof typeof servicePrices.video];
+    total += mixingPrice + videoPrice;
+    if (bookingData.wantsAlbum) total += servicePrices.album;
+    if (bookingData.wantsProAlbum) total += servicePrices.proAlbum;
+    if (bookingData.wantsLP) total += servicePrices.lp;
+    return { total, valid: true };
+  };
+
   // PayPal API endpoints for dynamic payment
   app.post("/api/paypal/create-order", async (req, res) => {
     try {
-      const { amount, currency = "USD", description } = req.body;
+      const { bookingData, description } = req.body;
       
-      if (!amount || amount <= 0) {
+      if (!bookingData) {
+        return res.status(400).json({ error: "Booking data required" });
+      }
+
+      // Calculate price on server side for security with validation
+      const priceResult = calculateServerTotal(bookingData);
+      if (!priceResult.valid) {
+        return res.status(400).json({ error: priceResult.error });
+      }
+      
+      const totalKRW = priceResult.total;
+      const totalUSD = Math.ceil(totalKRW / 1400 * 100) / 100; // Convert KRW to USD
+
+      if (totalUSD <= 0) {
         return res.status(400).json({ error: "Invalid amount" });
       }
 
@@ -1062,8 +1123,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           intent: "CAPTURE",
           purchase_units: [{
             amount: {
-              currency_code: currency,
-              value: amount.toFixed(2)
+              currency_code: "USD",
+              value: totalUSD.toFixed(2)
             },
             description: description || "Recording Cafe Service"
           }]

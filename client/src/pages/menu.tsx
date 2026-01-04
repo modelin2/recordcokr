@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useState, useEffect, useRef } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,11 +10,17 @@ import { apiRequest } from "@/lib/queryClient";
 import { 
   Globe, Coffee, Music, User, Check, ArrowRight, ArrowLeft,
   Headphones, Video, Disc, Share2, Play, Minus, Plus, Pause, Info, X,
-  Calendar as CalendarIcon, Clock, Users, Home, Sparkles, Star
+  Calendar as CalendarIcon, Clock, Users, Home, Sparkles, Star, CreditCard, Loader2
 } from "lucide-react";
-import { SiSpotify, SiApplemusic, SiTiktok, SiInstagram, SiYoutube } from "react-icons/si";
+import { SiSpotify, SiApplemusic, SiTiktok, SiInstagram, SiYoutube, SiPaypal } from "react-icons/si";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImage from "@assets/레코딩카페-한글로고_1764752892828.png";
+
+declare global {
+  interface Window {
+    paypal?: any;
+  }
+}
 
 type Language = "ko" | "en" | "ja" | "zh";
 
@@ -106,6 +112,11 @@ const translations: Record<Language, {
   close: string;
   selectOne: string;
   optionalMultiple: string;
+  payment: string;
+  paymentDesc: string;
+  paymentProcessing: string;
+  paymentSuccess: string;
+  paymentError: string;
   mixingOptions: { id: string; name: string; price: number; desc: string }[];
   videoOptions: { id: string; name: string; price: number; desc: string }[];
   albumOption: { name: string; price: number; desc: string; features: { title: string; desc: string }[] };
@@ -174,6 +185,11 @@ const translations: Record<Language, {
     close: "닫기",
     selectOne: "하나를 선택해주세요",
     optionalMultiple: "선택 사항입니다 (복수 선택 가능)",
+    payment: "결제",
+    paymentDesc: "결제를 진행해주세요",
+    paymentProcessing: "결제 처리 중...",
+    paymentSuccess: "결제가 완료되었습니다!",
+    paymentError: "결제에 실패했습니다. 다시 시도해주세요.",
     mixingOptions: [
       { id: "basic", name: "기본", price: 0, desc: "음량 조절, 기본 EQ, 리버브 적용" },
       { id: "ai", name: "기본 + AI 보정", price: 20000, desc: "틀린 음정, 박자를 AI로 자동 수정" },
@@ -267,6 +283,11 @@ const translations: Record<Language, {
     close: "Close",
     selectOne: "Please select one",
     optionalMultiple: "Optional (multiple selection allowed)",
+    payment: "Payment",
+    paymentDesc: "Please complete your payment",
+    paymentProcessing: "Processing payment...",
+    paymentSuccess: "Payment completed!",
+    paymentError: "Payment failed. Please try again.",
     mixingOptions: [
       { id: "basic", name: "Basic", price: 0, desc: "Volume adjustment, basic EQ, reverb applied" },
       { id: "ai", name: "Basic + AI Correction", price: 20000, desc: "AI automatically corrects wrong pitch and timing" },
@@ -360,6 +381,11 @@ const translations: Record<Language, {
     close: "閉じる",
     selectOne: "1つを選択してください",
     optionalMultiple: "任意（複数選択可能）",
+    payment: "お支払い",
+    paymentDesc: "お支払いを完了してください",
+    paymentProcessing: "決済処理中...",
+    paymentSuccess: "お支払いが完了しました！",
+    paymentError: "お支払いに失敗しました。もう一度お試しください。",
     mixingOptions: [
       { id: "basic", name: "基本", price: 0, desc: "音量調整、基本EQ、リバーブ適用" },
       { id: "ai", name: "基本 + AI補正", price: 20000, desc: "間違った音程・リズムをAIが自動修正" },
@@ -453,6 +479,11 @@ const translations: Record<Language, {
     close: "关闭",
     selectOne: "请选择一项",
     optionalMultiple: "可选（可多选）",
+    payment: "支付",
+    paymentDesc: "请完成支付",
+    paymentProcessing: "正在处理支付...",
+    paymentSuccess: "支付成功！",
+    paymentError: "支付失败，请重试。",
     mixingOptions: [
       { id: "basic", name: "基础", price: 0, desc: "音量调整、基本EQ、混响应用" },
       { id: "ai", name: "基础 + AI校正", price: 20000, desc: "AI自动修正错误的音高和节拍" },
@@ -513,7 +544,98 @@ export default function MenuPage() {
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
   const [detailModal, setDetailModal] = useState<{ title: string; desc: string } | null>(null);
+  const [paypalLoaded, setPaypalLoaded] = useState(false);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const paypalButtonRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  // Fetch PayPal Client ID
+  const { data: paypalConfig } = useQuery<{ clientId: string }>({
+    queryKey: ['/api/paypal/client-id'],
+    enabled: language !== null && language !== "ko",
+  });
+
+  // Load PayPal SDK when on step 8 and not Korean
+  useEffect(() => {
+    if (step === 8 && language && language !== "ko" && paypalConfig?.clientId && !paypalLoaded) {
+      const existingScript = document.querySelector('script[src*="paypal.com/sdk"]');
+      if (existingScript) {
+        setPaypalLoaded(true);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=USD`;
+      script.async = true;
+      script.onload = () => setPaypalLoaded(true);
+      document.body.appendChild(script);
+    }
+  }, [step, language, paypalConfig, paypalLoaded]);
+
+  // Render PayPal buttons when SDK is loaded
+  useEffect(() => {
+    const totalKRW = calculateTotal();
+    if (paypalLoaded && paypalButtonRef.current && window.paypal && step === 8 && language !== "ko" && totalKRW > 0) {
+      paypalButtonRef.current.innerHTML = '';
+      
+      window.paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'gold',
+          shape: 'rect',
+          label: 'paypal',
+          height: 50
+        },
+        createOrder: async () => {
+          setPaymentProcessing(true);
+          try {
+            // Send booking data to server for secure price calculation
+            const response = await apiRequest('POST', '/api/paypal/create-order', {
+              bookingData: {
+                selectedMixing,
+                selectedVideo,
+                wantsAlbum,
+                wantsProAlbum,
+                wantsLP
+              },
+              description: 'Recording Cafe Services'
+            });
+            const data = await response.json() as { id?: string; error?: string };
+            if (data.error) throw new Error(data.error);
+            if (!data.id) throw new Error('No order ID returned');
+            return data.id;
+          } catch (error: any) {
+            setPaymentProcessing(false);
+            toast({ title: t.paymentError, variant: "destructive" });
+            throw error;
+          }
+        },
+        onApprove: async (data: any) => {
+          try {
+            const response = await apiRequest('POST', '/api/paypal/capture-order', { orderId: data.orderID });
+            const captureData = await response.json() as { success?: boolean; error?: string };
+            if (captureData.success) {
+              await handleSubmit();
+              toast({ title: t.paymentSuccess });
+            } else {
+              throw new Error('Capture failed');
+            }
+          } catch (error) {
+            toast({ title: t.paymentError, variant: "destructive" });
+          } finally {
+            setPaymentProcessing(false);
+          }
+        },
+        onError: () => {
+          setPaymentProcessing(false);
+          toast({ title: t.paymentError, variant: "destructive" });
+        },
+        onCancel: () => {
+          setPaymentProcessing(false);
+        }
+      }).render(paypalButtonRef.current);
+    }
+  }, [paypalLoaded, step, language, selectedMixing, selectedVideo, wantsAlbum, wantsProAlbum, wantsLP]);
 
   const t = language ? translations[language] : translations.ko;
 
@@ -544,6 +666,12 @@ export default function MenuPage() {
     if (wantsProAlbum) total += t.proAlbumOption.price;
     if (wantsLP) total += t.lpOption.price;
     return total;
+  };
+
+  // Convert KRW to USD (approximate rate: 1 USD = 1400 KRW)
+  const calculateTotalUSD = () => {
+    const krwTotal = calculateTotal();
+    return Math.ceil(krwTotal / 1400 * 100) / 100; // Round up to 2 decimal places
   };
 
   const formatPrice = (price: number) => {
@@ -1059,10 +1187,44 @@ export default function MenuPage() {
                   {wantsLP && <div className="flex justify-between py-2 border-b border-gray-200"><span className="text-gray-500">{t.lpOption.name}</span><span className="text-pink-600 font-medium">{formatPrice(t.lpOption.price)}</span></div>}
                   <div className="flex justify-between py-4 text-2xl font-bold bg-gradient-to-r from-purple-50 to-pink-50 -mx-5 px-5 rounded-b-lg">
                     <span className="text-purple-600">{t.total}</span>
-                    <span className="text-pink-600">{formatPrice(calculateTotal())}</span>
+                    <div className="text-right">
+                      <span className="text-pink-600">{formatPrice(calculateTotal())}</span>
+                      {language !== "ko" && calculateTotal() > 0 && (
+                        <span className="text-sm text-gray-500 block">≈ ${calculateTotalUSD().toFixed(2)} USD</span>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
+
+              {/* PayPal Payment for non-Korean users */}
+              {language !== "ko" && calculateTotal() > 0 && (
+                <div className="mt-6">
+                  <div className="text-center mb-4">
+                    <div className="flex items-center justify-center gap-2 text-gray-700">
+                      <SiPaypal className="w-6 h-6 text-[#003087]" />
+                      <span className="font-semibold">{t.payment}</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-1">{t.paymentDesc}</p>
+                  </div>
+                  
+                  {paymentProcessing && (
+                    <div className="flex items-center justify-center gap-2 py-4">
+                      <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                      <span className="text-gray-600">{t.paymentProcessing}</span>
+                    </div>
+                  )}
+                  
+                  <div ref={paypalButtonRef} className={paymentProcessing ? "opacity-50 pointer-events-none" : ""} />
+                  
+                  {!paypalLoaded && !paymentProcessing && (
+                    <div className="flex items-center justify-center gap-2 py-4">
+                      <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                      <span className="text-gray-500">Loading PayPal...</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
@@ -1083,11 +1245,16 @@ export default function MenuPage() {
               <Button size="sm" onClick={() => paginate(1)} disabled={!canProceed()} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-4 py-2 text-sm font-semibold shadow-lg flex-shrink-0" data-testid="button-next">
                 {t.next}<ArrowRight className="w-4 h-4 ml-1" />
               </Button>
-            ) : (
+            ) : (language === "ko" || calculateTotal() === 0) ? (
               <Button size="sm" onClick={handleSubmit} disabled={bookingMutation.isPending} className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-2 text-sm font-semibold shadow-lg flex-shrink-0" data-testid="button-submit">
                 {bookingMutation.isPending ? "..." : <><Check className="w-4 h-4 mr-1" />{t.selectComplete}</>}
               </Button>
-            )}
+            ) : calculateTotal() > 0 ? (
+              <div className="flex items-center gap-2 text-sm text-gray-500 flex-shrink-0">
+                <SiPaypal className="w-4 h-4 text-[#003087]" />
+                <span>{t.payment} ↑</span>
+              </div>
+            ) : null}
           </div>
         </div>
       )}
