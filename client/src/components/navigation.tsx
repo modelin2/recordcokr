@@ -50,20 +50,11 @@ export default function Navigation() {
           {/* Hidden menu items - only accessible via direct URL */}
         </div>
         
-        {isHomePage ? (
-          <Button 
-            onClick={() => scrollToSection('booking')}
-            className="k-gradient-pink-purple px-6 py-2 rounded-full hover:scale-105 transition-transform text-white border-0"
-          >
+        <Link href="/menu">
+          <Button className="k-gradient-pink-purple px-6 py-2 rounded-full hover:scale-105 transition-transform text-white border-0">
             Book Now
           </Button>
-        ) : (
-          <Link href="/#booking">
-            <Button className="k-gradient-pink-purple px-6 py-2 rounded-full hover:scale-105 transition-transform text-white border-0">
-              Book Now
-            </Button>
-          </Link>
-        )}
+        </Link>
       </div>
     </nav>
   );
