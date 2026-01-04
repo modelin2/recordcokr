@@ -149,7 +149,9 @@ export default function VisitReservationPage() {
           return orderData.id;
         } catch (error: any) {
           setPaymentProcessing(false);
-          toast({ title: "Error creating reservation", variant: "destructive" });
+          console.error("Reservation error:", error);
+          const errorMessage = error?.message || "Unknown error";
+          toast({ title: "Error creating reservation", description: errorMessage, variant: "destructive" });
           throw error;
         }
       },
@@ -286,7 +288,7 @@ export default function VisitReservationPage() {
         <div className="max-w-lg mx-auto">
           <Card className="shadow-xl border-2 border-pink-200">
             <CardHeader className="text-center bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-t-lg">
-              <CardTitle className="text-2xl">예약 정보 입력</CardTitle>
+              <CardTitle className="text-2xl">Booking Information</CardTitle>
               <CardDescription className="text-pink-100">
                 Reserve your recording session
               </CardDescription>
@@ -299,7 +301,7 @@ export default function VisitReservationPage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name / 이름</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
                           <Input placeholder="Your name" {...field} data-testid="input-name" />
                         </FormControl>
@@ -313,7 +315,7 @@ export default function VisitReservationPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email / 이메일</FormLabel>
+                        <FormLabel>Email</FormLabel>
                         <FormControl>
                           <Input type="email" placeholder="your@email.com" {...field} data-testid="input-email" />
                         </FormControl>
@@ -327,7 +329,7 @@ export default function VisitReservationPage() {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Phone / 연락처</FormLabel>
+                        <FormLabel>Phone</FormLabel>
                         <FormControl>
                           <Input placeholder="+82 10-1234-5678" {...field} data-testid="input-phone" />
                         </FormControl>
@@ -343,7 +345,7 @@ export default function VisitReservationPage() {
                       <FormItem>
                         <FormLabel className="flex items-center gap-2">
                           <Users className="w-4 h-4" />
-                          Number of People / 인원수
+                          Number of People
                         </FormLabel>
                         <Select 
                           onValueChange={(value) => field.onChange(parseInt(value))} 
@@ -371,7 +373,7 @@ export default function VisitReservationPage() {
                     name="reservationDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>Date / 날짜</FormLabel>
+                        <FormLabel>Date</FormLabel>
                         <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -415,7 +417,7 @@ export default function VisitReservationPage() {
                     name="reservationTime"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Time / 시간</FormLabel>
+                        <FormLabel>Time</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger data-testid="select-time">
