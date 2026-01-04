@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, CheckCircle, Home, Users, Star } from "lucide-react";
+import { CalendarIcon, CheckCircle, Users, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -219,13 +219,10 @@ export default function VisitReservationPage() {
             <img src={logoImage} alt="Logo" className="h-16 mx-auto mb-6 cursor-pointer hover:opacity-80 transition-opacity" />
           </Link>
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            방문예약 / Visit Reservation
+            Visit Reservation
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            처음 오셨나요? 방문 날짜와 시간을 예약하세요.
-          </p>
-          <p className="text-lg text-gray-500 mt-2">
-            First time here? Reserve your visit date and time.
+            Reserve your visit date and time.
           </p>
         </div>
 
@@ -443,14 +440,6 @@ export default function VisitReservationPage() {
             </div>
           </div>
 
-          <div className="text-center mt-6">
-            <Link href="/">
-              <Button variant="outline" className="gap-2">
-                <Home className="w-4 h-4" />
-                홈으로 돌아가기 / Back to Home
-              </Button>
-            </Link>
-          </div>
         </div>
       </div>
     </div>
