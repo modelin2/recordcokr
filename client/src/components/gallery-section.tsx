@@ -398,11 +398,11 @@ export default function GallerySection() {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16 w-full">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 mb-16 w-full">
           {filteredImages.map((image, index) => (
             <Card 
               key={index} 
-              className="group relative overflow-hidden rounded-2xl bg-black/20 border-white/10 hover:border-pink-500/50 transition-all duration-300 cursor-pointer"
+              className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-black/20 border-white/10 hover:border-pink-500/50 transition-all duration-300 cursor-pointer"
               onClick={() => setSelectedImage(index)}
             >
               <div className="relative aspect-square overflow-hidden">
