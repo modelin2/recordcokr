@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -130,7 +131,7 @@ const translations: Record<Language, {
     existingReservation: "기존 예약자",
     existingReservationDesc: "다른 플랫폼(클룩, 네이버 등)에서 이미 예약하셨나요?",
     newReservation: "처음 예약자",
-    newReservationDesc: "지금 바로 예약하시겠어요?",
+    newReservationDesc: "지금 바로 예약하시겠어요? (홈페이지로 처음 접속)",
     selectPlatform: "예약하신 플랫폼을 선택하세요",
     selectPlatformDesc: "어디에서 예약하셨나요?",
     selectDateTime: "날짜와 시간 선택",
@@ -191,7 +192,7 @@ const translations: Record<Language, {
     paymentSuccess: "결제가 완료되었습니다!",
     paymentError: "결제에 실패했습니다. 다시 시도해주세요.",
     mixingOptions: [
-      { id: "basic", name: "기본", price: 0, desc: "음량 조절, 기본 EQ, 리버브 적용" },
+      { id: "basic", name: "기본", price: 0, desc: "베스트 구간 편집 + 음량 조절 + 에코 효과 추가" },
       { id: "ai", name: "기본 + AI 보정", price: 20000, desc: "틀린 음정, 박자를 AI로 자동 수정" },
       { id: "engineer", name: "기본 + 전문가 보정", price: 100000, desc: "틀린 음정, 박자를 전문가가 하나하나 수작업으로 수정" },
     ],
@@ -289,7 +290,7 @@ const translations: Record<Language, {
     paymentSuccess: "Payment completed!",
     paymentError: "Payment failed. Please try again.",
     mixingOptions: [
-      { id: "basic", name: "Basic", price: 0, desc: "Volume adjustment, basic EQ, reverb applied" },
+      { id: "basic", name: "Basic", price: 0, desc: "Best part editing + Volume adjustment + Echo effect added" },
       { id: "ai", name: "Basic + AI Correction", price: 20000, desc: "AI automatically corrects wrong pitch and timing" },
       { id: "engineer", name: "Basic + Expert Correction", price: 100000, desc: "Expert manually corrects each wrong pitch and timing one by one" },
     ],
@@ -387,7 +388,7 @@ const translations: Record<Language, {
     paymentSuccess: "お支払いが完了しました！",
     paymentError: "お支払いに失敗しました。もう一度お試しください。",
     mixingOptions: [
-      { id: "basic", name: "基本", price: 0, desc: "音量調整、基本EQ、リバーブ適用" },
+      { id: "basic", name: "基本", price: 0, desc: "ベスト部分編集 + 音量調整 + エコー効果追加" },
       { id: "ai", name: "基本 + AI補正", price: 20000, desc: "間違った音程・リズムをAIが自動修正" },
       { id: "engineer", name: "基本 + 専門家補正", price: 100000, desc: "間違った音程・リズムを専門家が一つ一つ手作業で修正" },
     ],
@@ -485,7 +486,7 @@ const translations: Record<Language, {
     paymentSuccess: "支付成功！",
     paymentError: "支付失败，请重试。",
     mixingOptions: [
-      { id: "basic", name: "基础", price: 0, desc: "音量调整、基本EQ、混响应用" },
+      { id: "basic", name: "基础", price: 0, desc: "最佳部分剪辑 + 音量调整 + 回声效果添加" },
       { id: "ai", name: "基础 + AI校正", price: 20000, desc: "AI自动修正错误的音高和节拍" },
       { id: "engineer", name: "基础 + 专家校正", price: 100000, desc: "专家逐一手工修正错误的音高和节拍" },
     ],
@@ -518,10 +519,10 @@ const translations: Record<Language, {
 };
 
 const languageOptions = [
-  { code: "ko" as Language, name: "한국어", flag: "🇰🇷" },
   { code: "en" as Language, name: "English", flag: "🇺🇸" },
   { code: "ja" as Language, name: "日本語", flag: "🇯🇵" },
   { code: "zh" as Language, name: "中文", flag: "🇨🇳" },
+  { code: "ko" as Language, name: "한국어", flag: "🇰🇷" },
 ];
 
 export default function MenuPage() {
@@ -1006,7 +1007,26 @@ export default function MenuPage() {
               <Card className="bg-white/80 border-gray-200">
                 <CardContent className="p-6 space-y-4">
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"><Music className="w-4 h-4 text-pink-500" />{t.backingTrack}</label>
+                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                      <Music className="w-4 h-4 text-pink-500" />
+                      {t.backingTrack}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="w-4 h-4 text-gray-400 hover:text-pink-500 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-xs text-left bg-white text-gray-700 border border-gray-200 shadow-lg p-3">
+                            <p className="text-xs leading-relaxed">
+                              The easiest way is to search on YouTube using the song title plus keywords like "karaoke" or "MR." When you arrive at the café, just share the link with us.
+                              <br /><br />
+                              If the track isn't on YouTube or you already have a file, no problem! Simply upload it to your own YouTube account and send us the link.
+                              <br /><br />
+                              Please note: We're unable to accept files directly.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </label>
                     <Input type="url" value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder={t.backingTrackPlaceholder} className="bg-white border-gray-300 text-gray-800 placeholder:text-gray-400 h-12" data-testid="input-youtube" />
                   </div>
                   <div>
