@@ -611,10 +611,10 @@ export default function MenuPage() {
     }
   }, [step, language, paypalConfig, paypalLoaded]);
 
-  // Render PayPal buttons when SDK is loaded
+  // Render PayPal buttons when SDK is loaded and online payment is selected
   useEffect(() => {
     const totalKRW = calculateTotal();
-    if (paypalLoaded && paypalButtonRef.current && window.paypal && step === 8 && language !== "ko" && totalKRW > 0) {
+    if (paypalLoaded && paypalButtonRef.current && window.paypal && step === 8 && language !== "ko" && totalKRW > 0 && paymentMethod === "online") {
       paypalButtonRef.current.innerHTML = '';
       
       window.paypal.Buttons({
@@ -675,7 +675,7 @@ export default function MenuPage() {
         }
       }).render(paypalButtonRef.current);
     }
-  }, [paypalLoaded, step, language, selectedMixing, selectedVideo, wantsAlbum, wantsProAlbum, wantsLP]);
+  }, [paypalLoaded, step, language, selectedMixing, selectedVideo, wantsAlbum, wantsProAlbum, wantsLP, paymentMethod]);
 
   const t = language ? translations[language] : translations.ko;
 
