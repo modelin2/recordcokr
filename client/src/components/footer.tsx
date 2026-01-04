@@ -56,11 +56,7 @@ export default function Footer() {
           </div>
           
           <div className="text-gray-500">
-            <p>© 2025 Korea Crowdfunding Association. All rights reserved. The trademark and service model (BM) are patents protected.</p>
-            <p className="text-xs mt-2">
-              TMMT Co., Ltd. | Business Registration No. 113-86-03777 | 
-              Telecommunications Sales Business No. 2011-Seoul Songpa-0554
-            </p>
+            <p>© 2025 Recording Cafe. All rights reserved. The trademark and service model (BM) are patents protected.</p>
           </div>
         </div>
       </footer>

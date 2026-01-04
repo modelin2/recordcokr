@@ -66,17 +66,6 @@ export default function HowToUseSection() {
             </div>
           </div>
         </div>
-
-        {/* Additional Info */}
-        <div className="mt-12 text-center">
-          <div className="bg-blue-500/20 border border-blue-500/40 rounded-2xl p-6 max-w-2xl mx-auto">
-            <p className="text-blue-200 font-semibold mb-2">💡 Pro Tip</p>
-            <p className="text-blue-100 text-sm leading-relaxed">
-              Each session is 10 minutes time-based, not song-based. You can sing the same song multiple times within your time slot, 
-              but you cannot sing different songs in one session. Plan your time wisely to get the perfect take!
-            </p>
-          </div>
-        </div>
       </div>
     </section>
   );
