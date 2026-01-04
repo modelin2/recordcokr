@@ -173,11 +173,40 @@ export default function VisitReservationPage() {
     }).render(paypalButtonRef.current);
   }, [paypalLoaded, isFormValid, formValues.name, formValues.email, formValues.phone, formValues.reservationDate, formValues.reservationTime, formValues.numberOfPeople]);
 
-  const availableTimes = [
-    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-    "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
-    "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00"
+  const allTimes = [
+    "12:00", "12:10", "12:20", "12:30", "12:40", "12:50",
+    "13:00", "13:10", "13:20", "13:30", "13:40", "13:50",
+    "14:00", "14:10", "14:20", "14:30", "14:40", "14:50",
+    "15:00", "15:10", "15:20", "15:30", "15:40", "15:50",
+    "16:00", "16:10", "16:20", "16:30", "16:40", "16:50",
+    "17:00", "17:10", "17:20", "17:30", "17:40", "17:50",
+    "18:00", "18:10", "18:20", "18:30", "18:40", "18:50",
+    "19:00", "19:10", "19:20", "19:30", "19:40", "19:50",
+    "20:00", "20:10", "20:20", "20:30", "20:40", "20:50", "21:00"
   ];
+
+  const getAvailableTimes = () => {
+    if (!selectedDate) return allTimes;
+    
+    const today = new Date();
+    const selected = new Date(selectedDate);
+    
+    if (selected.toDateString() === today.toDateString()) {
+      const now = new Date();
+      const threeHoursLater = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+      const minHour = threeHoursLater.getHours();
+      const minMinute = threeHoursLater.getMinutes();
+      
+      return allTimes.filter(time => {
+        const [hour, minute] = time.split(":").map(Number);
+        return hour > minHour || (hour === minHour && minute >= minMinute);
+      });
+    }
+    
+    return allTimes;
+  };
+
+  const availableTimes = getAvailableTimes();
 
   if (isComplete) {
     return (
@@ -399,11 +428,18 @@ export default function VisitReservationPage() {
                       </p>
                     )}
 
+                    {!paypalLoaded && isFormValid && (
+                      <div className="text-center py-4">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto mb-2"></div>
+                        <p className="text-gray-600">Loading payment options...</p>
+                      </div>
+                    )}
+
                     <div 
                       ref={paypalButtonRef} 
                       className={cn(
                         "min-h-[60px]",
-                        (!isFormValid || paymentProcessing) && "opacity-50 pointer-events-none"
+                        (!isFormValid || paymentProcessing || !paypalLoaded) && "hidden"
                       )}
                       data-testid="paypal-button-container"
                     />
