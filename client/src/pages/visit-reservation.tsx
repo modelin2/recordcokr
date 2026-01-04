@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,6 +44,7 @@ const PRICING: Record<number, number> = {
 };
 
 export default function VisitReservationPage() {
+  const [, setLocation] = useLocation();
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [paypalLoaded, setPaypalLoaded] = useState(false);
@@ -170,7 +171,18 @@ export default function VisitReservationPage() {
           
           if (captureData.success) {
             toast({ title: "Reservation confirmed! Payment received." });
-            setIsComplete(true);
+            const currentFormValues = formValuesRef.current;
+            if (currentFormValues) {
+              const params = new URLSearchParams({
+                date: currentFormValues.reservationDate,
+                time: currentFormValues.reservationTime,
+                people: currentFormValues.numberOfPeople.toString(),
+                name: encodeURIComponent(currentFormValues.name)
+              });
+              setLocation(`/ad_?${params.toString()}`);
+            } else {
+              setIsComplete(true);
+            }
           } else {
             throw new Error("Capture failed");
           }

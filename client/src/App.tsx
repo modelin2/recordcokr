@@ -9,6 +9,7 @@ import FAQPage from "@/pages/faq";
 import NaverBooking from "@/pages/naver-booking";
 import MenuPage from "@/pages/menu";
 import VisitReservationPage from "@/pages/visit-reservation";
+import VisitConfirmationPage from "@/pages/visit-confirmation";
 import Admin from "@/pages/admin";
 import LoginPage from "@/pages/login";
 import UserManagement from "@/pages/user-management";
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/naver-booking" component={NaverBooking} />
       <Route path="/menu" component={MenuPage} />
       <Route path="/ad" component={VisitReservationPage} />
+      <Route path="/ad_" component={VisitConfirmationPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/admin">
         <ProtectedRoute requireAdmin={true}>
