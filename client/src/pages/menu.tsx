@@ -615,7 +615,7 @@ export default function MenuPage() {
             const response = await apiRequest('POST', '/api/paypal/capture-order', { orderId: data.orderID });
             const captureData = await response.json() as { success?: boolean; error?: string };
             if (captureData.success) {
-              await handleSubmit();
+              handleSubmit({ paymentStatus: "paid", paypalOrderId: data.orderID });
               toast({ title: t.paymentSuccess });
             } else {
               throw new Error('Capture failed');
@@ -698,7 +698,7 @@ export default function MenuPage() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (paymentInfo?: { paymentStatus: "paid" | "pending"; paypalOrderId: string }) => {
     if (!name || !phone || !email) {
       toast({ title: t.required, description: "Please fill all required fields", variant: "destructive" });
       return;
@@ -737,6 +737,8 @@ export default function MenuPage() {
       youtubeTrackUrl: youtubeUrl || "https://youtube.com",
       selectedAddons,
       totalPrice: calculateTotal(),
+      paymentStatus: paymentInfo?.paymentStatus,
+      paypalOrderId: paymentInfo?.paypalOrderId,
     });
   };
 

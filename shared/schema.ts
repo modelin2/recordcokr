@@ -76,6 +76,8 @@ export const bookings = pgTable("bookings", {
   bookingTime: text("booking_time"), // Optional for klook/naver bookings
   totalPrice: integer("total_price").notNull(),
   status: text("status").notNull().default("pending"),
+  paymentStatus: text("payment_status").notNull().default("unpaid"), // "unpaid", "paid", "pending"
+  paypalOrderId: text("paypal_order_id"), // PayPal order ID for tracking
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -166,6 +168,8 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   createdAt: true,
   totalPrice: true,
   status: true,
+  paymentStatus: true,
+  paypalOrderId: true,
 }).extend({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),
@@ -183,6 +187,8 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   lpDeliveryAddress: z.string().optional(),
   bookingDate: z.string().optional(), // Optional for klook/naver bookings
   bookingTime: z.string().optional(), // Optional for klook/naver bookings
+  paymentStatus: z.enum(["unpaid", "paid", "pending"]).optional(), // Payment status
+  paypalOrderId: z.string().optional(), // PayPal order ID
 });
 
 // Naver-specific booking schema

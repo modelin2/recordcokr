@@ -404,6 +404,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         bookingTime: validatedData.bookingType === "klook" && !validatedData.bookingTime ? undefined : validatedData.bookingTime,
         totalPrice,
         status: "pending" as const,
+        paymentStatus: validatedData.paymentStatus || "unpaid",
+        paypalOrderId: validatedData.paypalOrderId || null,
       };
 
       const booking = await storage.createBooking(bookingData);

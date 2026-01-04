@@ -26,6 +26,18 @@ const statusColors = {
   cancelled: "bg-red-500/20 text-red-300 border-red-500/50"
 };
 
+const paymentStatusColors = {
+  paid: "bg-green-500/20 text-green-300 border-green-500/50",
+  unpaid: "bg-gray-500/20 text-gray-300 border-gray-500/50",
+  pending: "bg-yellow-500/20 text-yellow-300 border-yellow-500/50"
+};
+
+const paymentStatusLabels = {
+  paid: "💳 Paid",
+  unpaid: "Unpaid",
+  pending: "⏳ Pending"
+};
+
 const statusIcons = {
   pending: AlertCircle,
   confirmed: CheckCircle,
@@ -449,6 +461,11 @@ Recording Cafe Team`
                         {booking.bookingType === "klook" && (
                           <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/50">
                             Klook
+                          </Badge>
+                        )}
+                        {(booking as any).paymentStatus && (booking as any).paymentStatus !== "unpaid" && (
+                          <Badge className={paymentStatusColors[(booking as any).paymentStatus as keyof typeof paymentStatusColors] || paymentStatusColors.unpaid}>
+                            {paymentStatusLabels[(booking as any).paymentStatus as keyof typeof paymentStatusLabels] || "Unknown"}
                           </Badge>
                         )}
                       </div>
