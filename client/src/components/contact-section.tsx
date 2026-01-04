@@ -23,6 +23,39 @@ export default function ContactSection() {
           <p className="text-center text-gray-400 text-sm mt-3">📍 Walk from Sinsa Station to Recording Cafe</p>
         </div>
         
+        {/* How to Find Directions */}
+        <div className="max-w-2xl mx-auto mb-12 bg-gray-800/50 rounded-2xl p-6 border border-gray-700">
+          <h3 className="text-2xl font-bold text-center mb-6 text-white">📍 How to Find Our Recording Cafe</h3>
+          
+          <p className="text-gray-300 text-center mb-6">
+            Many visitors find it confusing to locate our recording cafe.<br />
+            The easiest way is to go directly to <span className="text-[hsl(var(--k-pink))] font-semibold">Riverside Hotel</span> first.<br />
+            Our cafe is located just 1 minute from the main entrance of Riverside Hotel.
+          </p>
+          
+          <div className="bg-gray-700/50 rounded-xl p-5 mb-6">
+            <h4 className="font-bold text-white mb-3">From Sinsa Station Exit 5:</h4>
+            <ul className="text-gray-300 space-y-2 text-sm">
+              <li>• Walk straight ahead for about 4 minutes toward Riverside Hotel</li>
+              <li>• Do not turn or change direction — just walk straight</li>
+              <li>• When you see Riverside Hotel,</li>
+              <li className="pl-4">→ Turn left once at the hotel</li>
+              <li className="pl-4">→ Walk about 1 minute</li>
+              <li className="pl-4">→ You will see the building on your left-hand side</li>
+            </ul>
+          </div>
+          
+          <p className="text-gray-300 text-center mb-4">
+            Please enter through the main entrance, take the elevator to the <span className="text-[hsl(var(--k-purple))] font-semibold">2nd floor</span>, and you will find our recording cafe.
+          </p>
+          
+          <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl p-4 border border-purple-500/30">
+            <p className="text-center text-gray-200">
+              📌 <span className="font-semibold">Tip:</span> If you search for "<span className="text-[hsl(var(--k-coral))]">Riverside Hotel Seoul</span>" on Google Maps or Naver Map, you will arrive very close to our location.
+            </p>
+          </div>
+        </div>
+        
         <div className="max-w-2xl mx-auto text-center">
           <h3 className="text-3xl font-bold mb-6">Location</h3>
           <div className="space-y-4 text-lg">
