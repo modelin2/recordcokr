@@ -16,6 +16,7 @@ import {
 import { SiSpotify, SiApplemusic, SiTiktok, SiInstagram, SiYoutube, SiPaypal } from "react-icons/si";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImage from "@assets/레코딩카페-한글로고_1764752892828.png";
+import streamingRevenueTable from "@assets/_-1767492866237_1767492884700.png";
 
 declare global {
   interface Window {
@@ -1147,6 +1148,15 @@ export default function MenuPage() {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Streaming Revenue Table Image */}
+                <div className="my-4">
+                  <img 
+                    src={streamingRevenueTable} 
+                    alt="Music Streaming Revenue Per Stream Table" 
+                    className="w-full rounded-xl shadow-md border border-gray-200"
+                  />
+                </div>
 
                 <Card 
                   className={`cursor-pointer transition-all ${wantsLP ? "border-2 border-amber-500 bg-amber-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-amber-300"}`} 
