@@ -22,6 +22,21 @@ export default function VisitConfirmationPage() {
         </div>
 
         <div className="max-w-2xl mx-auto space-y-6">
+          <Card className="border-2 border-orange-400 shadow-xl bg-orange-50">
+            <CardContent className="pt-6 pb-6">
+              <div className="flex items-start gap-4">
+                <Camera className="w-8 h-8 text-orange-500 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="text-lg font-bold text-orange-800 mb-2">Important: Please Screenshot This Page</h3>
+                  <p className="text-orange-700">
+                    We do not send confirmation emails or text messages. 
+                    Please take a screenshot of this page as your booking confirmation.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="border-2 border-green-500 shadow-xl">
             <CardContent className="pt-8 pb-8">
               <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-6" />
@@ -59,21 +74,6 @@ export default function VisitConfirmationPage() {
                     </span>
                     <span className="font-semibold text-gray-800">{people} {parseInt(people) === 1 ? 'person' : 'people'}</span>
                   </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 border-orange-400 shadow-xl bg-orange-50">
-            <CardContent className="pt-6 pb-6">
-              <div className="flex items-start gap-4">
-                <Camera className="w-8 h-8 text-orange-500 flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="text-lg font-bold text-orange-800 mb-2">Important: Please Screenshot This Page</h3>
-                  <p className="text-orange-700">
-                    We do not send confirmation emails or text messages. 
-                    Please take a screenshot of this page as your booking confirmation.
-                  </p>
                 </div>
               </div>
             </CardContent>
