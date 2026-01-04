@@ -261,3 +261,40 @@ export const insertVisitorPhotoSchema = createInsertSchema(visitorPhotos).omit({
 
 export type VisitorPhoto = typeof visitorPhotos.$inferSelect;
 export type InsertVisitorPhoto = z.infer<typeof insertVisitorPhotoSchema>;
+
+// Visit reservations for marketing customers (Instagram, etc.)
+export const visitReservations = pgTable("visit_reservations", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  reservationDate: text("reservation_date").notNull(),
+  reservationTime: text("reservation_time").notNull(),
+  depositAmount: integer("deposit_amount").notNull().default(10000), // 10,000 KRW
+  paymentStatus: text("payment_status").notNull().default("pending"), // "pending", "paid"
+  paypalOrderId: text("paypal_order_id"),
+  status: text("status").notNull().default("confirmed"), // "confirmed", "cancelled", "visited"
+  source: text("source").default("instagram"), // Marketing source
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertVisitReservationSchema = createInsertSchema(visitReservations).omit({
+  id: true,
+  createdAt: true,
+  paypalOrderId: true,
+}).extend({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Valid email is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  reservationDate: z.string().min(1, "Date is required"),
+  reservationTime: z.string().min(1, "Time is required"),
+  depositAmount: z.number().default(10000),
+  paymentStatus: z.enum(["pending", "paid"]).default("pending"),
+  status: z.enum(["confirmed", "cancelled", "visited"]).default("confirmed"),
+  source: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export type VisitReservation = typeof visitReservations.$inferSelect;
+export type InsertVisitReservation = z.infer<typeof insertVisitReservationSchema>;
