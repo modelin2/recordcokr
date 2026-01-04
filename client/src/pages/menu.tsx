@@ -524,8 +524,8 @@ const translations: Record<Language, {
     confirmBooking: "确认",
     mixingOptions: [
       { id: "basic", name: "基础", price: 0, desc: "最佳部分剪辑 + 音量调整 + 回声效果添加" },
-      { id: "ai", name: "基础 + AI校正", price: 20000, desc: "AI自动修正错误的音高和节拍" },
-      { id: "engineer", name: "基础 + 专家校正", price: 100000, desc: "专家逐一手工修正错误的音高和节拍" },
+      { id: "ai", name: "基础 + AI校正", price: 20000, desc: "AI自动修正错误的音高" },
+      { id: "engineer", name: "基础 + 专家校正", price: 100000, desc: "专家逐一手工修正错误的音高" },
     ],
     videoOptions: [
       { id: "self", name: "自拍", price: 0, desc: "提供自拍支架，用自己的手机拍摄" },
