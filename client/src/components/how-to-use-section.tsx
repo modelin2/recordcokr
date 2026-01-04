@@ -17,9 +17,9 @@ export default function HowToUseSection() {
                 1
               </div>
               <Calendar className="text-[hsl(var(--k-pink))] mx-auto mb-4" size={48} />
-              <h3 className="text-xl font-bold text-white mb-3">Book on Klook</h3>
+              <h3 className="text-xl font-bold text-white mb-3">Make a Reservation</h3>
               <p className="text-gray-300 text-sm leading-relaxed">
-                Reserve your session through Klook platform. Choose your preferred date and time slot.
+                Book your session on our website or through Klook. Choose your preferred date and time slot.
               </p>
             </div>
           </div>
@@ -45,9 +45,9 @@ export default function HowToUseSection() {
                 3
               </div>
               <Music className="text-[hsl(var(--k-coral))] mx-auto mb-4" size={48} />
-              <h3 className="text-xl font-bold text-white mb-3">Submit Your Song</h3>
+              <h3 className="text-xl font-bold text-white mb-3">Select Menu & Song</h3>
               <p className="text-gray-300 text-sm leading-relaxed">
-                Find your song's instrumental version on YouTube and submit the link to our staff.
+                When you arrive at the cafe, choose your drinks and select your song for recording.
               </p>
             </div>
           </div>
