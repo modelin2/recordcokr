@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, CheckCircle, Home, Users } from "lucide-react";
+import { CalendarIcon, CheckCircle, Home, Users, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -415,6 +415,33 @@ export default function VisitReservationPage() {
               </Form>
             </CardContent>
           </Card>
+
+          <div className="mt-8 space-y-4">
+            <div className="flex items-center justify-center gap-2 text-lg font-semibold text-gray-700">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <span>4.9/5</span>
+              <span className="text-gray-500 font-normal">on Klook</span>
+            </div>
+
+            <div className="grid gap-3">
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <p className="text-gray-600 italic text-sm">
+                  "Amazing experience! The staff was so helpful and the recording quality was professional. Highly recommend!"
+                </p>
+                <p className="text-gray-400 text-xs mt-2">— Sarah K., USA</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <p className="text-gray-600 italic text-sm">
+                  "Best K-pop experience in Seoul! The studio is beautiful and the engineers are very patient."
+                </p>
+                <p className="text-gray-400 text-xs mt-2">— James L., Australia</p>
+              </div>
+            </div>
+          </div>
 
           <div className="text-center mt-6">
             <Link href="/">
