@@ -45,6 +45,7 @@ const PRICING: Record<number, number> = {
 
 export default function VisitReservationPage() {
   const [selectedDate, setSelectedDate] = useState<Date>();
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -344,7 +345,7 @@ export default function VisitReservationPage() {
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
                         <FormLabel>Date / 날짜</FormLabel>
-                        <Popover>
+                        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
@@ -368,7 +369,9 @@ export default function VisitReservationPage() {
                                 setSelectedDate(date);
                                 if (date) {
                                   field.onChange(format(date, "yyyy-MM-dd"));
+                                  form.setValue("reservationTime", "");
                                 }
+                                setCalendarOpen(false);
                               }}
                               disabled={(date) => date < new Date()}
                               initialFocus
@@ -428,7 +431,7 @@ export default function VisitReservationPage() {
                       </p>
                     )}
 
-                    {!paypalLoaded && isFormValid && (
+                    {!paypalLoaded && (
                       <div className="text-center py-4">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto mb-2"></div>
                         <p className="text-gray-600">Loading payment options...</p>
@@ -439,7 +442,7 @@ export default function VisitReservationPage() {
                       ref={paypalButtonRef} 
                       className={cn(
                         "min-h-[60px]",
-                        (!isFormValid || paymentProcessing || !paypalLoaded) && "hidden"
+                        (!isFormValid || paymentProcessing || !paypalLoaded) && "opacity-50 pointer-events-none"
                       )}
                       data-testid="paypal-button-container"
                     />
