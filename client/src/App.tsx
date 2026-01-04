@@ -24,7 +24,7 @@ function Router() {
       <Route path="/faq" component={FAQPage} />
       <Route path="/naver-booking" component={NaverBooking} />
       <Route path="/menu" component={MenuPage} />
-      <Route path="/visit-reservation" component={VisitReservationPage} />
+      <Route path="/ad" component={VisitReservationPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/admin">
         <ProtectedRoute requireAdmin={true}>
