@@ -119,6 +119,13 @@ const translations: Record<Language, {
   paymentProcessing: string;
   paymentSuccess: string;
   paymentError: string;
+  selectPaymentMethod: string;
+  onlinePayment: string;
+  onlinePaymentDesc: string;
+  offlinePayment: string;
+  offlinePaymentDesc: string;
+  saveWithoutPayment: string;
+  confirmBooking: string;
   mixingOptions: { id: string; name: string; price: number; desc: string }[];
   videoOptions: { id: string; name: string; price: number; desc: string }[];
   albumOption: { name: string; price: number; desc: string; features: { title: string; desc: string }[] };
@@ -192,6 +199,13 @@ const translations: Record<Language, {
     paymentProcessing: "결제 처리 중...",
     paymentSuccess: "결제가 완료되었습니다!",
     paymentError: "결제에 실패했습니다. 다시 시도해주세요.",
+    selectPaymentMethod: "결제 방법 선택",
+    onlinePayment: "온라인 결제",
+    onlinePaymentDesc: "PayPal로 결제",
+    offlinePayment: "현장 결제",
+    offlinePaymentDesc: "매장에서 카드로 결제",
+    saveWithoutPayment: "예약 완료하기",
+    confirmBooking: "확인",
     mixingOptions: [
       { id: "basic", name: "기본", price: 0, desc: "베스트 구간 편집 + 음량 조절 + 에코 효과 추가" },
       { id: "ai", name: "기본 + AI 보정", price: 20000, desc: "틀린 음정, 박자를 AI로 자동 수정" },
@@ -230,7 +244,7 @@ const translations: Record<Language, {
     existingReservation: "Existing Reservation",
     existingReservationDesc: "Already booked on another platform (Klook, Naver, etc.)?",
     newReservation: "New Reservation",
-    newReservationDesc: "Book now for the first time?",
+    newReservationDesc: "Book now for the first time? (First visit to our website)",
     selectPlatform: "Select your booking platform",
     selectPlatformDesc: "Where did you book?",
     selectDateTime: "Select Date & Time",
@@ -290,6 +304,13 @@ const translations: Record<Language, {
     paymentProcessing: "Processing payment...",
     paymentSuccess: "Payment completed!",
     paymentError: "Payment failed. Please try again.",
+    selectPaymentMethod: "Select Payment Method",
+    onlinePayment: "Online Payment",
+    onlinePaymentDesc: "Pay with PayPal",
+    offlinePayment: "Pay at Store",
+    offlinePaymentDesc: "Pay by card at the store",
+    saveWithoutPayment: "Complete Reservation",
+    confirmBooking: "Confirm",
     mixingOptions: [
       { id: "basic", name: "Basic", price: 0, desc: "Best part editing + Volume adjustment + Echo effect added" },
       { id: "ai", name: "Basic + AI Correction", price: 20000, desc: "AI automatically corrects wrong pitch and timing" },
@@ -328,7 +349,7 @@ const translations: Record<Language, {
     existingReservation: "既存予約者",
     existingReservationDesc: "他のプラットフォーム（Klook、Naver等）で既に予約済みですか？",
     newReservation: "新規予約",
-    newReservationDesc: "今すぐ予約しますか？",
+    newReservationDesc: "今すぐ予約しますか？（ホームページに初めてアクセス）",
     selectPlatform: "予約したプラットフォームを選択",
     selectPlatformDesc: "どこで予約しましたか？",
     selectDateTime: "日時選択",
@@ -388,6 +409,13 @@ const translations: Record<Language, {
     paymentProcessing: "決済処理中...",
     paymentSuccess: "お支払いが完了しました！",
     paymentError: "お支払いに失敗しました。もう一度お試しください。",
+    selectPaymentMethod: "お支払い方法を選択",
+    onlinePayment: "オンライン決済",
+    onlinePaymentDesc: "PayPalでお支払い",
+    offlinePayment: "店舗でお支払い",
+    offlinePaymentDesc: "店舗でカード決済",
+    saveWithoutPayment: "予約を完了する",
+    confirmBooking: "確認",
     mixingOptions: [
       { id: "basic", name: "基本", price: 0, desc: "ベスト部分編集 + 音量調整 + エコー効果追加" },
       { id: "ai", name: "基本 + AI補正", price: 20000, desc: "間違った音程・リズムをAIが自動修正" },
@@ -426,7 +454,7 @@ const translations: Record<Language, {
     existingReservation: "已有预约",
     existingReservationDesc: "已在其他平台（Klook、Naver等）预约？",
     newReservation: "新预约",
-    newReservationDesc: "现在预约？",
+    newReservationDesc: "现在预约？（首次访问官网）",
     selectPlatform: "选择预约平台",
     selectPlatformDesc: "您在哪里预约的？",
     selectDateTime: "选择日期和时间",
@@ -486,6 +514,13 @@ const translations: Record<Language, {
     paymentProcessing: "正在处理支付...",
     paymentSuccess: "支付成功！",
     paymentError: "支付失败，请重试。",
+    selectPaymentMethod: "选择支付方式",
+    onlinePayment: "在线支付",
+    onlinePaymentDesc: "使用PayPal支付",
+    offlinePayment: "到店支付",
+    offlinePaymentDesc: "到店刷卡支付",
+    saveWithoutPayment: "完成预约",
+    confirmBooking: "确认",
     mixingOptions: [
       { id: "basic", name: "基础", price: 0, desc: "最佳部分剪辑 + 音量调整 + 回声效果添加" },
       { id: "ai", name: "基础 + AI校正", price: 20000, desc: "AI自动修正错误的音高和节拍" },
@@ -548,6 +583,8 @@ export default function MenuPage() {
   const [detailModal, setDetailModal] = useState<{ title: string; desc: string } | null>(null);
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"online" | "offline" | null>(null);
+  const [showKoreanConfirm, setShowKoreanConfirm] = useState(false);
   const paypalButtonRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -700,7 +737,7 @@ export default function MenuPage() {
     });
   };
 
-  const handleSubmit = (paymentInfo?: { paymentStatus: "paid" | "pending"; paypalOrderId: string }) => {
+  const handleSubmit = (paymentInfo?: { paymentStatus: "paid" | "pending" | "unpaid"; paypalOrderId?: string }) => {
     if (!name || !phone || !email) {
       toast({ title: t.required, description: "Please fill all required fields", variant: "destructive" });
       return;
@@ -729,6 +766,13 @@ export default function MenuPage() {
       namePrefix = `[Homepage ${dateStr} ${selectedTime}] `;
     }
 
+    // Determine payment status
+    let finalPaymentStatus = paymentInfo?.paymentStatus;
+    if (!finalPaymentStatus) {
+      // No PayPal payment - either Korean user or offline payment
+      finalPaymentStatus = "unpaid";
+    }
+
     bookingMutation.mutate({
       bookingType: "direct",
       name: `${namePrefix}${name}`,
@@ -739,7 +783,7 @@ export default function MenuPage() {
       youtubeTrackUrl: youtubeUrl || "https://youtube.com",
       selectedAddons,
       totalPrice: calculateTotal(),
-      paymentStatus: paymentInfo?.paymentStatus,
+      paymentStatus: finalPaymentStatus,
       paypalOrderId: paymentInfo?.paypalOrderId,
     });
   };
@@ -1229,30 +1273,73 @@ export default function MenuPage() {
                 </CardContent>
               </Card>
 
-              {/* PayPal Payment for non-Korean users */}
+              {/* Payment method selection for non-Korean users */}
               {language !== "ko" && calculateTotal() > 0 && (
                 <div className="mt-6">
                   <div className="text-center mb-4">
-                    <div className="flex items-center justify-center gap-2 text-gray-700">
-                      <SiPaypal className="w-6 h-6 text-[#003087]" />
-                      <span className="font-semibold">{t.payment}</span>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-1">{t.paymentDesc}</p>
+                    <span className="font-semibold text-gray-700">{t.selectPaymentMethod}</span>
                   </div>
                   
-                  {paymentProcessing && (
-                    <div className="flex items-center justify-center gap-2 py-4">
-                      <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
-                      <span className="text-gray-600">{t.paymentProcessing}</span>
-                    </div>
-                  )}
-                  
-                  <div ref={paypalButtonRef} className={paymentProcessing ? "opacity-50 pointer-events-none" : ""} />
-                  
-                  {!paypalLoaded && !paymentProcessing && (
-                    <div className="flex items-center justify-center gap-2 py-4">
-                      <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
-                      <span className="text-gray-500">Loading PayPal...</span>
+                  <div className="space-y-3">
+                    {/* Online Payment Option */}
+                    <Card 
+                      className={`cursor-pointer transition-all ${paymentMethod === "online" ? "border-2 border-blue-500 bg-blue-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-blue-300"}`}
+                      onClick={() => setPaymentMethod("online")}
+                      data-testid="card-online-payment"
+                    >
+                      <CardContent className="p-4 flex items-center gap-3">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "online" ? "border-blue-500 bg-blue-500" : "border-gray-300 bg-white"}`}>
+                          {paymentMethod === "online" && <Check className="w-4 h-4 text-white" />}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <SiPaypal className="w-5 h-5 text-[#003087]" />
+                            <h3 className="font-bold text-base text-gray-800">{t.onlinePayment}</h3>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">{t.onlinePaymentDesc}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Offline Payment Option */}
+                    <Card 
+                      className={`cursor-pointer transition-all ${paymentMethod === "offline" ? "border-2 border-emerald-500 bg-emerald-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-emerald-300"}`}
+                      onClick={() => setPaymentMethod("offline")}
+                      data-testid="card-offline-payment"
+                    >
+                      <CardContent className="p-4 flex items-center gap-3">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "offline" ? "border-emerald-500 bg-emerald-500" : "border-gray-300 bg-white"}`}>
+                          {paymentMethod === "offline" && <Check className="w-4 h-4 text-white" />}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <CreditCard className="w-5 h-5 text-emerald-600" />
+                            <h3 className="font-bold text-base text-gray-800">{t.offlinePayment}</h3>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">{t.offlinePaymentDesc}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* PayPal buttons when online payment selected */}
+                  {paymentMethod === "online" && (
+                    <div className="mt-4">
+                      {paymentProcessing && (
+                        <div className="flex items-center justify-center gap-2 py-4">
+                          <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                          <span className="text-gray-600">{t.paymentProcessing}</span>
+                        </div>
+                      )}
+                      
+                      <div ref={paypalButtonRef} className={paymentProcessing ? "opacity-50 pointer-events-none" : ""} />
+                      
+                      {!paypalLoaded && !paymentProcessing && (
+                        <div className="flex items-center justify-center gap-2 py-4">
+                          <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                          <span className="text-gray-500">Loading PayPal...</span>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1277,16 +1364,28 @@ export default function MenuPage() {
               <Button size="sm" onClick={() => paginate(1)} disabled={!canProceed()} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-4 py-2 text-sm font-semibold shadow-lg flex-shrink-0" data-testid="button-next">
                 {t.next}<ArrowRight className="w-4 h-4 ml-1" />
               </Button>
-            ) : (language === "ko" || calculateTotal() === 0) ? (
-              <Button size="sm" onClick={handleSubmit} disabled={bookingMutation.isPending} className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-2 text-sm font-semibold shadow-lg flex-shrink-0" data-testid="button-submit">
-                {bookingMutation.isPending ? "..." : <><Check className="w-4 h-4 mr-1" />{t.selectComplete}</>}
+            ) : language === "ko" ? (
+              <Button size="sm" onClick={() => handleSubmit()} disabled={bookingMutation.isPending} className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-2 text-sm font-semibold shadow-lg flex-shrink-0" data-testid="button-submit">
+                {bookingMutation.isPending ? "..." : <><Check className="w-4 h-4 mr-1" />{t.confirmBooking}</>}
               </Button>
-            ) : calculateTotal() > 0 ? (
+            ) : calculateTotal() === 0 ? (
+              <Button size="sm" onClick={() => handleSubmit()} disabled={bookingMutation.isPending} className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-2 text-sm font-semibold shadow-lg flex-shrink-0" data-testid="button-submit">
+                {bookingMutation.isPending ? "..." : <><Check className="w-4 h-4 mr-1" />{t.saveWithoutPayment}</>}
+              </Button>
+            ) : paymentMethod === "offline" ? (
+              <Button size="sm" onClick={() => handleSubmit()} disabled={bookingMutation.isPending} className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-4 py-2 text-sm font-semibold shadow-lg flex-shrink-0" data-testid="button-offline-submit">
+                {bookingMutation.isPending ? "..." : <><CreditCard className="w-4 h-4 mr-1" />{t.saveWithoutPayment}</>}
+              </Button>
+            ) : paymentMethod === "online" ? (
               <div className="flex items-center gap-2 text-sm text-gray-500 flex-shrink-0">
                 <SiPaypal className="w-4 h-4 text-[#003087]" />
                 <span>{t.payment} ↑</span>
               </div>
-            ) : null}
+            ) : (
+              <div className="text-xs text-gray-400 flex-shrink-0">
+                {t.selectPaymentMethod} ↑
+              </div>
+            )}
           </div>
         </div>
       )}
