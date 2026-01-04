@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Star, Palette, Video, Edit, Film } from "lucide-react";
 import type { Package, Addon } from "@shared/schema";
+import streamingRevenueTable from "@assets/_-1767492866237_1767493793783.png";
 
 export default function PackagesSection() {
   const { data: addons = [], isLoading: addonsLoading } = useQuery<Addon[]>({
@@ -52,80 +53,8 @@ export default function PackagesSection() {
   return (
     <section id="packages" className="py-20 bg-gradient-to-br from-gray-900 to-purple-900">
       <div className="container mx-auto px-6">
-        <div className="glass p-8 rounded-3xl mb-16 max-w-4xl mx-auto">
-          <div className="text-center">
-            <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-2xl p-4 max-w-2xl mx-auto mb-6">
-              <p className="text-yellow-200 font-semibold mb-2">⚠️ Please Note:</p>
-              <p className="text-yellow-100 text-sm leading-relaxed">
-                Each session is for one person only.<br/>
-                If two people wish to enter together, please book two consecutive sessions.<br/>
-                This allows both participants to enter at the same time and take turns recording.<br/>
-                Please prepare your backing track in advance and provide the YouTube link upon arrival.
-              </p>
-            </div>
-            <Button 
-              onClick={scrollToBooking}
-              className="k-gradient-pink-purple px-8 py-3 rounded-full font-semibold hover:scale-105 transition-transform text-white border-0"
-            >
-              Book Your Session
-            </Button>
-          </div>
-        </div>
-
-
-
-        {/* Optional Add-ons */}
+        {/* Portfolio Section */}
         <div className="mb-16">
-          <h3 className="text-3xl font-bold text-center mb-8 gradient-text">🎧 Optional Add-ons</h3>
-          
-          <div className="mb-6 p-4 bg-green-500/20 border border-green-500/40 rounded-2xl">
-            <p className="text-green-200 font-semibold">✅ Raw Recording File – Provided free of charge</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-              <h4 className="text-xl font-bold text-[hsl(var(--k-pink))] mb-3">🎵 Full Track Mixing</h4>
-              <p className="text-gray-300 text-sm mb-4">
-                Includes pitch and timing correction, plus mixing your vocal with the instrumental to complete the track
-              </p>
-              <p className="text-2xl font-bold text-white">₩100,000</p>
-            </div>
-
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-              <h4 className="text-xl font-bold text-[hsl(var(--k-purple))] mb-3">🎥 Recording Video</h4>
-              <p className="text-gray-300 text-sm mb-4">
-                Professional videographer captures your recording session naturally
-              </p>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-300">Raw footage only</span>
-                  <span className="font-bold text-white">₩50,000</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-300">Edited with song</span>
-                  <span className="font-bold text-white">₩100,000</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-              <h4 className="text-xl font-bold text-[hsl(var(--k-coral))] mb-3">💿 LP Record Production</h4>
-              <p className="text-gray-300 text-sm mb-4">
-                Create your own physical LP vinyl record. Includes Full Track Mixing. Production takes 2-3 weeks.
-              </p>
-              <p className="text-2xl font-bold text-white">₩300,000</p>
-            </div>
-
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-              <h4 className="text-xl font-bold text-[hsl(var(--k-blue))] mb-3">🌍 Global Distribution</h4>
-              <p className="text-gray-300 text-sm mb-4">
-                Original licensing + backing track production + mixing, mastering. Release your music on Youtube, Instagram, Apple Music, Spotify, Melon and more
-              </p>
-              <p className="text-2xl font-bold text-white">₩1,300,000</p>
-            </div>
-          </div>
-
-          {/* Portfolio Section */}
           <div className="mb-12">
             <h3 className="text-3xl font-bold text-center mb-8 gradient-text">🎵 Our Portfolio</h3>
             <div className="bg-white/5 p-8 rounded-3xl border border-white/10 max-w-4xl mx-auto">
@@ -303,10 +232,15 @@ export default function PackagesSection() {
                 <div className="inline-block bg-gradient-to-r from-yellow-400 to-orange-400 text-black px-6 py-3 rounded-full font-bold text-lg mb-4">
                   The Most Meaningful Souvenir from Korea
                 </div>
-                <p className="text-gray-300 leading-relaxed max-w-3xl mx-auto">
+                <p className="text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8">
                   Unlike traditional souvenirs that fade or break, your music lives forever. Every stream, every play, every discovery of your song generates income that finds you anywhere in the world. 
                   Transform your Korean adventure into a lasting legacy that pays dividends for decades to come.
                 </p>
+                <img 
+                  src={streamingRevenueTable} 
+                  alt="Music Streaming Revenue Per Stream Table" 
+                  className="max-w-lg mx-auto rounded-xl shadow-lg border border-white/20"
+                />
               </div>
             </div>
           </div>
