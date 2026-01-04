@@ -1,5 +1,5 @@
 import { 
-  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos,
+  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations,
   type User, type InsertUser, type InsertAdmin,
   type Package, type InsertPackage,
   type Addon, type InsertAddon,
@@ -7,7 +7,8 @@ import {
   type Booking, type InsertBooking,
   type TimeSlot, type InsertTimeSlot,
   type PaymentOrder, type InsertPaymentOrder,
-  type VisitorPhoto, type InsertVisitorPhoto
+  type VisitorPhoto, type InsertVisitorPhoto,
+  type VisitReservation, type InsertVisitReservation
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -57,6 +58,14 @@ export interface IStorage {
   createVisitorPhoto(photo: InsertVisitorPhoto): Promise<VisitorPhoto>;
   updateVisitorPhotoStatus(id: number, isPrinted: boolean): Promise<VisitorPhoto | undefined>;
   deleteVisitorPhoto(id: number): Promise<boolean>;
+  
+  // Visit reservation operations (marketing customers)
+  getAllVisitReservations(): Promise<VisitReservation[]>;
+  getVisitReservation(id: number): Promise<VisitReservation | undefined>;
+  createVisitReservation(reservation: InsertVisitReservation): Promise<VisitReservation>;
+  updateVisitReservationStatus(id: number, status: string): Promise<VisitReservation | undefined>;
+  updateVisitReservationPayment(id: number, paymentStatus: string, paypalOrderId?: string): Promise<VisitReservation | undefined>;
+  deleteVisitReservation(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -559,6 +568,31 @@ export class MemStorage implements IStorage {
   async deleteVisitorPhoto(id: number): Promise<boolean> {
     return false;
   }
+
+  // Visit reservation operations (MemStorage doesn't support)
+  async getAllVisitReservations(): Promise<VisitReservation[]> {
+    return [];
+  }
+
+  async getVisitReservation(id: number): Promise<VisitReservation | undefined> {
+    return undefined;
+  }
+
+  async createVisitReservation(reservation: InsertVisitReservation): Promise<VisitReservation> {
+    throw new Error("Visit reservations are not supported in MemStorage");
+  }
+
+  async updateVisitReservationStatus(id: number, status: string): Promise<VisitReservation | undefined> {
+    return undefined;
+  }
+
+  async updateVisitReservationPayment(id: number, paymentStatus: string, paypalOrderId?: string): Promise<VisitReservation | undefined> {
+    return undefined;
+  }
+
+  async deleteVisitReservation(id: number): Promise<boolean> {
+    return false;
+  }
 }
 
 // Database Storage Implementation
@@ -808,6 +842,47 @@ export class DatabaseStorage implements IStorage {
 
   async deleteVisitorPhoto(id: number): Promise<boolean> {
     const result = await db.delete(visitorPhotos).where(eq(visitorPhotos.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  // Visit reservation operations (marketing customers)
+  async getAllVisitReservations(): Promise<VisitReservation[]> {
+    return await db.select().from(visitReservations).orderBy(desc(visitReservations.createdAt));
+  }
+
+  async getVisitReservation(id: number): Promise<VisitReservation | undefined> {
+    const [reservation] = await db.select().from(visitReservations).where(eq(visitReservations.id, id));
+    return reservation;
+  }
+
+  async createVisitReservation(reservation: InsertVisitReservation): Promise<VisitReservation> {
+    const [newReservation] = await db.insert(visitReservations).values(reservation).returning();
+    return newReservation;
+  }
+
+  async updateVisitReservationStatus(id: number, status: string): Promise<VisitReservation | undefined> {
+    const [updated] = await db
+      .update(visitReservations)
+      .set({ status })
+      .where(eq(visitReservations.id, id))
+      .returning();
+    return updated;
+  }
+
+  async updateVisitReservationPayment(id: number, paymentStatus: string, paypalOrderId?: string): Promise<VisitReservation | undefined> {
+    const updates: any = { paymentStatus };
+    if (paypalOrderId) updates.paypalOrderId = paypalOrderId;
+    
+    const [updated] = await db
+      .update(visitReservations)
+      .set(updates)
+      .where(eq(visitReservations.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteVisitReservation(id: number): Promise<boolean> {
+    const result = await db.delete(visitReservations).where(eq(visitReservations.id, id));
     return (result.rowCount || 0) > 0;
   }
 }
