@@ -209,8 +209,8 @@ const translations: Record<Language, {
     confirmBooking: "확인",
     mixingOptions: [
       { id: "basic", name: "기본", price: 0, desc: "베스트 구간 편집 + 음량 조절 + 에코 효과 추가" },
-      { id: "ai", name: "기본 + AI 보정", price: 20000, desc: "틀린 음정, 박자를 AI로 자동 수정" },
-      { id: "engineer", name: "기본 + 전문가 보정", price: 100000, desc: "틀린 음정, 박자를 전문가가 하나하나 수작업으로 수정" },
+      { id: "ai", name: "기본 + AI 보정", price: 20000, desc: "틀린 음정을 AI로 자동 수정" },
+      { id: "engineer", name: "기본 + 전문가 보정", price: 100000, desc: "틀린 음정을 전문가가 하나하나 수작업으로 수정" },
     ],
     videoOptions: [
       { id: "self", name: "셀프 촬영", price: 0, desc: "셀피용 스탠드 제공, 자신의 휴대폰으로 직접 촬영" },
@@ -314,8 +314,8 @@ const translations: Record<Language, {
     confirmBooking: "Confirm",
     mixingOptions: [
       { id: "basic", name: "Basic", price: 0, desc: "Best part editing + Volume adjustment + Echo effect added" },
-      { id: "ai", name: "Basic + AI Correction", price: 20000, desc: "AI automatically corrects wrong pitch and timing" },
-      { id: "engineer", name: "Basic + Expert Correction", price: 100000, desc: "Expert manually corrects each wrong pitch and timing one by one" },
+      { id: "ai", name: "Basic + AI Correction", price: 20000, desc: "AI automatically corrects wrong pitch" },
+      { id: "engineer", name: "Basic + Expert Correction", price: 100000, desc: "Expert manually corrects each wrong pitch one by one" },
     ],
     videoOptions: [
       { id: "self", name: "Self Recording", price: 0, desc: "Selfie stand provided, record with your own phone" },
@@ -419,8 +419,8 @@ const translations: Record<Language, {
     confirmBooking: "確認",
     mixingOptions: [
       { id: "basic", name: "基本", price: 0, desc: "ベスト部分編集 + 音量調整 + エコー効果追加" },
-      { id: "ai", name: "基本 + AI補正", price: 20000, desc: "間違った音程・リズムをAIが自動修正" },
-      { id: "engineer", name: "基本 + 専門家補正", price: 100000, desc: "間違った音程・リズムを専門家が一つ一つ手作業で修正" },
+      { id: "ai", name: "基本 + AI補正", price: 20000, desc: "間違った音程をAIが自動修正" },
+      { id: "engineer", name: "基本 + 専門家補正", price: 100000, desc: "間違った音程を専門家が一つ一つ手作業で修正" },
     ],
     videoOptions: [
       { id: "self", name: "セルフ撮影", price: 0, desc: "セルフィースタンド提供、ご自身のスマホで撮影" },
