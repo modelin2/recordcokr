@@ -270,7 +270,8 @@ export const visitReservations = pgTable("visit_reservations", {
   phone: text("phone").notNull(),
   reservationDate: text("reservation_date").notNull(),
   reservationTime: text("reservation_time").notNull(),
-  depositAmount: integer("deposit_amount").notNull().default(10000), // 10,000 KRW
+  numberOfPeople: integer("number_of_people").notNull().default(1), // 1-4 people
+  totalAmountUsd: integer("total_amount_usd").notNull().default(28), // Amount in USD
   paymentStatus: text("payment_status").notNull().default("pending"), // "pending", "paid"
   paypalOrderId: text("paypal_order_id"),
   status: text("status").notNull().default("confirmed"), // "confirmed", "cancelled", "visited"
@@ -289,7 +290,8 @@ export const insertVisitReservationSchema = createInsertSchema(visitReservations
   phone: z.string().min(1, "Phone number is required"),
   reservationDate: z.string().min(1, "Date is required"),
   reservationTime: z.string().min(1, "Time is required"),
-  depositAmount: z.number().default(10000),
+  numberOfPeople: z.number().min(1).max(4).default(1),
+  totalAmountUsd: z.number().default(28),
   paymentStatus: z.enum(["pending", "paid"]).default("pending"),
   status: z.enum(["confirmed", "cancelled", "visited"]).default("confirmed"),
   source: z.string().optional(),

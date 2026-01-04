@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, CheckCircle, Home } from "lucide-react";
+import { CalendarIcon, CheckCircle, Home, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -30,13 +30,18 @@ const visitReservationSchema = z.object({
   phone: z.string().min(1, "Phone number is required"),
   reservationDate: z.string().min(1, "Date is required"),
   reservationTime: z.string().min(1, "Time is required"),
+  numberOfPeople: z.number().min(1).max(4).default(1),
   source: z.string().default("instagram"),
 });
 
 type VisitReservationForm = z.infer<typeof visitReservationSchema>;
 
-const DEPOSIT_AMOUNT_KRW = 10000;
-const KRW_TO_USD_RATE = 1400;
+const PRICING: Record<number, number> = {
+  1: 28,
+  2: 35,
+  3: 42,
+  4: 48,
+};
 
 export default function VisitReservationPage() {
   const [selectedDate, setSelectedDate] = useState<Date>();
@@ -60,11 +65,14 @@ export default function VisitReservationPage() {
       phone: "",
       reservationDate: "",
       reservationTime: "",
+      numberOfPeople: 1,
       source: "instagram",
     },
   });
 
   const formValues = form.watch();
+  const numberOfPeople = formValues.numberOfPeople || 1;
+  const totalPrice = PRICING[numberOfPeople] || 28;
   const isFormValid = formValues.name && formValues.email && formValues.phone && 
                       formValues.reservationDate && formValues.reservationTime;
 
@@ -144,7 +152,7 @@ export default function VisitReservationPage() {
           const captureData = await response.json() as { success?: boolean };
           
           if (captureData.success) {
-            toast({ title: "Reservation confirmed! Deposit payment received." });
+            toast({ title: "Reservation confirmed! Payment received." });
             setIsComplete(true);
           } else {
             throw new Error("Capture failed");
@@ -163,7 +171,7 @@ export default function VisitReservationPage() {
         setPaymentProcessing(false);
       }
     }).render(paypalButtonRef.current);
-  }, [paypalLoaded, isFormValid, formValues.name, formValues.email, formValues.phone, formValues.reservationDate, formValues.reservationTime]);
+  }, [paypalLoaded, isFormValid, formValues.name, formValues.email, formValues.phone, formValues.reservationDate, formValues.reservationTime, formValues.numberOfPeople]);
 
   const availableTimes = [
     "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
@@ -184,7 +192,7 @@ export default function VisitReservationPage() {
                 <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-6" />
                 <h2 className="text-3xl font-bold text-gray-800 mb-4">Reservation Confirmed!</h2>
                 <p className="text-gray-600 mb-6">
-                  Your deposit of ₩10,000 has been received. We look forward to seeing you!
+                  Your payment has been received. We look forward to seeing you!
                 </p>
                 <Button 
                   onClick={() => {
@@ -226,7 +234,7 @@ export default function VisitReservationPage() {
             <CardHeader className="text-center bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-t-lg">
               <CardTitle className="text-2xl">예약 정보 입력</CardTitle>
               <CardDescription className="text-pink-100">
-                Reserve your recording session with a ₩10,000 deposit
+                Reserve your recording session
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6">
@@ -269,6 +277,36 @@ export default function VisitReservationPage() {
                         <FormControl>
                           <Input placeholder="+82 10-1234-5678" {...field} data-testid="input-phone" />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="numberOfPeople"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Users className="w-4 h-4" />
+                          Number of People / 인원수
+                        </FormLabel>
+                        <Select 
+                          onValueChange={(value) => field.onChange(parseInt(value))} 
+                          value={field.value?.toString()}
+                        >
+                          <FormControl>
+                            <SelectTrigger data-testid="select-people">
+                              <SelectValue placeholder="Select number of people" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="1">1 person - ${PRICING[1]}</SelectItem>
+                            <SelectItem value="2">2 people - ${PRICING[2]}</SelectItem>
+                            <SelectItem value="3">3 people - ${PRICING[3]}</SelectItem>
+                            <SelectItem value="4">4 people - ${PRICING[4]}</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -342,13 +380,12 @@ export default function VisitReservationPage() {
                   />
 
                   <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-lg border border-pink-200 mt-6">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-semibold text-gray-700">Deposit Amount</span>
-                      <span className="text-xl font-bold text-pink-600">₩10,000</span>
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-gray-700">
+                        Total ({numberOfPeople} {numberOfPeople === 1 ? 'person' : 'people'})
+                      </span>
+                      <span className="text-2xl font-bold text-pink-600">${totalPrice}</span>
                     </div>
-                    <p className="text-sm text-gray-500">
-                      ≈ ${(DEPOSIT_AMOUNT_KRW / KRW_TO_USD_RATE).toFixed(2)} USD
-                    </p>
                   </div>
 
                   <div className="pt-4">

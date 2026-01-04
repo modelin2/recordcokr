@@ -1254,10 +1254,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Pricing for visit reservations (rounded USD)
+  const VISIT_PRICING: Record<number, number> = {
+    1: 28,  // 1 person: $28
+    2: 35,  // 2 people: $35
+    3: 42,  // 3 people: $42
+    4: 48,  // 4 people: $48
+  };
+
   // Create a new visit reservation (enforce server-side defaults for security)
   app.post("/api/visit-reservations", async (req, res) => {
     try {
       const validatedData = insertVisitReservationSchema.parse(req.body);
+      
+      // Validate number of people (1-4)
+      const numberOfPeople = Math.min(4, Math.max(1, validatedData.numberOfPeople || 1));
+      const totalAmountUsd = VISIT_PRICING[numberOfPeople] || 28;
       
       // Enforce server-side defaults - ignore client values for security-sensitive fields
       const secureData = {
@@ -1268,8 +1280,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         reservationTime: validatedData.reservationTime,
         source: validatedData.source || "instagram",
         notes: validatedData.notes,
-        // Server-enforced values (ignore client-supplied values)
-        depositAmount: 10000, // Always 10,000 KRW
+        // Server-enforced values
+        numberOfPeople: numberOfPeople,
+        totalAmountUsd: totalAmountUsd, // Server-calculated amount
         paymentStatus: "pending" as const, // Always starts as pending
         status: "confirmed" as const, // Default confirmed status
       };
@@ -1326,9 +1339,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const authData = await authResponse.json();
       const accessToken = authData.access_token;
       
-      // Server-enforced amount: 10,000 KRW = ~7.14 USD (1 USD = 1400 KRW)
-      const depositKRW = 10000;
-      const depositUSD = (depositKRW / 1400).toFixed(2);
+      // Use server-stored amount (already rounded USD)
+      const totalUSD = reservation.totalAmountUsd.toString();
       
       // Create PayPal order with server-determined amount
       const orderResponse = await fetch("https://api-m.paypal.com/v2/checkout/orders", {
@@ -1342,9 +1354,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           purchase_units: [{
             amount: {
               currency_code: "USD",
-              value: depositUSD
+              value: totalUSD
             },
-            description: `Visit Reservation Deposit - ${reservation.name}`
+            description: `Recording Session - ${reservation.numberOfPeople} person(s) - ${reservation.name}`
           }]
         })
       });
