@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { spawn } from "child_process";
 import { unlink } from "fs/promises";
-import { insertBookingSchema, insertNaverBookingSchema, insertVisitorPhotoSchema } from "@shared/schema";
+import { insertBookingSchema, insertNaverBookingSchema, insertVisitorPhotoSchema, insertVisitReservationSchema } from "@shared/schema";
 import { z } from "zod";
 import { GoogleGenAI, Modality } from "@google/genai";
 
@@ -1238,6 +1238,152 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     res.json({ clientId });
   });
+
+  // ============================================================
+  // VISIT RESERVATION API (Marketing Customers - Instagram, etc.)
+  // ============================================================
+
+  // Get all visit reservations (admin only)
+  app.get("/api/visit-reservations", requireAdmin, async (req, res) => {
+    try {
+      const reservations = await storage.getAllVisitReservations();
+      res.json(reservations);
+    } catch (error: any) {
+      console.error("Error fetching visit reservations:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Create a new visit reservation
+  app.post("/api/visit-reservations", async (req, res) => {
+    try {
+      const validatedData = insertVisitReservationSchema.parse(req.body);
+      const reservation = await storage.createVisitReservation(validatedData);
+      res.status(201).json(reservation);
+    } catch (error: any) {
+      console.error("Error creating visit reservation:", error);
+      if (error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid request data", details: error.errors });
+      }
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Update visit reservation status (admin only)
+  app.patch("/api/visit-reservations/:id/status", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      if (!["confirmed", "cancelled", "visited"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status" });
+      }
+      const updated = await storage.updateVisitReservationStatus(id, status);
+      if (!updated) {
+        return res.status(404).json({ error: "Reservation not found" });
+      }
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating visit reservation status:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Update visit reservation payment status
+  app.patch("/api/visit-reservations/:id/payment", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { paymentStatus, paypalOrderId } = req.body;
+      if (!["pending", "paid"].includes(paymentStatus)) {
+        return res.status(400).json({ error: "Invalid payment status" });
+      }
+      const updated = await storage.updateVisitReservationPayment(id, paymentStatus, paypalOrderId);
+      if (!updated) {
+        return res.status(404).json({ error: "Reservation not found" });
+      }
+      
+      // If payment is completed, send email notification to staff
+      if (paymentStatus === "paid" && updated) {
+        try {
+          await sendVisitReservationNotification(updated);
+        } catch (emailError) {
+          console.error("Failed to send email notification:", emailError);
+          // Don't fail the request if email fails
+        }
+      }
+      
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating visit reservation payment:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Delete visit reservation (admin only)
+  app.delete("/api/visit-reservations/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteVisitReservation(id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Reservation not found" });
+      }
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error deleting visit reservation:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Helper function to send email notification for visit reservations
+  async function sendVisitReservationNotification(reservation: any) {
+    const sgMail = require("@sendgrid/mail");
+    const sendgridApiKey = process.env.SENDGRID_API_KEY;
+    
+    if (!sendgridApiKey) {
+      console.log("SendGrid API key not configured, skipping email notification");
+      return;
+    }
+
+    sgMail.setApiKey(sendgridApiKey);
+
+    // Staff email addresses to notify
+    const staffEmails = [
+      "admin@k-recording-cafe.com",
+      // Add more staff emails here
+    ];
+
+    const msg = {
+      to: staffEmails,
+      from: "noreply@k-recording-cafe.com",
+      subject: `[New Visit Reservation] ${reservation.name} - ${reservation.reservationDate} ${reservation.reservationTime}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #E91E63;">🎤 New Visit Reservation</h2>
+          <p>A new visit reservation has been made through Instagram marketing.</p>
+          
+          <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">Customer Information</h3>
+            <p><strong>Name:</strong> ${reservation.name}</p>
+            <p><strong>Email:</strong> ${reservation.email}</p>
+            <p><strong>Phone:</strong> ${reservation.phone}</p>
+          </div>
+          
+          <div style="background-color: #fff3e0; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">Reservation Details</h3>
+            <p><strong>Date:</strong> ${reservation.reservationDate}</p>
+            <p><strong>Time:</strong> ${reservation.reservationTime}</p>
+            <p><strong>Deposit:</strong> ₩${reservation.depositAmount?.toLocaleString() || "10,000"}</p>
+            <p><strong>Payment Status:</strong> <span style="color: green; font-weight: bold;">PAID</span></p>
+            <p><strong>Source:</strong> ${reservation.source || "Instagram"}</p>
+          </div>
+          
+          <p style="color: #666; font-size: 12px;">This is an automated notification from Recording Cafe.</p>
+        </div>
+      `
+    };
+
+    await sgMail.send(msg);
+    console.log("Visit reservation notification email sent to staff");
+  }
 
   const httpServer = createServer(app);
   return httpServer;
