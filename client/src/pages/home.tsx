@@ -7,7 +7,7 @@ import MenuSection from "@/components/menu-section";
 import GallerySection from "@/components/gallery-section";
 import SeoulTourSection from "@/components/seoul-tour-section";
 import FAQSection from "@/components/faq-section";
-import EnhancedBookingSection from "@/components/enhanced-booking-section";
+import BookingOptionsSection from "@/components/booking-options-section";
 import ContactSection from "@/components/contact-section";
 import Footer from "@/components/footer";
 
@@ -23,7 +23,7 @@ export default function Home() {
       <SeoulTourSection />
       <HowToUseSection />
       <FAQSection />
-      <EnhancedBookingSection />
+      <BookingOptionsSection />
       <ContactSection />
       <Footer />
     </div>
