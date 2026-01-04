@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -937,7 +938,7 @@ export default function MenuPage() {
           {step === 0 && (
             <motion.div key="lang" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-2xl">
               <div className="text-center mb-10">
-                <img src={logoImage} alt="Logo" className="h-16 mx-auto mb-6" />
+                <Link href="/"><img src={logoImage} alt="Logo" className="h-16 mx-auto mb-6 cursor-pointer hover:opacity-80 transition-opacity" /></Link>
                 <h1 className="text-3xl font-bold flex items-center justify-center gap-3 text-gray-800">
                   <Globe className="w-8 h-8 text-purple-500" />
                   {translations.en.selectLanguage}
