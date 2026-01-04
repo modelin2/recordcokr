@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut, Camera } from "lucide-react";
-import type { Booking } from "@shared/schema";
+import type { Booking, VisitReservation } from "@shared/schema";
 import { format } from "date-fns";
 import { Copy } from "lucide-react";
 import { useLocation } from "wouter";
@@ -52,6 +52,7 @@ export default function AdminPage() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [emailSubject, setEmailSubject] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
+  const [activeTab, setActiveTab] = useState<"bookings" | "visit-reservations">("bookings");
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
@@ -110,6 +111,32 @@ export default function AdminPage() {
 
   const { data: addons = [] } = useQuery<any[]>({
     queryKey: ['/api/addons'],
+  });
+
+  // Fetch visit reservations
+  const { data: visitReservations = [], isLoading: visitReservationsLoading } = useQuery<VisitReservation[]>({
+    queryKey: ['/api/visit-reservations'],
+  });
+
+  // Update visit reservation status mutation
+  const updateVisitStatusMutation = useMutation({
+    mutationFn: async ({ reservationId, status }: { reservationId: number; status: string }) => {
+      return apiRequest("PATCH", `/api/visit-reservations/${reservationId}/status`, { status });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/visit-reservations'] });
+      toast({
+        title: "Status Updated",
+        description: "Visit reservation status has been updated.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update visit reservation status.",
+        variant: "destructive",
+      });
+    },
   });
 
   // Update booking status mutation
@@ -403,46 +430,61 @@ Recording Cafe Team`
           </Card>
         </div>
 
-        {/* Filters */}
-        <Card className="glass border-white/20 mb-6">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1">
-                <Label className="text-white mb-2 block">Search</Label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Search by name, email, phone, or booking type (klook/direct)..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-white/10 border-white/20 text-white"
-                  />
-                </div>
-              </div>
-              <div>
-                <Label className="text-white mb-2 block">Status Filter</Label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[180px] bg-white/10 border-white/20 text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Statuses</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="confirmed">Confirmed</SelectItem>
-                    <SelectItem value="in-progress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Main Content Tabs */}
+        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations")} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 bg-white/10 mb-6">
+            <TabsTrigger value="bookings" className="text-white data-[state=active]:bg-white/20">
+              📋 예약 관리 / Bookings
+            </TabsTrigger>
+            <TabsTrigger value="visit-reservations" className="text-white data-[state=active]:bg-white/20">
+              🎯 방문 예약 / Visit Reservations
+              {visitReservations.length > 0 && (
+                <Badge className="ml-2 bg-pink-500/50 text-white">{visitReservations.length}</Badge>
+              )}
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Bookings List */}
-        <div className="space-y-4">
-          {filteredBookings.map((booking: Booking) => {
-            const StatusIcon = statusIcons[booking.status as keyof typeof statusIcons];
+          <TabsContent value="bookings">
+            {/* Filters */}
+            <Card className="glass border-white/20 mb-6">
+              <CardContent className="p-6">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1">
+                    <Label className="text-white mb-2 block">Search</Label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        placeholder="Search by name, email, phone, or booking type (klook/direct)..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10 bg-white/10 border-white/20 text-white"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-white mb-2 block">Status Filter</Label>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger className="w-[180px] bg-white/10 border-white/20 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="confirmed">Confirmed</SelectItem>
+                        <SelectItem value="in-progress">In Progress</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Bookings List */}
+            <div className="space-y-4">
+              {filteredBookings.map((booking: Booking) => {
+                const StatusIcon = statusIcons[booking.status as keyof typeof statusIcons];
             
             return (
               <Card key={booking.id} className="glass border-white/20">
@@ -761,22 +803,121 @@ Recording Cafe Team`
           })}
         </div>
 
-        {filteredBookings.length === 0 && (
-          <Card className="glass border-white/20">
-            <CardContent className="p-12 text-center">
-              <div className="text-gray-400 mb-4">
-                <AlertCircle className="h-12 w-12 mx-auto mb-4" />
-                No bookings found
-              </div>
-              <p className="text-gray-300">
-                {searchQuery || statusFilter !== "all" 
-                  ? "Try adjusting your search or filter criteria"
-                  : "No bookings have been made yet"
-                }
-              </p>
-            </CardContent>
-          </Card>
-        )}
+            {filteredBookings.length === 0 && (
+              <Card className="glass border-white/20">
+                <CardContent className="p-12 text-center">
+                  <div className="text-gray-400 mb-4">
+                    <AlertCircle className="h-12 w-12 mx-auto mb-4" />
+                    No bookings found
+                  </div>
+                  <p className="text-gray-300">
+                    {searchQuery || statusFilter !== "all" 
+                      ? "Try adjusting your search or filter criteria"
+                      : "No bookings have been made yet"
+                    }
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="visit-reservations">
+            <Card className="glass border-white/20 mb-6">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  방문 예약 목록 / Visit Reservations
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-300 mb-4">
+                  인스타그램 마케팅을 통해 예약한 고객 리스트입니다. 예약금 ₩10,000이 결제된 방문 예정 고객입니다.
+                </p>
+                
+                {visitReservationsLoading ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full" />
+                  </div>
+                ) : visitReservations.length === 0 ? (
+                  <div className="text-center py-12 text-gray-400">
+                    <AlertCircle className="h-12 w-12 mx-auto mb-4" />
+                    <p>No visit reservations yet</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {visitReservations.map((reservation) => (
+                      <Card key={reservation.id} className="bg-white/5 border-white/10">
+                        <CardContent className="p-4">
+                          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <User className="h-4 w-4 text-pink-400" />
+                                <span className="font-semibold text-white">{reservation.name}</span>
+                                <Badge className={reservation.paymentStatus === "paid" 
+                                  ? "bg-green-500/20 text-green-300 border-green-500/50"
+                                  : "bg-yellow-500/20 text-yellow-300 border-yellow-500/50"
+                                }>
+                                  {reservation.paymentStatus === "paid" ? "💳 Paid" : "⏳ Pending"}
+                                </Badge>
+                                <Badge className={
+                                  reservation.status === "confirmed" ? "bg-blue-500/20 text-blue-300 border-blue-500/50" :
+                                  reservation.status === "visited" ? "bg-green-500/20 text-green-300 border-green-500/50" :
+                                  "bg-red-500/20 text-red-300 border-red-500/50"
+                                }>
+                                  {reservation.status}
+                                </Badge>
+                              </div>
+                              
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm text-gray-300">
+                                <div className="flex items-center gap-2">
+                                  <Mail className="h-4 w-4" />
+                                  {reservation.email}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Phone className="h-4 w-4" />
+                                  {reservation.phone}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Calendar className="h-4 w-4" />
+                                  {reservation.reservationDate} {reservation.reservationTime}
+                                </div>
+                              </div>
+                              
+                              <div className="mt-2 text-sm text-gray-400">
+                                예약금: ₩{reservation.depositAmount?.toLocaleString() || "10,000"}
+                                {reservation.source && ` | 유입경로: ${reservation.source}`}
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center gap-2">
+                              <Select 
+                                value={reservation.status} 
+                                onValueChange={(val) => updateVisitStatusMutation.mutate({ reservationId: reservation.id, status: val })}
+                              >
+                                <SelectTrigger className="w-[140px] bg-white/10 border-white/20 text-white">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="confirmed">Confirmed</SelectItem>
+                                  <SelectItem value="visited">Visited</SelectItem>
+                                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-3 pt-3 border-t border-white/10 text-xs text-gray-400">
+                            Created: {reservation.createdAt ? format(new Date(reservation.createdAt), 'PPp') : 'Unknown'}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

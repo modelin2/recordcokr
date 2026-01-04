@@ -1254,17 +1254,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create a new visit reservation
+  // Create a new visit reservation (enforce server-side defaults for security)
   app.post("/api/visit-reservations", async (req, res) => {
     try {
       const validatedData = insertVisitReservationSchema.parse(req.body);
-      const reservation = await storage.createVisitReservation(validatedData);
+      
+      // Enforce server-side defaults - ignore client values for security-sensitive fields
+      const secureData = {
+        name: validatedData.name,
+        email: validatedData.email,
+        phone: validatedData.phone,
+        reservationDate: validatedData.reservationDate,
+        reservationTime: validatedData.reservationTime,
+        source: validatedData.source || "instagram",
+        notes: validatedData.notes,
+        // Server-enforced values (ignore client-supplied values)
+        depositAmount: 10000, // Always 10,000 KRW
+        paymentStatus: "pending" as const, // Always starts as pending
+        status: "confirmed" as const, // Default confirmed status
+      };
+      
+      const reservation = await storage.createVisitReservation(secureData);
       res.status(201).json(reservation);
     } catch (error: any) {
       console.error("Error creating visit reservation:", error);
       if (error.name === "ZodError") {
         return res.status(400).json({ error: "Invalid request data", details: error.errors });
       }
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Create PayPal order for visit reservation (server-enforced amount)
+  app.post("/api/visit-reservations/:id/create-paypal-order", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      // Verify the reservation exists and is pending payment
+      const reservation = await storage.getVisitReservation(id);
+      if (!reservation) {
+        return res.status(404).json({ error: "Reservation not found" });
+      }
+      if (reservation.paymentStatus === "paid") {
+        return res.status(400).json({ error: "Payment already completed" });
+      }
+      if (reservation.paypalOrderId) {
+        return res.status(400).json({ error: "PayPal order already created" });
+      }
+      
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+      
+      if (!clientId || !clientSecret) {
+        return res.status(500).json({ error: "PayPal credentials not configured" });
+      }
+      
+      // Get PayPal access token
+      const authResponse = await fetch("https://api-m.paypal.com/v1/oauth2/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`
+        },
+        body: "grant_type=client_credentials"
+      });
+      
+      if (!authResponse.ok) {
+        return res.status(500).json({ error: "Failed to authenticate with PayPal" });
+      }
+      
+      const authData = await authResponse.json();
+      const accessToken = authData.access_token;
+      
+      // Server-enforced amount: 10,000 KRW = ~7.14 USD (1 USD = 1400 KRW)
+      const depositKRW = 10000;
+      const depositUSD = (depositKRW / 1400).toFixed(2);
+      
+      // Create PayPal order with server-determined amount
+      const orderResponse = await fetch("https://api-m.paypal.com/v2/checkout/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          intent: "CAPTURE",
+          purchase_units: [{
+            amount: {
+              currency_code: "USD",
+              value: depositUSD
+            },
+            description: `Visit Reservation Deposit - ${reservation.name}`
+          }]
+        })
+      });
+      
+      if (!orderResponse.ok) {
+        const errorText = await orderResponse.text();
+        console.error("PayPal order error for visit reservation:", errorText);
+        return res.status(500).json({ error: "Failed to create PayPal order" });
+      }
+      
+      const orderData = await orderResponse.json();
+      
+      // Store the PayPal order ID with the reservation for verification
+      await storage.updateVisitReservationPayment(id, "pending", orderData.id);
+      
+      res.json({ id: orderData.id });
+    } catch (error: any) {
+      console.error("Error creating PayPal order for visit reservation:", error);
       res.status(500).json({ error: error.message });
     }
   });
@@ -1288,32 +1386,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update visit reservation payment status
-  app.patch("/api/visit-reservations/:id/payment", async (req, res) => {
+  // Capture PayPal payment and update visit reservation (server-side verification)
+  app.post("/api/visit-reservations/:id/capture-payment", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const { paymentStatus, paypalOrderId } = req.body;
-      if (!["pending", "paid"].includes(paymentStatus)) {
-        return res.status(400).json({ error: "Invalid payment status" });
+      const { orderId } = req.body;
+      
+      if (!orderId) {
+        return res.status(400).json({ error: "PayPal order ID required" });
       }
-      const updated = await storage.updateVisitReservationPayment(id, paymentStatus, paypalOrderId);
+      
+      // Verify the reservation exists and is currently pending
+      const existing = await storage.getVisitReservation(id);
+      if (!existing) {
+        return res.status(404).json({ error: "Reservation not found" });
+      }
+      if (existing.paymentStatus === "paid") {
+        return res.status(400).json({ error: "Payment already completed" });
+      }
+      
+      // Security: Verify the order ID matches the one stored during order creation
+      if (existing.paypalOrderId !== orderId) {
+        console.error(`Order ID mismatch: expected ${existing.paypalOrderId}, got ${orderId}`);
+        return res.status(400).json({ error: "Invalid order ID" });
+      }
+      
+      // Verify PayPal payment by capturing the order
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+      
+      if (!clientId || !clientSecret) {
+        return res.status(500).json({ error: "PayPal credentials not configured" });
+      }
+      
+      // Get PayPal access token
+      const authResponse = await fetch("https://api-m.paypal.com/v1/oauth2/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`
+        },
+        body: "grant_type=client_credentials"
+      });
+      
+      if (!authResponse.ok) {
+        return res.status(500).json({ error: "Failed to authenticate with PayPal" });
+      }
+      
+      const authData = await authResponse.json();
+      const accessToken = authData.access_token;
+      
+      // Capture PayPal order (this is the actual payment verification)
+      const captureResponse = await fetch(`https://api-m.paypal.com/v2/checkout/orders/${orderId}/capture`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      
+      if (!captureResponse.ok) {
+        const errorText = await captureResponse.text();
+        console.error("PayPal capture error for visit reservation:", errorText);
+        return res.status(400).json({ error: "Payment verification failed" });
+      }
+      
+      const captureData = await captureResponse.json();
+      
+      // Verify the capture was successful
+      if (captureData.status !== "COMPLETED") {
+        return res.status(400).json({ error: "Payment not completed" });
+      }
+      
+      // Update reservation payment status
+      const updated = await storage.updateVisitReservationPayment(id, "paid", orderId);
       if (!updated) {
         return res.status(404).json({ error: "Reservation not found" });
       }
       
-      // If payment is completed, send email notification to staff
-      if (paymentStatus === "paid" && updated) {
-        try {
-          await sendVisitReservationNotification(updated);
-        } catch (emailError) {
-          console.error("Failed to send email notification:", emailError);
-          // Don't fail the request if email fails
-        }
+      // Send email notification to staff
+      try {
+        await sendVisitReservationNotification(updated);
+      } catch (emailError) {
+        console.error("Failed to send email notification:", emailError);
+        // Don't fail the request if email fails
       }
       
-      res.json(updated);
+      res.json({ success: true, reservation: updated });
     } catch (error: any) {
-      console.error("Error updating visit reservation payment:", error);
+      console.error("Error capturing visit reservation payment:", error);
       res.status(500).json({ error: error.message });
     }
   });

@@ -111,24 +111,14 @@ export default function BookingOptionsSection() {
         try {
           const validatedData = visitReservationSchema.parse(formValues);
           
-          const reservationData = {
-            ...validatedData,
-            depositAmount: DEPOSIT_AMOUNT_KRW,
-            paymentStatus: "pending" as const,
-            status: "confirmed" as const,
-          };
-
-          const response = await apiRequest("POST", "/api/visit-reservations", reservationData);
+          // Create reservation first
+          const response = await apiRequest("POST", "/api/visit-reservations", validatedData);
           const reservation = await response.json() as { id: number };
           setPendingReservationId(reservation.id);
           pendingReservationIdRef.current = reservation.id;
 
-          const orderResponse = await apiRequest("POST", "/api/paypal/create-order", {
-            bookingData: {
-              totalPrice: DEPOSIT_AMOUNT_KRW,
-              name: validatedData.name,
-            }
-          });
+          // Create PayPal order via dedicated endpoint (server enforces amount)
+          const orderResponse = await apiRequest("POST", `/api/visit-reservations/${reservation.id}/create-paypal-order`, {});
           const orderData = await orderResponse.json() as { id: string };
           return orderData.id;
         } catch (error: any) {
@@ -139,15 +129,18 @@ export default function BookingOptionsSection() {
       },
       onApprove: async (data: any) => {
         try {
-          const response = await apiRequest("POST", "/api/paypal/capture-order", { orderId: data.orderID });
-          const captureData = await response.json() as { success?: boolean };
           const reservationId = pendingReservationIdRef.current;
+          if (!reservationId) {
+            throw new Error("No reservation ID found");
+          }
           
-          if (captureData.success && reservationId) {
-            await apiRequest("PATCH", `/api/visit-reservations/${reservationId}/payment`, {
-              paymentStatus: "paid",
-              paypalOrderId: data.orderID
-            });
+          // Capture payment and update reservation in one secure server call
+          const response = await apiRequest("POST", `/api/visit-reservations/${reservationId}/capture-payment`, {
+            orderId: data.orderID
+          });
+          const captureData = await response.json() as { success?: boolean };
+          
+          if (captureData.success) {
             toast({ title: "Reservation confirmed! Deposit payment received." });
             setIsComplete(true);
           } else {
