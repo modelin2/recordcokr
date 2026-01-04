@@ -40,6 +40,7 @@ export interface IStorage {
   getBooking(id: number): Promise<Booking | undefined>;
   createBooking(booking: InsertBooking): Promise<Booking>;
   updateBookingStatus(id: number, status: string): Promise<Booking | undefined>;
+  updateBookingPaymentStatus(id: number, paymentStatus: string, paypalOrderId?: string, paidAmount?: number): Promise<Booking | undefined>;
   
   getAvailableTimeSlots(date: string): Promise<TimeSlot[]>;
   createTimeSlot(timeSlot: InsertTimeSlot): Promise<TimeSlot>;
@@ -450,6 +451,16 @@ export class MemStorage implements IStorage {
     return booking;
   }
 
+  async updateBookingPaymentStatus(id: number, paymentStatus: string, paypalOrderId?: string, paidAmount?: number): Promise<Booking | undefined> {
+    const booking = this.bookings.get(id);
+    if (booking) {
+      booking.paymentStatus = paymentStatus;
+      if (paypalOrderId) booking.paypalOrderId = paypalOrderId;
+      if (paidAmount !== undefined) booking.paidAmount = paidAmount;
+    }
+    return booking;
+  }
+
   async getAvailableTimeSlots(date: string): Promise<TimeSlot[]> {
     console.log('Looking for timeslots on date:', date);
     console.log('Total timeslots in storage:', this.timeSlots.size);
@@ -709,6 +720,19 @@ export class DatabaseStorage implements IStorage {
     const [updatedBooking] = await db
       .update(bookings)
       .set({ status })
+      .where(eq(bookings.id, id))
+      .returning();
+    return updatedBooking;
+  }
+
+  async updateBookingPaymentStatus(id: number, paymentStatus: string, paypalOrderId?: string, paidAmount?: number): Promise<Booking | undefined> {
+    const updates: any = { paymentStatus };
+    if (paypalOrderId) updates.paypalOrderId = paypalOrderId;
+    if (paidAmount !== undefined) updates.paidAmount = paidAmount;
+    
+    const [updatedBooking] = await db
+      .update(bookings)
+      .set(updates)
       .where(eq(bookings.id, id))
       .returning();
     return updatedBooking;

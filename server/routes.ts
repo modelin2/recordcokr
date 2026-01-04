@@ -503,6 +503,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update booking payment status (public - used by PayPal callback)
+  app.patch("/api/bookings/:id/payment-status", async (req, res) => {
+    try {
+      const bookingId = parseInt(req.params.id);
+      const { paymentStatus, paypalOrderId, paidAmount } = req.body;
+      
+      if (!paymentStatus) {
+        return res.status(400).json({ message: "Payment status is required" });
+      }
+
+      const booking = await storage.updateBookingPaymentStatus(bookingId, paymentStatus, paypalOrderId, paidAmount);
+      
+      if (!booking) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+
+      res.json(booking);
+    } catch (error: any) {
+      console.error("Error updating booking payment status:", error);
+      res.status(500).json({ message: "Failed to update booking payment status" });
+    }
+  });
+
   // Admin management routes (require admin access)
   app.get("/api/admin/users", requireAdmin, async (req, res) => {
     try {

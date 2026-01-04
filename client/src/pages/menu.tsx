@@ -584,6 +584,8 @@ export default function MenuPage() {
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"online" | "offline" | null>(null);
+  const [pendingBookingId, setPendingBookingId] = useState<number | null>(null);
+  const pendingBookingIdRef = useRef<number | null>(null);
   const [showKoreanConfirm, setShowKoreanConfirm] = useState(false);
   const paypalButtonRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -628,7 +630,54 @@ export default function MenuPage() {
         createOrder: async () => {
           setPaymentProcessing(true);
           try {
-            // Send booking data to server for secure price calculation
+            // First, create the booking with pending payment status
+            const selectedServicesList: { name: string; price: number }[] = [];
+            const mixOpt = t.mixingOptions.find((o: any) => o.id === selectedMixing);
+            const vidOpt = t.videoOptions.find((o: any) => o.id === selectedVideo);
+            if (mixOpt) selectedServicesList.push({ name: mixOpt.name, price: mixOpt.price });
+            if (vidOpt) selectedServicesList.push({ name: vidOpt.name, price: vidOpt.price });
+            if (wantsAlbum) selectedServicesList.push({ name: t.albumOption.name, price: t.albumOption.price });
+            if (wantsProAlbum) selectedServicesList.push({ name: t.proAlbumOption.name, price: t.proAlbumOption.price });
+            if (wantsLP) selectedServicesList.push({ name: t.lpOption.name, price: t.lpOption.price });
+
+            // Build name prefix like handleSubmit does
+            let prefix = "";
+            if (bookingPath === "existing" && selectedPlatform) {
+              const platform = platformSources.find((s: any) => s.id === selectedPlatform);
+              prefix = platform ? `[${platform[language || "ko"]}] ` : "";
+            } else if (bookingPath === "homepage" && selectedDate && selectedTime) {
+              const dateStr = `${selectedDate.getMonth() + 1}/${selectedDate.getDate()}`;
+              prefix = `[Homepage ${dateStr} ${selectedTime}] `;
+            }
+
+            const drinkSummary = drinkOrders.map((o: any) => {
+              const drinkName = t.drinks[o.id] || o.id;
+              const tempLabel = o.temperature === "hot" ? " (hot)" : o.temperature === "iced" ? " (iced)" : "";
+              return `${drinkName} x${o.quantity}${tempLabel}`;
+            }).join(", ") || "none";
+
+            const bookingData = {
+              name: `${prefix}${name}`,
+              email: email || "no-email@example.com",
+              phone: phone || "no-phone",
+              bookingType: "direct",
+              selectedDrink: drinkSummary,
+              drinkTemperature: "hot",
+              youtubeTrackUrl: youtubeUrl,
+              selectedAddons: [] as number[],
+              selectedPartnerAddons: [] as number[],
+              selectedServices: JSON.stringify(selectedServicesList),
+              totalPrice: calculateTotal(),
+              paymentMethod: "online",
+              paymentStatus: "pending"
+            };
+
+            const bookingResponse = await apiRequest("POST", "/api/bookings", bookingData);
+            const booking = await bookingResponse.json() as { id: number };
+            setPendingBookingId(booking.id);
+            pendingBookingIdRef.current = booking.id;
+
+            // Then create PayPal order for secure price calculation
             const response = await apiRequest('POST', '/api/paypal/create-order', {
               bookingData: {
                 selectedMixing,
@@ -653,10 +702,17 @@ export default function MenuPage() {
           try {
             const response = await apiRequest('POST', '/api/paypal/capture-order', { orderId: data.orderID });
             const captureData = await response.json() as { success?: boolean; error?: string };
-            if (captureData.success) {
-              const paidAmountKRW = calculateTotal(); // Amount paid in KRW
-              handleSubmit({ paymentStatus: "paid", paypalOrderId: data.orderID, paidAmount: paidAmountKRW });
+            const bookingId = pendingBookingIdRef.current;
+            if (captureData.success && bookingId) {
+              const paidAmountKRW = calculateTotal();
+              // Update the existing booking's payment status
+              await apiRequest('PATCH', `/api/bookings/${bookingId}/payment-status`, {
+                paymentStatus: "paid",
+                paypalOrderId: data.orderID,
+                paidAmount: paidAmountKRW
+              });
               toast({ title: t.paymentSuccess });
+              setIsComplete(true);
             } else {
               throw new Error('Capture failed');
             }
@@ -675,7 +731,7 @@ export default function MenuPage() {
         }
       }).render(paypalButtonRef.current);
     }
-  }, [paypalLoaded, step, language, selectedMixing, selectedVideo, wantsAlbum, wantsProAlbum, wantsLP, paymentMethod]);
+  }, [paypalLoaded, step, language, selectedMixing, selectedVideo, wantsAlbum, wantsProAlbum, wantsLP, paymentMethod, bookingPath, selectedPlatform, selectedDate, selectedTime, drinkOrders, name, email, phone, youtubeUrl]);
 
   const t = language ? translations[language] : translations.ko;
 
