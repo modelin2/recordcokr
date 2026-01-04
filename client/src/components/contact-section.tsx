@@ -1,4 +1,4 @@
-import { MapPin, Train, Clock, Phone, Mail } from "lucide-react";
+import { MapPin, Train, Clock, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiInstagram, SiYoutube, SiTiktok, SiSpotify } from "react-icons/si";
 
@@ -7,6 +7,21 @@ export default function ContactSection() {
     <section id="contact" className="py-20 bg-gray-900">
       <div className="container mx-auto px-6 lg:px-8 xl:px-12 max-w-7xl">
         <h2 className="text-5xl font-bold text-center mb-16 gradient-text">Visit Us in Sinsa</h2>
+        
+        {/* YouTube Shorts - Directions from Sinsa Station */}
+        <div className="max-w-sm mx-auto mb-12">
+          <div className="aspect-[9/16] rounded-2xl overflow-hidden shadow-lg">
+            <iframe
+              src="https://www.youtube.com/embed/PO2j8QzG3ZU"
+              title="Directions from Sinsa Station to Recording Cafe"
+              className="w-full h-full"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+          <p className="text-center text-gray-400 text-sm mt-3">📍 Walk from Sinsa Station to Recording Cafe</p>
+        </div>
         
         <div className="max-w-2xl mx-auto text-center">
           <h3 className="text-3xl font-bold mb-6">Location</h3>
@@ -21,15 +36,11 @@ export default function ContactSection() {
             </div>
             <div className="flex items-center justify-center">
               <Clock className="text-[hsl(var(--k-blue))] mr-4" size={20} />
-              <span>Open Daily: 10:00 AM - 10:00 PM</span>
+              <span>Open Daily: 12:00 PM - 09:00 PM</span>
             </div>
             <div className="flex items-center justify-center">
               <Phone className="text-[hsl(var(--k-coral))] mr-4" size={20} />
               <span>+82-2-6959-9338</span>
-            </div>
-            <div className="flex items-center justify-center">
-              <Mail className="text-[hsl(var(--k-gold))] mr-4" size={20} />
-              <span>contact@crowdfunding.or.kr</span>
             </div>
           </div>
           
