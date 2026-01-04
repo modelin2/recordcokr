@@ -545,6 +545,7 @@ Recording Cafe Team`
                         try {
                           const services = JSON.parse((booking as any).selectedServices);
                           if (Array.isArray(services) && services.length > 0) {
+                            const totalServicesPrice = services.reduce((sum: number, svc: { price: number }) => sum + svc.price, 0);
                             return (
                               <div className="mt-4 p-3 bg-white/5 rounded border border-white/10">
                                 <div className="flex items-center gap-2 mb-2">
@@ -558,6 +559,10 @@ Recording Cafe Team`
                                       <span className="text-green-400 font-mono">₩{svc.price.toLocaleString()}</span>
                                     </div>
                                   ))}
+                                </div>
+                                <div className="mt-2 pt-2 border-t border-white/20 flex items-center justify-between">
+                                  <span className="text-sm text-white font-bold">Total:</span>
+                                  <span className="text-yellow-400 font-mono font-bold">₩{totalServicesPrice.toLocaleString()}</span>
                                 </div>
                               </div>
                             );
