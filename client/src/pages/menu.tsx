@@ -750,28 +750,34 @@ export default function MenuPage() {
       return `${drinkName} x${o.quantity}${tempLabel}`;
     }).join(", ") || "none";
 
-    // Build selected services JSON with actual names and prices
+    // Build selected services JSON - use prices from translation object (single source of truth)
     const services: { name: string; price: number }[] = [];
-    if (selectedMixing === "basic") {
-      services.push({ name: "Sound Correction (Basic)", price: 0 });
-    } else if (selectedMixing === "ai") {
-      services.push({ name: "AI Mixing", price: 20000 });
-    } else if (selectedMixing === "engineer") {
-      services.push({ name: "Full Track Mixing (Engineer)", price: 100000 });
+    
+    // Mixing option - get from t.mixingOptions
+    const mixingOption = t.mixingOptions.find(o => o.id === selectedMixing);
+    if (mixingOption && mixingOption.price > 0) {
+      services.push({ name: mixingOption.name, price: mixingOption.price });
     }
-    if (selectedVideo === "cameraman") {
-      services.push({ name: "Cameraman Recording", price: 20000 });
-    } else if (selectedVideo === "full") {
-      services.push({ name: "Full Video Editing", price: 100000 });
+    
+    // Video option - get from t.videoOptions
+    const videoOption = t.videoOptions.find(o => o.id === selectedVideo);
+    if (videoOption && videoOption.price > 0) {
+      services.push({ name: videoOption.name, price: videoOption.price });
     }
+    
+    // Album Release - get from t.albumOption
     if (wantsAlbum) {
-      services.push({ name: "Album Release (Global Distribution)", price: 200000 });
+      services.push({ name: t.albumOption.name, price: t.albumOption.price });
     }
+    
+    // Pro Album Release - get from t.proAlbumOption
     if (wantsProAlbum) {
-      services.push({ name: "Pro Album Release", price: 500000 });
+      services.push({ name: t.proAlbumOption.name, price: t.proAlbumOption.price });
     }
+    
+    // LP Record - get from t.lpOption
     if (wantsLP) {
-      services.push({ name: "LP Record Production", price: 300000 });
+      services.push({ name: t.lpOption.name, price: t.lpOption.price });
     }
 
     let namePrefix = "";
