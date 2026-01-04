@@ -604,7 +604,7 @@ export default function MenuPage() {
       }
 
       const script = document.createElement('script');
-      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=USD`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=USD&disable-funding=card,credit`;
       script.async = true;
       script.onload = () => setPaypalLoaded(true);
       document.body.appendChild(script);
