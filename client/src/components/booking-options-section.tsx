@@ -72,11 +72,23 @@ export default function BookingOptionsSection() {
   useEffect(() => {
     if (!paypalConfig?.clientId || paypalLoaded || selectedOption !== "visit") return;
 
+    // Check if PayPal is already available
+    if (window.paypal) {
+      setPaypalLoaded(true);
+      return;
+    }
+
     const existingScript = document.querySelector('script[src*="paypal.com/sdk/js"]');
     if (existingScript) {
-      if (window.paypal) {
-        setPaypalLoaded(true);
-      }
+      // Script exists but may still be loading - poll for window.paypal
+      const checkPaypal = setInterval(() => {
+        if (window.paypal) {
+          setPaypalLoaded(true);
+          clearInterval(checkPaypal);
+        }
+      }, 100);
+      // Clear after 10 seconds
+      setTimeout(() => clearInterval(checkPaypal), 10000);
       return;
     }
 
@@ -226,10 +238,10 @@ export default function BookingOptionsSection() {
               </CardHeader>
               <CardContent className="text-center">
                 <CardDescription className="text-base mb-4">
-                  인스타그램에서 오셨나요? 방문 날짜와 시간을 예약하세요.
+                  처음 오셨나요? 방문 날짜와 시간을 예약하세요.
                 </CardDescription>
                 <CardDescription className="text-base mb-6">
-                  Coming from Instagram? Reserve your visit date and time.
+                  First time here? Reserve your visit date and time.
                 </CardDescription>
                 <div className="bg-pink-100 rounded-lg p-4">
                   <p className="text-pink-700 font-semibold">예약금 ₩10,000</p>
