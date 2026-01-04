@@ -1016,6 +1016,143 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // PayPal API endpoints for dynamic payment
+  app.post("/api/paypal/create-order", async (req, res) => {
+    try {
+      const { amount, currency = "USD", description } = req.body;
+      
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Invalid amount" });
+      }
+
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+      if (!clientId || !clientSecret) {
+        return res.status(500).json({ error: "PayPal credentials not configured" });
+      }
+
+      // Get access token
+      const authResponse = await fetch("https://api-m.paypal.com/v1/oauth2/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`
+        },
+        body: "grant_type=client_credentials"
+      });
+
+      if (!authResponse.ok) {
+        const errorText = await authResponse.text();
+        console.error("PayPal auth error:", errorText);
+        return res.status(500).json({ error: "Failed to authenticate with PayPal" });
+      }
+
+      const authData = await authResponse.json();
+      const accessToken = authData.access_token;
+
+      // Create order
+      const orderResponse = await fetch("https://api-m.paypal.com/v2/checkout/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          intent: "CAPTURE",
+          purchase_units: [{
+            amount: {
+              currency_code: currency,
+              value: amount.toFixed(2)
+            },
+            description: description || "Recording Cafe Service"
+          }]
+        })
+      });
+
+      if (!orderResponse.ok) {
+        const errorText = await orderResponse.text();
+        console.error("PayPal order error:", errorText);
+        return res.status(500).json({ error: "Failed to create PayPal order" });
+      }
+
+      const orderData = await orderResponse.json();
+      res.json({ id: orderData.id });
+    } catch (error: any) {
+      console.error("PayPal create order error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/paypal/capture-order", async (req, res) => {
+    try {
+      const { orderId } = req.body;
+
+      if (!orderId) {
+        return res.status(400).json({ error: "Order ID required" });
+      }
+
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+      if (!clientId || !clientSecret) {
+        return res.status(500).json({ error: "PayPal credentials not configured" });
+      }
+
+      // Get access token
+      const authResponse = await fetch("https://api-m.paypal.com/v1/oauth2/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`
+        },
+        body: "grant_type=client_credentials"
+      });
+
+      if (!authResponse.ok) {
+        return res.status(500).json({ error: "Failed to authenticate with PayPal" });
+      }
+
+      const authData = await authResponse.json();
+      const accessToken = authData.access_token;
+
+      // Capture order
+      const captureResponse = await fetch(`https://api-m.paypal.com/v2/checkout/orders/${orderId}/capture`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+
+      if (!captureResponse.ok) {
+        const errorText = await captureResponse.text();
+        console.error("PayPal capture error:", errorText);
+        return res.status(500).json({ error: "Failed to capture PayPal order" });
+      }
+
+      const captureData = await captureResponse.json();
+      res.json({
+        success: true,
+        id: captureData.id,
+        status: captureData.status,
+        payer: captureData.payer
+      });
+    } catch (error: any) {
+      console.error("PayPal capture order error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get PayPal Client ID for frontend
+  app.get("/api/paypal/client-id", (req, res) => {
+    const clientId = process.env.PAYPAL_CLIENT_ID;
+    if (!clientId) {
+      return res.status(500).json({ error: "PayPal not configured" });
+    }
+    res.json({ clientId });
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
