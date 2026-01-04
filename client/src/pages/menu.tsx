@@ -765,7 +765,7 @@ export default function MenuPage() {
       services.push({ name: "Full Video Editing", price: 100000 });
     }
     if (wantsAlbum) {
-      services.push({ name: "Album Release (Global Distribution)", price: 1300000 });
+      services.push({ name: "Album Release (Global Distribution)", price: 200000 });
     }
     if (wantsProAlbum) {
       services.push({ name: "Pro Album Release", price: 500000 });
