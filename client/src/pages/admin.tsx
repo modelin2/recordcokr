@@ -317,9 +317,9 @@ Recording Cafe Team`
       .replace(/{{name}}/g, selectedBooking.name)
       .replace(/{{date}}/g, selectedBooking.bookingDate || "TBD")
       .replace(/{{time}}/g, selectedBooking.bookingTime || "TBD")
-      .replace(/{{drink}}/g, selectedBooking.selectedDrink)
+      .replace(/{{drink}}/g, selectedBooking.selectedDrink || "Not selected")
       .replace(/{{price}}/g, selectedBooking.totalPrice.toLocaleString())
-      .replace(/{{track}}/g, selectedBooking.youtubeTrackUrl);
+      .replace(/{{track}}/g, selectedBooking.youtubeTrackUrl || "Not provided");
     
     setEmailMessage(processedMessage);
   };
