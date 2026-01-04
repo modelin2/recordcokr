@@ -35,7 +35,7 @@ const paymentStatusColors = {
 const paymentStatusLabels = {
   paid: "💳 Paid",
   unpaid: "Unpaid",
-  pending: "⏳ Pending"
+  pending: "⏳ 결제 대기중"
 };
 
 const statusIcons = {
