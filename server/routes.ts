@@ -1259,7 +1259,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     1: 28,  // 1 person: $28
     2: 35,  // 2 people: $35
     3: 42,  // 3 people: $42
-    4: 48,  // 4 people: $48
+    4: 49,  // 4 people: $49
   };
 
   // Create a new visit reservation (enforce server-side defaults for security)

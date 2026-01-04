@@ -40,7 +40,7 @@ const PRICING: Record<number, number> = {
   1: 28,
   2: 35,
   3: 42,
-  4: 48,
+  4: 49,
 };
 
 export default function VisitReservationPage() {
