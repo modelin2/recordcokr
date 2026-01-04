@@ -753,14 +753,14 @@ export default function MenuPage() {
     // Build selected services JSON with actual names and prices
     const services: { name: string; price: number }[] = [];
     if (selectedMixing === "basic") {
-      services.push({ name: "Sound Correction (Basic)", price: 20000 });
+      services.push({ name: "Sound Correction (Basic)", price: 0 });
     } else if (selectedMixing === "ai") {
-      services.push({ name: "AI Mixing", price: 90000 });
+      services.push({ name: "AI Mixing", price: 20000 });
     } else if (selectedMixing === "engineer") {
       services.push({ name: "Full Track Mixing (Engineer)", price: 100000 });
     }
     if (selectedVideo === "cameraman") {
-      services.push({ name: "Cameraman Recording", price: 50000 });
+      services.push({ name: "Cameraman Recording", price: 20000 });
     } else if (selectedVideo === "full") {
       services.push({ name: "Full Video Editing", price: 100000 });
     }
