@@ -423,7 +423,7 @@ export default function VisitReservationPage() {
                   <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
-              <span>4.9/5</span>
+              <span>5.0/5</span>
               <span className="text-gray-500 font-normal">on Klook</span>
             </div>
 
