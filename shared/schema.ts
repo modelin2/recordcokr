@@ -71,12 +71,15 @@ export const bookings = pgTable("bookings", {
   youtubeTrackUrl: text("youtube_track_url"),
   selectedAddons: integer("selected_addons").array().default([]),
   selectedPartnerAddons: integer("selected_partner_addons").array().default([]), // For Naver addons
+  selectedServices: text("selected_services"), // JSON string of selected services with names and prices
   lpDeliveryAddress: text("lp_delivery_address"), // For LP Record Production addon
   bookingDate: text("booking_date"), // Optional for klook/naver bookings
   bookingTime: text("booking_time"), // Optional for klook/naver bookings
   totalPrice: integer("total_price").notNull(),
   status: text("status").notNull().default("pending"),
   paymentStatus: text("payment_status").notNull().default("unpaid"), // "unpaid", "paid", "pending"
+  paymentMethod: text("payment_method"), // "online" or "offline"
+  paidAmount: integer("paid_amount"), // Amount paid via online payment (PayPal)
   paypalOrderId: text("paypal_order_id"), // PayPal order ID for tracking
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -170,6 +173,7 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   status: true,
   paymentStatus: true,
   paypalOrderId: true,
+  paidAmount: true,
 }).extend({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),
@@ -184,10 +188,13 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   youtubeTrackUrl: z.string().optional(),
   selectedAddons: z.array(z.number()).default([]),
   selectedPartnerAddons: z.array(z.number()).default([]),
+  selectedServices: z.string().optional(), // JSON string of selected services
   lpDeliveryAddress: z.string().optional(),
   bookingDate: z.string().optional(), // Optional for klook/naver bookings
   bookingTime: z.string().optional(), // Optional for klook/naver bookings
   paymentStatus: z.enum(["unpaid", "paid", "pending"]).optional(), // Payment status
+  paymentMethod: z.enum(["online", "offline"]).optional(), // Payment method
+  paidAmount: z.number().optional(), // Amount paid via online payment
   paypalOrderId: z.string().optional(), // PayPal order ID
 });
 

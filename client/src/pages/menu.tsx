@@ -654,7 +654,8 @@ export default function MenuPage() {
             const response = await apiRequest('POST', '/api/paypal/capture-order', { orderId: data.orderID });
             const captureData = await response.json() as { success?: boolean; error?: string };
             if (captureData.success) {
-              handleSubmit({ paymentStatus: "paid", paypalOrderId: data.orderID });
+              const paidAmountKRW = calculateTotal(); // Amount paid in KRW
+              handleSubmit({ paymentStatus: "paid", paypalOrderId: data.orderID, paidAmount: paidAmountKRW });
               toast({ title: t.paymentSuccess });
             } else {
               throw new Error('Capture failed');
@@ -737,7 +738,7 @@ export default function MenuPage() {
     });
   };
 
-  const handleSubmit = (paymentInfo?: { paymentStatus: "paid" | "pending" | "unpaid"; paypalOrderId?: string }) => {
+  const handleSubmit = (paymentInfo?: { paymentStatus: "paid" | "pending" | "unpaid"; paypalOrderId?: string; paidAmount?: number }) => {
     if (!name || !phone || !email) {
       toast({ title: t.required, description: "Please fill all required fields", variant: "destructive" });
       return;
@@ -749,13 +750,26 @@ export default function MenuPage() {
       return `${drinkName} x${o.quantity}${tempLabel}`;
     }).join(", ") || "none";
 
-    const selectedAddons: number[] = [];
-    if (selectedMixing === "ai") selectedAddons.push(1);
-    if (selectedMixing === "engineer") selectedAddons.push(2);
-    if (selectedVideo === "cameraman") selectedAddons.push(3);
-    if (selectedVideo === "full") selectedAddons.push(4);
-    if (wantsAlbum) selectedAddons.push(5);
-    if (wantsLP) selectedAddons.push(6);
+    // Build selected services JSON with actual names and prices
+    const services: { name: string; price: number }[] = [];
+    if (selectedMixing === "basic") {
+      services.push({ name: "Sound Correction (Basic)", price: 20000 });
+    } else if (selectedMixing === "ai") {
+      services.push({ name: "AI Mixing", price: 90000 });
+    } else if (selectedMixing === "engineer") {
+      services.push({ name: "Full Track Mixing (Engineer)", price: 100000 });
+    }
+    if (selectedVideo === "cameraman") {
+      services.push({ name: "Cameraman Recording", price: 50000 });
+    } else if (selectedVideo === "full") {
+      services.push({ name: "Full Video Editing", price: 100000 });
+    }
+    if (wantsAlbum) {
+      services.push({ name: "Pro Album Release (Global Distribution)", price: 1300000 });
+    }
+    if (wantsLP) {
+      services.push({ name: "LP Record Production", price: 300000 });
+    }
 
     let namePrefix = "";
     if (bookingPath === "existing" && selectedPlatform) {
@@ -766,11 +780,18 @@ export default function MenuPage() {
       namePrefix = `[Homepage ${dateStr} ${selectedTime}] `;
     }
 
-    // Determine payment status
+    // Determine payment status and method
     let finalPaymentStatus = paymentInfo?.paymentStatus;
     if (!finalPaymentStatus) {
-      // No PayPal payment - either Korean user or offline payment
       finalPaymentStatus = "unpaid";
+    }
+
+    // Determine payment method
+    let finalPaymentMethod: "online" | "offline" | undefined;
+    if (language === "ko") {
+      finalPaymentMethod = "offline"; // Korean users always pay at store
+    } else if (paymentMethod) {
+      finalPaymentMethod = paymentMethod;
     }
 
     bookingMutation.mutate({
@@ -781,9 +802,12 @@ export default function MenuPage() {
       selectedDrink: drinkSummary,
       drinkTemperature: "mixed",
       youtubeTrackUrl: youtubeUrl || "https://youtube.com",
-      selectedAddons,
+      selectedAddons: [],
+      selectedServices: JSON.stringify(services),
       totalPrice: calculateTotal(),
       paymentStatus: finalPaymentStatus,
+      paymentMethod: finalPaymentMethod,
+      paidAmount: paymentInfo?.paidAmount,
       paypalOrderId: paymentInfo?.paypalOrderId,
     });
   };

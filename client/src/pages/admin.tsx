@@ -540,7 +540,34 @@ Recording Cafe Team`
                         )}
                       </div>
                       
-                      {(booking as any).selectedAddons && (booking as any).selectedAddons.length > 0 && (
+                      {/* Display selectedServices (new system) */}
+                      {(booking as any).selectedServices && (() => {
+                        try {
+                          const services = JSON.parse((booking as any).selectedServices);
+                          if (Array.isArray(services) && services.length > 0) {
+                            return (
+                              <div className="mt-4 p-3 bg-white/5 rounded border border-white/10">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <ShoppingBag className="h-4 w-4 text-gray-400" />
+                                  <span className="text-sm text-gray-300 font-medium">Selected Services:</span>
+                                </div>
+                                <div className="space-y-1">
+                                  {services.map((svc: { name: string; price: number }, idx: number) => (
+                                    <div key={idx} className="flex items-center justify-between text-sm">
+                                      <span className="text-gray-300">{svc.name}</span>
+                                      <span className="text-green-400 font-mono">₩{svc.price.toLocaleString()}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          }
+                        } catch (e) { /* ignore parse errors */ }
+                        return null;
+                      })()}
+                      
+                      {/* Fall back to legacy selectedAddons if no selectedServices */}
+                      {!(booking as any).selectedServices && (booking as any).selectedAddons && (booking as any).selectedAddons.length > 0 && (
                         <div className="mt-4 p-3 bg-white/5 rounded border border-white/10">
                           <div className="flex items-center gap-2 mb-2">
                             <ShoppingBag className="h-4 w-4 text-gray-400" />
@@ -562,6 +589,41 @@ Recording Cafe Team`
                                 </div>
                               );
                             })}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Payment Method & Amount Info */}
+                      {((booking as any).paymentMethod || (booking as any).paidAmount) && (
+                        <div className="mt-4 p-3 bg-blue-500/10 rounded border border-blue-500/30">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-sm text-blue-300 font-medium">💳 Payment Info:</span>
+                          </div>
+                          <div className="space-y-1 text-sm">
+                            {(booking as any).paymentMethod && (
+                              <div className="flex items-center justify-between">
+                                <span className="text-gray-300">Method:</span>
+                                <Badge className={
+                                  (booking as any).paymentMethod === "online" 
+                                    ? "bg-blue-500/20 text-blue-300 border-blue-500/50" 
+                                    : "bg-orange-500/20 text-orange-300 border-orange-500/50"
+                                }>
+                                  {(booking as any).paymentMethod === "online" ? "🌐 Online (PayPal)" : "🏪 Offline (Store)"}
+                                </Badge>
+                              </div>
+                            )}
+                            {(booking as any).paidAmount && (booking as any).paidAmount > 0 && (
+                              <div className="flex items-center justify-between">
+                                <span className="text-gray-300">Paid Amount:</span>
+                                <span className="text-green-400 font-mono font-bold">₩{(booking as any).paidAmount.toLocaleString()}</span>
+                              </div>
+                            )}
+                            {(booking as any).paypalOrderId && (
+                              <div className="flex items-center justify-between">
+                                <span className="text-gray-300">PayPal Order ID:</span>
+                                <span className="text-gray-400 font-mono text-xs">{(booking as any).paypalOrderId}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       )}
