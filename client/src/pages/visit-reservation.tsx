@@ -109,11 +109,14 @@ export default function VisitReservationPage() {
   }, [paypalConfig, paypalLoaded, toast]);
 
   useEffect(() => {
-    if (!paypalLoaded || !window.paypal || !paypalButtonRef.current || !isFormValid) return;
+    if (!paypalLoaded || !window.paypal || !paypalButtonRef.current) return;
 
-    paypalButtonRef.current.innerHTML = "";
+    const container = paypalButtonRef.current;
+    let isMounted = true;
 
-    window.paypal.Buttons({
+    container.innerHTML = "";
+
+    const buttons = window.paypal.Buttons({
       style: {
         layout: "vertical",
         color: "gold",
@@ -122,6 +125,7 @@ export default function VisitReservationPage() {
         height: 50
       },
       createOrder: async () => {
+        if (!isMounted) return;
         setPaymentProcessing(true);
         try {
           const validatedData = visitReservationSchema.parse(formValues);
@@ -141,6 +145,7 @@ export default function VisitReservationPage() {
         }
       },
       onApprove: async (data: any) => {
+        if (!isMounted) return;
         try {
           const reservationId = pendingReservationIdRef.current;
           if (!reservationId) {
@@ -164,15 +169,28 @@ export default function VisitReservationPage() {
           setPaymentProcessing(false);
         }
       },
-      onError: () => {
+      onError: (err: any) => {
+        if (!isMounted) return;
+        if (err?.message?.includes("container element removed")) return;
         setPaymentProcessing(false);
-        toast({ title: "Payment error", variant: "destructive" });
       },
       onCancel: () => {
+        if (!isMounted) return;
         setPaymentProcessing(false);
       }
-    }).render(paypalButtonRef.current);
-  }, [paypalLoaded, isFormValid, formValues.name, formValues.email, formValues.phone, formValues.reservationDate, formValues.reservationTime, formValues.numberOfPeople]);
+    });
+
+    if (container && document.body.contains(container)) {
+      buttons.render(container).catch(() => {});
+    }
+
+    return () => {
+      isMounted = false;
+      if (container) {
+        container.innerHTML = "";
+      }
+    };
+  }, [paypalLoaded]);
 
   const allTimes = [
     "12:00", "12:10", "12:20", "12:30", "12:40", "12:50",
@@ -442,7 +460,8 @@ export default function VisitReservationPage() {
                       ref={paypalButtonRef} 
                       className={cn(
                         "min-h-[60px]",
-                        (!isFormValid || paymentProcessing || !paypalLoaded) && "opacity-50 pointer-events-none"
+                        !paypalLoaded && "hidden",
+                        (!isFormValid || paymentProcessing) && "opacity-50 pointer-events-none"
                       )}
                       data-testid="paypal-button-container"
                     />
