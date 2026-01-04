@@ -74,25 +74,6 @@ export default function ContactSection() {
             </div>
           </div>
         </div>
-        
-        {/* Transportation Guide */}
-        <div className="mt-12 glass p-8 rounded-3xl max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold mb-6 text-center">Getting Here</h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <h4 className="font-bold text-[hsl(var(--k-pink))] mb-2">From Incheon Airport</h4>
-              <p className="text-gray-300 text-sm">Airport Express → Hongik Univ. → Line 6 to Sinsa</p>
-            </div>
-            <div className="text-center">
-              <h4 className="font-bold text-[hsl(var(--k-purple))] mb-2">From Gangnam Station</h4>
-              <p className="text-gray-300 text-sm">Line 2 → Line 3 to Sinsa (1 transfer)</p>
-            </div>
-            <div className="text-center">
-              <h4 className="font-bold text-[hsl(var(--k-blue))] mb-2">From Myeongdong</h4>
-              <p className="text-gray-300 text-sm">Line 4 → Line 3 to Sinsa (1 transfer)</p>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
