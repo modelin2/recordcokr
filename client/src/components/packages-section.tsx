@@ -239,7 +239,7 @@ export default function PackagesSection() {
                 <img 
                   src={streamingRevenueTable} 
                   alt="Music Streaming Revenue Per Stream Table" 
-                  className="max-w-lg mx-auto rounded-xl shadow-lg border border-white/20"
+                  className="w-full max-w-lg mx-auto rounded-xl shadow-lg border border-white/20"
                 />
               </div>
             </div>
