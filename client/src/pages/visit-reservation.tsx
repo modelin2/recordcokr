@@ -52,6 +52,7 @@ export default function VisitReservationPage() {
   const [pendingReservationId, setPendingReservationId] = useState<number | null>(null);
   const pendingReservationIdRef = useRef<number | null>(null);
   const paypalButtonRef = useRef<HTMLDivElement>(null);
+  const formValuesRef = useRef<VisitReservationForm | null>(null);
   const { toast } = useToast();
 
   const { data: paypalConfig } = useQuery<{ clientId: string }>({
@@ -76,6 +77,10 @@ export default function VisitReservationPage() {
   const totalPrice = PRICING[numberOfPeople] || 28;
   const isFormValid = formValues.name && formValues.email && formValues.phone && 
                       formValues.reservationDate && formValues.reservationTime;
+
+  useEffect(() => {
+    formValuesRef.current = formValues;
+  }, [formValues]);
 
   useEffect(() => {
     if (!paypalConfig?.clientId || paypalLoaded) return;
@@ -128,7 +133,11 @@ export default function VisitReservationPage() {
         if (!isMounted) return;
         setPaymentProcessing(true);
         try {
-          const validatedData = visitReservationSchema.parse(formValues);
+          const currentFormValues = formValuesRef.current;
+          if (!currentFormValues) {
+            throw new Error("Form data not available");
+          }
+          const validatedData = visitReservationSchema.parse(currentFormValues);
           
           const response = await apiRequest("POST", "/api/visit-reservations", validatedData);
           const reservation = await response.json() as { id: number };
