@@ -1508,15 +1508,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Helper function to send email notification for visit reservations
   async function sendVisitReservationNotification(reservation: any) {
-    const sgMail = require("@sendgrid/mail");
-    const sendgridApiKey = process.env.SENDGRID_API_KEY;
+    const { Resend } = require("resend");
+    const resendApiKey = process.env.RESEND_API_KEY;
     
-    if (!sendgridApiKey) {
-      console.log("SendGrid API key not configured, skipping email notification");
+    if (!resendApiKey) {
+      console.log("Resend API key not configured, skipping email notification");
       return;
     }
 
-    sgMail.setApiKey(sendgridApiKey);
+    const resend = new Resend(resendApiKey);
 
     // Staff email addresses to notify
     const staffEmails = [
@@ -1527,9 +1527,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       "jake.jang.02@gmail.com"
     ];
 
-    const msg = {
+    const { error } = await resend.emails.send({
+      from: "Recording Cafe <onboarding@resend.dev>",
       to: staffEmails,
-      from: "noreply@k-recording-cafe.com",
       subject: `[New Visit Reservation] ${reservation.name} - ${reservation.reservationDate} ${reservation.reservationTime}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -1555,9 +1555,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           <p style="color: #666; font-size: 12px;">This is an automated notification from Recording Cafe.</p>
         </div>
       `
-    };
+    });
 
-    await sgMail.send(msg);
+    if (error) {
+      console.error("Failed to send email:", error);
+      throw error;
+    }
     console.log("Visit reservation notification email sent to staff");
   }
 
