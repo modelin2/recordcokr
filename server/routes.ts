@@ -1520,8 +1520,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     // Staff email addresses to notify
     const staffEmails = [
-      "admin@k-recording-cafe.com",
-      // Add more staff emails here
+      "100492@gmail.com",
+      "nuevoseoulmusiclab@gmail.com",
+      "dnbtommy@naver.com",
+      "truthse@gmail.com",
+      "jake.jang.02@gmail.com"
     ];
 
     const msg = {
@@ -1531,7 +1534,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #E91E63;">🎤 New Visit Reservation</h2>
-          <p>A new visit reservation has been made through Instagram marketing.</p>
+          <p>A new paid reservation has been received!</p>
           
           <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0;">Customer Information</h3>
@@ -1544,9 +1547,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             <h3 style="margin-top: 0;">Reservation Details</h3>
             <p><strong>Date:</strong> ${reservation.reservationDate}</p>
             <p><strong>Time:</strong> ${reservation.reservationTime}</p>
-            <p><strong>Deposit:</strong> ₩${reservation.depositAmount?.toLocaleString() || "10,000"}</p>
+            <p><strong>Number of People:</strong> ${reservation.numberOfPeople || 1}</p>
+            <p><strong>Amount Paid:</strong> $${reservation.totalAmountUsd || 28} USD</p>
             <p><strong>Payment Status:</strong> <span style="color: green; font-weight: bold;">PAID</span></p>
-            <p><strong>Source:</strong> ${reservation.source || "Instagram"}</p>
           </div>
           
           <p style="color: #666; font-size: 12px;">This is an automated notification from Recording Cafe.</p>
