@@ -502,7 +502,16 @@ export default function VisitReservationPage() {
             </CardContent>
           </Card>
 
-          <div className="mt-8 space-y-4">
+          <div className="text-center mt-8 mb-4">
+            <p className="text-gray-500 text-sm">
+              5 min walk from Sinsa Station Exit 5
+            </p>
+            <p className="text-gray-400 text-xs mt-1">
+              16-10, Apgujeong-ro 10-gil, Gangnam-gu, Seoul
+            </p>
+          </div>
+
+          <div className="space-y-4">
             <div className="flex items-center justify-center gap-2 text-lg font-semibold text-gray-700">
               <div className="flex">
                 {[1, 2, 3, 4, 5].map((i) => (
