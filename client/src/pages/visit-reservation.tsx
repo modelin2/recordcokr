@@ -56,10 +56,6 @@ export default function VisitReservationPage() {
   const formValuesRef = useRef<VisitReservationForm | null>(null);
   const { toast } = useToast();
 
-  const { data: paypalConfig } = useQuery<{ clientId: string }>({
-    queryKey: ["/api/paypal/client-id"],
-  });
-
   const form = useForm<VisitReservationForm>({
     resolver: zodResolver(visitReservationSchema),
     defaultValues: {
@@ -73,15 +69,23 @@ export default function VisitReservationPage() {
     },
   });
 
-  const formValues = form.watch();
-  const numberOfPeople = formValues.numberOfPeople || 1;
+  const watchedName = form.watch("name");
+  const watchedEmail = form.watch("email");
+  const watchedPhone = form.watch("phone");
+  const watchedDate = form.watch("reservationDate");
+  const watchedTime = form.watch("reservationTime");
+  const numberOfPeople = form.watch("numberOfPeople") || 1;
   const totalPrice = PRICING[numberOfPeople] || 28;
-  const isFormValid = formValues.name && formValues.email && formValues.phone && 
-                      formValues.reservationDate && formValues.reservationTime;
+  const isFormValid = Boolean(watchedName && watchedEmail && watchedPhone && watchedDate && watchedTime);
+
+  const { data: paypalConfig } = useQuery<{ clientId: string }>({
+    queryKey: ["/api/paypal/client-id"],
+    enabled: isFormValid,
+  });
 
   useEffect(() => {
-    formValuesRef.current = formValues;
-  }, [formValues]);
+    formValuesRef.current = form.getValues();
+  }, [watchedName, watchedEmail, watchedPhone, watchedDate, watchedTime, numberOfPeople]);
 
   useEffect(() => {
     if (!paypalConfig?.clientId || paypalLoaded) return;
