@@ -507,7 +507,7 @@ export default function VisitReservationPage() {
               5 min walk from Sinsa Station Exit 5
             </p>
             <p className="text-gray-400 text-xs mt-1">
-              16-10, Apgujeong-ro 10-gil, Gangnam-gu, Seoul
+              2F. 21, Gangnam-daero 107-gil, Seocho-gu, Seoul
             </p>
           </div>
 
