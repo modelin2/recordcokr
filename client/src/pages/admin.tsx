@@ -830,10 +830,6 @@ Recording Cafe Team`
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-300 mb-4">
-                  인스타그램 마케팅을 통해 예약한 고객 리스트입니다. 예약금 ₩10,000이 결제된 방문 예정 고객입니다.
-                </p>
-                
                 {visitReservationsLoading ? (
                   <div className="flex justify-center py-8">
                     <div className="animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full" />
@@ -884,8 +880,8 @@ Recording Cafe Team`
                               </div>
                               
                               <div className="mt-2 text-sm text-gray-400">
-                                예약금: ₩{reservation.depositAmount?.toLocaleString() || "10,000"}
-                                {reservation.source && ` | 유입경로: ${reservation.source}`}
+                                {reservation.numberOfPeople && `${reservation.numberOfPeople}명 | `}
+                                ${reservation.totalAmountUsd || 28} USD
                               </div>
                             </div>
                             
