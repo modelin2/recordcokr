@@ -25,9 +25,9 @@ declare global {
 }
 
 const visitReservationSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Valid email is required"),
-  phone: z.string().min(1, "Phone number is required"),
+  name: z.string().min(1, "Nickname is required"),
+  email: z.string().optional().default(""),
+  phone: z.string().optional().default(""),
   reservationDate: z.string().min(1, "Date is required"),
   reservationTime: z.string().min(1, "Time is required"),
   numberOfPeople: z.number().min(1).max(4).default(1),
@@ -70,13 +70,11 @@ export default function VisitReservationPage() {
   });
 
   const watchedName = form.watch("name");
-  const watchedEmail = form.watch("email");
-  const watchedPhone = form.watch("phone");
   const watchedDate = form.watch("reservationDate");
   const watchedTime = form.watch("reservationTime");
   const numberOfPeople = form.watch("numberOfPeople") || 1;
   const totalPrice = PRICING[numberOfPeople] || 28;
-  const isFormValid = Boolean(watchedName && watchedEmail && watchedPhone && watchedDate && watchedTime);
+  const isFormValid = Boolean(watchedName && watchedDate && watchedTime);
 
   const { data: paypalConfig } = useQuery<{ clientId: string }>({
     queryKey: ["/api/paypal/client-id"],
@@ -85,7 +83,7 @@ export default function VisitReservationPage() {
 
   useEffect(() => {
     formValuesRef.current = form.getValues();
-  }, [watchedName, watchedEmail, watchedPhone, watchedDate, watchedTime, numberOfPeople]);
+  }, [watchedName, watchedDate, watchedTime, numberOfPeople]);
 
   useEffect(() => {
     if (!paypalConfig?.clientId || paypalLoaded) return;
@@ -317,37 +315,9 @@ export default function VisitReservationPage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>Nickname</FormLabel>
                         <FormControl>
-                          <Input placeholder="Your name" {...field} data-testid="input-name" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="your@email.com" {...field} data-testid="input-email" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone</FormLabel>
-                        <FormControl>
-                          <Input placeholder="+82 10-1234-5678" {...field} data-testid="input-phone" />
+                          <Input placeholder="Your nickname" {...field} data-testid="input-name" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
