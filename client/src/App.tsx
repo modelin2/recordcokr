@@ -14,6 +14,7 @@ import Admin from "@/pages/admin";
 import LoginPage from "@/pages/login";
 import UserManagement from "@/pages/user-management";
 import PhotoPage from "@/pages/photo";
+import HotelPage from "@/pages/hotel";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "@/components/protected-route";
 
@@ -43,6 +44,7 @@ function Router() {
           <PhotoPage />
         </ProtectedRoute>
       </Route>
+      <Route path="/hotel" component={HotelPage} />
       <Route component={NotFound} />
     </Switch>
   );
