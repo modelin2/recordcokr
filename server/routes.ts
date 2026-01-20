@@ -6,6 +6,7 @@ import { unlink } from "fs/promises";
 import { insertBookingSchema, insertNaverBookingSchema, insertVisitorPhotoSchema, insertVisitReservationSchema, insertHotelBookingSchema } from "@shared/schema";
 import { z } from "zod";
 import { GoogleGenAI, Modality } from "@google/genai";
+import { Resend } from "resend";
 
 // Initialize Gemini AI with Replit AI Integrations
 const ai = new GoogleGenAI({
@@ -1508,7 +1509,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Helper function to send email notification for visit reservations
   async function sendVisitReservationNotification(reservation: any) {
-    const { Resend } = require("resend");
     const resendApiKey = process.env.RESEND_API_KEY;
     
     if (!resendApiKey) {
@@ -1639,7 +1639,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Helper function to send email notification for hotel bookings
   async function sendHotelBookingNotification(booking: any) {
-    const { Resend } = require("resend");
     const resendApiKey = process.env.RESEND_API_KEY;
     
     if (!resendApiKey) {
