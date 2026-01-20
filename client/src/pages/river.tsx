@@ -12,10 +12,11 @@ const translations = {
   ja: {
     langLabel: "🇯🇵 日本語",
     hotelSubtitle: "リバーサイドホテルから徒歩30秒",
-    heroTitle: "K-POPアイドルと同じ",
-    heroTitle2: "レコーディングスタジオ",
-    heroTitle3: "で主人公になる",
-    heroDesc: "歌が苦手でも大丈夫。最先端AIがプロ歌手のように仕上げます。",
+    heroTitle: "K-POPのレコーディングスタジオで",
+    heroTitle2: "アイドル体験",
+    heroTitle3: "",
+    heroDesc: "歌が苦手でもAIがプロのように補正！",
+    heroDesc2: "全世界で音源発売 ＋ 一生の著作権収益",
     realExperience: "実際のレコーディング体験",
     realExperienceDesc: "お客様のレコーディング風景をご覧ください",
     feature1Title: "夢のような体験",
@@ -100,10 +101,11 @@ const translations = {
   ko: {
     langLabel: "🇰🇷 한국어",
     hotelSubtitle: "리버사이드호텔에서 도보 30초",
-    heroTitle: "K-POP 아이돌과 같은",
-    heroTitle2: "레코딩 스튜디오",
-    heroTitle3: "에서 주인공이 되다",
-    heroDesc: "노래를 못해도 괜찮아요. 최첨단 AI가 프로 가수처럼 만들어 드립니다.",
+    heroTitle: "K-POP 레코딩 스튜디오에서",
+    heroTitle2: "아이돌 체험",
+    heroTitle3: "",
+    heroDesc: "노래를 못해도 AI가 프로처럼 보정!",
+    heroDesc2: "전 세계 음원 발매 + 평생 저작권 수익",
     realExperience: "실제 레코딩 체험",
     realExperienceDesc: "고객님의 레코딩 현장을 확인하세요",
     feature1Title: "꿈같은 체험",
@@ -188,10 +190,11 @@ const translations = {
   zh: {
     langLabel: "🇨🇳 中文",
     hotelSubtitle: "从江畔酒店步行30秒",
-    heroTitle: "与K-POP偶像相同的",
-    heroTitle2: "录音棚",
-    heroTitle3: "成为主角",
-    heroDesc: "即使唱歌不好也没关系。最先进的AI会让您像专业歌手一样。",
+    heroTitle: "在K-POP录音棚",
+    heroTitle2: "偶像体验",
+    heroTitle3: "",
+    heroDesc: "即使唱歌不好，AI也能像专业歌手一样修音！",
+    heroDesc2: "全球音源发行 + 终身版权收益",
     realExperience: "实际录音体验",
     realExperienceDesc: "请观看顾客的录音现场",
     feature1Title: "梦幻般的体验",
@@ -276,10 +279,11 @@ const translations = {
   en: {
     langLabel: "🇺🇸 English",
     hotelSubtitle: "30 seconds walk from Riverside Hotel",
-    heroTitle: "Same Recording Studio as",
-    heroTitle2: "K-POP Idols",
-    heroTitle3: "Become the Star",
-    heroDesc: "Even if you can't sing well, it's okay. Advanced AI will make you sound like a pro.",
+    heroTitle: "K-POP Recording Studio",
+    heroTitle2: "Idol Experience",
+    heroTitle3: "",
+    heroDesc: "Even if you can't sing, AI corrects like a pro!",
+    heroDesc2: "Global music release + Lifetime royalties",
     realExperience: "Actual Recording Experience",
     realExperienceDesc: "Watch our customers' recording sessions",
     feature1Title: "A Dream Experience",
@@ -438,22 +442,33 @@ export default function RiverPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 py-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black" />
-        <div className="absolute inset-0 flex items-center justify-center opacity-30">
-          {/* Hero image placeholder */}
-          <div className="w-full h-full bg-gradient-to-br from-purple-900/50 to-pink-900/50" />
+      <section className="relative min-h-screen flex flex-col justify-between px-6 py-8 bg-[#1a1a2e]">
+        {/* Hero Image Placeholder - will be replaced with actual image */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-b from-[#1a1a2e] via-[#1a1a2e]/90 to-[#1a1a2e]" />
         </div>
-        <div className="relative z-10 text-center max-w-4xl mx-auto">
-          <p className="text-pink-400 text-lg mb-4">{t.hotelSubtitle}</p>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
+        
+        {/* Top Content */}
+        <div className="relative z-10 text-center pt-16">
+          <p className="text-pink-400 text-base mb-4">{t.hotelSubtitle}</p>
+          <h1 className="text-3xl md:text-5xl font-bold leading-tight text-white">
             {t.heroTitle}<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-              {t.heroTitle2}
-            </span><br />
-            {t.heroTitle3}
+            <span className="text-white">{t.heroTitle2}</span>
           </h1>
-          <p className="text-xl text-gray-300">{t.heroDesc}</p>
+        </div>
+
+        {/* Center - Image placeholder area */}
+        <div className="relative z-10 flex-1 flex items-center justify-center my-8">
+          <div className="w-full max-w-lg aspect-[4/3] bg-gray-800/50 rounded-2xl flex items-center justify-center text-gray-500">
+            {/* Hero image will go here */}
+            Image Placeholder
+          </div>
+        </div>
+
+        {/* Bottom Content */}
+        <div className="relative z-10 text-center pb-8">
+          <p className="text-white text-lg md:text-xl font-medium mb-2">{t.heroDesc}</p>
+          <p className="text-pink-400 text-base md:text-lg">{t.heroDesc2}</p>
         </div>
       </section>
 
