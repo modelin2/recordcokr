@@ -457,12 +457,13 @@ export default function RiverPage() {
           </h1>
         </div>
 
-        {/* Center - Image placeholder area */}
+        {/* Center - Hero Image */}
         <div className="relative z-10 flex-1 flex items-center justify-center my-8">
-          <div className="w-full max-w-lg aspect-[4/3] bg-gray-800/50 rounded-2xl flex items-center justify-center text-gray-500">
-            {/* Hero image will go here */}
-            Image Placeholder
-          </div>
+          <img
+            src="https://recordingcafe.com/assets/recordingcafe_(2)_1768193796781-CiKs2y1L.png"
+            alt="Recording Studio"
+            className="w-full max-w-2xl object-contain"
+          />
         </div>
 
         {/* Bottom Content */}
@@ -668,8 +669,23 @@ export default function RiverPage() {
         </div>
       </section>
 
-      {/* Han River Video */}
+      {/* Recording Studio Video */}
       <section className="py-20 px-6 bg-gradient-to-b from-black to-gray-900">
+        <div className="max-w-4xl mx-auto">
+          <div className="aspect-video bg-gray-800 rounded-2xl overflow-hidden">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/YzdkeQidBbo"
+              title="Recording Studio Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Han River Video */}
+      <section className="py-20 px-6 bg-black">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             {t.hanriverTitle} <span className="text-pink-400">{t.hanriverTitleHighlight}</span>
