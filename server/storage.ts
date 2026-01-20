@@ -1,5 +1,5 @@
 import { 
-  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations,
+  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations, hotelBookings,
   type User, type InsertUser, type InsertAdmin,
   type Package, type InsertPackage,
   type Addon, type InsertAddon,
@@ -8,7 +8,8 @@ import {
   type TimeSlot, type InsertTimeSlot,
   type PaymentOrder, type InsertPaymentOrder,
   type VisitorPhoto, type InsertVisitorPhoto,
-  type VisitReservation, type InsertVisitReservation
+  type VisitReservation, type InsertVisitReservation,
+  type HotelBooking, type InsertHotelBooking
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -66,6 +67,13 @@ export interface IStorage {
   updateVisitReservationStatus(id: number, status: string): Promise<VisitReservation | undefined>;
   updateVisitReservationPayment(id: number, paymentStatus: string, paypalOrderId?: string): Promise<VisitReservation | undefined>;
   deleteVisitReservation(id: number): Promise<boolean>;
+  
+  // Hotel booking operations
+  getAllHotelBookings(): Promise<HotelBooking[]>;
+  getHotelBooking(id: number): Promise<HotelBooking | undefined>;
+  createHotelBooking(booking: InsertHotelBooking): Promise<HotelBooking>;
+  updateHotelBookingStatus(id: number, status: string): Promise<HotelBooking | undefined>;
+  deleteHotelBooking(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -593,6 +601,27 @@ export class MemStorage implements IStorage {
   async deleteVisitReservation(id: number): Promise<boolean> {
     return false;
   }
+
+  // Hotel booking operations (MemStorage doesn't support)
+  async getAllHotelBookings(): Promise<HotelBooking[]> {
+    return [];
+  }
+
+  async getHotelBooking(id: number): Promise<HotelBooking | undefined> {
+    return undefined;
+  }
+
+  async createHotelBooking(booking: InsertHotelBooking): Promise<HotelBooking> {
+    throw new Error("Hotel bookings are not supported in MemStorage");
+  }
+
+  async updateHotelBookingStatus(id: number, status: string): Promise<HotelBooking | undefined> {
+    return undefined;
+  }
+
+  async deleteHotelBooking(id: number): Promise<boolean> {
+    return false;
+  }
 }
 
 // Database Storage Implementation
@@ -883,6 +912,35 @@ export class DatabaseStorage implements IStorage {
 
   async deleteVisitReservation(id: number): Promise<boolean> {
     const result = await db.delete(visitReservations).where(eq(visitReservations.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  // Hotel booking operations
+  async getAllHotelBookings(): Promise<HotelBooking[]> {
+    return await db.select().from(hotelBookings).orderBy(desc(hotelBookings.createdAt));
+  }
+
+  async getHotelBooking(id: number): Promise<HotelBooking | undefined> {
+    const [booking] = await db.select().from(hotelBookings).where(eq(hotelBookings.id, id));
+    return booking;
+  }
+
+  async createHotelBooking(booking: InsertHotelBooking): Promise<HotelBooking> {
+    const [newBooking] = await db.insert(hotelBookings).values(booking).returning();
+    return newBooking;
+  }
+
+  async updateHotelBookingStatus(id: number, status: string): Promise<HotelBooking | undefined> {
+    const [updated] = await db
+      .update(hotelBookings)
+      .set({ status })
+      .where(eq(hotelBookings.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteHotelBooking(id: number): Promise<boolean> {
+    const result = await db.delete(hotelBookings).where(eq(hotelBookings.id, id));
     return (result.rowCount || 0) > 0;
   }
 }

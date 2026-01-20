@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Clock, Train, Building, Coffee, Mic, Sparkles, Globe, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Clock, Train, Building, Coffee, Mic, Sparkles, Globe, Star, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 type Language = "ko" | "ja" | "zh" | "en";
 
@@ -97,6 +99,12 @@ const translations = {
     visitTime: "訪問時間",
     submitBtn: "訪問予約する",
     selectTime: "--:--",
+    submitting: "予約中...",
+    successTitle: "予約完了！",
+    successDesc: "ご予約が正常に送信されました。",
+    errorTitle: "エラー",
+    formError: "入力エラー",
+    formErrorDesc: "必須項目をすべて入力してください",
   },
   ko: {
     langLabel: "🇰🇷 한국어",
@@ -186,6 +194,12 @@ const translations = {
     visitTime: "방문 시간",
     submitBtn: "방문 예약하기",
     selectTime: "--:--",
+    submitting: "예약 중...",
+    successTitle: "예약 완료!",
+    successDesc: "예약이 성공적으로 제출되었습니다.",
+    errorTitle: "오류",
+    formError: "입력 오류",
+    formErrorDesc: "필수 항목을 모두 입력해주세요",
   },
   zh: {
     langLabel: "🇨🇳 中文",
@@ -275,6 +289,12 @@ const translations = {
     visitTime: "访问时间",
     submitBtn: "预约访问",
     selectTime: "--:--",
+    submitting: "预约中...",
+    successTitle: "预约成功！",
+    successDesc: "您的预约已成功提交。",
+    errorTitle: "错误",
+    formError: "输入错误",
+    formErrorDesc: "请填写所有必填项",
   },
   en: {
     langLabel: "🇺🇸 English",
@@ -364,6 +384,12 @@ const translations = {
     visitTime: "Visit Time",
     submitBtn: "Book Visit",
     selectTime: "--:--",
+    submitting: "Submitting...",
+    successTitle: "Reservation Complete!",
+    successDesc: "Your reservation has been submitted successfully.",
+    errorTitle: "Error",
+    formError: "Input Error",
+    formErrorDesc: "Please fill in all required fields",
   },
 };
 
@@ -410,6 +436,8 @@ export default function RiverPage() {
   const [numPeople, setNumPeople] = useState("1");
   const [visitDate, setVisitDate] = useState("");
   const [visitTime, setVisitTime] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const t = translations[language];
 
@@ -418,8 +446,47 @@ export default function RiverPage() {
   const nextReview = () => setReviewIndex((prev) => (prev + 1) % REVIEW_IMAGES.length);
   const prevReview = () => setReviewIndex((prev) => (prev - 1 + REVIEW_IMAGES.length) % REVIEW_IMAGES.length);
 
-  const handleSubmit = () => {
-    console.log({ roomNumber, nickname, numPeople, visitDate, visitTime });
+  const handleSubmit = async () => {
+    if (!nickname || !visitDate || !visitTime) {
+      toast({
+        title: t.formError || "Error",
+        description: t.formErrorDesc || "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await apiRequest("POST", "/api/hotel-bookings", {
+        hotelSource: "riverside",
+        roomNumber: roomNumber || undefined,
+        guestName: nickname,
+        numberOfPeople: parseInt(numPeople),
+        visitDate,
+        visitTime,
+      });
+
+      toast({
+        title: t.successTitle || "Reservation Complete!",
+        description: t.successDesc || "Your reservation has been submitted successfully.",
+      });
+
+      // Reset form
+      setRoomNumber("");
+      setNickname("");
+      setNumPeople("1");
+      setVisitDate("");
+      setVisitTime("");
+    } catch (error: any) {
+      toast({
+        title: t.errorTitle || "Error",
+        description: error.message || "Failed to submit reservation",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -882,9 +949,11 @@ export default function RiverPage() {
               </div>
               <Button
                 onClick={handleSubmit}
-                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white py-6 text-lg font-bold"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white py-6 text-lg font-bold disabled:opacity-50"
               >
-                {t.submitBtn}
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                {isSubmitting ? (t.submitting || "Submitting...") : t.submitBtn}
               </Button>
             </CardContent>
           </Card>

@@ -300,3 +300,34 @@ export const insertVisitReservationSchema = createInsertSchema(visitReservations
 
 export type VisitReservation = typeof visitReservations.$inferSelect;
 export type InsertVisitReservation = z.infer<typeof insertVisitReservationSchema>;
+
+// Hotel bookings for partner hotel customers (Riverside Hotel, etc.)
+export const hotelBookings = pgTable("hotel_bookings", {
+  id: serial("id").primaryKey(),
+  hotelSource: text("hotel_source").notNull(), // "riverside", "shilla", etc.
+  roomNumber: text("room_number"),
+  guestName: text("guest_name").notNull(),
+  numberOfPeople: integer("number_of_people").notNull().default(1),
+  visitDate: text("visit_date").notNull(),
+  visitTime: text("visit_time").notNull(),
+  status: text("status").notNull().default("pending"), // "pending", "confirmed", "cancelled", "visited"
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertHotelBookingSchema = createInsertSchema(hotelBookings).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  hotelSource: z.string().min(1, "Hotel source is required"),
+  roomNumber: z.string().optional(),
+  guestName: z.string().min(1, "Guest name is required"),
+  numberOfPeople: z.number().min(1).max(4).default(1),
+  visitDate: z.string().min(1, "Visit date is required"),
+  visitTime: z.string().min(1, "Visit time is required"),
+  status: z.enum(["pending", "confirmed", "cancelled", "visited"]).default("pending"),
+  notes: z.string().optional(),
+});
+
+export type HotelBooking = typeof hotelBookings.$inferSelect;
+export type InsertHotelBooking = z.infer<typeof insertHotelBookingSchema>;

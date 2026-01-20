@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { spawn } from "child_process";
 import { unlink } from "fs/promises";
-import { insertBookingSchema, insertNaverBookingSchema, insertVisitorPhotoSchema, insertVisitReservationSchema } from "@shared/schema";
+import { insertBookingSchema, insertNaverBookingSchema, insertVisitorPhotoSchema, insertVisitReservationSchema, insertHotelBookingSchema } from "@shared/schema";
 import { z } from "zod";
 import { GoogleGenAI, Modality } from "@google/genai";
 
@@ -1562,6 +1562,149 @@ export async function registerRoutes(app: Express): Promise<Server> {
       throw error;
     }
     console.log("Visit reservation notification email sent to staff");
+  }
+
+  // Hotel booking endpoints
+  
+  // Get all hotel bookings (admin only)
+  app.get("/api/hotel-bookings", requireAdmin, async (req, res) => {
+    try {
+      const bookings = await storage.getAllHotelBookings();
+      res.json(bookings);
+    } catch (error: any) {
+      console.error("Error fetching hotel bookings:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Create hotel booking (public - from hotel landing pages)
+  app.post("/api/hotel-bookings", async (req, res) => {
+    try {
+      const validatedData = insertHotelBookingSchema.parse(req.body);
+      const booking = await storage.createHotelBooking(validatedData);
+      
+      // Send email notification to staff
+      try {
+        await sendHotelBookingNotification(booking);
+      } catch (emailError) {
+        console.error("Failed to send hotel booking email notification:", emailError);
+        // Don't fail the request if email fails
+      }
+      
+      res.status(201).json(booking);
+    } catch (error: any) {
+      console.error("Error creating hotel booking:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Update hotel booking status (admin only)
+  app.patch("/api/hotel-bookings/:id/status", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (!["pending", "confirmed", "cancelled", "visited"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status" });
+      }
+      
+      const updated = await storage.updateHotelBookingStatus(id, status);
+      if (!updated) {
+        return res.status(404).json({ error: "Booking not found" });
+      }
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating hotel booking status:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Delete hotel booking (admin only)
+  app.delete("/api/hotel-bookings/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteHotelBooking(id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Booking not found" });
+      }
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error deleting hotel booking:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Helper function to send email notification for hotel bookings
+  async function sendHotelBookingNotification(booking: any) {
+    const { Resend } = require("resend");
+    const resendApiKey = process.env.RESEND_API_KEY;
+    
+    if (!resendApiKey) {
+      console.log("Resend API key not configured, skipping email notification");
+      return;
+    }
+
+    const resend = new Resend(resendApiKey);
+
+    // Staff email addresses to notify
+    const staffEmails = [
+      "100492@gmail.com",
+      "nuevoseoulmusiclab@gmail.com",
+      "dnbtommy@naver.com",
+      "truthse@gmail.com",
+      "jake.jang.02@gmail.com"
+    ];
+
+    // Hotel source display names
+    const hotelNames: { [key: string]: string } = {
+      riverside: "Riverside Hotel",
+      shilla: "The Shilla Seoul",
+      lotte: "Lotte Hotel Seoul",
+      jw: "JW Marriott Seoul"
+    };
+
+    const hotelDisplayName = hotelNames[booking.hotelSource] || booking.hotelSource;
+
+    const { error } = await resend.emails.send({
+      from: "Recording Cafe <onboarding@resend.dev>",
+      to: staffEmails,
+      subject: `[Hotel Booking] ${booking.guestName} - ${hotelDisplayName} - ${booking.visitDate} ${booking.visitTime}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #9C27B0;">🏨 New Hotel Guest Booking</h2>
+          <p>A new booking from a hotel guest has been received!</p>
+          
+          <div style="background-color: #f3e5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0; color: #7B1FA2;">Hotel Source</h3>
+            <p style="font-size: 18px; font-weight: bold; color: #4A148C;">${hotelDisplayName}</p>
+            ${booking.roomNumber ? `<p><strong>Room Number:</strong> ${booking.roomNumber}</p>` : ''}
+          </div>
+          
+          <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">Guest Information</h3>
+            <p><strong>Name:</strong> ${booking.guestName}</p>
+            <p><strong>Number of People:</strong> ${booking.numberOfPeople}</p>
+          </div>
+          
+          <div style="background-color: #fff3e0; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">Reservation Details</h3>
+            <p><strong>Date:</strong> ${booking.visitDate}</p>
+            <p><strong>Time:</strong> ${booking.visitTime}</p>
+          </div>
+          
+          <p style="color: #666; font-size: 12px;">This is an automated notification from Recording Cafe.</p>
+        </div>
+      `
+    });
+
+    if (error) {
+      console.error("Failed to send hotel booking email:", error);
+      throw error;
+    }
+    console.log("Hotel booking notification email sent to staff");
   }
 
   const httpServer = createServer(app);
