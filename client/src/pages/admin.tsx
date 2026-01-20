@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut, Camera } from "lucide-react";
-import type { Booking, VisitReservation } from "@shared/schema";
+import type { Booking, VisitReservation, HotelBooking } from "@shared/schema";
 import { format } from "date-fns";
 import { Copy } from "lucide-react";
 import { useLocation } from "wouter";
@@ -52,7 +52,7 @@ export default function AdminPage() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [emailSubject, setEmailSubject] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
-  const [activeTab, setActiveTab] = useState<"bookings" | "visit-reservations">("bookings");
+  const [activeTab, setActiveTab] = useState<"bookings" | "visit-reservations" | "hotel-bookings">("bookings");
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
@@ -118,6 +118,11 @@ export default function AdminPage() {
     queryKey: ['/api/visit-reservations'],
   });
 
+  // Fetch hotel bookings
+  const { data: hotelBookings = [], isLoading: hotelBookingsLoading } = useQuery<HotelBooking[]>({
+    queryKey: ['/api/hotel-bookings'],
+  });
+
   // Update visit reservation status mutation
   const updateVisitStatusMutation = useMutation({
     mutationFn: async ({ reservationId, status }: { reservationId: number; status: string }) => {
@@ -134,6 +139,27 @@ export default function AdminPage() {
       toast({
         title: "Update Failed",
         description: "Failed to update visit reservation status.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Update hotel booking status mutation
+  const updateHotelBookingStatusMutation = useMutation({
+    mutationFn: async ({ bookingId, status }: { bookingId: number; status: string }) => {
+      return apiRequest("PATCH", `/api/hotel-bookings/${bookingId}/status`, { status });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/hotel-bookings'] });
+      toast({
+        title: "Status Updated",
+        description: "Hotel booking status has been updated.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update hotel booking status.",
         variant: "destructive",
       });
     },
@@ -431,15 +457,21 @@ Recording Cafe Team`
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations")} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-white/10 mb-6">
+        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations" | "hotel-bookings")} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 bg-white/10 mb-6">
             <TabsTrigger value="bookings" className="text-white data-[state=active]:bg-white/20">
-              📋 예약 관리 / Bookings
+              📋 예약 관리
             </TabsTrigger>
             <TabsTrigger value="visit-reservations" className="text-white data-[state=active]:bg-white/20">
-              🎯 방문 예약 / Visit Reservations
+              🎯 방문 예약
               {visitReservations.length > 0 && (
                 <Badge className="ml-2 bg-pink-500/50 text-white">{visitReservations.length}</Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="hotel-bookings" className="text-white data-[state=active]:bg-white/20">
+              🏨 호텔 예약
+              {hotelBookings.length > 0 && (
+                <Badge className="ml-2 bg-blue-500/50 text-white">{hotelBookings.length}</Badge>
               )}
             </TabsTrigger>
           </TabsList>
@@ -904,6 +936,98 @@ Recording Cafe Team`
                           
                           <div className="mt-3 pt-3 border-t border-white/10 text-xs text-gray-400">
                             Created: {reservation.createdAt ? format(new Date(reservation.createdAt), 'PPp') : 'Unknown'}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Hotel Bookings Tab */}
+          <TabsContent value="hotel-bookings">
+            <Card className="glass border-white/20 mb-6">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  🏨 호텔 방문 예약 / Hotel Bookings
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {hotelBookingsLoading ? (
+                  <div className="text-white text-center py-8">Loading hotel bookings...</div>
+                ) : hotelBookings.length === 0 ? (
+                  <div className="text-gray-400 text-center py-8">No hotel bookings yet</div>
+                ) : (
+                  <div className="space-y-4">
+                    {hotelBookings.map((booking) => (
+                      <Card key={booking.id} className="bg-white/5 border-white/10">
+                        <CardContent className="p-4">
+                          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <User className="h-4 w-4 text-blue-400" />
+                                <span className="font-semibold text-white">{booking.guestName}</span>
+                                <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/50">
+                                  {booking.hotelSource === "riverside" ? "Riverside Hotel" : booking.hotelSource}
+                                </Badge>
+                                <Badge className={
+                                  booking.status === "pending" ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/50" :
+                                  booking.status === "confirmed" ? "bg-blue-500/20 text-blue-300 border-blue-500/50" :
+                                  booking.status === "visited" ? "bg-green-500/20 text-green-300 border-green-500/50" :
+                                  "bg-red-500/20 text-red-300 border-red-500/50"
+                                }>
+                                  {booking.status}
+                                </Badge>
+                              </div>
+                              
+                              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm text-gray-300">
+                                {booking.roomNumber && (
+                                  <div className="flex items-center gap-2">
+                                    🚪 Room: {booking.roomNumber}
+                                  </div>
+                                )}
+                                <div className="flex items-center gap-2">
+                                  👥 {booking.numberOfPeople}명
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Calendar className="h-4 w-4" />
+                                  {booking.visitDate}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Clock className="h-4 w-4" />
+                                  {booking.visitTime}
+                                </div>
+                              </div>
+                              
+                              {booking.notes && (
+                                <div className="mt-2 text-sm text-gray-400">
+                                  📝 {booking.notes}
+                                </div>
+                              )}
+                            </div>
+                            
+                            <div className="flex items-center gap-2">
+                              <Select 
+                                value={booking.status} 
+                                onValueChange={(val) => updateHotelBookingStatusMutation.mutate({ bookingId: booking.id, status: val })}
+                              >
+                                <SelectTrigger className="w-[140px] bg-white/10 border-white/20 text-white">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="pending">Pending</SelectItem>
+                                  <SelectItem value="confirmed">Confirmed</SelectItem>
+                                  <SelectItem value="visited">Visited</SelectItem>
+                                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-3 pt-3 border-t border-white/10 text-xs text-gray-400">
+                            Created: {booking.createdAt ? format(new Date(booking.createdAt), 'PPp') : 'Unknown'}
                           </div>
                         </CardContent>
                       </Card>
