@@ -1519,12 +1519,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const resend = new Resend(resendApiKey);
 
     // Staff email addresses to notify
+    // Note: Resend free plan requires domain verification for multiple recipients
+    // Currently only sending to the verified email address
     const staffEmails = [
-      "100492@gmail.com",
-      "nuevoseoulmusiclab@gmail.com",
-      "dnbtommy@naver.com",
-      "truthse@gmail.com",
-      "jake.jang.02@gmail.com"
+      "100492@gmail.com"
     ];
 
     const { error } = await resend.emails.send({
@@ -1649,12 +1647,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const resend = new Resend(resendApiKey);
 
     // Staff email addresses to notify
+    // Note: Resend free plan requires domain verification for multiple recipients
+    // Currently only sending to the verified email address
     const staffEmails = [
-      "100492@gmail.com",
-      "nuevoseoulmusiclab@gmail.com",
-      "dnbtommy@naver.com",
-      "truthse@gmail.com",
-      "jake.jang.02@gmail.com"
+      "100492@gmail.com"
     ];
 
     // Hotel source display names
