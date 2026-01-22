@@ -563,27 +563,50 @@ export default function RiverPage() {
         </div>
       </div>
 
-      {/* Hero Section */}
-      <section className="relative bg-black">
-        <div className="relative w-full aspect-[3/4] md:aspect-[16/9] overflow-hidden">
+      {/* Hero Section - Mobile */}
+      <section className="relative bg-black md:hidden">
+        <div className="relative w-full aspect-[3/4] overflow-hidden">
           <img
             src={heroImage}
             alt="Recording Studio"
-            className="w-full h-full object-cover object-top md:object-center"
+            className="w-full h-full object-cover object-top"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6 pb-8 text-center">
-            <div className="flex items-center justify-center gap-1 text-gray-300 text-xs md:text-sm mb-3 md:mb-4">
-              <MapPin className="w-3 h-3 md:w-4 md:h-4" />
+            <div className="flex items-center justify-center gap-1 text-gray-300 text-xs mb-3">
+              <MapPin className="w-3 h-3" />
               <span>{t.hotelSubtitle}</span>
             </div>
-            <h1 className="text-[22px] md:text-4xl font-bold leading-tight mb-3 md:mb-4">
+            <h1 className="text-[22px] font-bold leading-tight mb-3">
               {t.heroTitle1}<br />
               <span className="text-[#d4a853]">{t.heroTitle2}</span><br />
               {t.heroTitle3}
             </h1>
-            <p className="text-gray-300 text-xs md:text-base max-w-xs md:max-w-none mx-auto">{t.heroDesc}</p>
+            <p className="text-gray-300 text-xs max-w-xs mx-auto">{t.heroDesc}</p>
           </div>
+        </div>
+      </section>
+
+      {/* Hero Section - PC */}
+      <section className="hidden md:flex bg-black min-h-[500px]">
+        <div className="w-1/2 relative overflow-hidden">
+          <img
+            src={heroImage}
+            alt="Recording Studio"
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
+        <div className="w-1/2 flex flex-col justify-center items-center p-12 text-center">
+          <div className="flex items-center justify-center gap-1 text-gray-400 text-sm mb-4">
+            <MapPin className="w-4 h-4" />
+            <span>{t.hotelSubtitle}</span>
+          </div>
+          <h1 className="text-4xl font-bold leading-tight mb-4">
+            {t.heroTitle1}<br />
+            <span className="text-[#d4a853]">{t.heroTitle2}</span><br />
+            {t.heroTitle3}
+          </h1>
+          <p className="text-gray-400 text-base">{t.heroDesc}</p>
         </div>
       </section>
 
@@ -610,7 +633,7 @@ export default function RiverPage() {
 
       {/* Feature Cards - Dark Style with Gold Icons */}
       <section className="py-8 px-4 bg-black">
-        <div className="max-w-lg mx-auto space-y-4">
+        <div className="max-w-lg md:max-w-6xl mx-auto space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-6">
           <div className="bg-[#1a1a1a] rounded-2xl p-6 text-center">
             <div className="w-14 h-14 mx-auto mb-4 bg-[#3d3d2a] rounded-full flex items-center justify-center">
               <Star className="w-7 h-7 text-[#d4a853]" />
@@ -640,7 +663,8 @@ export default function RiverPage() {
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
           {t.spaceTitle} <span className="text-[#d4a853]">{t.spaceTitleHighlight}</span>
         </h2>
-        <div className="max-w-4xl mx-auto">
+        {/* Mobile Gallery */}
+        <div className="md:hidden max-w-4xl mx-auto">
           <div className="aspect-[4/3] rounded-xl overflow-hidden mb-2">
             <img src={GALLERY_IMAGES[0]} alt="Gallery main" className="w-full h-full object-cover" />
           </div>
@@ -652,11 +676,21 @@ export default function RiverPage() {
             ))}
           </div>
         </div>
+        {/* PC Gallery */}
+        <div className="hidden md:block max-w-6xl mx-auto">
+          <div className="grid grid-cols-4 gap-3">
+            {GALLERY_IMAGES.map((img, idx) => (
+              <div key={idx} className="aspect-square rounded-lg overflow-hidden">
+                <img src={img} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Reviews Section */}
       <section className="py-12 px-4 bg-black">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
             {t.reviewTitle} <span className="text-[#d4a853]">{t.reviewTitleHighlight}</span>
           </h2>
@@ -668,10 +702,19 @@ export default function RiverPage() {
           </div>
           <p className="text-gray-400 text-sm mb-6">{t.klookRating}</p>
           <p className="text-gray-500 text-sm mb-8">{t.klookDesc}</p>
-          <div className="grid grid-cols-2 gap-2">
+          {/* Mobile Reviews */}
+          <div className="md:hidden grid grid-cols-2 gap-2">
             {REVIEW_IMAGES.map((img, idx) => (
               <div key={idx} className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-800">
                 <img src={img} alt={`Review ${idx + 1}`} className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+          {/* PC Reviews */}
+          <div className="hidden md:grid grid-cols-5 gap-3">
+            {REVIEW_IMAGES.map((img, idx) => (
+              <div key={idx} className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-800">
+                <img src={img} alt={`Review ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
               </div>
             ))}
           </div>
@@ -683,7 +726,7 @@ export default function RiverPage() {
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
           {t.featuresTitle} <span className="text-[#d4a853]">{t.featuresTitleHighlight}</span>
         </h2>
-        <div className="max-w-lg mx-auto space-y-4">
+        <div className="max-w-lg md:max-w-6xl mx-auto space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
           <div className="bg-[#1a1a1a] rounded-xl p-5 flex items-start gap-4">
             <Coffee className="w-8 h-8 text-[#d4a853] flex-shrink-0 mt-1" />
             <div>
