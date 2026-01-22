@@ -586,28 +586,30 @@ export default function RiverPage() {
           </div>
         </div>
         
-        <div className="md:hidden p-6 text-center bg-black">
-          <div className="flex items-center justify-center gap-1 text-gray-300 text-sm mb-4">
-            <MapPin className="w-4 h-4" />
+        <div className="md:hidden py-8 px-6 text-center bg-black">
+          <div className="flex items-center justify-center gap-1 text-gray-400 text-xs mb-3">
+            <MapPin className="w-3 h-3" />
             <span>{t.hotelSubtitle}</span>
           </div>
-          <h1 className="text-2xl font-bold leading-tight mb-4">
+          <h1 className="text-xl font-bold leading-snug mb-3">
             {t.heroTitle1}<br />
             <span className="text-[#d4a853]">{t.heroTitle2}</span><br />
             {t.heroTitle3}
           </h1>
-          <p className="text-gray-300 text-sm">{t.heroDesc}</p>
+          <p className="text-gray-400 text-xs">{t.heroDesc}</p>
         </div>
       </section>
 
       {/* Real Experience Section */}
-      <section className="py-12 px-4 bg-white text-black">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="py-8 md:py-12 px-0 md:px-4 bg-white text-black">
+        <div className="max-w-4xl mx-auto text-center px-4 md:px-0">
           <h2 className="text-2xl md:text-3xl font-bold mb-2">
             {t.realExperience} <span className="text-[#d4a853]">{t.realExperienceHighlight}</span>
           </h2>
-          <p className="text-gray-600 mb-6 text-sm">{t.realExperienceDesc}</p>
-          <div className="w-full aspect-[9/16] md:aspect-video bg-gray-200 rounded-xl overflow-hidden">
+          <p className="text-gray-600 mb-4 md:mb-6 text-sm">{t.realExperienceDesc}</p>
+        </div>
+        <div className="w-full md:max-w-4xl md:mx-auto md:px-4">
+          <div className="w-full aspect-[9/16] md:aspect-video md:rounded-xl overflow-hidden">
             <iframe
               className="w-full h-full"
               src="https://www.youtube.com/embed/sGMcHrmCmDU?autoplay=1&mute=1&loop=1&playlist=sGMcHrmCmDU"
