@@ -2000,43 +2000,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get all booked times for a specific date (combines bookings and hotel bookings)
+  // Get all booked times for a specific date (combines bookings, hotel bookings, and admin schedules)
   app.get("/api/booked-times/:date", async (req, res) => {
     try {
       const { date } = req.params; // Format: "YYYY-MM-DD"
       
-      // Get all bookings, visit reservations, and hotel bookings
-      const allBookings = await storage.getAllBookings();
+      // Get all visit reservations, hotel bookings, and admin schedules
       const allVisitReservations = await storage.getAllVisitReservations();
       const allHotelBookings = await storage.getAllHotelBookings();
+      const allAdminSchedules = await storage.getAllAdminSchedules();
       
       // Filter bookings for the requested date and extract times
       const bookedTimes: string[] = [];
       
-      // From regular bookings (bookingDate format may vary)
-      allBookings.forEach(booking => {
-        if (booking.bookingDate && booking.bookingTime) {
-          // Handle different date formats
-          const bookingDateStr = booking.bookingDate;
-          // Check if it matches the date (could be "M/D" or "YYYY-MM-DD")
-          const reqDate = new Date(date);
-          const reqMonth = reqDate.getMonth() + 1;
-          const reqDay = reqDate.getDate();
-          
-          if (bookingDateStr === date || 
-              bookingDateStr === `${reqMonth}/${reqDay}` ||
-              bookingDateStr === `${reqMonth.toString().padStart(2,'0')}/${reqDay.toString().padStart(2,'0')}`) {
-            if (booking.status !== 'cancelled') {
-              bookedTimes.push(booking.bookingTime);
-            }
-          }
-        }
-      });
-      
-      // From visit reservations (visitDate format is "YYYY-MM-DD")
+      // From visit reservations (reservationDate format is "YYYY-MM-DD")
       allVisitReservations.forEach(reservation => {
-        if (reservation.visitDate === date && reservation.status !== 'cancelled') {
-          bookedTimes.push(reservation.visitTime);
+        if (reservation.reservationDate === date && reservation.status !== 'cancelled') {
+          bookedTimes.push(reservation.reservationTime);
         }
       });
       
@@ -2047,7 +2027,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
       
-      res.json({ bookedTimes: [...new Set(bookedTimes)] });
+      // From admin schedules (scheduleDate format is "YYYY-MM-DD")
+      allAdminSchedules.forEach(schedule => {
+        if (schedule.scheduleDate === date && schedule.scheduleTime) {
+          bookedTimes.push(schedule.scheduleTime);
+        }
+      });
+      
+      res.json({ bookedTimes: Array.from(new Set(bookedTimes)) });
     } catch (error) {
       console.error("Error fetching booked times:", error);
       res.status(500).json({ message: "Failed to fetch booked times" });

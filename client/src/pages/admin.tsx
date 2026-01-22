@@ -147,6 +147,34 @@ export default function AdminPage() {
   const [newScheduleTime, setNewScheduleTime] = useState("");
   const [newScheduleTitle, setNewScheduleTitle] = useState("");
   const [newScheduleDescription, setNewScheduleDescription] = useState("");
+  const [selectedCalendarEvent, setSelectedCalendarEvent] = useState<{type: 'visit' | 'hotel' | 'schedule', data: any} | null>(null);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+
+  // Fetch available time slots when schedule date changes
+  useEffect(() => {
+    if (newScheduleDate) {
+      fetch(`/api/booked-times/${newScheduleDate}`)
+        .then(res => res.json())
+        .then(data => {
+          const bookedTimes = data.bookedTimes || [];
+          // Generate all 10-minute interval slots from 10:00 to 22:00
+          const allSlots: string[] = [];
+          for (let hour = 10; hour <= 22; hour++) {
+            for (let min = 0; min < 60; min += 10) {
+              if (hour === 22 && min > 0) break; // Stop at 22:00
+              const timeStr = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+              allSlots.push(timeStr);
+            }
+          }
+          // Filter out booked times
+          const available = allSlots.filter(slot => !bookedTimes.includes(slot));
+          setAvailableTimeSlots(available);
+        })
+        .catch(() => setAvailableTimeSlots([]));
+    } else {
+      setAvailableTimeSlots([]);
+    }
+  }, [newScheduleDate]);
 
   // Update visit reservation status mutation
   const updateVisitStatusMutation = useMutation({
@@ -1024,21 +1052,36 @@ Recording Cafe Team`
                     </div>
                     
                     <div className="flex flex-col gap-2 min-w-[200px]">
-                      <Select
-                        value={booking.status}
-                        onValueChange={(value) => handleStatusUpdate(booking.id, value)}
-                      >
-                        <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="confirmed">Confirmed</SelectItem>
-                          <SelectItem value="in-progress">In Progress</SelectItem>
-                          <SelectItem value="completed">Completed</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="flex items-center gap-2">
+                        <Select
+                          value={booking.status}
+                          onValueChange={(value) => handleStatusUpdate(booking.id, value)}
+                        >
+                          <SelectTrigger className="bg-white/10 border-white/20 text-white flex-1">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="confirmed">Confirmed</SelectItem>
+                            <SelectItem value="in-progress">In Progress</SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            if (window.confirm("정말 이 예약을 삭제하시겠습니까?\nAre you sure you want to delete this booking?")) {
+                              deleteBookingMutation.mutate(booking.id);
+                            }
+                          }}
+                          disabled={deleteBookingMutation.isPending}
+                          className="text-red-400 hover:text-red-300 hover:bg-red-500/20 h-9 w-9 p-0"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                       
                       <Button 
                         variant="outline" 
@@ -1138,20 +1181,6 @@ Recording Cafe Team`
                           </DialogFooter>
                         </DialogContent>
                       </Dialog>
-                      
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => {
-                          if (window.confirm("정말 이 예약을 삭제하시겠습니까?\nAre you sure you want to delete this booking?")) {
-                            deleteBookingMutation.mutate(booking.id);
-                          }
-                        }}
-                        disabled={deleteBookingMutation.isPending}
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        삭제
-                      </Button>
                     </div>
                   </div>
                   
@@ -1408,25 +1437,25 @@ Recording Cafe Team`
                         variant="outline"
                         size="sm"
                         onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1))}
-                        className="border-white/20 text-white hover:bg-white/10"
+                        className="border-white/30 text-white hover:bg-white/20 bg-white/10"
                       >
-                        ◀
+                        ◀ 이전
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setCalendarMonth(new Date())}
-                        className="border-white/20 text-white hover:bg-white/10"
+                        className="border-pink-500/50 text-pink-300 hover:bg-pink-500/20 bg-pink-500/10"
                       >
-                        Today
+                        오늘
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1))}
-                        className="border-white/20 text-white hover:bg-white/10"
+                        className="border-white/30 text-white hover:bg-white/20 bg-white/10"
                       >
-                        ▶
+                        다음 ▶
                       </Button>
                     </div>
                   </CardTitle>
@@ -1456,21 +1485,12 @@ Recording Cafe Team`
                         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                         const isToday = dateStr === format(new Date(), 'yyyy-MM-dd');
                         
-                        // Get events for this day
-                        const dayBookings = bookings.filter(b => {
-                          if (!b.bookingDate) return false;
-                          const reqDate = new Date(dateStr);
-                          const reqMonth = reqDate.getMonth() + 1;
-                          const reqDay = reqDate.getDate();
-                          return b.bookingDate === dateStr || 
-                                 b.bookingDate === `${reqMonth}/${reqDay}` ||
-                                 b.bookingDate === `${String(reqMonth).padStart(2,'0')}/${String(reqDay).padStart(2,'0')}`;
-                        });
+                        // Get events for this day (excluding menu selection - only studio schedules)
                         const dayVisitRes = visitReservations.filter(r => r.reservationDate === dateStr);
                         const dayHotelBookings = hotelBookings.filter(h => h.visitDate === dateStr);
                         const daySchedules = adminSchedules.filter(s => s.scheduleDate === dateStr);
                         
-                        const totalEvents = dayBookings.length + dayVisitRes.length + dayHotelBookings.length + daySchedules.length;
+                        const totalEvents = dayVisitRes.length + dayHotelBookings.length + daySchedules.length;
                         
                         days.push(
                           <div 
@@ -1480,23 +1500,39 @@ Recording Cafe Team`
                           >
                             <div className={`text-xs font-bold mb-1 ${isToday ? 'text-pink-400' : 'text-white'}`}>{day}</div>
                             <div className="space-y-0.5 overflow-hidden">
-                              {dayBookings.slice(0, 2).map((b, i) => (
-                                <div key={`b-${i}`} className="text-[10px] bg-purple-500/50 text-white px-1 rounded truncate">
-                                  {b.bookingTime} {b.name}
-                                </div>
-                              ))}
                               {dayVisitRes.slice(0, 2).map((r, i) => (
-                                <div key={`v-${i}`} className="text-[10px] bg-pink-500/50 text-white px-1 rounded truncate">
+                                <div 
+                                  key={`v-${i}`} 
+                                  className="text-[10px] bg-pink-500/50 text-white px-1 rounded truncate cursor-pointer hover:bg-pink-500/70"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedCalendarEvent({ type: 'visit', data: r });
+                                  }}
+                                >
                                   {r.reservationTime} {r.name}
                                 </div>
                               ))}
                               {dayHotelBookings.slice(0, 2).map((h, i) => (
-                                <div key={`h-${i}`} className="text-[10px] bg-blue-500/50 text-white px-1 rounded truncate">
+                                <div 
+                                  key={`h-${i}`} 
+                                  className="text-[10px] bg-blue-500/50 text-white px-1 rounded truncate cursor-pointer hover:bg-blue-500/70"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedCalendarEvent({ type: 'hotel', data: h });
+                                  }}
+                                >
                                   {h.visitTime} {h.guestName}
                                 </div>
                               ))}
                               {daySchedules.slice(0, 2).map((s, i) => (
-                                <div key={`s-${i}`} className="text-[10px] bg-amber-500/50 text-white px-1 rounded truncate">
+                                <div 
+                                  key={`s-${i}`} 
+                                  className="text-[10px] bg-amber-500/50 text-white px-1 rounded truncate cursor-pointer hover:bg-amber-500/70"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedCalendarEvent({ type: 'schedule', data: s });
+                                  }}
+                                >
                                   {s.scheduleTime || '종일'} {s.title}
                                 </div>
                               ))}
@@ -1513,8 +1549,7 @@ Recording Cafe Team`
                   </div>
                   
                   {/* Legend */}
-                  <div className="flex gap-4 mt-4 text-xs">
-                    <div className="flex items-center gap-1"><div className="w-3 h-3 bg-purple-500/50 rounded"></div> 메뉴선택</div>
+                  <div className="flex gap-4 mt-4 text-xs text-gray-300">
                     <div className="flex items-center gap-1"><div className="w-3 h-3 bg-pink-500/50 rounded"></div> 홈페이지</div>
                     <div className="flex items-center gap-1"><div className="w-3 h-3 bg-blue-500/50 rounded"></div> 제휴사</div>
                     <div className="flex items-center gap-1"><div className="w-3 h-3 bg-amber-500/50 rounded"></div> 수동등록</div>
@@ -1533,18 +1568,33 @@ Recording Cafe Team`
                     <Input
                       type="date"
                       value={newScheduleDate}
-                      onChange={(e) => setNewScheduleDate(e.target.value)}
+                      onChange={(e) => {
+                        setNewScheduleDate(e.target.value);
+                        setNewScheduleTime(""); // Reset time when date changes
+                      }}
                       className="bg-white/10 border-white/20 text-white"
                     />
                   </div>
                   <div>
-                    <Label className="text-white mb-2 block">시간 (선택)</Label>
-                    <Input
-                      type="time"
-                      value={newScheduleTime}
-                      onChange={(e) => setNewScheduleTime(e.target.value)}
-                      className="bg-white/10 border-white/20 text-white"
-                    />
+                    <Label className="text-white mb-2 block">시간 (10분 단위)</Label>
+                    {newScheduleDate ? (
+                      availableTimeSlots.length > 0 ? (
+                        <Select value={newScheduleTime} onValueChange={setNewScheduleTime}>
+                          <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                            <SelectValue placeholder="시간 선택..." />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-60">
+                            {availableTimeSlots.map(slot => (
+                              <SelectItem key={slot} value={slot}>{slot}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className="text-yellow-400 text-sm py-2">예약 가능한 시간이 없습니다</div>
+                      )
+                    ) : (
+                      <div className="text-gray-400 text-sm py-2">먼저 날짜를 선택하세요</div>
+                    )}
                   </div>
                   <div>
                     <Label className="text-white mb-2 block">제목</Label>
@@ -1622,6 +1672,145 @@ Recording Cafe Team`
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Event Detail Dialog */}
+        <Dialog open={selectedCalendarEvent !== null} onOpenChange={(open) => !open && setSelectedCalendarEvent(null)}>
+          <DialogContent className="bg-gray-900 border-white/20 text-white max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                {selectedCalendarEvent?.type === 'visit' && <span className="w-3 h-3 bg-pink-500 rounded-full"></span>}
+                {selectedCalendarEvent?.type === 'hotel' && <span className="w-3 h-3 bg-blue-500 rounded-full"></span>}
+                {selectedCalendarEvent?.type === 'schedule' && <span className="w-3 h-3 bg-amber-500 rounded-full"></span>}
+                {selectedCalendarEvent?.type === 'visit' && '홈페이지 예약'}
+                {selectedCalendarEvent?.type === 'hotel' && '제휴사 예약'}
+                {selectedCalendarEvent?.type === 'schedule' && '수동 스케줄'}
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-3 text-sm">
+              {selectedCalendarEvent?.type === 'visit' && selectedCalendarEvent.data && (
+                <>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">이름</div>
+                    <div className="text-white font-medium">{selectedCalendarEvent.data.name}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">이메일</div>
+                    <div className="text-white">{selectedCalendarEvent.data.email}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">연락처</div>
+                    <div className="text-white">{selectedCalendarEvent.data.phone}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">날짜</div>
+                    <div className="text-white">{selectedCalendarEvent.data.reservationDate}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">시간</div>
+                    <div className="text-white">{selectedCalendarEvent.data.reservationTime}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">인원</div>
+                    <div className="text-white">{selectedCalendarEvent.data.numberOfPeople}명</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">금액</div>
+                    <div className="text-green-400">${selectedCalendarEvent.data.totalAmountUsd}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">상태</div>
+                    <Badge className={statusColors[selectedCalendarEvent.data.status as keyof typeof statusColors]}>
+                      {selectedCalendarEvent.data.status}
+                    </Badge>
+                  </div>
+                  {selectedCalendarEvent.data.notes && (
+                    <div className="pt-2 border-t border-white/10">
+                      <div className="text-gray-400 mb-1">메모</div>
+                      <div className="text-white text-sm">{selectedCalendarEvent.data.notes}</div>
+                    </div>
+                  )}
+                </>
+              )}
+              
+              {selectedCalendarEvent?.type === 'hotel' && selectedCalendarEvent.data && (
+                <>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">고객명</div>
+                    <div className="text-white font-medium">{selectedCalendarEvent.data.guestName}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">호텔</div>
+                    <div className="text-white">{selectedCalendarEvent.data.hotelSource}</div>
+                  </div>
+                  {selectedCalendarEvent.data.roomNumber && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="text-gray-400">객실번호</div>
+                      <div className="text-white">{selectedCalendarEvent.data.roomNumber}</div>
+                    </div>
+                  )}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">날짜</div>
+                    <div className="text-white">{selectedCalendarEvent.data.visitDate}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">시간</div>
+                    <div className="text-white">{selectedCalendarEvent.data.visitTime}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">인원</div>
+                    <div className="text-white">{selectedCalendarEvent.data.numberOfPeople}명</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">상태</div>
+                    <Badge className={statusColors[selectedCalendarEvent.data.status as keyof typeof statusColors]}>
+                      {selectedCalendarEvent.data.status}
+                    </Badge>
+                  </div>
+                  {selectedCalendarEvent.data.notes && (
+                    <div className="pt-2 border-t border-white/10">
+                      <div className="text-gray-400 mb-1">메모</div>
+                      <div className="text-white text-sm">{selectedCalendarEvent.data.notes}</div>
+                    </div>
+                  )}
+                </>
+              )}
+              
+              {selectedCalendarEvent?.type === 'schedule' && selectedCalendarEvent.data && (
+                <>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">제목</div>
+                    <div className="text-white font-medium">{selectedCalendarEvent.data.title}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">날짜</div>
+                    <div className="text-white">{selectedCalendarEvent.data.scheduleDate}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="text-gray-400">시간</div>
+                    <div className="text-white">{selectedCalendarEvent.data.scheduleTime || '종일'}</div>
+                  </div>
+                  {selectedCalendarEvent.data.description && (
+                    <div className="pt-2 border-t border-white/10">
+                      <div className="text-gray-400 mb-1">메모</div>
+                      <div className="text-white text-sm">{selectedCalendarEvent.data.description}</div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+            
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setSelectedCalendarEvent(null)}
+                className="border-white/20 text-white hover:bg-white/10"
+              >
+                닫기
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
