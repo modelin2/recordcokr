@@ -1850,6 +1850,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all booked times for a specific date (combines bookings and hotel bookings)
+  app.get("/api/booked-times/:date", async (req, res) => {
+    try {
+      const { date } = req.params; // Format: "YYYY-MM-DD"
+      
+      // Get all bookings and hotel bookings
+      const allBookings = await storage.getAllBookings();
+      const allHotelBookings = await storage.getAllHotelBookings();
+      
+      // Filter bookings for the requested date and extract times
+      const bookedTimes: string[] = [];
+      
+      // From regular bookings (bookingDate format may vary)
+      allBookings.forEach(booking => {
+        if (booking.bookingDate && booking.bookingTime) {
+          // Handle different date formats
+          const bookingDateStr = booking.bookingDate;
+          // Check if it matches the date (could be "M/D" or "YYYY-MM-DD")
+          const reqDate = new Date(date);
+          const reqMonth = reqDate.getMonth() + 1;
+          const reqDay = reqDate.getDate();
+          
+          if (bookingDateStr === date || 
+              bookingDateStr === `${reqMonth}/${reqDay}` ||
+              bookingDateStr === `${reqMonth.toString().padStart(2,'0')}/${reqDay.toString().padStart(2,'0')}`) {
+            if (booking.status !== 'cancelled') {
+              bookedTimes.push(booking.bookingTime);
+            }
+          }
+        }
+      });
+      
+      // From hotel bookings (visitDate format is "YYYY-MM-DD")
+      allHotelBookings.forEach(booking => {
+        if (booking.visitDate === date && booking.status !== 'cancelled') {
+          bookedTimes.push(booking.visitTime);
+        }
+      });
+      
+      res.json({ bookedTimes: [...new Set(bookedTimes)] });
+    } catch (error) {
+      console.error("Error fetching booked times:", error);
+      res.status(500).json({ message: "Failed to fetch booked times" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
