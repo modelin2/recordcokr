@@ -157,11 +157,10 @@ export default function AdminPage() {
         .then(res => res.json())
         .then(data => {
           const bookedTimes = data.bookedTimes || [];
-          // Generate all 10-minute interval slots from 10:00 to 22:00
+          // Generate all 10-minute interval slots from 10:00 to 21:50
           const allSlots: string[] = [];
-          for (let hour = 10; hour <= 22; hour++) {
+          for (let hour = 10; hour <= 21; hour++) {
             for (let min = 0; min < 60; min += 10) {
-              if (hour === 22 && min > 0) break; // Stop at 22:00
               const timeStr = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
               allSlots.push(timeStr);
             }
@@ -1804,7 +1803,7 @@ Recording Cafe Team`
               <Button
                 variant="outline"
                 onClick={() => setSelectedCalendarEvent(null)}
-                className="border-white/20 text-white hover:bg-white/10"
+                className="bg-white text-gray-800 hover:bg-gray-100 font-medium"
               >
                 닫기
               </Button>
