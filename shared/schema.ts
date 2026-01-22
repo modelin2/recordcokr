@@ -331,3 +331,22 @@ export const insertHotelBookingSchema = createInsertSchema(hotelBookings).omit({
 
 export type HotelBooking = typeof hotelBookings.$inferSelect;
 export type InsertHotelBooking = z.infer<typeof insertHotelBookingSchema>;
+
+// Hotel admin accounts for partner hotels to view their bookings
+export const hotelAdmins = pgTable("hotel_admins", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+  hotelSource: text("hotel_source").notNull(), // "riverside", "shilla", etc.
+  hotelName: text("hotel_name").notNull(), // Display name: "Riverside Hotel"
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertHotelAdminSchema = createInsertSchema(hotelAdmins).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type HotelAdmin = typeof hotelAdmins.$inferSelect;
+export type InsertHotelAdmin = z.infer<typeof insertHotelAdminSchema>;

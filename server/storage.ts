@@ -1,5 +1,5 @@
 import { 
-  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations, hotelBookings,
+  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations, hotelBookings, hotelAdmins,
   type User, type InsertUser, type InsertAdmin,
   type Package, type InsertPackage,
   type Addon, type InsertAddon,
@@ -9,7 +9,8 @@ import {
   type PaymentOrder, type InsertPaymentOrder,
   type VisitorPhoto, type InsertVisitorPhoto,
   type VisitReservation, type InsertVisitReservation,
-  type HotelBooking, type InsertHotelBooking
+  type HotelBooking, type InsertHotelBooking,
+  type HotelAdmin, type InsertHotelAdmin
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -942,6 +943,37 @@ export class DatabaseStorage implements IStorage {
   async deleteHotelBooking(id: number): Promise<boolean> {
     const result = await db.delete(hotelBookings).where(eq(hotelBookings.id, id));
     return (result.rowCount || 0) > 0;
+  }
+
+  // Hotel admin operations
+  async getHotelAdminByUsername(username: string): Promise<HotelAdmin | undefined> {
+    const [admin] = await db.select().from(hotelAdmins).where(eq(hotelAdmins.username, username));
+    return admin;
+  }
+
+  async getHotelAdmin(id: number): Promise<HotelAdmin | undefined> {
+    const [admin] = await db.select().from(hotelAdmins).where(eq(hotelAdmins.id, id));
+    return admin;
+  }
+
+  async createHotelAdmin(admin: InsertHotelAdmin): Promise<HotelAdmin> {
+    const [newAdmin] = await db.insert(hotelAdmins).values(admin).returning();
+    return newAdmin;
+  }
+
+  async updateHotelAdminPassword(id: number, password: string): Promise<HotelAdmin | undefined> {
+    const [updated] = await db
+      .update(hotelAdmins)
+      .set({ password })
+      .where(eq(hotelAdmins.id, id))
+      .returning();
+    return updated;
+  }
+
+  async getHotelBookingsBySource(hotelSource: string): Promise<HotelBooking[]> {
+    return await db.select().from(hotelBookings)
+      .where(eq(hotelBookings.hotelSource, hotelSource))
+      .orderBy(desc(hotelBookings.createdAt));
   }
 }
 

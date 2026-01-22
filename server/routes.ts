@@ -1702,6 +1702,154 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log("Hotel booking notification email sent to staff");
   }
 
+  // ===== Hotel Admin Routes =====
+  
+  // Hotel admin login
+  app.post("/api/hotel-admin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+
+      const admin = await storage.getHotelAdminByUsername(username);
+      
+      if (!admin) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      if (!admin.isActive) {
+        return res.status(401).json({ message: "Account is disabled" });
+      }
+
+      // Simple password check (plain text for now, could be hashed later)
+      if (admin.password !== password) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Store hotel admin in session
+      (req.session as any).hotelAdminId = admin.id;
+      (req.session as any).hotelSource = admin.hotelSource;
+
+      res.json({ 
+        success: true, 
+        admin: { 
+          id: admin.id, 
+          username: admin.username, 
+          hotelSource: admin.hotelSource,
+          hotelName: admin.hotelName 
+        } 
+      });
+    } catch (error: any) {
+      console.error("Hotel admin login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Hotel admin logout
+  app.post("/api/hotel-admin/logout", (req, res) => {
+    (req.session as any).hotelAdminId = null;
+    (req.session as any).hotelSource = null;
+    res.json({ success: true });
+  });
+
+  // Get current hotel admin
+  app.get("/api/hotel-admin/me", async (req, res) => {
+    const adminId = (req.session as any).hotelAdminId;
+    if (!adminId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const admin = await storage.getHotelAdmin(adminId);
+    if (!admin) {
+      return res.status(401).json({ message: "Admin not found" });
+    }
+
+    res.json({ 
+      id: admin.id, 
+      username: admin.username, 
+      hotelSource: admin.hotelSource,
+      hotelName: admin.hotelName 
+    });
+  });
+
+  // Hotel admin change password
+  app.post("/api/hotel-admin/change-password", async (req, res) => {
+    try {
+      const adminId = (req.session as any).hotelAdminId;
+      if (!adminId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Current and new password are required" });
+      }
+
+      if (newPassword.length < 4) {
+        return res.status(400).json({ message: "Password must be at least 4 characters" });
+      }
+
+      const admin = await storage.getHotelAdmin(adminId);
+      if (!admin) {
+        return res.status(401).json({ message: "Admin not found" });
+      }
+
+      if (admin.password !== currentPassword) {
+        return res.status(401).json({ message: "Current password is incorrect" });
+      }
+
+      await storage.updateHotelAdminPassword(adminId, newPassword);
+      res.json({ success: true, message: "Password updated successfully" });
+    } catch (error: any) {
+      console.error("Password change error:", error);
+      res.status(500).json({ message: "Failed to change password" });
+    }
+  });
+
+  // Get hotel bookings for the logged-in hotel admin
+  app.get("/api/hotel-admin/bookings", async (req, res) => {
+    try {
+      const adminId = (req.session as any).hotelAdminId;
+      const hotelSource = (req.session as any).hotelSource;
+      
+      if (!adminId || !hotelSource) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const bookings = await storage.getHotelBookingsBySource(hotelSource);
+      res.json(bookings);
+    } catch (error: any) {
+      console.error("Error fetching hotel bookings:", error);
+      res.status(500).json({ message: "Failed to fetch bookings" });
+    }
+  });
+
+  // Initialize default hotel admin (river account)
+  app.post("/api/hotel-admin/init", async (req, res) => {
+    try {
+      const existingAdmin = await storage.getHotelAdminByUsername("river");
+      if (existingAdmin) {
+        return res.json({ message: "Hotel admin already exists", exists: true });
+      }
+
+      const admin = await storage.createHotelAdmin({
+        username: "river",
+        password: "5678",
+        hotelSource: "riverside",
+        hotelName: "Riverside Hotel",
+        isActive: true
+      });
+
+      res.json({ success: true, message: "Hotel admin created", admin: { id: admin.id, username: admin.username } });
+    } catch (error: any) {
+      console.error("Error initializing hotel admin:", error);
+      res.status(500).json({ message: "Failed to initialize hotel admin" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

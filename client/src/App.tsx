@@ -16,6 +16,7 @@ import UserManagement from "@/pages/user-management";
 import PhotoPage from "@/pages/photo";
 import HotelPage from "@/pages/hotel";
 import RiverPage from "@/pages/river";
+import RiverAdminPage from "@/pages/riveradmin";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "@/components/protected-route";
 
@@ -47,6 +48,7 @@ function Router() {
       </Route>
       <Route path="/hotel" component={HotelPage} />
       <Route path="/river" component={RiverPage} />
+      <Route path="/riveradmin" component={RiverAdminPage} />
       <Route component={NotFound} />
     </Switch>
   );
