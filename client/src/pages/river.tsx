@@ -477,7 +477,11 @@ const getAvailableTimeSlots = (selectedDate: string) => {
   });
 };
 
-export default function RiverPage() {
+interface RiverPageProps {
+  showBookingForm?: boolean;
+}
+
+export default function RiverPage({ showBookingForm = true }: RiverPageProps) {
   const [language, setLanguage] = useState<Language>("ja");
   const [roomNumber, setRoomNumber] = useState("");
   const [nickname, setNickname] = useState("");
@@ -947,6 +951,7 @@ export default function RiverPage() {
       </section>
 
       {/* Booking Form Section */}
+      {showBookingForm && (
       <section className="py-12 px-4 bg-gradient-to-b from-black to-[#1a1a1a]">
         <div className="max-w-md mx-auto">
           <h2 className="text-2xl font-bold text-center mb-2">
@@ -1032,6 +1037,7 @@ export default function RiverPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Footer */}
       <footer className="py-8 px-4 bg-[#0a0a0a] text-center">
