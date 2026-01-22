@@ -615,6 +615,9 @@ Recording Cafe Team`
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-white font-medium">{announcement.title}</span>
+                        {announcement.createdAt && (Date.now() - new Date(announcement.createdAt).getTime()) < 24 * 60 * 60 * 1000 && (
+                          <span className="bg-pink-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold animate-pulse">NEW</span>
+                        )}
                         <span className="text-gray-400 text-xs">
                           {announcement.createdAt ? format(new Date(announcement.createdAt), 'yyyy-MM-dd') : ''}
                         </span>
