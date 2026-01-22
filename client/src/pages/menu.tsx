@@ -62,9 +62,9 @@ const platformSources = [
 
 const generateTimeSlots = () => {
   const slots: string[] = [];
-  for (let hour = 10; hour <= 21; hour++) {
+  for (let hour = 10; hour <= 20; hour++) {
     for (let min = 0; min < 60; min += 10) {
-      if (hour === 21 && min > 30) break;
+      if (hour === 20 && min > 50) break;
       slots.push(`${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`);
     }
   }
@@ -1087,7 +1087,11 @@ export default function MenuPage() {
                       mode="single"
                       selected={selectedDate}
                       onSelect={setSelectedDate}
-                      disabled={(date) => date < new Date() || date.getDay() === 0}
+                      disabled={(date) => {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        return date < today || date.getDay() === 0;
+                      }}
                       className="rounded-md border mx-auto"
                     />
                   </CardContent>
