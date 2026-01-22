@@ -865,10 +865,10 @@ export default function PhotoPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              {selectedPhoto && selectedCustomerName ? (
+              {selectedPhoto ? (
                 <div className="max-w-4xl mx-auto">
                   <NewspaperTemplate
-                    customerName={selectedCustomerName}
+                    customerName={selectedCustomerName || "Guest"}
                     koreanName={koreanName || undefined}
                     photoData={selectedPhoto}
                     headline={customHeadline || undefined}
