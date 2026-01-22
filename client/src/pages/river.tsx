@@ -18,6 +18,16 @@ import recording1 from "@assets/레코딩_1763518051359-B7IW5riZ_1769069179482.p
 import recordingBooth from "@assets/레코딩카페_녹음부스_1768188070630-BjcyLYYV_1769069179482.png";
 import couplePhoto from "@assets/레코딩카페커플_1763517988473-RT2IBYdJ_1769069179483.jpg";
 import buildingEntrance from "@assets/레코딩카페_건물입구4_1768190998588-f6UJ9S7H_1769069793000.png";
+import review1 from "@assets/Screenshot_20251111_171617_Chrome_1768192361919-Q6z0Q411_1769069988822.jpg";
+import review2 from "@assets/Screenshot_20251111_171635_Chrome_1768192361919-4WSvcGbK_1769069988821.jpg";
+import review3 from "@assets/Screenshot_20251111_171655_Chrome_1768192361920-DTKNsWi7_1769069988821.jpg";
+import review4 from "@assets/Screenshot_20251111_171715_Chrome_1768192361920-Ddvd8h6h_1769069988821.jpg";
+import review5 from "@assets/Screenshot_20251111_171728_Chrome_1768192361921-CRy6KRUH_1769069988820.jpg";
+import review6 from "@assets/Screenshot_20251111_171738_Chrome_1768192361921-M9x3jaBD_1769069988820.jpg";
+import review7 from "@assets/Screenshot_20251111_171748_Chrome_1768192361922-CkWQr_Av_1769069988819.jpg";
+import review8 from "@assets/Screenshot_20251111_171756_Chrome_1768192361922-D8nR0EVv_1769069988819.jpg";
+import review9 from "@assets/Screenshot_20251111_171805_Chrome_1768192361923-BkT2tB3a_1769069988818.jpg";
+import review10 from "@assets/Screenshot_20251111_171818_Chrome_1768192361924-B-KXp1tp_1769069988818.jpg";
 
 type Language = "ko" | "ja" | "zh" | "en";
 
@@ -423,10 +433,16 @@ const GALLERY_IMAGES = [
 ];
 
 const REVIEW_IMAGES = [
-  "https://recordingcafe.com/assets/Screenshot_20251111_171617_Chrome_1768192361919-Q6z0Q411.jpg",
-  "https://recordingcafe.com/assets/Screenshot_20251111_171635_Chrome_1768192361919-4WSvcGbK.jpg",
-  "https://recordingcafe.com/assets/Screenshot_20251111_171655_Chrome_1768192361920-DTKNsWi7.jpg",
-  "https://recordingcafe.com/assets/Screenshot_20251111_171715_Chrome_1768192361920-Ddvd8h6h.jpg",
+  review1,
+  review2,
+  review3,
+  review4,
+  review5,
+  review6,
+  review7,
+  review8,
+  review9,
+  review10,
 ];
 
 const generateTimeSlots = () => {
@@ -745,7 +761,7 @@ export default function RiverPage() {
           <div className="w-full aspect-[9/16] md:aspect-video bg-gray-800 rounded-xl overflow-hidden">
             <iframe
               className="w-full h-full"
-              src="https://www.youtube.com/embed/PO2j8QzG3ZU?autoplay=1&mute=1&loop=1&playlist=PO2j8QzG3ZU"
+              src="https://www.youtube.com/embed/PO2j8QzG3ZU"
               title="Han River Walking Route"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -771,7 +787,7 @@ export default function RiverPage() {
           <div className="w-full aspect-video bg-black/20 rounded-xl overflow-hidden mb-6">
             <iframe
               className="w-full h-full"
-              src="https://www.youtube.com/embed/YzdkeQidBbo?autoplay=1&mute=1&loop=1&playlist=YzdkeQidBbo"
+              src="https://www.youtube.com/embed/YzdkeQidBbo"
               title="Directions to Recording Cafe"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
