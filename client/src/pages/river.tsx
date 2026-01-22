@@ -544,13 +544,13 @@ export default function RiverPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Language Selector */}
-      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm py-3 px-4 overflow-x-auto">
-        <div className="flex gap-2 justify-center min-w-max">
+      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm py-3 px-4">
+        <div className="flex gap-1.5 md:gap-2 justify-center">
           {(["ko", "ja", "zh", "en"] as Language[]).map((lang) => (
             <button
               key={lang}
               onClick={() => setLanguage(lang)}
-              className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+              className={`flex items-center gap-1 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
                 language === lang
                   ? "bg-[#d4a853] text-black"
                   : "bg-[#2a2a2a] text-white hover:bg-[#3a3a3a]"
@@ -564,27 +564,39 @@ export default function RiverPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative">
+      <section className="relative bg-black">
         <div className="relative w-full aspect-[4/5] md:aspect-[16/9] overflow-hidden">
           <img
             src={heroImage}
             alt="Recording Studio"
             className="w-full h-full object-cover object-top md:object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+          <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+          <div className="hidden md:block absolute bottom-0 left-0 right-0 p-6 text-center">
+            <div className="flex items-center justify-center gap-1 text-gray-300 text-sm mb-4">
+              <MapPin className="w-4 h-4" />
+              <span>{t.hotelSubtitle}</span>
+            </div>
+            <h1 className="text-4xl font-bold leading-tight mb-4">
+              {t.heroTitle1}<br />
+              <span className="text-[#d4a853]">{t.heroTitle2}</span><br />
+              {t.heroTitle3}
+            </h1>
+            <p className="text-gray-300 text-base">{t.heroDesc}</p>
+          </div>
         </div>
         
-        <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
+        <div className="md:hidden p-6 text-center bg-black">
           <div className="flex items-center justify-center gap-1 text-gray-300 text-sm mb-4">
             <MapPin className="w-4 h-4" />
             <span>{t.hotelSubtitle}</span>
           </div>
-          <h1 className="text-2xl md:text-4xl font-bold leading-tight mb-4">
+          <h1 className="text-2xl font-bold leading-tight mb-4">
             {t.heroTitle1}<br />
             <span className="text-[#d4a853]">{t.heroTitle2}</span><br />
             {t.heroTitle3}
           </h1>
-          <p className="text-gray-300 text-sm md:text-base">{t.heroDesc}</p>
+          <p className="text-gray-300 text-sm">{t.heroDesc}</p>
         </div>
       </section>
 
