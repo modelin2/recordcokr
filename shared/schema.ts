@@ -371,3 +371,24 @@ export const insertAnnouncementSchema = createInsertSchema(announcements).omit({
 
 export type Announcement = typeof announcements.$inferSelect;
 export type InsertAnnouncement = z.infer<typeof insertAnnouncementSchema>;
+
+// Admin Schedules for calendar (manual entries by admin)
+export const adminSchedules = pgTable("admin_schedules", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  scheduleDate: text("schedule_date").notNull(), // YYYY-MM-DD
+  scheduleTime: text("schedule_time"), // HH:MM (optional)
+  color: text("color").default("#d4a853"), // Display color
+  createdBy: integer("created_by").notNull(),
+  createdByName: text("created_by_name").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertAdminScheduleSchema = createInsertSchema(adminSchedules).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type AdminSchedule = typeof adminSchedules.$inferSelect;
+export type InsertAdminSchedule = z.infer<typeof insertAdminScheduleSchema>;

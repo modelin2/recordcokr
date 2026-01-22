@@ -1,5 +1,5 @@
 import { 
-  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations, hotelBookings, hotelAdmins, announcements,
+  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations, hotelBookings, hotelAdmins, announcements, adminSchedules,
   type User, type InsertUser, type InsertAdmin,
   type Package, type InsertPackage,
   type Addon, type InsertAddon,
@@ -11,7 +11,8 @@ import {
   type VisitReservation, type InsertVisitReservation,
   type HotelBooking, type InsertHotelBooking,
   type HotelAdmin, type InsertHotelAdmin,
-  type Announcement, type InsertAnnouncement
+  type Announcement, type InsertAnnouncement,
+  type AdminSchedule, type InsertAdminSchedule
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -83,6 +84,11 @@ export interface IStorage {
   createAnnouncement(announcement: InsertAnnouncement): Promise<Announcement>;
   updateAnnouncement(id: number, announcement: Partial<InsertAnnouncement>): Promise<Announcement | undefined>;
   deleteAnnouncement(id: number): Promise<boolean>;
+
+  // Admin Schedule operations
+  getAllAdminSchedules(): Promise<AdminSchedule[]>;
+  createAdminSchedule(schedule: InsertAdminSchedule): Promise<AdminSchedule>;
+  deleteAdminSchedule(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -652,6 +658,18 @@ export class MemStorage implements IStorage {
   async deleteAnnouncement(id: number): Promise<boolean> {
     return false;
   }
+
+  async getAllAdminSchedules(): Promise<AdminSchedule[]> {
+    return [];
+  }
+
+  async createAdminSchedule(schedule: InsertAdminSchedule): Promise<AdminSchedule> {
+    throw new Error("Admin schedules are not supported in MemStorage");
+  }
+
+  async deleteAdminSchedule(id: number): Promise<boolean> {
+    return false;
+  }
 }
 
 // Database Storage Implementation
@@ -1033,6 +1051,20 @@ export class DatabaseStorage implements IStorage {
 
   async deleteAnnouncement(id: number): Promise<boolean> {
     const result = await db.delete(announcements).where(eq(announcements.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async getAllAdminSchedules(): Promise<AdminSchedule[]> {
+    return await db.select().from(adminSchedules).orderBy(desc(adminSchedules.scheduleDate));
+  }
+
+  async createAdminSchedule(schedule: InsertAdminSchedule): Promise<AdminSchedule> {
+    const [newSchedule] = await db.insert(adminSchedules).values(schedule).returning();
+    return newSchedule;
+  }
+
+  async deleteAdminSchedule(id: number): Promise<boolean> {
+    const result = await db.delete(adminSchedules).where(eq(adminSchedules.id, id));
     return (result.rowCount || 0) > 0;
   }
 }

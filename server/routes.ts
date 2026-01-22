@@ -1737,6 +1737,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin Schedules API (for calendar)
+  app.get("/api/admin-schedules", requireAdmin, async (req, res) => {
+    try {
+      const schedules = await storage.getAllAdminSchedules();
+      res.json(schedules);
+    } catch (error: any) {
+      console.error("Error fetching admin schedules:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/admin-schedules", requireAdmin, async (req, res) => {
+    try {
+      const user = req.session?.user;
+      if (!user) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const { title, description, scheduleDate, scheduleTime, color } = req.body;
+      const schedule = await storage.createAdminSchedule({
+        title,
+        description,
+        scheduleDate,
+        scheduleTime,
+        color,
+        createdBy: user.id,
+        createdByName: user.username,
+      });
+      res.json(schedule);
+    } catch (error: any) {
+      console.error("Error creating admin schedule:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/admin-schedules/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteAdminSchedule(id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Schedule not found" });
+      }
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error deleting admin schedule:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Helper function to send email notification for hotel bookings
   async function sendHotelBookingNotification(booking: any) {
     const resendApiKey = process.env.RESEND_API_KEY;
