@@ -655,14 +655,15 @@ export default function RiverPage({ showBookingForm = true }: RiverPageProps) {
           <p className="text-gray-600 mb-4 md:mb-6 text-sm">{t.realExperienceDesc}</p>
         </div>
         <div className="w-full md:max-w-4xl md:mx-auto md:px-4">
-          <div className="w-full aspect-[9/16] md:aspect-video md:rounded-xl overflow-hidden">
+          <div className="w-full aspect-[9/16] md:aspect-video md:rounded-xl overflow-hidden relative group">
             <iframe
-              className="w-full h-full"
+              className="w-full h-full pointer-events-none md:group-hover:pointer-events-auto"
               src="https://www.youtube.com/embed/sGMcHrmCmDU?autoplay=1&mute=1&loop=1&playlist=sGMcHrmCmDU"
               title="Recording Experience"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
+            <div className="absolute inset-0 md:group-hover:hidden" />
           </div>
         </div>
       </section>
@@ -829,14 +830,15 @@ export default function RiverPage({ showBookingForm = true }: RiverPageProps) {
             </div>
             <h3 className="font-bold mt-3 text-[#d4a853]">{t.recordingCafe}</h3>
           </div>
-          <div className="w-full aspect-video bg-gray-800 rounded-xl overflow-hidden mt-6">
+          <div className="w-full aspect-video bg-gray-800 rounded-xl overflow-hidden mt-6 relative group">
             <iframe
-              className="w-full h-full"
+              className="w-full h-full pointer-events-none md:group-hover:pointer-events-auto"
               src="https://www.youtube.com/embed/YzdkeQidBbo"
               title="Directions to Recording Cafe"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
+            <div className="absolute inset-0 md:group-hover:hidden" />
           </div>
         </div>
       </section>
@@ -869,14 +871,15 @@ export default function RiverPage({ showBookingForm = true }: RiverPageProps) {
             {t.hanriverTitle} <span className="text-[#d4a853]">{t.hanriverTitleHighlight}</span>
           </h2>
           <p className="text-gray-400 text-sm mb-6">{t.hanriverDesc}</p>
-          <div className="w-full aspect-[9/16] md:aspect-video bg-gray-800 rounded-xl overflow-hidden">
+          <div className="w-full aspect-[9/16] md:aspect-video bg-gray-800 rounded-xl overflow-hidden relative group">
             <iframe
-              className="w-full h-full"
+              className="w-full h-full pointer-events-none md:group-hover:pointer-events-auto"
               src="https://www.youtube.com/embed/PO2j8QzG3ZU"
               title="Han River Walking Route"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
+            <div className="absolute inset-0 md:group-hover:hidden" />
           </div>
         </div>
       </section>
