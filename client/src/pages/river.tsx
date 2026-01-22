@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MapPin, Star, Loader2, Clock, Coffee, Mic, Sparkles, Music, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -489,9 +489,25 @@ export default function RiverPage({ showBookingForm = true }: RiverPageProps) {
   const [visitDate, setVisitDate] = useState("");
   const [visitTime, setVisitTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const { toast } = useToast();
   
-  const availableTimeSlots = getAvailableTimeSlots(visitDate);
+  const baseTimeSlots = getAvailableTimeSlots(visitDate);
+  const availableTimeSlots = baseTimeSlots.filter(time => !bookedTimes.includes(time));
+
+  useEffect(() => {
+    if (visitDate) {
+      fetch(`/api/booked-times/${visitDate}`)
+        .then(res => res.json())
+        .then(data => {
+          setBookedTimes(data.bookedTimes || []);
+          if (visitTime && data.bookedTimes?.includes(visitTime)) {
+            setVisitTime("");
+          }
+        })
+        .catch(() => setBookedTimes([]));
+    }
+  }, [visitDate]);
 
   const handleDateChange = (newDate: string) => {
     setVisitDate(newDate);
