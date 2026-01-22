@@ -6,6 +6,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
+import controlRoom from "@assets/레코딩카페_컨트롤룸_1768188070634-CLECM5p7_1769069179476.png";
+import luggageStorage from "@assets/레코딩카페_여행가방보관장소_1768188070633-eEbv22Qg_1769069179477.png";
+import booth1 from "@assets/레코딩카페_부스_1768188070633-BgjB4HnG_1769069179478.png";
+import booth2 from "@assets/레코딩카페_부스_(4)_1768188070633-C_7e-l-W_1769069179478.png";
+import booth3 from "@assets/레코딩카페_부스_(3)_1768188070632-BH_mLgrW_1769069179479.png";
+import booth4 from "@assets/레코딩카페_부스_(2)_1768188070632-BDJX9ePe_1769069179480.png";
+import lounge1 from "@assets/레코딩카페_라운지6_1763518051360-BVo-dmns_1769069179480.png";
+import lounge2 from "@assets/레코딩카페_라운지_1768188070631-DX_IqNec_1769069179481.png";
+import recording1 from "@assets/레코딩_1763518051359-B7IW5riZ_1769069179482.png";
+import recordingBooth from "@assets/레코딩카페_녹음부스_1768188070630-BjcyLYYV_1769069179482.png";
+import couplePhoto from "@assets/레코딩카페커플_1763517988473-RT2IBYdJ_1769069179483.jpg";
+
 type Language = "ko" | "ja" | "zh" | "en";
 
 const translations = {
@@ -396,11 +408,17 @@ const translations = {
 };
 
 const GALLERY_IMAGES = [
-  "https://recordingcafe.com/assets/recordingcafe_(2)_1768193796781-CiKs2y1L.png",
-  "https://recordingcafe.com/assets/%EB%A0%88%EC%BD%94%EB%94%A9%EC%B9%B4%ED%8E%98_%EB%9D%BC%EC%9A%B4%EC%A7%80_1768188070631-DX_IqNec.png",
-  "https://recordingcafe.com/assets/%EB%A0%88%EC%BD%94%EB%94%A9%EC%B9%B4%ED%8E%98_%EB%9D%BC%EC%9A%B4%EC%A7%805_1768188070631-mIqEzshk.png",
-  "https://recordingcafe.com/assets/%EB%A0%88%EC%BD%94%EB%94%A9%EC%B9%B4%ED%8E%98%20%EB%9D%BC%EC%9A%B4%EC%A7%806_1763518051360-BVo-dmns.png",
-  "https://recordingcafe.com/assets/%EB%A0%88%EC%BD%94%EB%94%A9%EC%B9%B4%ED%8E%98_%EB%B6%80%EC%8A%A4_(2)_1768188070632-BDJX9ePe.png",
+  controlRoom,
+  booth1,
+  booth2,
+  booth3,
+  booth4,
+  recordingBooth,
+  lounge1,
+  lounge2,
+  recording1,
+  luggageStorage,
+  couplePhoto,
 ];
 
 const REVIEW_IMAGES = [
@@ -414,7 +432,7 @@ const generateTimeSlots = () => {
   const slots: string[] = [];
   for (let hour = 12; hour <= 20; hour++) {
     for (let min = 0; min < 60; min += 10) {
-      if (hour === 20 && min > 30) break;
+      if (hour === 20 && min > 50) break;
       slots.push(`${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`);
     }
   }
@@ -529,11 +547,11 @@ export default function RiverPage() {
 
       {/* Hero Section */}
       <section className="relative">
-        <div className="relative w-full aspect-[4/5] md:aspect-video overflow-hidden">
+        <div className="relative w-full aspect-[4/5] md:aspect-[16/9] overflow-hidden">
           <img
-            src="https://recordingcafe.com/assets/recordingcafe_(2)_1768193796781-CiKs2y1L.png"
+            src={controlRoom}
             alt="Recording Studio"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-top md:object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
         </div>
@@ -559,10 +577,10 @@ export default function RiverPage() {
             {t.realExperience} <span className="text-[#d4a853]">{t.realExperienceHighlight}</span>
           </h2>
           <p className="text-gray-600 mb-6 text-sm">{t.realExperienceDesc}</p>
-          <div className="aspect-video bg-gray-200 rounded-xl overflow-hidden">
+          <div className="w-full aspect-[9/16] md:aspect-video bg-gray-200 rounded-xl overflow-hidden">
             <iframe
               className="w-full h-full"
-              src="https://www.youtube.com/embed/sGMcHrmCmDU"
+              src="https://www.youtube.com/embed/sGMcHrmCmDU?autoplay=1&mute=1&loop=1&playlist=sGMcHrmCmDU"
               title="Recording Experience"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -904,7 +922,7 @@ export default function RiverPage() {
                 value={visitDate}
                 onChange={(e) => handleDateChange(e.target.value)}
                 min={new Date().toISOString().split('T')[0]}
-                className="bg-[#2a2a2a] border-gray-700 text-white"
+                className="bg-[#2a2a2a] border-gray-700 text-white [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:brightness-100"
                 required
               />
             </div>
