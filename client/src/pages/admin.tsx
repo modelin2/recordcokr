@@ -531,7 +531,7 @@ Recording Cafe Team`
         <Card className="glass border-white/20 mb-8">
           <CardHeader className="pb-3">
             <CardTitle className="text-white flex items-center gap-2 text-lg">
-              📢 전달사항 / Announcements
+              📢 Announcements
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -903,20 +903,6 @@ Recording Cafe Team`
                         사진출력
                       </Button>
                       
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => {
-                          if (window.confirm("정말 이 예약을 삭제하시겠습니까?\nAre you sure you want to delete this booking?")) {
-                            deleteBookingMutation.mutate(booking.id);
-                          }
-                        }}
-                        disabled={deleteBookingMutation.isPending}
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        삭제
-                      </Button>
-                      
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button 
@@ -1004,6 +990,20 @@ Recording Cafe Team`
                           </DialogFooter>
                         </DialogContent>
                       </Dialog>
+                      
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          if (window.confirm("정말 이 예약을 삭제하시겠습니까?\nAre you sure you want to delete this booking?")) {
+                            deleteBookingMutation.mutate(booking.id);
+                          }
+                        }}
+                        disabled={deleteBookingMutation.isPending}
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        삭제
+                      </Button>
                     </div>
                   </div>
                   
