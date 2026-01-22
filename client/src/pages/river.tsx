@@ -892,7 +892,7 @@ export default function RiverPage() {
       <section className="py-12 px-4 bg-black">
         <div className="max-w-lg md:max-w-4xl mx-auto">
           <div className="bg-[#1a1a1a] rounded-xl p-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-4 md:gap-6">
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <Coffee className="w-5 h-5 text-[#d4a853]" />
