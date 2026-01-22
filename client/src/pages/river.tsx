@@ -749,6 +749,15 @@ export default function RiverPage() {
             </div>
             <h3 className="font-bold mt-3 text-[#d4a853]">{t.recordingCafe}</h3>
           </div>
+          <div className="w-full aspect-video bg-gray-800 rounded-xl overflow-hidden mt-6">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/YzdkeQidBbo"
+              title="Directions to Recording Cafe"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
         </div>
       </section>
 
@@ -766,18 +775,9 @@ export default function RiverPage() {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="flex items-center justify-center gap-2 text-black/80 mb-6">
+          <div className="flex items-center justify-center gap-2 text-black/80">
             <MapPin className="w-5 h-5" />
             <p className="text-sm">{t.address}</p>
-          </div>
-          <div className="w-full aspect-video bg-black/20 rounded-xl overflow-hidden">
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/YzdkeQidBbo"
-              title="Directions to Recording Cafe"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
           </div>
         </div>
       </section>
