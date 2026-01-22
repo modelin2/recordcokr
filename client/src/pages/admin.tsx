@@ -184,13 +184,13 @@ export default function AdminPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/visit-reservations'] });
       toast({
         title: "삭제 완료",
-        description: "방문 예약이 삭제되었습니다.",
+        description: "홈페이지 예약이 삭제되었습니다.",
       });
     },
     onError: () => {
       toast({
         title: "삭제 실패",
-        description: "방문 예약 삭제에 실패했습니다.",
+        description: "홈페이지 예약 삭제에 실패했습니다.",
         variant: "destructive",
       });
     },
@@ -205,13 +205,13 @@ export default function AdminPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/hotel-bookings'] });
       toast({
         title: "삭제 완료",
-        description: "호텔 예약이 삭제되었습니다.",
+        description: "제휴사 예약이 삭제되었습니다.",
       });
     },
     onError: () => {
       toast({
         title: "삭제 실패",
-        description: "호텔 예약 삭제에 실패했습니다.",
+        description: "제휴사 예약 삭제에 실패했습니다.",
         variant: "destructive",
       });
     },
@@ -630,13 +630,13 @@ Recording Cafe Team`
               📋 메뉴 선택
             </TabsTrigger>
             <TabsTrigger value="visit-reservations" className="text-white data-[state=active]:bg-white/20">
-              🎯 방문 예약
+              🎯 홈페이지 예약
               {visitReservations.length > 0 && (
                 <Badge className="ml-2 bg-pink-500/50 text-white">{visitReservations.length}</Badge>
               )}
             </TabsTrigger>
             <TabsTrigger value="hotel-bookings" className="text-white data-[state=active]:bg-white/20">
-              🏨 호텔 예약
+              🏨 제휴사 예약
               {hotelBookings.length > 0 && (
                 <Badge className="ml-2 bg-blue-500/50 text-white">{hotelBookings.length}</Badge>
               )}
@@ -1039,7 +1039,7 @@ Recording Cafe Team`
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Calendar className="h-5 w-5" />
-                  방문 예약 목록 / Visit Reservations
+                  홈페이지 예약 목록 / Homepage Reservations
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -1145,7 +1145,7 @@ Recording Cafe Team`
             <Card className="glass border-white/20 mb-6">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  🏨 호텔 방문 예약 / Hotel Bookings
+                  🏨 제휴사 예약 / Partner Bookings
                 </CardTitle>
               </CardHeader>
               <CardContent>
