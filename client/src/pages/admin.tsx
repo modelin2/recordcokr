@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut, Camera, Trash2, Edit } from "lucide-react";
-import type { Booking, VisitReservation, HotelBooking, Announcement } from "@shared/schema";
+import type { Booking, VisitReservation, HotelBooking, Announcement, AdminSchedule } from "@shared/schema";
 import { format } from "date-fns";
 import { Copy } from "lucide-react";
 import { useLocation } from "wouter";
@@ -52,7 +52,7 @@ export default function AdminPage() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [emailSubject, setEmailSubject] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
-  const [activeTab, setActiveTab] = useState<"bookings" | "visit-reservations" | "hotel-bookings">("bookings");
+  const [activeTab, setActiveTab] = useState<"bookings" | "visit-reservations" | "hotel-bookings" | "calendar">("bookings");
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
@@ -128,6 +128,11 @@ export default function AdminPage() {
     queryKey: ['/api/announcements'],
   });
 
+  // Fetch admin schedules for calendar
+  const { data: adminSchedules = [] } = useQuery<AdminSchedule[]>({
+    queryKey: ['/api/admin-schedules'],
+  });
+
   // Announcement state
   const [expandedAnnouncement, setExpandedAnnouncement] = useState<number | null>(null);
   const [newAnnouncementTitle, setNewAnnouncementTitle] = useState("");
@@ -135,6 +140,13 @@ export default function AdminPage() {
   const [editingAnnouncement, setEditingAnnouncement] = useState<number | null>(null);
   const [editAnnouncementTitle, setEditAnnouncementTitle] = useState("");
   const [editAnnouncementContent, setEditAnnouncementContent] = useState("");
+
+  // Calendar state
+  const [calendarMonth, setCalendarMonth] = useState(new Date());
+  const [newScheduleDate, setNewScheduleDate] = useState("");
+  const [newScheduleTime, setNewScheduleTime] = useState("");
+  const [newScheduleTitle, setNewScheduleTitle] = useState("");
+  const [newScheduleDescription, setNewScheduleDescription] = useState("");
 
   // Update visit reservation status mutation
   const updateVisitStatusMutation = useMutation({
@@ -304,6 +316,52 @@ export default function AdminPage() {
       toast({
         title: "수정 실패",
         description: "공지사항 수정에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Create admin schedule mutation
+  const createScheduleMutation = useMutation({
+    mutationFn: async ({ title, description, scheduleDate, scheduleTime }: { title: string; description?: string; scheduleDate: string; scheduleTime?: string }) => {
+      return apiRequest("POST", "/api/admin-schedules", { title, description, scheduleDate, scheduleTime });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin-schedules'] });
+      setNewScheduleTitle("");
+      setNewScheduleDescription("");
+      setNewScheduleDate("");
+      setNewScheduleTime("");
+      toast({
+        title: "스케줄 등록 완료",
+        description: "새 스케줄이 등록되었습니다.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "등록 실패",
+        description: "스케줄 등록에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete admin schedule mutation
+  const deleteScheduleMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("DELETE", `/api/admin-schedules/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin-schedules'] });
+      toast({
+        title: "삭제 완료",
+        description: "스케줄이 삭제되었습니다.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "삭제 실패",
+        description: "스케줄 삭제에 실패했습니다.",
         variant: "destructive",
       });
     },
@@ -711,8 +769,8 @@ Recording Cafe Team`
         </Card>
 
         {/* Main Content Tabs */}
-        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations" | "hotel-bookings")} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-white/10 mb-6">
+        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations" | "hotel-bookings" | "calendar")} className="w-full">
+          <TabsList className="grid w-full grid-cols-4 bg-white/10 mb-6">
             <TabsTrigger value="bookings" className="text-white data-[state=active]:bg-white/20">
               📋 메뉴 선택
             </TabsTrigger>
@@ -727,6 +785,9 @@ Recording Cafe Team`
               {hotelBookings.length > 0 && (
                 <Badge className="ml-2 bg-blue-500/50 text-white">{hotelBookings.length}</Badge>
               )}
+            </TabsTrigger>
+            <TabsTrigger value="calendar" className="text-white data-[state=active]:bg-white/20">
+              📅 캘린더
             </TabsTrigger>
           </TabsList>
 
@@ -1329,6 +1390,236 @@ Recording Cafe Team`
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Calendar Tab */}
+          <TabsContent value="calendar">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Calendar View */}
+              <Card className="glass border-white/20 lg:col-span-2">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5" />
+                      {format(calendarMonth, 'yyyy년 M월')}
+                    </span>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1))}
+                        className="border-white/20 text-white hover:bg-white/10"
+                      >
+                        ◀
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCalendarMonth(new Date())}
+                        className="border-white/20 text-white hover:bg-white/10"
+                      >
+                        Today
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1))}
+                        className="border-white/20 text-white hover:bg-white/10"
+                      >
+                        ▶
+                      </Button>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {/* Calendar Grid */}
+                  <div className="grid grid-cols-7 gap-1 mb-2 text-center">
+                    {['일', '월', '화', '수', '목', '금', '토'].map(day => (
+                      <div key={day} className="text-gray-400 text-sm py-2">{day}</div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7 gap-1">
+                    {(() => {
+                      const year = calendarMonth.getFullYear();
+                      const month = calendarMonth.getMonth();
+                      const firstDay = new Date(year, month, 1).getDay();
+                      const daysInMonth = new Date(year, month + 1, 0).getDate();
+                      const days = [];
+                      
+                      // Empty cells for days before first day of month
+                      for (let i = 0; i < firstDay; i++) {
+                        days.push(<div key={`empty-${i}`} className="h-24 bg-white/5 rounded" />);
+                      }
+                      
+                      // Days of the month
+                      for (let day = 1; day <= daysInMonth; day++) {
+                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                        const isToday = dateStr === format(new Date(), 'yyyy-MM-dd');
+                        
+                        // Get events for this day
+                        const dayBookings = bookings.filter(b => {
+                          if (!b.bookingDate) return false;
+                          const reqDate = new Date(dateStr);
+                          const reqMonth = reqDate.getMonth() + 1;
+                          const reqDay = reqDate.getDate();
+                          return b.bookingDate === dateStr || 
+                                 b.bookingDate === `${reqMonth}/${reqDay}` ||
+                                 b.bookingDate === `${String(reqMonth).padStart(2,'0')}/${String(reqDay).padStart(2,'0')}`;
+                        });
+                        const dayVisitRes = visitReservations.filter(r => r.reservationDate === dateStr);
+                        const dayHotelBookings = hotelBookings.filter(h => h.visitDate === dateStr);
+                        const daySchedules = adminSchedules.filter(s => s.scheduleDate === dateStr);
+                        
+                        const totalEvents = dayBookings.length + dayVisitRes.length + dayHotelBookings.length + daySchedules.length;
+                        
+                        days.push(
+                          <div 
+                            key={day} 
+                            className={`h-24 bg-white/5 rounded p-1 overflow-hidden cursor-pointer hover:bg-white/10 transition-colors ${isToday ? 'ring-2 ring-pink-500' : ''}`}
+                            onClick={() => setNewScheduleDate(dateStr)}
+                          >
+                            <div className={`text-xs font-bold mb-1 ${isToday ? 'text-pink-400' : 'text-white'}`}>{day}</div>
+                            <div className="space-y-0.5 overflow-hidden">
+                              {dayBookings.slice(0, 2).map((b, i) => (
+                                <div key={`b-${i}`} className="text-[10px] bg-purple-500/50 text-white px-1 rounded truncate">
+                                  {b.bookingTime} {b.name}
+                                </div>
+                              ))}
+                              {dayVisitRes.slice(0, 2).map((r, i) => (
+                                <div key={`v-${i}`} className="text-[10px] bg-pink-500/50 text-white px-1 rounded truncate">
+                                  {r.reservationTime} {r.name}
+                                </div>
+                              ))}
+                              {dayHotelBookings.slice(0, 2).map((h, i) => (
+                                <div key={`h-${i}`} className="text-[10px] bg-blue-500/50 text-white px-1 rounded truncate">
+                                  {h.visitTime} {h.guestName}
+                                </div>
+                              ))}
+                              {daySchedules.slice(0, 2).map((s, i) => (
+                                <div key={`s-${i}`} className="text-[10px] bg-amber-500/50 text-white px-1 rounded truncate">
+                                  {s.scheduleTime || '종일'} {s.title}
+                                </div>
+                              ))}
+                              {totalEvents > 4 && (
+                                <div className="text-[10px] text-gray-400">+{totalEvents - 4} more</div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      }
+                      
+                      return days;
+                    })()}
+                  </div>
+                  
+                  {/* Legend */}
+                  <div className="flex gap-4 mt-4 text-xs">
+                    <div className="flex items-center gap-1"><div className="w-3 h-3 bg-purple-500/50 rounded"></div> 메뉴선택</div>
+                    <div className="flex items-center gap-1"><div className="w-3 h-3 bg-pink-500/50 rounded"></div> 홈페이지</div>
+                    <div className="flex items-center gap-1"><div className="w-3 h-3 bg-blue-500/50 rounded"></div> 제휴사</div>
+                    <div className="flex items-center gap-1"><div className="w-3 h-3 bg-amber-500/50 rounded"></div> 수동등록</div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Add Schedule Form */}
+              <Card className="glass border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white text-lg">스케줄 추가</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label className="text-white mb-2 block">날짜</Label>
+                    <Input
+                      type="date"
+                      value={newScheduleDate}
+                      onChange={(e) => setNewScheduleDate(e.target.value)}
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white mb-2 block">시간 (선택)</Label>
+                    <Input
+                      type="time"
+                      value={newScheduleTime}
+                      onChange={(e) => setNewScheduleTime(e.target.value)}
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white mb-2 block">제목</Label>
+                    <Input
+                      value={newScheduleTitle}
+                      onChange={(e) => setNewScheduleTitle(e.target.value)}
+                      placeholder="스케줄 제목"
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white mb-2 block">메모 (선택)</Label>
+                    <Textarea
+                      value={newScheduleDescription}
+                      onChange={(e) => setNewScheduleDescription(e.target.value)}
+                      placeholder="추가 정보"
+                      rows={2}
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+                  <Button
+                    onClick={() => {
+                      if (newScheduleDate && newScheduleTitle) {
+                        createScheduleMutation.mutate({
+                          title: newScheduleTitle,
+                          description: newScheduleDescription || undefined,
+                          scheduleDate: newScheduleDate,
+                          scheduleTime: newScheduleTime || undefined,
+                        });
+                      }
+                    }}
+                    disabled={!newScheduleDate || !newScheduleTitle || createScheduleMutation.isPending}
+                    className="w-full k-gradient-pink-purple text-white"
+                  >
+                    {createScheduleMutation.isPending ? "등록 중..." : "스케줄 등록"}
+                  </Button>
+                  
+                  {/* Manual Schedules List */}
+                  <div className="mt-6 pt-4 border-t border-white/10">
+                    <h4 className="text-white font-medium mb-3">수동 등록 스케줄</h4>
+                    {adminSchedules.length === 0 ? (
+                      <div className="text-gray-400 text-sm text-center py-4">등록된 스케줄이 없습니다</div>
+                    ) : (
+                      <div className="space-y-2 max-h-64 overflow-y-auto">
+                        {adminSchedules.map(schedule => (
+                          <div key={schedule.id} className="bg-white/5 p-2 rounded flex justify-between items-start">
+                            <div>
+                              <div className="text-white text-sm font-medium">{schedule.title}</div>
+                              <div className="text-gray-400 text-xs">
+                                {schedule.scheduleDate} {schedule.scheduleTime || '종일'}
+                              </div>
+                              {schedule.description && (
+                                <div className="text-gray-500 text-xs mt-1">{schedule.description}</div>
+                              )}
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                if (window.confirm("이 스케줄을 삭제하시겠습니까?")) {
+                                  deleteScheduleMutation.mutate(schedule.id);
+                                }
+                              }}
+                              className="text-gray-400 hover:text-gray-300 hover:bg-white/10 h-6 w-6 p-0"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
