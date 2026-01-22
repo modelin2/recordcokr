@@ -1,5 +1,5 @@
 import { 
-  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations, hotelBookings, hotelAdmins,
+  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations, hotelBookings, hotelAdmins, announcements,
   type User, type InsertUser, type InsertAdmin,
   type Package, type InsertPackage,
   type Addon, type InsertAddon,
@@ -10,7 +10,8 @@ import {
   type VisitorPhoto, type InsertVisitorPhoto,
   type VisitReservation, type InsertVisitReservation,
   type HotelBooking, type InsertHotelBooking,
-  type HotelAdmin, type InsertHotelAdmin
+  type HotelAdmin, type InsertHotelAdmin,
+  type Announcement, type InsertAnnouncement
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -75,6 +76,13 @@ export interface IStorage {
   createHotelBooking(booking: InsertHotelBooking): Promise<HotelBooking>;
   updateHotelBookingStatus(id: number, status: string): Promise<HotelBooking | undefined>;
   deleteHotelBooking(id: number): Promise<boolean>;
+  
+  // Announcement operations
+  getAllAnnouncements(): Promise<Announcement[]>;
+  getAnnouncement(id: number): Promise<Announcement | undefined>;
+  createAnnouncement(announcement: InsertAnnouncement): Promise<Announcement>;
+  updateAnnouncement(id: number, announcement: Partial<InsertAnnouncement>): Promise<Announcement | undefined>;
+  deleteAnnouncement(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -623,6 +631,27 @@ export class MemStorage implements IStorage {
   async deleteHotelBooking(id: number): Promise<boolean> {
     return false;
   }
+
+  // Announcement operations (MemStorage doesn't support)
+  async getAllAnnouncements(): Promise<Announcement[]> {
+    return [];
+  }
+
+  async getAnnouncement(id: number): Promise<Announcement | undefined> {
+    return undefined;
+  }
+
+  async createAnnouncement(announcement: InsertAnnouncement): Promise<Announcement> {
+    throw new Error("Announcements are not supported in MemStorage");
+  }
+
+  async updateAnnouncement(id: number, announcement: Partial<InsertAnnouncement>): Promise<Announcement | undefined> {
+    return undefined;
+  }
+
+  async deleteAnnouncement(id: number): Promise<boolean> {
+    return false;
+  }
 }
 
 // Database Storage Implementation
@@ -974,6 +1003,37 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(hotelBookings)
       .where(eq(hotelBookings.hotelSource, hotelSource))
       .orderBy(desc(hotelBookings.createdAt));
+  }
+
+  // Announcement operations
+  async getAllAnnouncements(): Promise<Announcement[]> {
+    return await db.select().from(announcements)
+      .where(eq(announcements.isActive, true))
+      .orderBy(desc(announcements.createdAt));
+  }
+
+  async getAnnouncement(id: number): Promise<Announcement | undefined> {
+    const [announcement] = await db.select().from(announcements).where(eq(announcements.id, id));
+    return announcement;
+  }
+
+  async createAnnouncement(announcement: InsertAnnouncement): Promise<Announcement> {
+    const [newAnnouncement] = await db.insert(announcements).values(announcement).returning();
+    return newAnnouncement;
+  }
+
+  async updateAnnouncement(id: number, data: Partial<InsertAnnouncement>): Promise<Announcement | undefined> {
+    const [updated] = await db
+      .update(announcements)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(announcements.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteAnnouncement(id: number): Promise<boolean> {
+    const result = await db.delete(announcements).where(eq(announcements.id, id));
+    return (result.rowCount || 0) > 0;
   }
 }
 

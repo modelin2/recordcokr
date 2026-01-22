@@ -350,3 +350,24 @@ export const insertHotelAdminSchema = createInsertSchema(hotelAdmins).omit({
 
 export type HotelAdmin = typeof hotelAdmins.$inferSelect;
 export type InsertHotelAdmin = z.infer<typeof insertHotelAdminSchema>;
+
+// Announcements table for admin notice board
+export const announcements = pgTable("announcements", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  authorId: integer("author_id").notNull(),
+  authorName: text("author_name").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertAnnouncementSchema = createInsertSchema(announcements).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type Announcement = typeof announcements.$inferSelect;
+export type InsertAnnouncement = z.infer<typeof insertAnnouncementSchema>;

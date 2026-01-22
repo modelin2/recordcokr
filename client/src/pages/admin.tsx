@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut, Camera, Trash2 } from "lucide-react";
-import type { Booking, VisitReservation, HotelBooking } from "@shared/schema";
+import type { Booking, VisitReservation, HotelBooking, Announcement } from "@shared/schema";
 import { format } from "date-fns";
 import { Copy } from "lucide-react";
 import { useLocation } from "wouter";
@@ -123,6 +123,16 @@ export default function AdminPage() {
     queryKey: ['/api/hotel-bookings'],
   });
 
+  // Fetch announcements
+  const { data: announcementsList = [] } = useQuery<Announcement[]>({
+    queryKey: ['/api/announcements'],
+  });
+
+  // Announcement state
+  const [expandedAnnouncement, setExpandedAnnouncement] = useState<number | null>(null);
+  const [newAnnouncementTitle, setNewAnnouncementTitle] = useState("");
+  const [newAnnouncementContent, setNewAnnouncementContent] = useState("");
+
   // Update visit reservation status mutation
   const updateVisitStatusMutation = useMutation({
     mutationFn: async ({ reservationId, status }: { reservationId: number; status: string }) => {
@@ -206,6 +216,95 @@ export default function AdminPage() {
       });
     },
   });
+
+  // Delete booking mutation (메뉴 선택)
+  const deleteBookingMutation = useMutation({
+    mutationFn: async (bookingId: number) => {
+      return apiRequest("DELETE", `/api/bookings/${bookingId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/bookings'] });
+      toast({
+        title: "삭제 완료",
+        description: "예약이 삭제되었습니다.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "삭제 실패",
+        description: "예약 삭제에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Create announcement mutation
+  const createAnnouncementMutation = useMutation({
+    mutationFn: async ({ title, content }: { title: string; content: string }) => {
+      return apiRequest("POST", "/api/announcements", { title, content });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/announcements'] });
+      setNewAnnouncementTitle("");
+      setNewAnnouncementContent("");
+      toast({
+        title: "공지 등록 완료",
+        description: "새 공지사항이 등록되었습니다.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "등록 실패",
+        description: "공지사항 등록에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete announcement mutation
+  const deleteAnnouncementMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("DELETE", `/api/announcements/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/announcements'] });
+      toast({
+        title: "삭제 완료",
+        description: "공지사항이 삭제되었습니다.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "삭제 실패",
+        description: "공지사항 삭제에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Helper function to convert URLs to clickable links
+  const renderContentWithLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    return parts.map((part, index) => {
+      if (urlRegex.test(part)) {
+        return (
+          <a 
+            key={index} 
+            href={part} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-blue-400 underline hover:text-blue-300"
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
+  const isSuperAdmin = (user as any)?.role === 'super_admin';
 
   // Update booking status mutation
   const updateStatusMutation = useMutation({
@@ -420,7 +519,7 @@ Recording Cafe Team`
               onClick={() => logoutMutation.mutate()}
               disabled={logoutMutation.isPending}
               variant="outline"
-              className="border-white/40 text-white hover:bg-white/20"
+              className="border-white/40 bg-white/10 text-white hover:bg-white/20"
             >
               <LogOut className="h-4 w-4 mr-2" />
               {logoutMutation.isPending ? "Logging out..." : "Logout"}
@@ -428,75 +527,101 @@ Recording Cafe Team`
           </div>
         </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
-          <Card 
-            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
-              statusFilter === "all" ? "ring-2 ring-white/50" : ""
-            }`}
-            onClick={() => setStatusFilter("all")}
-          >
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-white">{stats.total}</div>
-              <div className="text-sm text-gray-300">Total</div>
-            </CardContent>
-          </Card>
-          <Card 
-            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
-              statusFilter === "pending" ? "ring-2 ring-yellow-400/50" : ""
-            }`}
-            onClick={() => setStatusFilter("pending")}
-          >
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-yellow-400">{stats.pending}</div>
-              <div className="text-sm text-gray-300">Pending</div>
-            </CardContent>
-          </Card>
-          <Card 
-            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
-              statusFilter === "confirmed" ? "ring-2 ring-blue-400/50" : ""
-            }`}
-            onClick={() => setStatusFilter("confirmed")}
-          >
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-blue-400">{stats.confirmed}</div>
-              <div className="text-sm text-gray-300">Confirmed</div>
-            </CardContent>
-          </Card>
-          <Card 
-            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
-              statusFilter === "in-progress" ? "ring-2 ring-purple-400/50" : ""
-            }`}
-            onClick={() => setStatusFilter("in-progress")}
-          >
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-purple-400">{stats.inProgress}</div>
-              <div className="text-sm text-gray-300">In Progress</div>
-            </CardContent>
-          </Card>
-          <Card 
-            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
-              statusFilter === "completed" ? "ring-2 ring-green-400/50" : ""
-            }`}
-            onClick={() => setStatusFilter("completed")}
-          >
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-green-400">{stats.completed}</div>
-              <div className="text-sm text-gray-300">Completed</div>
-            </CardContent>
-          </Card>
-          <Card 
-            className={`glass border-white/20 cursor-pointer transition-all hover:scale-105 ${
-              statusFilter === "cancelled" ? "ring-2 ring-red-400/50" : ""
-            }`}
-            onClick={() => setStatusFilter("cancelled")}
-          >
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-red-400">{stats.cancelled}</div>
-              <div className="text-sm text-gray-300">Cancelled</div>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Announcement Board */}
+        <Card className="glass border-white/20 mb-8">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-white flex items-center gap-2 text-lg">
+              📢 전달사항 / Announcements
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* Super Admin: New Announcement Form */}
+            {isSuperAdmin && (
+              <div className="mb-4 p-4 bg-white/5 rounded-lg border border-white/10">
+                <div className="space-y-3">
+                  <Input
+                    placeholder="제목 / Title"
+                    value={newAnnouncementTitle}
+                    onChange={(e) => setNewAnnouncementTitle(e.target.value)}
+                    className="bg-white/10 border-white/20 text-white"
+                  />
+                  <Textarea
+                    placeholder="내용 / Content (URL은 자동으로 링크됩니다)"
+                    value={newAnnouncementContent}
+                    onChange={(e) => setNewAnnouncementContent(e.target.value)}
+                    rows={3}
+                    className="bg-white/10 border-white/20 text-white"
+                  />
+                  <Button
+                    onClick={() => {
+                      if (newAnnouncementTitle && newAnnouncementContent) {
+                        createAnnouncementMutation.mutate({
+                          title: newAnnouncementTitle,
+                          content: newAnnouncementContent,
+                        });
+                      }
+                    }}
+                    disabled={!newAnnouncementTitle || !newAnnouncementContent || createAnnouncementMutation.isPending}
+                    className="k-gradient-pink-purple text-white"
+                  >
+                    {createAnnouncementMutation.isPending ? "등록 중..." : "공지 등록"}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Announcement List */}
+            {announcementsList.length === 0 ? (
+              <div className="text-gray-400 text-center py-4">등록된 공지사항이 없습니다.</div>
+            ) : (
+              <div className="space-y-2">
+                {announcementsList.map((announcement) => (
+                  <div 
+                    key={announcement.id} 
+                    className="border border-white/10 rounded-lg overflow-hidden"
+                  >
+                    <div 
+                      className="p-3 bg-white/5 cursor-pointer hover:bg-white/10 transition-colors flex justify-between items-center"
+                      onClick={() => setExpandedAnnouncement(
+                        expandedAnnouncement === announcement.id ? null : announcement.id
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-white font-medium">{announcement.title}</span>
+                        <span className="text-gray-400 text-xs">
+                          {announcement.createdAt ? format(new Date(announcement.createdAt), 'yyyy-MM-dd') : ''}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-500 text-xs">{announcement.authorName}</span>
+                        {isSuperAdmin && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (window.confirm("이 공지를 삭제하시겠습니까?")) {
+                                deleteAnnouncementMutation.mutate(announcement.id);
+                              }
+                            }}
+                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-6 w-6 p-0"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                    {expandedAnnouncement === announcement.id && (
+                      <div className="p-4 bg-white/5 border-t border-white/10 text-gray-300 whitespace-pre-wrap">
+                        {renderContentWithLinks(announcement.content)}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations" | "hotel-bookings")} className="w-full">
@@ -776,6 +901,20 @@ Recording Cafe Team`
                       >
                         <Camera className="h-4 w-4 mr-2" />
                         사진출력
+                      </Button>
+                      
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          if (window.confirm("정말 이 예약을 삭제하시겠습니까?\nAre you sure you want to delete this booking?")) {
+                            deleteBookingMutation.mutate(booking.id);
+                          }
+                        }}
+                        disabled={deleteBookingMutation.isPending}
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        삭제
                       </Button>
                       
                       <Dialog>

@@ -3,7 +3,9 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { spawn } from "child_process";
 import { unlink } from "fs/promises";
-import { insertBookingSchema, insertNaverBookingSchema, insertVisitorPhotoSchema, insertVisitReservationSchema, insertHotelBookingSchema } from "@shared/schema";
+import { insertBookingSchema, insertNaverBookingSchema, insertVisitorPhotoSchema, insertVisitReservationSchema, insertHotelBookingSchema, bookings } from "@shared/schema";
+import { eq } from "drizzle-orm";
+import { db } from "./db";
 import { z } from "zod";
 import { GoogleGenAI, Modality } from "@google/genai";
 import { Resend } from "resend";
@@ -186,6 +188,26 @@ const requireAdmin = async (req: any, res: any, next: any) => {
       return res.status(403).json({ message: "Admin access required" });
     }
     req.user = user;
+    req.session.user = user;
+    next();
+  } catch (error) {
+    return res.status(500).json({ message: "Authentication error" });
+  }
+};
+
+// Middleware to check if user is super_admin only
+const requireSuperAdmin = async (req: any, res: any, next: any) => {
+  if (!req.session?.userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  
+  try {
+    const user = await storage.getUser(req.session.userId);
+    if (!user || user.role !== 'super_admin') {
+      return res.status(403).json({ message: "Super admin access required" });
+    }
+    req.user = user;
+    req.session.user = user;
     next();
   } catch (error) {
     return res.status(500).json({ message: "Authentication error" });
@@ -1631,6 +1653,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true });
     } catch (error: any) {
       console.error("Error deleting hotel booking:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Delete booking (admin only)
+  app.delete("/api/bookings/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const result = await db.delete(bookings).where(eq(bookings.id, id));
+      if ((result.rowCount || 0) === 0) {
+        return res.status(404).json({ error: "Booking not found" });
+      }
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error deleting booking:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Announcement APIs
+  app.get("/api/announcements", requireAdmin, async (req, res) => {
+    try {
+      const allAnnouncements = await storage.getAllAnnouncements();
+      res.json(allAnnouncements);
+    } catch (error: any) {
+      console.error("Error fetching announcements:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/announcements", requireSuperAdmin, async (req, res) => {
+    try {
+      const { title, content } = req.body;
+      const user = req.session?.user;
+      
+      if (!title || !content) {
+        return res.status(400).json({ error: "Title and content are required" });
+      }
+
+      const announcement = await storage.createAnnouncement({
+        title,
+        content,
+        authorId: user?.id || 0,
+        authorName: user?.username || "Admin",
+        isActive: true,
+      });
+      
+      res.json(announcement);
+    } catch (error: any) {
+      console.error("Error creating announcement:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/announcements/:id", requireSuperAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteAnnouncement(id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Announcement not found" });
+      }
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error deleting announcement:", error);
       res.status(500).json({ error: error.message });
     }
   });
