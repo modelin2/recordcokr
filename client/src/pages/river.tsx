@@ -901,36 +901,32 @@ export default function RiverPage() {
                 <div className="space-y-2 text-gray-300 text-sm">
                   <p>{t.coffee}</p>
                   <p>{t.decaf}</p>
-                  <p>{t.hotChocolate}</p>
-                  <p className="text-transparent select-none">-</p>
-                  <p className="text-transparent select-none">-</p>
-                  <p className="text-transparent select-none">-</p>
-                  <p className="text-transparent select-none">-</p>
                   <p>{t.greenTea}</p>
                   <p>{t.hibiscus}</p>
                   <p>{t.earlGrey}</p>
                   <p>{t.peppermint}</p>
                   <p>{t.chamomile}</p>
+                  <p>{t.hotChocolate}</p>
                 </div>
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-4">
-                  <Coffee className="w-5 h-5 text-[#d4a853]" />
+                  <Sparkles className="w-5 h-5 text-[#d4a853]" />
                   <h3 className="font-bold text-[#d4a853]">{t.coldDrinks}</h3>
                 </div>
                 <div className="space-y-2 text-gray-300 text-sm">
                   <p>{t.coffee}</p>
                   <p>{t.decaf}</p>
-                  <p>{t.lemonade}</p>
-                  <p>{t.strawberryAde}</p>
-                  <p>{t.orangeAde}</p>
-                  <p>{t.grapefruitAde}</p>
-                  <p>{t.icedTea}</p>
                   <p>{t.greenTea}</p>
                   <p>{t.hibiscus}</p>
                   <p>{t.earlGrey}</p>
                   <p>{t.peppermint}</p>
                   <p>{t.chamomile}</p>
+                  <p>{t.lemonade}</p>
+                  <p>{t.strawberryAde}</p>
+                  <p>{t.orangeAde}</p>
+                  <p>{t.grapefruitAde}</p>
+                  <p>{t.icedTea}</p>
                 </div>
               </div>
             </div>
