@@ -60,12 +60,41 @@ const platformSources = [
   { id: "datepop", ko: "데이트팝", en: "DatePop", ja: "DatePop", zh: "DatePop" },
 ];
 
-const timeSlots = [
-  "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
-  "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
-  "16:00", "16:30", "17:00", "17:30", "18:00", "18:30",
-  "19:00", "19:30", "20:00", "20:30", "21:00", "21:30",
-];
+const generateTimeSlots = () => {
+  const slots: string[] = [];
+  for (let hour = 10; hour <= 21; hour++) {
+    for (let min = 0; min < 60; min += 10) {
+      if (hour === 21 && min > 30) break;
+      slots.push(`${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`);
+    }
+  }
+  return slots;
+};
+
+const ALL_TIME_SLOTS = generateTimeSlots();
+
+const getAvailableTimeSlots = (selectedDate: Date | undefined, bookedTimes: string[]) => {
+  if (!selectedDate) return ALL_TIME_SLOTS;
+  
+  const now = new Date();
+  const today = now.toISOString().split('T')[0];
+  const selectedDateStr = selectedDate.toISOString().split('T')[0];
+  
+  let availableSlots = ALL_TIME_SLOTS;
+  
+  if (selectedDateStr === today) {
+    const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+    const minHour = twoHoursLater.getHours();
+    const minMin = twoHoursLater.getMinutes();
+    
+    availableSlots = ALL_TIME_SLOTS.filter(slot => {
+      const [h, m] = slot.split(':').map(Number);
+      return h > minHour || (h === minHour && m >= minMin);
+    });
+  }
+  
+  return availableSlots.filter(time => !bookedTimes.includes(time));
+};
 
 const translations: Record<Language, {
   selectLanguage: string;
@@ -588,8 +617,26 @@ export default function MenuPage() {
   const [pendingBookingId, setPendingBookingId] = useState<number | null>(null);
   const pendingBookingIdRef = useRef<number | null>(null);
   const [showKoreanConfirm, setShowKoreanConfirm] = useState(false);
+  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const paypalButtonRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  
+  const availableTimeSlots = getAvailableTimeSlots(selectedDate, bookedTimes);
+
+  useEffect(() => {
+    if (selectedDate) {
+      const dateStr = selectedDate.toISOString().split('T')[0];
+      fetch(`/api/booked-times/${dateStr}`)
+        .then(res => res.json())
+        .then(data => {
+          setBookedTimes(data.bookedTimes || []);
+          if (selectedTime && data.bookedTimes?.includes(selectedTime)) {
+            setSelectedTime("");
+          }
+        })
+        .catch(() => setBookedTimes([]));
+    }
+  }, [selectedDate]);
 
   // Fetch PayPal Client ID
   const { data: paypalConfig } = useQuery<{ clientId: string }>({
@@ -1052,7 +1099,7 @@ export default function MenuPage() {
                       {t.selectTime}
                     </h3>
                     <div className="grid grid-cols-4 gap-2 max-h-[300px] overflow-y-auto">
-                      {timeSlots.map(time => (
+                      {availableTimeSlots.length > 0 ? availableTimeSlots.map(time => (
                         <Button
                           key={time}
                           variant={selectedTime === time ? "default" : "outline"}
@@ -1063,7 +1110,13 @@ export default function MenuPage() {
                         >
                           {time}
                         </Button>
-                      ))}
+                      )) : (
+                        <p className="col-span-4 text-center text-gray-500 py-4">
+                          {language === "ko" ? "선택 가능한 시간이 없습니다" : 
+                           language === "ja" ? "選択可能な時間がありません" :
+                           language === "zh" ? "没有可选时间" : "No available times"}
+                        </p>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
