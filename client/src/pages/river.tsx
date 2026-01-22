@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 import { MapPin, Star, Loader2, Clock, Coffee, Mic, Sparkles, Music, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -630,6 +631,21 @@ export default function RiverPage({ showBookingForm = true }: RiverPageProps) {
         </div>
       </section>
 
+      {/* Booking Button - After Hero (only on main page) */}
+      {!showBookingForm && (
+        <section className="py-6 px-4 bg-gradient-to-b from-black to-[#1a1a1a]">
+          <div className="max-w-md mx-auto">
+            <Link href="/menu">
+              <Button className="w-full bg-[#d4a853] hover:bg-[#c49943] text-black font-bold py-6 text-lg">
+                {language === "ko" ? "지금 예약하기" : 
+                 language === "ja" ? "今すぐ予約する" :
+                 language === "zh" ? "立即预约" : "Book Now"}
+              </Button>
+            </Link>
+          </div>
+        </section>
+      )}
+
       {/* Real Experience Section */}
       <section className="py-8 md:py-12 px-0 md:px-4 bg-white text-black">
         <div className="max-w-4xl mx-auto text-center px-4 md:px-0">
@@ -1053,6 +1069,21 @@ export default function RiverPage({ showBookingForm = true }: RiverPageProps) {
           </div>
         </div>
       </section>
+      )}
+
+      {/* Booking Button - Before Footer (only on main page) */}
+      {!showBookingForm && (
+        <section className="py-8 px-4 bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a]">
+          <div className="max-w-md mx-auto">
+            <Link href="/menu">
+              <Button className="w-full bg-[#d4a853] hover:bg-[#c49943] text-black font-bold py-6 text-lg">
+                {language === "ko" ? "지금 예약하기" : 
+                 language === "ja" ? "今すぐ予約する" :
+                 language === "zh" ? "立即预约" : "Book Now"}
+              </Button>
+            </Link>
+          </div>
+        </section>
       )}
 
       {/* Footer */}
