@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
-import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut, Camera } from "lucide-react";
+import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut, Camera, Trash2 } from "lucide-react";
 import type { Booking, VisitReservation, HotelBooking } from "@shared/schema";
 import { format } from "date-fns";
 import { Copy } from "lucide-react";
@@ -160,6 +160,48 @@ export default function AdminPage() {
       toast({
         title: "Update Failed",
         description: "Failed to update hotel booking status.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete visit reservation mutation
+  const deleteVisitReservationMutation = useMutation({
+    mutationFn: async (reservationId: number) => {
+      return apiRequest("DELETE", `/api/visit-reservations/${reservationId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/visit-reservations'] });
+      toast({
+        title: "삭제 완료",
+        description: "방문 예약이 삭제되었습니다.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "삭제 실패",
+        description: "방문 예약 삭제에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete hotel booking mutation
+  const deleteHotelBookingMutation = useMutation({
+    mutationFn: async (bookingId: number) => {
+      return apiRequest("DELETE", `/api/hotel-bookings/${bookingId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/hotel-bookings'] });
+      toast({
+        title: "삭제 완료",
+        description: "호텔 예약이 삭제되었습니다.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "삭제 실패",
+        description: "호텔 예약 삭제에 실패했습니다.",
         variant: "destructive",
       });
     },
@@ -931,10 +973,23 @@ Recording Cafe Team`
                                   <SelectItem value="cancelled">Cancelled</SelectItem>
                                 </SelectContent>
                               </Select>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                  if (window.confirm("정말 이 예약을 삭제하시겠습니까?\nAre you sure you want to delete this reservation?")) {
+                                    deleteVisitReservationMutation.mutate(reservation.id);
+                                  }
+                                }}
+                                disabled={deleteVisitReservationMutation.isPending}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
                             </div>
                           </div>
                           
                           <div className="mt-3 pt-3 border-t border-white/10 text-xs text-gray-400">
+                            <span className="mr-4">Source: {reservation.source === "homepage" ? "🌐 홈페이지 예약" : "📱 광고 접수"}</span>
                             Created: {reservation.createdAt ? format(new Date(reservation.createdAt), 'PPp') : 'Unknown'}
                           </div>
                         </CardContent>
@@ -1023,6 +1078,18 @@ Recording Cafe Team`
                                   <SelectItem value="cancelled">Cancelled</SelectItem>
                                 </SelectContent>
                               </Select>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                  if (window.confirm("정말 이 예약을 삭제하시겠습니까?\nAre you sure you want to delete this reservation?")) {
+                                    deleteHotelBookingMutation.mutate(booking.id);
+                                  }
+                                }}
+                                disabled={deleteHotelBookingMutation.isPending}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
                             </div>
                           </div>
                           
