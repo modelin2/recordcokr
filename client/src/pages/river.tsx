@@ -565,38 +565,25 @@ export default function RiverPage() {
 
       {/* Hero Section */}
       <section className="relative bg-black">
-        <div className="relative w-full aspect-[4/5] md:aspect-[16/9] overflow-hidden">
+        <div className="relative w-full aspect-[3/4] md:aspect-[16/9] overflow-hidden">
           <img
             src={heroImage}
             alt="Recording Studio"
             className="w-full h-full object-cover object-top md:object-center"
           />
-          <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-          <div className="hidden md:block absolute bottom-0 left-0 right-0 p-6 text-center">
-            <div className="flex items-center justify-center gap-1 text-gray-300 text-sm mb-4">
-              <MapPin className="w-4 h-4" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6 pb-8 text-center">
+            <div className="flex items-center justify-center gap-1 text-gray-300 text-xs md:text-sm mb-3 md:mb-4">
+              <MapPin className="w-3 h-3 md:w-4 md:h-4" />
               <span>{t.hotelSubtitle}</span>
             </div>
-            <h1 className="text-4xl font-bold leading-tight mb-4">
+            <h1 className="text-[22px] md:text-4xl font-bold leading-tight mb-3 md:mb-4">
               {t.heroTitle1}<br />
               <span className="text-[#d4a853]">{t.heroTitle2}</span><br />
               {t.heroTitle3}
             </h1>
-            <p className="text-gray-300 text-base">{t.heroDesc}</p>
+            <p className="text-gray-300 text-xs md:text-base max-w-xs md:max-w-none mx-auto">{t.heroDesc}</p>
           </div>
-        </div>
-        
-        <div className="md:hidden py-8 px-6 text-center bg-black">
-          <div className="flex items-center justify-center gap-1 text-gray-400 text-xs mb-3">
-            <MapPin className="w-3 h-3" />
-            <span>{t.hotelSubtitle}</span>
-          </div>
-          <h1 className="text-xl font-bold leading-snug mb-3">
-            {t.heroTitle1}<br />
-            <span className="text-[#d4a853]">{t.heroTitle2}</span><br />
-            {t.heroTitle3}
-          </h1>
-          <p className="text-gray-400 text-xs">{t.heroDesc}</p>
         </div>
       </section>
 
