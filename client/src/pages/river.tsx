@@ -28,6 +28,7 @@ import review7 from "@assets/Screenshot_20251111_171748_Chrome_1768192361922-CkW
 import review8 from "@assets/Screenshot_20251111_171756_Chrome_1768192361922-D8nR0EVv_1769069988819.jpg";
 import review9 from "@assets/Screenshot_20251111_171805_Chrome_1768192361923-BkT2tB3a_1769069988818.jpg";
 import review10 from "@assets/Screenshot_20251111_171818_Chrome_1768192361924-B-KXp1tp_1769069988818.jpg";
+import heroImage from "@assets/recordingcafe_(2)_1768193796781-CiKs2y1L_1769070144968.png";
 
 type Language = "ko" | "ja" | "zh" | "en";
 
@@ -419,7 +420,7 @@ const translations = {
 };
 
 const GALLERY_IMAGES = [
-  controlRoom,
+  couplePhoto,
   booth1,
   booth2,
   booth3,
@@ -429,7 +430,7 @@ const GALLERY_IMAGES = [
   lounge2,
   recording1,
   luggageStorage,
-  couplePhoto,
+  controlRoom,
 ];
 
 const REVIEW_IMAGES = [
@@ -566,7 +567,7 @@ export default function RiverPage() {
       <section className="relative">
         <div className="relative w-full aspect-[4/5] md:aspect-[16/9] overflow-hidden">
           <img
-            src={controlRoom}
+            src={heroImage}
             alt="Recording Studio"
             className="w-full h-full object-cover object-top md:object-center"
           />
