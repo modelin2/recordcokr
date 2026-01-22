@@ -830,10 +830,9 @@ export default function RiverPage({ showBookingForm = true }: RiverPageProps) {
             </div>
             <h3 className="font-bold mt-3 text-[#d4a853]">{t.recordingCafe}</h3>
           </div>
-          <div className="w-full aspect-video bg-gray-800 rounded-xl overflow-hidden mt-6 relative group">
+          <div className="w-full aspect-video bg-gray-800 rounded-xl overflow-hidden mt-6">
             <iframe
               className="w-full h-full"
-              style={{ touchAction: 'pan-y' }}
               src="https://www.youtube.com/embed/YzdkeQidBbo"
               title="Directions to Recording Cafe"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -871,10 +870,9 @@ export default function RiverPage({ showBookingForm = true }: RiverPageProps) {
             {t.hanriverTitle} <span className="text-[#d4a853]">{t.hanriverTitleHighlight}</span>
           </h2>
           <p className="text-gray-400 text-sm mb-6">{t.hanriverDesc}</p>
-          <div className="w-full aspect-[9/16] md:aspect-video bg-gray-800 rounded-xl overflow-hidden relative group">
+          <div className="w-full aspect-[9/16] md:aspect-video bg-gray-800 rounded-xl overflow-hidden">
             <iframe
               className="w-full h-full"
-              style={{ touchAction: 'pan-y' }}
               src="https://www.youtube.com/embed/PO2j8QzG3ZU"
               title="Han River Walking Route"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
