@@ -807,6 +807,23 @@ export default function MenuPage() {
     },
   });
 
+  const visitReservationMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest("POST", "/api/visit-reservations", data);
+      return response.json();
+    },
+    onSuccess: () => {
+      setIsComplete(true);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create reservation",
+        variant: "destructive",
+      });
+    },
+  });
+
   const calculateTotal = () => {
     let total = 0;
     const mixingOption = t.mixingOptions.find(o => o.id === selectedMixing);
@@ -914,22 +931,42 @@ export default function MenuPage() {
       finalPaymentMethod = paymentMethod;
     }
 
-    bookingMutation.mutate({
-      bookingType: "direct",
-      name: `${namePrefix}${name}`,
-      email: email || "no-email@example.com",
-      phone,
-      selectedDrink: drinkSummary,
-      drinkTemperature: "mixed",
-      youtubeTrackUrl: youtubeUrl || "https://youtube.com",
-      selectedAddons: [],
-      selectedServices: JSON.stringify(services),
-      totalPrice: calculateTotal(),
-      paymentStatus: finalPaymentStatus,
-      paymentMethod: finalPaymentMethod,
-      paidAmount: paymentInfo?.paidAmount,
-      paypalOrderId: paymentInfo?.paypalOrderId,
-    });
+    // Route to different APIs based on booking path
+    if (bookingPath === "homepage" && selectedDate && selectedTime) {
+      // New reservation from homepage -> goes to visit-reservations (방문 예약)
+      const dateStr = getLocalDateString(selectedDate);
+      visitReservationMutation.mutate({
+        name,
+        email: email || "no-email@example.com",
+        phone,
+        reservationDate: dateStr,
+        reservationTime: selectedTime,
+        numberOfPeople: 1,
+        totalAmountUsd: Math.ceil(calculateTotal() / 1400),
+        paymentStatus: finalPaymentStatus === "paid" ? "paid" : "pending",
+        status: "confirmed",
+        source: "homepage",
+        notes: `Drinks: ${drinkSummary}, YouTube: ${youtubeUrl || "N/A"}, Services: ${JSON.stringify(services)}`,
+      });
+    } else {
+      // Existing reservation -> goes to bookings (메뉴 선택)
+      bookingMutation.mutate({
+        bookingType: "direct",
+        name: `${namePrefix}${name}`,
+        email: email || "no-email@example.com",
+        phone,
+        selectedDrink: drinkSummary,
+        drinkTemperature: "mixed",
+        youtubeTrackUrl: youtubeUrl || "https://youtube.com",
+        selectedAddons: [],
+        selectedServices: JSON.stringify(services),
+        totalPrice: calculateTotal(),
+        paymentStatus: finalPaymentStatus,
+        paymentMethod: finalPaymentMethod,
+        paidAmount: paymentInfo?.paidAmount,
+        paypalOrderId: paymentInfo?.paypalOrderId,
+      });
+    }
   };
 
   const [direction, setDirection] = useState(0);

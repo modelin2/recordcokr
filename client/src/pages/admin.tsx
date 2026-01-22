@@ -460,7 +460,7 @@ Recording Cafe Team`
         <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations" | "hotel-bookings")} className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-white/10 mb-6">
             <TabsTrigger value="bookings" className="text-white data-[state=active]:bg-white/20">
-              📋 예약 관리
+              📋 메뉴 선택
             </TabsTrigger>
             <TabsTrigger value="visit-reservations" className="text-white data-[state=active]:bg-white/20">
               🎯 방문 예약
