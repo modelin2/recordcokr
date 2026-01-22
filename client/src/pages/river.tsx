@@ -890,41 +890,45 @@ export default function RiverPage() {
 
       {/* Drink Menu */}
       <section className="py-12 px-4 bg-black">
-        <div className="max-w-lg mx-auto space-y-6">
+        <div className="max-w-lg md:max-w-4xl mx-auto">
           <div className="bg-[#1a1a1a] rounded-xl p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <Coffee className="w-5 h-5 text-[#d4a853]" />
-              <h3 className="font-bold text-[#d4a853]">{t.hotDrinks}</h3>
-            </div>
-            <div className="space-y-2 text-gray-300 text-sm">
-              <p>{t.coffee}</p>
-              <p>{t.decaf}</p>
-              <p>{t.greenTea}</p>
-              <p>{t.hibiscus}</p>
-              <p>{t.earlGrey}</p>
-              <p>{t.peppermint}</p>
-              <p>{t.chamomile}</p>
-              <p>{t.hotChocolate}</p>
-            </div>
-          </div>
-          <div className="bg-[#1a1a1a] rounded-xl p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <Coffee className="w-5 h-5 text-[#d4a853]" />
-              <h3 className="font-bold text-[#d4a853]">{t.coldDrinks}</h3>
-            </div>
-            <div className="space-y-2 text-gray-300 text-sm">
-              <p>{t.coffee}</p>
-              <p>{t.decaf}</p>
-              <p>{t.lemonade}</p>
-              <p>{t.strawberryAde}</p>
-              <p>{t.orangeAde}</p>
-              <p>{t.grapefruitAde}</p>
-              <p>{t.icedTea}</p>
-              <p>{t.greenTea}</p>
-              <p>{t.hibiscus}</p>
-              <p>{t.earlGrey}</p>
-              <p>{t.peppermint}</p>
-              <p>{t.chamomile}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Coffee className="w-5 h-5 text-[#d4a853]" />
+                  <h3 className="font-bold text-[#d4a853]">{t.hotDrinks}</h3>
+                </div>
+                <div className="space-y-2 text-gray-300 text-sm">
+                  <p>{t.coffee}</p>
+                  <p>{t.decaf}</p>
+                  <p>{t.greenTea}</p>
+                  <p>{t.hibiscus}</p>
+                  <p>{t.earlGrey}</p>
+                  <p>{t.peppermint}</p>
+                  <p>{t.chamomile}</p>
+                  <p>{t.hotChocolate}</p>
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Coffee className="w-5 h-5 text-[#d4a853]" />
+                  <h3 className="font-bold text-[#d4a853]">{t.coldDrinks}</h3>
+                </div>
+                <div className="space-y-2 text-gray-300 text-sm">
+                  <p>{t.coffee}</p>
+                  <p>{t.decaf}</p>
+                  <p>{t.lemonade}</p>
+                  <p>{t.strawberryAde}</p>
+                  <p>{t.orangeAde}</p>
+                  <p>{t.grapefruitAde}</p>
+                  <p>{t.icedTea}</p>
+                  <p>{t.greenTea}</p>
+                  <p>{t.hibiscus}</p>
+                  <p>{t.earlGrey}</p>
+                  <p>{t.peppermint}</p>
+                  <p>{t.chamomile}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
