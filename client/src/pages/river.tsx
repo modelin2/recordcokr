@@ -17,6 +17,7 @@ import lounge2 from "@assets/레코딩카페_라운지_1768188070631-DX_IqNec_17
 import recording1 from "@assets/레코딩_1763518051359-B7IW5riZ_1769069179482.png";
 import recordingBooth from "@assets/레코딩카페_녹음부스_1768188070630-BjcyLYYV_1769069179482.png";
 import couplePhoto from "@assets/레코딩카페커플_1763517988473-RT2IBYdJ_1769069179483.jpg";
+import buildingEntrance from "@assets/레코딩카페_건물입구4_1768190998588-f6UJ9S7H_1769069793000.png";
 
 type Language = "ko" | "ja" | "zh" | "en";
 
@@ -741,10 +742,10 @@ export default function RiverPage() {
             {t.hanriverTitle} <span className="text-[#d4a853]">{t.hanriverTitleHighlight}</span>
           </h2>
           <p className="text-gray-400 text-sm mb-6">{t.hanriverDesc}</p>
-          <div className="aspect-video bg-gray-800 rounded-xl overflow-hidden">
+          <div className="w-full aspect-[9/16] md:aspect-video bg-gray-800 rounded-xl overflow-hidden">
             <iframe
               className="w-full h-full"
-              src="https://www.youtube.com/embed/IQPfZJLXm8k"
+              src="https://www.youtube.com/embed/PO2j8QzG3ZU?autoplay=1&mute=1&loop=1&playlist=PO2j8QzG3ZU"
               title="Han River Walking Route"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -762,9 +763,18 @@ export default function RiverPage() {
           <p className="text-black/80 text-sm mb-6 max-w-md mx-auto">{t.visitDesc}</p>
           <div className="aspect-[4/3] rounded-xl overflow-hidden mb-6">
             <img
-              src="https://recordingcafe.com/assets/%EC%B6%9C%EC%9E%85%EA%B5%AC%EC%97%AC%EC%84%B1%EB%AA%A8%EB%8D%B8_1768188070634-DhXiV-jT.png"
+              src={buildingEntrance}
               alt="Recording Cafe Entrance"
               className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="w-full aspect-video bg-black/20 rounded-xl overflow-hidden mb-6">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/YzdkeQidBbo?autoplay=1&mute=1&loop=1&playlist=YzdkeQidBbo"
+              title="Directions to Recording Cafe"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
             />
           </div>
           <div className="flex items-center justify-center gap-2 text-black/80">
