@@ -73,12 +73,19 @@ const generateTimeSlots = () => {
 
 const ALL_TIME_SLOTS = generateTimeSlots();
 
+const getLocalDateString = (date: Date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const getAvailableTimeSlots = (selectedDate: Date | undefined, bookedTimes: string[]) => {
   if (!selectedDate) return ALL_TIME_SLOTS;
   
   const now = new Date();
-  const today = now.toISOString().split('T')[0];
-  const selectedDateStr = selectedDate.toISOString().split('T')[0];
+  const today = getLocalDateString(now);
+  const selectedDateStr = getLocalDateString(selectedDate);
   
   let availableSlots = ALL_TIME_SLOTS;
   
@@ -625,7 +632,7 @@ export default function MenuPage() {
 
   useEffect(() => {
     if (selectedDate) {
-      const dateStr = selectedDate.toISOString().split('T')[0];
+      const dateStr = getLocalDateString(selectedDate);
       fetch(`/api/booked-times/${dateStr}`)
         .then(res => res.json())
         .then(data => {
