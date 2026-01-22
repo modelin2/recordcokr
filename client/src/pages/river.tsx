@@ -901,12 +901,16 @@ export default function RiverPage() {
                 <div className="space-y-2 text-gray-300 text-sm">
                   <p>{t.coffee}</p>
                   <p>{t.decaf}</p>
+                  <p>{t.hotChocolate}</p>
+                  <p className="text-transparent select-none">-</p>
+                  <p className="text-transparent select-none">-</p>
+                  <p className="text-transparent select-none">-</p>
+                  <p className="text-transparent select-none">-</p>
                   <p>{t.greenTea}</p>
                   <p>{t.hibiscus}</p>
                   <p>{t.earlGrey}</p>
                   <p>{t.peppermint}</p>
                   <p>{t.chamomile}</p>
-                  <p>{t.hotChocolate}</p>
                 </div>
               </div>
               <div>
