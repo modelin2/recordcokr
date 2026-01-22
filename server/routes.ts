@@ -1957,8 +1957,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { date } = req.params; // Format: "YYYY-MM-DD"
       
-      // Get all bookings and hotel bookings
+      // Get all bookings, visit reservations, and hotel bookings
       const allBookings = await storage.getAllBookings();
+      const allVisitReservations = await storage.getAllVisitReservations();
       const allHotelBookings = await storage.getAllHotelBookings();
       
       // Filter bookings for the requested date and extract times
@@ -1981,6 +1982,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
               bookedTimes.push(booking.bookingTime);
             }
           }
+        }
+      });
+      
+      // From visit reservations (visitDate format is "YYYY-MM-DD")
+      allVisitReservations.forEach(reservation => {
+        if (reservation.visitDate === date && reservation.status !== 'cancelled') {
+          bookedTimes.push(reservation.visitTime);
         }
       });
       
