@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
-import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut, Camera, Trash2 } from "lucide-react";
+import { Calendar, Clock, Mail, User, Phone, Music, Coffee, ShoppingBag, CheckCircle, AlertCircle, Timer, XCircle, Filter, Search, Send, Users as UserIcon, LogOut, Camera, Trash2, Edit } from "lucide-react";
 import type { Booking, VisitReservation, HotelBooking, Announcement } from "@shared/schema";
 import { format } from "date-fns";
 import { Copy } from "lucide-react";
@@ -132,6 +132,9 @@ export default function AdminPage() {
   const [expandedAnnouncement, setExpandedAnnouncement] = useState<number | null>(null);
   const [newAnnouncementTitle, setNewAnnouncementTitle] = useState("");
   const [newAnnouncementContent, setNewAnnouncementContent] = useState("");
+  const [editingAnnouncement, setEditingAnnouncement] = useState<number | null>(null);
+  const [editAnnouncementTitle, setEditAnnouncementTitle] = useState("");
+  const [editAnnouncementContent, setEditAnnouncementContent] = useState("");
 
   // Update visit reservation status mutation
   const updateVisitStatusMutation = useMutation({
@@ -277,6 +280,30 @@ export default function AdminPage() {
       toast({
         title: "삭제 실패",
         description: "공지사항 삭제에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Update announcement mutation
+  const updateAnnouncementMutation = useMutation({
+    mutationFn: async ({ id, title, content }: { id: number; title: string; content: string }) => {
+      return apiRequest("PATCH", `/api/announcements/${id}`, { title, content });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/announcements'] });
+      setEditingAnnouncement(null);
+      setEditAnnouncementTitle("");
+      setEditAnnouncementContent("");
+      toast({
+        title: "수정 완료",
+        description: "공지사항이 수정되었습니다.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "수정 실패",
+        description: "공지사항 수정에 실패했습니다.",
         variant: "destructive",
       });
     },
@@ -593,25 +620,82 @@ Recording Cafe Team`
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-500 text-xs">{announcement.authorName}</span>
                         {isSuperAdmin && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (window.confirm("이 공지를 삭제하시겠습니까?")) {
-                                deleteAnnouncementMutation.mutate(announcement.id);
-                              }
-                            }}
-                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-6 w-6 p-0"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingAnnouncement(announcement.id);
+                                setEditAnnouncementTitle(announcement.title);
+                                setEditAnnouncementContent(announcement.content);
+                              }}
+                              className="text-gray-400 hover:text-white hover:bg-white/10 h-6 w-6 p-0"
+                            >
+                              <Edit className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (window.confirm("이 공지를 삭제하시겠습니까?")) {
+                                  deleteAnnouncementMutation.mutate(announcement.id);
+                                }
+                              }}
+                              className="text-gray-400 hover:text-gray-300 hover:bg-white/10 h-6 w-6 p-0"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </>
                         )}
                       </div>
                     </div>
-                    {expandedAnnouncement === announcement.id && (
+                    {/* Edit Form */}
+                    {editingAnnouncement === announcement.id && (
+                      <div className="p-4 bg-white/10 border-t border-white/10 space-y-3">
+                        <Input
+                          value={editAnnouncementTitle}
+                          onChange={(e) => setEditAnnouncementTitle(e.target.value)}
+                          className="bg-white/10 border-white/20 text-white"
+                          placeholder="제목"
+                        />
+                        <Textarea
+                          value={editAnnouncementContent}
+                          onChange={(e) => setEditAnnouncementContent(e.target.value)}
+                          rows={3}
+                          className="bg-white/10 border-white/20 text-white"
+                          placeholder="내용"
+                        />
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => {
+                              updateAnnouncementMutation.mutate({
+                                id: announcement.id,
+                                title: editAnnouncementTitle,
+                                content: editAnnouncementContent,
+                              });
+                            }}
+                            disabled={updateAnnouncementMutation.isPending}
+                            className="k-gradient-pink-purple text-white"
+                            size="sm"
+                          >
+                            {updateAnnouncementMutation.isPending ? "저장 중..." : "저장"}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditingAnnouncement(null)}
+                            className="border-white/20 text-white hover:bg-white/10"
+                          >
+                            취소
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                    {/* Content Display */}
+                    {expandedAnnouncement === announcement.id && editingAnnouncement !== announcement.id && (
                       <div className="p-4 bg-white/5 border-t border-white/10 text-gray-300 whitespace-pre-wrap">
                         {renderContentWithLinks(announcement.content)}
                       </div>

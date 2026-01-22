@@ -1721,6 +1721,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update announcement (super_admin only)
+  app.patch("/api/announcements/:id", requireSuperAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { title, content } = req.body;
+      const updated = await storage.updateAnnouncement(id, { title, content });
+      if (!updated) {
+        return res.status(404).json({ error: "Announcement not found" });
+      }
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Error updating announcement:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Helper function to send email notification for hotel bookings
   async function sendHotelBookingNotification(booking: any) {
     const resendApiKey = process.env.RESEND_API_KEY;
