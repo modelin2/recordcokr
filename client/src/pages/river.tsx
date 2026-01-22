@@ -752,6 +752,42 @@ export default function RiverPage() {
         </div>
       </section>
 
+      {/* Visit Method Section */}
+      <section className="py-12 px-4 bg-[#d4a853]">
+        <div className="max-w-4xl mx-auto text-center text-black">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+            {t.visitTitle} <span className="text-black/70">{t.visitTitleHighlight}</span>
+          </h2>
+          <p className="text-black/80 text-sm mb-6 max-w-md mx-auto">{t.visitDesc}</p>
+          <div className="aspect-[4/3] rounded-xl overflow-hidden mb-6">
+            <img
+              src={buildingEntrance}
+              alt="Recording Cafe Entrance"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="flex items-center justify-center gap-2 text-black/80">
+            <MapPin className="w-5 h-5" />
+            <p className="text-sm">{t.address}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Directions Video Section */}
+      <section className="py-12 px-4 bg-black">
+        <div className="max-w-4xl mx-auto">
+          <div className="w-full aspect-video bg-gray-800 rounded-xl overflow-hidden">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/YzdkeQidBbo"
+              title="Directions to Recording Cafe"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Han River Section */}
       <section className="py-12 px-4 bg-black">
         <div className="max-w-4xl mx-auto text-center">
@@ -767,36 +803,6 @@ export default function RiverPage() {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
-          </div>
-        </div>
-      </section>
-
-      {/* Visit Method Section */}
-      <section className="py-12 px-4 bg-[#d4a853]">
-        <div className="max-w-4xl mx-auto text-center text-black">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
-            {t.visitTitle} <span className="text-black/70">{t.visitTitleHighlight}</span>
-          </h2>
-          <p className="text-black/80 text-sm mb-6 max-w-md mx-auto">{t.visitDesc}</p>
-          <div className="aspect-[4/3] rounded-xl overflow-hidden mb-6">
-            <img
-              src={buildingEntrance}
-              alt="Recording Cafe Entrance"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="w-full aspect-video bg-black/20 rounded-xl overflow-hidden mb-6">
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/YzdkeQidBbo"
-              title="Directions to Recording Cafe"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-          <div className="flex items-center justify-center gap-2 text-black/80">
-            <MapPin className="w-5 h-5" />
-            <p className="text-sm">{t.address}</p>
           </div>
         </div>
       </section>
@@ -949,6 +955,7 @@ export default function RiverPage() {
                 value={visitDate}
                 onChange={(e) => handleDateChange(e.target.value)}
                 min={new Date().toISOString().split('T')[0]}
+                lang={language === "ko" ? "ko-KR" : language === "ja" ? "ja-JP" : language === "zh" ? "zh-CN" : "en-US"}
                 className="bg-[#2a2a2a] border-gray-700 text-white [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:brightness-100"
                 required
               />
