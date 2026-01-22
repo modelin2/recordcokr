@@ -766,17 +766,11 @@ export default function RiverPage() {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="flex items-center justify-center gap-2 text-black/80">
+          <div className="flex items-center justify-center gap-2 text-black/80 mb-6">
             <MapPin className="w-5 h-5" />
             <p className="text-sm">{t.address}</p>
           </div>
-        </div>
-      </section>
-
-      {/* Directions Video Section */}
-      <section className="py-12 px-4 bg-black">
-        <div className="max-w-4xl mx-auto">
-          <div className="w-full aspect-video bg-gray-800 rounded-xl overflow-hidden">
+          <div className="w-full aspect-video bg-black/20 rounded-xl overflow-hidden">
             <iframe
               className="w-full h-full"
               src="https://www.youtube.com/embed/YzdkeQidBbo"
