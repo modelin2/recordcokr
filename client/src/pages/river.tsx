@@ -410,11 +410,36 @@ const REVIEW_IMAGES = [
   "https://recordingcafe.com/assets/Screenshot_20251111_171715_Chrome_1768192361920-Ddvd8h6h.jpg",
 ];
 
-const TIME_SLOTS = [
-  "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-  "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
-  "18:00", "18:30", "19:00", "19:30", "20:00", "20:30",
-];
+const generateTimeSlots = () => {
+  const slots: string[] = [];
+  for (let hour = 12; hour <= 20; hour++) {
+    for (let min = 0; min < 60; min += 10) {
+      if (hour === 20 && min > 30) break;
+      slots.push(`${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`);
+    }
+  }
+  return slots;
+};
+
+const ALL_TIME_SLOTS = generateTimeSlots();
+
+const getAvailableTimeSlots = (selectedDate: string) => {
+  const now = new Date();
+  const today = now.toISOString().split('T')[0];
+  
+  if (selectedDate !== today) {
+    return ALL_TIME_SLOTS;
+  }
+  
+  const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+  const minHour = twoHoursLater.getHours();
+  const minMin = twoHoursLater.getMinutes();
+  
+  return ALL_TIME_SLOTS.filter(slot => {
+    const [h, m] = slot.split(':').map(Number);
+    return h > minHour || (h === minHour && m >= minMin);
+  });
+};
 
 export default function RiverPage() {
   const [language, setLanguage] = useState<Language>("ja");
@@ -425,6 +450,16 @@ export default function RiverPage() {
   const [visitTime, setVisitTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  
+  const availableTimeSlots = getAvailableTimeSlots(visitDate);
+
+  const handleDateChange = (newDate: string) => {
+    setVisitDate(newDate);
+    const newSlots = getAvailableTimeSlots(newDate);
+    if (visitTime && !newSlots.includes(visitTime)) {
+      setVisitTime("");
+    }
+  };
 
   const t = translations[language];
 
@@ -867,7 +902,8 @@ export default function RiverPage() {
               <Input
                 type="date"
                 value={visitDate}
-                onChange={(e) => setVisitDate(e.target.value)}
+                onChange={(e) => handleDateChange(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
                 className="bg-[#2a2a2a] border-gray-700 text-white"
                 required
               />
@@ -879,7 +915,7 @@ export default function RiverPage() {
                   <SelectValue placeholder={t.selectTime} />
                 </SelectTrigger>
                 <SelectContent>
-                  {TIME_SLOTS.map((time) => (
+                  {availableTimeSlots.map((time) => (
                     <SelectItem key={time} value={time}>{time}</SelectItem>
                   ))}
                 </SelectContent>
