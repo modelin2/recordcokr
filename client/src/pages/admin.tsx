@@ -1340,7 +1340,7 @@ Recording Cafe Team`
                                 <User className="h-4 w-4 text-blue-400" />
                                 <span className="font-semibold text-white">{booking.guestName}</span>
                                 <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/50">
-                                  {booking.hotelSource === "riverside" ? "Riverside Hotel" : booking.hotelSource}
+                                  {booking.hotelSource === "riverside" ? "Riverside Hotel" : booking.hotelSource === "lacasa" ? "La Casa Hotel" : booking.hotelSource}
                                 </Badge>
                                 <Badge className={
                                   booking.status === "pending" ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/50" :
@@ -1740,7 +1740,7 @@ Recording Cafe Team`
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="text-gray-400">호텔</div>
-                    <div className="text-white">{selectedCalendarEvent.data.hotelSource}</div>
+                    <div className="text-white">{selectedCalendarEvent.data.hotelSource === "riverside" ? "Riverside Hotel" : selectedCalendarEvent.data.hotelSource === "lacasa" ? "La Casa Hotel" : selectedCalendarEvent.data.hotelSource}</div>
                   </div>
                   {selectedCalendarEvent.data.roomNumber && (
                     <div className="grid grid-cols-2 gap-2">
