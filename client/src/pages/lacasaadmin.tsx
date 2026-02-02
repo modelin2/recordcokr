@@ -194,7 +194,7 @@ export default function LaCasaAdminPage() {
             <div className="flex items-center justify-center gap-2 mb-2">
               <Hotel className="w-8 h-8" />
             </div>
-            <CardTitle className="text-xl">Riverside Hotel</CardTitle>
+            <CardTitle className="text-xl">La Casa Hotel</CardTitle>
             <p className="text-blue-200 text-sm">Partner Admin Portal</p>
           </CardHeader>
           <CardContent className="p-6">
