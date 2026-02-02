@@ -1977,23 +1977,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Initialize default hotel admin (river account)
+  // Initialize default hotel admins (river and lacasa accounts)
   app.post("/api/hotel-admin/init", async (req, res) => {
     try {
-      const existingAdmin = await storage.getHotelAdminByUsername("river");
-      if (existingAdmin) {
-        return res.json({ message: "Hotel admin already exists", exists: true });
+      // Initialize river account
+      const existingRiver = await storage.getHotelAdminByUsername("river");
+      if (!existingRiver) {
+        await storage.createHotelAdmin({
+          username: "river",
+          password: "5678",
+          hotelSource: "riverside",
+          hotelName: "Riverside Hotel",
+          isActive: true
+        });
       }
 
-      const admin = await storage.createHotelAdmin({
-        username: "river",
-        password: "5678",
-        hotelSource: "riverside",
-        hotelName: "Riverside Hotel",
-        isActive: true
-      });
+      // Initialize lacasa account
+      const existingLacasa = await storage.getHotelAdminByUsername("lacasa");
+      if (!existingLacasa) {
+        await storage.createHotelAdmin({
+          username: "lacasa",
+          password: "5678",
+          hotelSource: "lacasa",
+          hotelName: "La Casa Hotel",
+          isActive: true
+        });
+      }
 
-      res.json({ success: true, message: "Hotel admin created", admin: { id: admin.id, username: admin.username } });
+      res.json({ success: true, message: "Hotel admins initialized" });
     } catch (error: any) {
       console.error("Error initializing hotel admin:", error);
       res.status(500).json({ message: "Failed to initialize hotel admin" });
