@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image, Wand2, Loader2, Sparkles, RefreshCw, Plus } from "lucide-react";
+import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image, Wand2, Loader2, Sparkles, RefreshCw, Plus, Disc3 } from "lucide-react";
 import type { VisitorPhoto } from "@shared/schema";
 import NewspaperTemplate, { type ImagePositions } from "@/components/newspaper-template";
 
@@ -51,6 +51,8 @@ export default function PhotoPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingStage, setGeneratingStage] = useState<string>("");
   const [regeneratingStage, setRegeneratingStage] = useState<string>("");
+  const [cdAlbumImages, setCdAlbumImages] = useState<{partName: string; partLabel: string; imageData: string | null; success: boolean}[]>([]);
+  const [isGeneratingCd, setIsGeneratingCd] = useState(false);
   const [imagePositions, setImagePositions] = useState<ImagePositions>({
     main: { x: 50, y: 0, scale: 1 },
     infancy: { x: 50, y: 0, scale: 1 },
@@ -444,6 +446,70 @@ export default function PhotoPage() {
     }
   };
 
+  const handleGenerateCdAlbum = async () => {
+    if (!selectedPhoto || !selectedCustomerName) {
+      toast({
+        title: "정보 필요",
+        description: "사진과 고객 이름이 필요합니다.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGeneratingCd(true);
+    setCdAlbumImages([]);
+
+    try {
+      let imageToSend = selectedPhoto;
+      const base64Size = (selectedPhoto.length * 3) / 4;
+      const sizeKB = Math.round(base64Size / 1024);
+      
+      if (sizeKB > 2000) {
+        imageToSend = await compressUntilSmallEnough(selectedPhoto, 2000);
+      }
+
+      toast({
+        title: "CD 앨범 아트 생성 시작",
+        description: "앨범 커버, 뒷면, 디스크 라벨을 생성합니다. (약 1-2분)",
+      });
+
+      const response = await apiRequest("POST", "/api/photos/generate-cd-album", {
+        sourceImageBase64: imageToSend,
+        customerName: selectedCustomerName,
+        gender: selectedGender !== "auto" ? selectedGender : undefined
+      });
+      
+      const data = await response.json();
+      
+      if (data.results) {
+        setCdAlbumImages(data.results);
+        const successCount = data.results.filter((r: any) => r.success).length;
+        if (successCount > 0) {
+          toast({
+            title: "CD 앨범 아트 생성 완료",
+            description: `${successCount}/3개의 이미지가 생성되었습니다.${successCount < 3 ? " 일부 실패한 이미지가 있습니다." : ""}`,
+          });
+        } else {
+          toast({
+            title: "CD 앨범 아트 생성 실패",
+            description: "모든 이미지 생성에 실패했습니다. 다시 시도해주세요.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        throw new Error(data.message || "생성 실패");
+      }
+    } catch (error: any) {
+      toast({
+        title: "CD 앨범 아트 생성 실패",
+        description: error.message || "생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingCd(false);
+    }
+  };
+
   if (userLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f5f0e1]">
@@ -520,6 +586,7 @@ export default function PhotoPage() {
             lifeStageImages={generatedImages}
             imagePositions={imagePositions}
             customerId={customers.find(c => c.name === previewPhoto.customerName)?.id}
+            cdAlbumImages={cdAlbumImages}
           />
         </div>
       )}
@@ -856,6 +923,67 @@ export default function PhotoPage() {
             </Card>
           </div>
 
+          {/* CD Album Art Generation */}
+          <Card className="mt-8 bg-gradient-to-br from-violet-50 to-indigo-50 border-violet-200 shadow-xl">
+            <CardHeader className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-t-lg">
+              <CardTitle className="flex items-center gap-2">
+                <Disc3 className="w-5 h-5" />
+                미니 CD 키링 앨범 아트 생성
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <p className="text-sm text-violet-700 mb-4">
+                고객 사진으로 K-POP 앨범 커버, 뒷면, 디스크 라벨을 AI로 생성합니다. 신문에 함께 출력됩니다.
+              </p>
+              <Button
+                onClick={handleGenerateCdAlbum}
+                disabled={isGeneratingCd || isGenerating || !selectedPhoto || !selectedCustomerName}
+                className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white h-14"
+              >
+                {isGeneratingCd ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    CD 앨범 아트 생성 중... (약 1-2분)
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center">
+                      <Disc3 className="w-5 h-5 mr-2" />
+                      CD 앨범 아트 생성 (3장)
+                    </div>
+                    <span className="text-xs opacity-80">앨범 커버 + 뒷면 + 디스크 라벨</span>
+                  </div>
+                )}
+              </Button>
+
+              {cdAlbumImages.length > 0 && (
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  {cdAlbumImages.map((img) => (
+                    <div key={img.partName} className="text-center">
+                      {img.imageData ? (
+                        <div className="space-y-1">
+                          <img
+                            src={img.imageData}
+                            alt={img.partLabel}
+                            className={`w-full object-cover rounded-lg shadow-md border-4 border-white ${img.partName === "disc" ? "rounded-full" : ""} ${img.partName === "front" ? "aspect-square" : img.partName === "back" ? "aspect-[5/3.9]" : "aspect-square"}`}
+                          />
+                          <p className="text-xs font-medium text-violet-800">{img.partLabel}</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-1">
+                          <div className="w-full aspect-square bg-gray-200 rounded-lg flex items-center justify-center border-4 border-white">
+                            <p className="text-xs text-gray-500 p-2">생성 실패</p>
+                          </div>
+                          <p className="text-xs text-gray-600">{img.partLabel}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Preview Section */}
           <Card className="mt-8 bg-[#d4c4a8] border-amber-700 shadow-xl">
             <CardHeader className="bg-amber-800 text-white rounded-t-lg">
@@ -878,6 +1006,7 @@ export default function PhotoPage() {
                     imagePositions={imagePositions}
                     onPositionChange={setImagePositions}
                     customerId={customers.find(c => c.name === selectedCustomerName)?.id}
+                    cdAlbumImages={cdAlbumImages}
                   />
                   <div className="mt-6 flex justify-center gap-4">
                     <Button

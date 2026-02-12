@@ -1064,6 +1064,123 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Generate CD album art images (front cover, back inlay, disc label) for mini CD keyring
+  app.post("/api/photos/generate-cd-album", requireAdmin, async (req, res) => {
+    try {
+      const { sourceImageBase64, customerName, gender } = req.body;
+      
+      if (!sourceImageBase64 || !customerName) {
+        return res.status(400).json({ message: "Source image and customer name are required" });
+      }
+      
+      const base64Data = sourceImageBase64.replace(/^data:image\/\w+;base64,/, '');
+      const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
+      
+      const cdParts = [
+        {
+          partName: "front",
+          partLabel: "Front Cover",
+          prompt: `Using this person's face and likeness, create a professional K-pop single album front cover design. The image must be a perfect 1:1 square format. Design it as a real K-pop CD album cover with:
+- The person's face prominently featured as the main subject, in a stylish artistic pose
+- Professional studio lighting and cinematic mood (dramatic shadows, bokeh, or gradient background)
+- The artist name "${customerName}" displayed prominently in bold modern typography at the bottom
+- A song title like "STAY" or "DREAM" or "SHINE" in stylish font
+- "RECORDER'S CAFE" as the label name in small text
+- A "SINGLE NEW" badge in the corner
+- Overall sleek, modern K-pop album aesthetic similar to BLACKPINK, BTS, or IU album covers
+- High contrast, professional color grading
+The design should look like an actual commercial K-pop album cover you'd see on Melon or Spotify.`
+        },
+        {
+          partName: "back",
+          partLabel: "Back Inlay",
+          prompt: `Create a K-pop album back cover/inlay card design. This is for a mini CD case inlay (landscape format, slightly wider than tall, ratio about 5:3.9). Design it with:
+- An artistic wide-angle or panoramic version of a recording studio or dreamy K-pop aesthetic background
+- Track listing on one side: "01. ${customerName}'s Recording  02. Instrumental Ver.  03. Acoustic Ver."
+- "${customerName}" as artist name
+- "RECORDER'S CAFE" as the label
+- "Produced by Recording Cafe Seoul" in small text
+- A barcode graphic in one corner
+- Copyright text "© ${new Date().getFullYear()} RC Entertainment"
+- Elegant, minimal layout with professional typography
+- Color scheme that complements a K-pop single album
+Make it look like a real commercial CD back cover.`
+        },
+        {
+          partName: "disc",
+          partLabel: "Disc Label",
+          prompt: `Create a circular CD disc label design for a K-pop single album. The design must be perfectly circular. Include:
+- "${customerName}" as the artist name in stylish curved text around the disc
+- "SINGLE ALBUM" text
+- "RECORDER'S CAFE" label text
+- A small center hole area (clear/white circle in the very center)
+- Artistic abstract or gradient design in the background (galaxy, holographic, or K-pop aesthetic)
+- Professional disc label typography and layout
+- The overall design should look like a real K-pop CD disc label
+Make it circular and visually striking like a real music CD.`
+        }
+      ];
+      
+      const results: any[] = [];
+      
+      for (const part of cdParts) {
+        try {
+          const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash-image",
+            contents: [{ 
+              role: "user", 
+              parts: [
+                { inlineData: { mimeType, data: base64Data } },
+                { text: part.prompt }
+              ] 
+            }],
+            config: {
+              responseModalities: [Modality.TEXT, Modality.IMAGE],
+            }
+          });
+          
+          let imageData = null;
+          
+          if (response.candidates && response.candidates[0]?.content?.parts) {
+            for (const p of response.candidates[0].content.parts) {
+              if (p.inlineData?.mimeType?.startsWith("image/")) {
+                imageData = `data:${p.inlineData.mimeType};base64,${p.inlineData.data}`;
+              }
+            }
+          }
+          
+          results.push({
+            partName: part.partName,
+            partLabel: part.partLabel,
+            imageData,
+            success: !!imageData
+          });
+        } catch (partError: any) {
+          console.error(`Error generating CD ${part.partName}:`, partError);
+          results.push({
+            partName: part.partName,
+            partLabel: part.partLabel,
+            imageData: null,
+            success: false,
+            error: partError.message
+          });
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      const successCount = results.filter(r => r.success).length;
+      res.json({ 
+        success: successCount > 0, 
+        results,
+        message: successCount === 0 ? "All image generations failed" : undefined
+      });
+    } catch (error: any) {
+      console.error("Error generating CD album art:", error);
+      res.status(500).json({ message: "Failed to generate CD album art", error: error.message });
+    }
+  });
+
   // Price configuration for services (in KRW)
   const servicePrices = {
     mixing: {

@@ -25,6 +25,13 @@ export interface ImagePositions {
   future: ImagePosition;
 }
 
+interface CdAlbumImage {
+  partName: string;
+  partLabel: string;
+  imageData: string | null;
+  success: boolean;
+}
+
 interface NewspaperTemplateProps {
   customerName: string;
   koreanName?: string;
@@ -36,6 +43,7 @@ interface NewspaperTemplateProps {
   imagePositions?: ImagePositions;
   onPositionChange?: (positions: ImagePositions) => void;
   customerId?: number;
+  cdAlbumImages?: CdAlbumImage[];
 }
 
 function convertToKorean(name: string): string {
@@ -252,7 +260,7 @@ const defaultPositions: ImagePositions = {
   future: { x: 50, y: 50, scale: 1 },
 };
 
-export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, lifeStageImages = [], imagePositions: externalPositions, onPositionChange, customerId }: NewspaperTemplateProps) {
+export default function NewspaperTemplate({ customerName, koreanName, photoData, headline, drinkName, drinkTemperature, lifeStageImages = [], imagePositions: externalPositions, onPositionChange, customerId, cdAlbumImages = [] }: NewspaperTemplateProps) {
   const autoKoreanName = koreanName || convertToKorean(customerName);
   const displayName = autoKoreanName ? `${autoKoreanName} (${customerName})` : customerName;
   
@@ -603,6 +611,68 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           </div>
         </div>
       </div>
+
+      {/* Mini CD Keyring Cutout Section */}
+      {cdAlbumImages.length > 0 && cdAlbumImages.some(img => img.imageData) && (
+        <div className="mt-4 pt-3 border-t-2 border-dashed border-gray-400">
+          <div className="text-[9px] text-center text-gray-500 mb-2" style={{ fontFamily: "'Arial', sans-serif" }}>
+            ✂ - - - - - - - - - - - - - - - MINI CD KEYRING - CUT ALONG DOTTED LINE - - - - - - - - - - - - - - - ✂
+          </div>
+          <div className="flex items-start justify-center gap-6">
+            {/* Front Cover - 4x4cm */}
+            {cdAlbumImages.find(img => img.partName === "front")?.imageData && (
+              <div className="text-center">
+                <div 
+                  className="border border-dashed border-gray-400 overflow-hidden"
+                  style={{ width: "4cm", height: "4cm" }}
+                >
+                  <img 
+                    src={cdAlbumImages.find(img => img.partName === "front")!.imageData!}
+                    alt="Front Cover"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-[7px] text-gray-400 mt-0.5">FRONT 4×4cm</p>
+              </div>
+            )}
+
+            {/* Back Inlay - 5x3.9cm */}
+            {cdAlbumImages.find(img => img.partName === "back")?.imageData && (
+              <div className="text-center">
+                <div 
+                  className="border border-dashed border-gray-400 overflow-hidden"
+                  style={{ width: "5cm", height: "3.9cm" }}
+                >
+                  <img 
+                    src={cdAlbumImages.find(img => img.partName === "back")!.imageData!}
+                    alt="Back Inlay"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-[7px] text-gray-400 mt-0.5">INLAY 5×3.9cm</p>
+              </div>
+            )}
+
+            {/* Disc Label - 4x4cm circular */}
+            {cdAlbumImages.find(img => img.partName === "disc")?.imageData && (
+              <div className="text-center">
+                <div 
+                  className="border border-dashed border-gray-400 overflow-hidden"
+                  style={{ width: "4cm", height: "4cm", borderRadius: "50%" }}
+                >
+                  <img 
+                    src={cdAlbumImages.find(img => img.partName === "disc")!.imageData!}
+                    alt="Disc Label"
+                    className="w-full h-full object-cover"
+                    style={{ borderRadius: "50%" }}
+                  />
+                </div>
+                <p className="text-[7px] text-gray-400 mt-0.5">DISC ⌀4cm</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <div className="mt-4 pt-3 border-t-2 border-black flex justify-between items-center text-[11px] font-medium">
