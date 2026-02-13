@@ -622,12 +622,12 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       <div 
                         className="absolute bg-white border border-dashed border-gray-400"
                         style={{ 
-                          width: "7mm", height: "7mm", borderRadius: "50%",
+                          width: "6mm", height: "6mm", borderRadius: "50%",
                           top: "50%", left: "50%", transform: "translate(-50%, -50%)"
                         }}
                       />
                     </div>
-                    <p className="text-[5px] text-gray-400 leading-none">DISC ⌀4cm (hole ⌀7mm)</p>
+                    <p className="text-[5px] text-gray-400 leading-none">DISC ⌀4cm (hole ⌀6mm)</p>
                   </div>
                 )}
               </div>
