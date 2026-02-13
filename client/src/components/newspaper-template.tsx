@@ -568,111 +568,112 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             </div>
           )}
 
-          {/* Advertisement Section */}
-          <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
-            <div className="text-[8px] font-black text-center border-b border-black pb-0.5 mb-1">ADVERTISEMENT</div>
-            <div className="text-[9px] font-bold text-center">🎵 GLOBAL MUSIC DISTRIBUTION</div>
-            <p className="text-[8px] text-center leading-tight">
-              Distribute your music to Spotify, Apple Music, YouTube Music, Instagram, TikTok and more. Earn the same royalty rates as K-pop artists—for life.
-            </p>
-            <div className="text-[9px] font-black text-center">record.co.kr</div>
-          </div>
+          {/* Advertisement / CD Keyring Section */}
+          {cdAlbumImages.length > 0 && cdAlbumImages.some(img => img.imageData) ? (
+            <div className="border-2 border-dashed border-gray-400 p-1.5 flex-1">
+              <div className="text-[8px] font-black text-center border-b border-gray-400 pb-0.5 mb-1.5">
+                ✂ MINI CD KEYRING — CUT ALONG DOTTED LINE ✂
+              </div>
+              <div className="flex items-start justify-center gap-3">
+                {/* Front Cover - 8x4cm (landscape, folds in half for front+back cover) */}
+                {cdAlbumImages.find(img => img.partName === "front")?.imageData && (
+                  <div className="text-center">
+                    <div 
+                      className="border border-dashed border-gray-400 overflow-hidden"
+                      style={{ width: "8cm", height: "4cm" }}
+                    >
+                      <img 
+                        src={cdAlbumImages.find(img => img.partName === "front")!.imageData!}
+                        alt="Front Cover"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="text-[6px] text-gray-400 mt-0.5">COVER 8×4cm (fold in half)</p>
+                  </div>
+                )}
 
-          <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
-            <div className="text-[9px] font-bold text-center">🛍️ DUTY FREE VIP</div>
-            <p className="text-[8px] text-center leading-tight">
-              All Recording Cafe customers get instant VIP registration. Unlock VIP status and enjoy up to 15% extra discount at duty-free shops. Claim your benefits now.
-            </p>
-            <div className="text-[9px] font-black text-center">vip.sc.kr</div>
-          </div>
+                {/* Back Panel - 5x3.9cm (folds in half for back insert) */}
+                {cdAlbumImages.find(img => img.partName === "back")?.imageData && (
+                  <div className="text-center">
+                    <div 
+                      className="border border-dashed border-gray-400 overflow-hidden"
+                      style={{ width: "5cm", height: "3.9cm" }}
+                    >
+                      <img 
+                        src={cdAlbumImages.find(img => img.partName === "back")!.imageData!}
+                        alt="Back Panel"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="text-[6px] text-gray-400 mt-0.5">BACK 5×3.9cm (fold in half)</p>
+                  </div>
+                )}
 
-          <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
-            <div className="text-[9px] font-bold text-center">🏢 KOREA BUSINESS SETUP</div>
-            <p className="text-[8px] text-center leading-tight">
-              Create "Made in Korea" products. Start your company in Korea. From company incorporation to business address services—all in one place. Entering the Korean market has never been easier.
-            </p>
-            <div className="text-[9px] font-black text-center">korea.sc.kr</div>
-          </div>
+                {/* Disc Label - 4cm diameter circular */}
+                {cdAlbumImages.find(img => img.partName === "disc")?.imageData && (
+                  <div className="text-center">
+                    <div 
+                      className="border border-dashed border-gray-400 overflow-hidden"
+                      style={{ width: "4cm", height: "4cm", borderRadius: "50%" }}
+                    >
+                      <img 
+                        src={cdAlbumImages.find(img => img.partName === "disc")!.imageData!}
+                        alt="Disc Label"
+                        className="w-full h-full object-cover"
+                        style={{ borderRadius: "50%" }}
+                      />
+                    </div>
+                    <p className="text-[6px] text-gray-400 mt-0.5">DISC ⌀4cm</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
+                <div className="text-[8px] font-black text-center border-b border-black pb-0.5 mb-1">ADVERTISEMENT</div>
+                <div className="text-[9px] font-bold text-center">🎵 GLOBAL MUSIC DISTRIBUTION</div>
+                <p className="text-[8px] text-center leading-tight">
+                  Distribute your music to Spotify, Apple Music, YouTube Music, Instagram, TikTok and more. Earn the same royalty rates as K-pop artists—for life.
+                </p>
+                <div className="text-[9px] font-black text-center">record.co.kr</div>
+              </div>
 
-          <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
-            <div className="text-[9px] font-bold text-center">💎 K-BEAUTY & PLASTIC SURGERY</div>
-            <p className="text-[8px] text-center leading-tight">
-              Discover true beauty in the home of K-Beauty. Get 20% off at Korea's top dermatology clinics and plastic surgery centers.
-            </p>
-            <div className="text-[9px] font-black text-center">beauty.sc.kr</div>
-          </div>
+              <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
+                <div className="text-[9px] font-bold text-center">🛍️ DUTY FREE VIP</div>
+                <p className="text-[8px] text-center leading-tight">
+                  All Recording Cafe customers get instant VIP registration. Unlock VIP status and enjoy up to 15% extra discount at duty-free shops. Claim your benefits now.
+                </p>
+                <div className="text-[9px] font-black text-center">vip.sc.kr</div>
+              </div>
 
-          <div className="border-2 border-black p-1.5 flex-1 bg-gray-50 flex flex-col justify-center">
-            <div className="text-[9px] font-bold text-center">💕 FIND TRUE LOVE</div>
-            <p className="text-[8px] text-center leading-tight">
-              Cross borders. Meet someone from Korea. Professional matchmakers connecting you with Korean singles for meaningful relationships.
-            </p>
-            <div className="text-[9px] font-black text-center">truelove.ai.kr</div>
-          </div>
+              <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
+                <div className="text-[9px] font-bold text-center">🏢 KOREA BUSINESS SETUP</div>
+                <p className="text-[8px] text-center leading-tight">
+                  Create "Made in Korea" products. Start your company in Korea. From company incorporation to business address services—all in one place. Entering the Korean market has never been easier.
+                </p>
+                <div className="text-[9px] font-black text-center">korea.sc.kr</div>
+              </div>
+
+              <div className="border-2 border-black p-1.5 mb-1.5 bg-gray-50">
+                <div className="text-[9px] font-bold text-center">💎 K-BEAUTY & PLASTIC SURGERY</div>
+                <p className="text-[8px] text-center leading-tight">
+                  Discover true beauty in the home of K-Beauty. Get 20% off at Korea's top dermatology clinics and plastic surgery centers.
+                </p>
+                <div className="text-[9px] font-black text-center">beauty.sc.kr</div>
+              </div>
+
+              <div className="border-2 border-black p-1.5 flex-1 bg-gray-50 flex flex-col justify-center">
+                <div className="text-[9px] font-bold text-center">💕 FIND TRUE LOVE</div>
+                <p className="text-[8px] text-center leading-tight">
+                  Cross borders. Meet someone from Korea. Professional matchmakers connecting you with Korean singles for meaningful relationships.
+                </p>
+                <div className="text-[9px] font-black text-center">truelove.ai.kr</div>
+              </div>
+            </>
+          )}
         </div>
       </div>
-
-      {/* Mini CD Keyring Cutout Section */}
-      {cdAlbumImages.length > 0 && cdAlbumImages.some(img => img.imageData) && (
-        <div className="mt-4 pt-3 border-t-2 border-dashed border-gray-400">
-          <div className="text-[9px] text-center text-gray-500 mb-2" style={{ fontFamily: "'Arial', sans-serif" }}>
-            ✂ - - - - - - - - - - - - - - - MINI CD KEYRING - CUT ALONG DOTTED LINE - - - - - - - - - - - - - - - ✂
-          </div>
-          <div className="flex items-start justify-center gap-6">
-            {/* Front Cover - 4x4cm */}
-            {cdAlbumImages.find(img => img.partName === "front")?.imageData && (
-              <div className="text-center">
-                <div 
-                  className="border border-dashed border-gray-400 overflow-hidden"
-                  style={{ width: "4cm", height: "4cm" }}
-                >
-                  <img 
-                    src={cdAlbumImages.find(img => img.partName === "front")!.imageData!}
-                    alt="Front Cover"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="text-[7px] text-gray-400 mt-0.5">FRONT 4×4cm</p>
-              </div>
-            )}
-
-            {/* Back Inlay - 5x3.9cm */}
-            {cdAlbumImages.find(img => img.partName === "back")?.imageData && (
-              <div className="text-center">
-                <div 
-                  className="border border-dashed border-gray-400 overflow-hidden"
-                  style={{ width: "5cm", height: "3.9cm" }}
-                >
-                  <img 
-                    src={cdAlbumImages.find(img => img.partName === "back")!.imageData!}
-                    alt="Back Inlay"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="text-[7px] text-gray-400 mt-0.5">INLAY 5×3.9cm</p>
-              </div>
-            )}
-
-            {/* Disc Label - 4x4cm circular */}
-            {cdAlbumImages.find(img => img.partName === "disc")?.imageData && (
-              <div className="text-center">
-                <div 
-                  className="border border-dashed border-gray-400 overflow-hidden"
-                  style={{ width: "4cm", height: "4cm", borderRadius: "50%" }}
-                >
-                  <img 
-                    src={cdAlbumImages.find(img => img.partName === "disc")!.imageData!}
-                    alt="Disc Label"
-                    className="w-full h-full object-cover"
-                    style={{ borderRadius: "50%" }}
-                  />
-                </div>
-                <p className="text-[7px] text-gray-400 mt-0.5">DISC ⌀4cm</p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Footer */}
       <div className="mt-4 pt-3 border-t-2 border-black flex justify-between items-center text-[11px] font-medium">

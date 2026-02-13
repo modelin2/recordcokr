@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Camera, Upload, Printer, Trash2, Check, ArrowLeft, Newspaper, Image, Wand2, Loader2, Sparkles, RefreshCw, Plus, Disc3 } from "lucide-react";
-import type { VisitorPhoto } from "@shared/schema";
 import NewspaperTemplate, { type ImagePositions } from "@/components/newspaper-template";
 
 interface CustomerInfo {
@@ -45,8 +44,9 @@ export default function PhotoPage() {
   const [drinkTemperature, setDrinkTemperature] = useState<string>("");
   const [customHeadline, setCustomHeadline] = useState<string>("");
   const [selectedGender, setSelectedGender] = useState<string>("auto");
-  const [previewPhoto, setPreviewPhoto] = useState<VisitorPhoto | null>(null);
+  const [previewMode, setPreviewMode] = useState(false);
   const [previewKoreanName, setPreviewKoreanName] = useState<string>("");
+  const [includeCdAlbum, setIncludeCdAlbum] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<LifeStageImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingStage, setGeneratingStage] = useState<string>("");
@@ -77,66 +77,6 @@ export default function PhotoPage() {
     }
   }, [searchString]);
 
-  const { data: photos = [], isLoading: photosLoading } = useQuery<VisitorPhoto[]>({
-    queryKey: ["/api/photos"],
-    enabled: !!user,
-  });
-
-  const uploadMutation = useMutation({
-    mutationFn: async (data: { customerName: string; photoData: string; headline?: string }) => {
-      return apiRequest("POST", "/api/photos", data);
-    },
-    onSuccess: () => {
-      toast({
-        title: "사진 업로드 완료",
-        description: "사진이 성공적으로 업로드되었습니다.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/photos"] });
-      setSelectedPhoto(null);
-      setSelectedCustomerName("");
-      setCustomHeadline("");
-    },
-    onError: (error: any) => {
-      toast({
-        title: "업로드 실패",
-        description: error.message || "사진 업로드에 실패했습니다.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      return apiRequest("DELETE", `/api/photos/${id}`);
-    },
-    onSuccess: () => {
-      toast({
-        title: "삭제 완료",
-        description: "사진이 삭제되었습니다.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/photos"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "삭제 실패",
-        description: error.message || "사진 삭제에 실패했습니다.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const markPrintedMutation = useMutation({
-    mutationFn: async (id: number) => {
-      return apiRequest("PATCH", `/api/photos/${id}/print`, { isPrinted: true });
-    },
-    onSuccess: () => {
-      toast({
-        title: "출력 완료",
-        description: "출력 상태가 업데이트되었습니다.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/photos"] });
-    },
-  });
 
   const compressImage = (file: File, maxWidth: number = 1024, quality: number = 0.7): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -207,33 +147,6 @@ export default function PhotoPage() {
     }
   };
 
-  const handleUpload = () => {
-    if (!selectedPhoto || !selectedCustomerName) {
-      toast({
-        title: "정보 입력 필요",
-        description: "사진과 고객 이름을 선택해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    uploadMutation.mutate({
-      customerName: selectedCustomerName,
-      photoData: selectedPhoto,
-      headline: customHeadline || undefined,
-    });
-  };
-
-  const handlePrint = (photo: VisitorPhoto) => {
-    setPreviewPhoto(photo);
-    const originalTitle = document.title;
-    document.title = photo.customerName;
-    setTimeout(() => {
-      window.print();
-      document.title = originalTitle;
-      markPrintedMutation.mutate(photo.id);
-    }, 500);
-  };
 
   const compressBase64Image = (base64: string, maxWidth: number = 800, quality: number = 0.6): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -302,6 +215,15 @@ export default function PhotoPage() {
     return currentImage;
   };
 
+  const prepareImageForSend = async (photo: string): Promise<string> => {
+    const base64Size = (photo.length * 3) / 4;
+    const sizeKB = Math.round(base64Size / 1024);
+    if (sizeKB > 2000) {
+      return await compressUntilSmallEnough(photo, 2000);
+    }
+    return photo;
+  };
+
   const handleGenerateAllImages = async (personCount: number = 1) => {
     if (!selectedPhoto) {
       toast({
@@ -315,51 +237,80 @@ export default function PhotoPage() {
     setIsGenerating(true);
     setGeneratingStage(personCount === 2 ? "all-duo" : "all");
     setGeneratedImages([]);
+    if (includeCdAlbum) {
+      setIsGeneratingCd(true);
+      setCdAlbumImages([]);
+    }
 
     try {
-      // Check if image needs compression (over 2MB)
-      const base64Size = (selectedPhoto.length * 3) / 4;
-      const sizeKB = Math.round(base64Size / 1024);
-      
-      let imageToSend = selectedPhoto;
-      
-      // Only compress if larger than 2MB to preserve quality for AI face recognition
-      if (sizeKB > 2000) {
+      const imageToSend = await prepareImageForSend(selectedPhoto);
+
+      toast({
+        title: "AI 이미지 생성 시작",
+        description: includeCdAlbum ? "성장앨범 + CD 키링 동시 생성 중... (약 2-3분)" : "성장앨범 생성 중... (약 1분)",
+      });
+
+      const promises: Promise<any>[] = [
+        apiRequest("POST", "/api/photos/generate-all-stages", {
+          sourceImageBase64: imageToSend,
+          personCount,
+          gender: selectedGender !== "auto" ? selectedGender : undefined
+        }).then(r => r.json())
+      ];
+
+      if (includeCdAlbum) {
+        const cdName = selectedCustomerName || "Guest";
+        promises.push(
+          apiRequest("POST", "/api/photos/generate-cd-album", {
+            sourceImageBase64: imageToSend,
+            customerName: cdName,
+            gender: selectedGender !== "auto" ? selectedGender : undefined
+          }).then(r => r.json())
+        );
+      }
+
+      const results = await Promise.allSettled(promises);
+
+      const stageResult = results[0];
+      if (stageResult.status === "fulfilled" && stageResult.value.success && stageResult.value.results) {
+        setGeneratedImages(stageResult.value.results);
         toast({
-          title: "이미지 최적화 중...",
-          description: `원본 크기: ${sizeKB}KB - 고품질 압축을 진행합니다.`,
-        });
-        
-        imageToSend = await compressUntilSmallEnough(selectedPhoto, 2000);
-        const finalSizeKB = Math.round((imageToSend.length * 3) / 4 / 1024);
-        
-        toast({
-          title: "이미지 준비 완료",
-          description: `최적화된 크기: ${finalSizeKB}KB - AI 생성을 시작합니다.`,
+          title: "성장앨범 생성 완료",
+          description: `${stageResult.value.results.filter((r: LifeStageImage) => r.success).length}개의 이미지가 생성되었습니다.`,
         });
       } else {
+        const msg = stageResult.status === "rejected" ? stageResult.reason?.message : stageResult.value?.message;
         toast({
-          title: "AI 이미지 생성 시작",
-          description: `이미지 크기: ${sizeKB}KB (최적 품질)`,
+          title: "성장앨범 생성 실패",
+          description: msg || "이미지 생성에 실패했습니다.",
+          variant: "destructive",
         });
       }
 
-      const response = await apiRequest("POST", "/api/photos/generate-all-stages", {
-        sourceImageBase64: imageToSend,
-        personCount,
-        gender: selectedGender !== "auto" ? selectedGender : undefined
-      });
-      
-      const data = await response.json();
-      
-      if (data.success && data.results) {
-        setGeneratedImages(data.results);
-        toast({
-          title: "AI 이미지 생성 완료",
-          description: `${data.results.filter((r: LifeStageImage) => r.success).length}개의 성장단계별 이미지가 생성되었습니다.`,
-        });
-      } else {
-        throw new Error(data.message || "이미지 생성 실패");
+      if (includeCdAlbum && results.length > 1) {
+        const cdResult = results[1];
+        if (cdResult.status === "fulfilled" && cdResult.value.results) {
+          setCdAlbumImages(cdResult.value.results);
+          const successCount = cdResult.value.results.filter((r: any) => r.success).length;
+          if (successCount > 0) {
+            toast({
+              title: "CD 앨범 아트 생성 완료",
+              description: `${successCount}/3개의 이미지가 생성되었습니다.`,
+            });
+          } else {
+            toast({
+              title: "CD 앨범 아트 생성 실패",
+              description: "모든 이미지 생성에 실패했습니다.",
+              variant: "destructive",
+            });
+          }
+        } else {
+          toast({
+            title: "CD 앨범 아트 생성 실패",
+            description: "생성 중 오류가 발생했습니다.",
+            variant: "destructive",
+          });
+        }
       }
     } catch (error: any) {
       toast({
@@ -369,6 +320,7 @@ export default function PhotoPage() {
       });
     } finally {
       setIsGenerating(false);
+      setIsGeneratingCd(false);
       setGeneratingStage("");
     }
   };
@@ -447,10 +399,10 @@ export default function PhotoPage() {
   };
 
   const handleGenerateCdAlbum = async () => {
-    if (!selectedPhoto || !selectedCustomerName) {
+    if (!selectedPhoto) {
       toast({
         title: "정보 필요",
-        description: "사진과 고객 이름이 필요합니다.",
+        description: "사진이 필요합니다.",
         variant: "destructive",
       });
       return;
@@ -475,7 +427,7 @@ export default function PhotoPage() {
 
       const response = await apiRequest("POST", "/api/photos/generate-cd-album", {
         sourceImageBase64: imageToSend,
-        customerName: selectedCustomerName,
+        customerName: selectedCustomerName || "Guest",
         gender: selectedGender !== "auto" ? selectedGender : undefined
       });
       
@@ -574,18 +526,18 @@ export default function PhotoPage() {
         }
       `}</style>
 
-      {previewPhoto && (
+      {previewMode && selectedPhoto && (
         <div id="print-area" className="hidden print:block">
           <NewspaperTemplate 
-            customerName={previewPhoto.customerName}
+            customerName={selectedCustomerName || "Guest"}
             koreanName={previewKoreanName || undefined}
-            photoData={previewPhoto.photoData}
-            headline={previewPhoto.headline || undefined}
+            photoData={selectedPhoto}
+            headline={customHeadline || undefined}
             drinkName={selectedDrink || undefined}
             drinkTemperature={drinkTemperature || undefined}
             lifeStageImages={generatedImages}
             imagePositions={imagePositions}
-            customerId={customers.find(c => c.name === previewPhoto.customerName)?.id}
+            customerId={customers.find(c => c.name === selectedCustomerName)?.id}
             cdAlbumImages={cdAlbumImages}
           />
         </div>
@@ -738,21 +690,6 @@ export default function PhotoPage() {
                   <p className="text-xs text-amber-600 mt-1">긴 머리 남성은 '남성'을 직접 선택해주세요</p>
                 </div>
 
-                <Button
-                  onClick={handleUpload}
-                  disabled={!selectedPhoto || !selectedCustomerName || uploadMutation.isPending}
-                  className="w-full bg-amber-800 hover:bg-amber-900 text-white hidden"
-                  data-testid="button-upload"
-                >
-                  {uploadMutation.isPending ? (
-                    "업로드 중..."
-                  ) : (
-                    <>
-                      <Upload className="w-4 h-4 mr-2" />
-                      사진 업로드
-                    </>
-                  )}
-                </Button>
               </CardContent>
             </Card>
 
@@ -784,6 +721,21 @@ export default function PhotoPage() {
                       <p className="text-xs text-pink-500 mt-1">AI가 유아기부터 미래 월드스타까지 성장앨범을 만들어드립니다</p>
                     </div>
                   )}
+                </div>
+
+                {/* CD 키링 동시 생성 체크박스 */}
+                <div className="flex items-center gap-3 p-3 bg-violet-50 rounded-lg border border-violet-200">
+                  <input
+                    type="checkbox"
+                    id="includeCdAlbum"
+                    checked={includeCdAlbum}
+                    onChange={(e) => setIncludeCdAlbum(e.target.checked)}
+                    className="w-5 h-5 accent-violet-600"
+                  />
+                  <label htmlFor="includeCdAlbum" className="flex items-center gap-2 cursor-pointer">
+                    <Disc3 className="w-4 h-4 text-violet-600" />
+                    <span className="text-sm font-medium text-violet-800">미니 CD 키링 앨범 동시 생성</span>
+                  </label>
                 </div>
 
                 {/* 1인용 생성 버튼 */}
@@ -923,41 +875,17 @@ export default function PhotoPage() {
             </Card>
           </div>
 
-          {/* CD Album Art Generation */}
-          <Card className="mt-8 bg-gradient-to-br from-violet-50 to-indigo-50 border-violet-200 shadow-xl">
-            <CardHeader className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-t-lg">
-              <CardTitle className="flex items-center gap-2">
-                <Disc3 className="w-5 h-5" />
-                미니 CD 키링 앨범 아트 생성
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <p className="text-sm text-violet-700 mb-4">
-                고객 사진으로 K-POP 앨범 커버, 뒷면, 디스크 라벨을 AI로 생성합니다. 신문에 함께 출력됩니다.
-              </p>
-              <Button
-                onClick={handleGenerateCdAlbum}
-                disabled={isGeneratingCd || isGenerating || !selectedPhoto || !selectedCustomerName}
-                className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white h-14"
-              >
-                {isGeneratingCd ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    CD 앨범 아트 생성 중... (약 1-2분)
-                  </>
-                ) : (
-                  <div className="flex flex-col items-center">
-                    <div className="flex items-center">
-                      <Disc3 className="w-5 h-5 mr-2" />
-                      CD 앨범 아트 생성 (3장)
-                    </div>
-                    <span className="text-xs opacity-80">앨범 커버 + 뒷면 + 디스크 라벨</span>
-                  </div>
-                )}
-              </Button>
-
-              {cdAlbumImages.length > 0 && (
-                <div className="grid grid-cols-3 gap-4 mt-4">
+          {/* CD Album Art Preview (when generated) */}
+          {cdAlbumImages.length > 0 && (
+            <Card className="mt-8 bg-gradient-to-br from-violet-50 to-indigo-50 border-violet-200 shadow-xl">
+              <CardHeader className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-t-lg py-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Disc3 className="w-5 h-5" />
+                  생성된 CD 키링 앨범 아트
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="grid grid-cols-3 gap-4">
                   {cdAlbumImages.map((img) => (
                     <div key={img.partName} className="text-center">
                       {img.imageData ? (
@@ -965,7 +893,7 @@ export default function PhotoPage() {
                           <img
                             src={img.imageData}
                             alt={img.partLabel}
-                            className={`w-full object-cover rounded-lg shadow-md border-4 border-white ${img.partName === "disc" ? "rounded-full" : ""} ${img.partName === "front" ? "aspect-square" : img.partName === "back" ? "aspect-[5/3.9]" : "aspect-square"}`}
+                            className={`w-full object-cover rounded-lg shadow-md border-4 border-white ${img.partName === "disc" ? "rounded-full aspect-square" : img.partName === "front" ? "aspect-[2/1]" : "aspect-[5/3.9]"}`}
                           />
                           <p className="text-xs font-medium text-violet-800">{img.partLabel}</p>
                         </div>
@@ -980,9 +908,22 @@ export default function PhotoPage() {
                     </div>
                   ))}
                 </div>
-              )}
-            </CardContent>
-          </Card>
+                <Button
+                  onClick={handleGenerateCdAlbum}
+                  disabled={isGeneratingCd || isGenerating || !selectedPhoto || !selectedCustomerName}
+                  size="sm"
+                  variant="outline"
+                  className="w-full mt-3 border-violet-400 text-violet-700 hover:bg-violet-50"
+                >
+                  {isGeneratingCd ? (
+                    <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> 재생성 중...</>
+                  ) : (
+                    <><RefreshCw className="w-4 h-4 mr-1" /> CD 앨범 아트 재생성</>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Preview Section */}
           <Card className="mt-8 bg-[#d4c4a8] border-amber-700 shadow-xl">
@@ -1011,17 +952,10 @@ export default function PhotoPage() {
                   <div className="mt-6 flex justify-center gap-4">
                     <Button
                       onClick={() => {
-                        setPreviewPhoto({
-                          id: 0,
-                          customerName: selectedCustomerName,
-                          photoData: selectedPhoto,
-                          headline: customHeadline || null,
-                          isPrinted: false,
-                          createdAt: new Date(),
-                        });
+                        setPreviewMode(true);
                         setPreviewKoreanName(koreanName);
                         const originalTitle = document.title;
-                        document.title = selectedCustomerName;
+                        document.title = selectedCustomerName || "Guest";
                         setTimeout(() => {
                           window.print();
                           document.title = originalTitle;

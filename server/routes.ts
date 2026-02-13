@@ -728,87 +728,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ==================== Visitor Photo Routes ====================
 
   // Get all visitor photos (admin only)
-  app.get("/api/photos", requireAdmin, async (req, res) => {
-    try {
-      const photos = await storage.getAllVisitorPhotos();
-      res.json(photos);
-    } catch (error) {
-      console.error("Error fetching visitor photos:", error);
-      res.status(500).json({ message: "Failed to fetch photos" });
-    }
-  });
-
-  // Get single visitor photo
-  app.get("/api/photos/:id", requireAdmin, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const photo = await storage.getVisitorPhoto(id);
-      
-      if (!photo) {
-        return res.status(404).json({ message: "Photo not found" });
-      }
-      
-      res.json(photo);
-    } catch (error) {
-      console.error("Error fetching photo:", error);
-      res.status(500).json({ message: "Failed to fetch photo" });
-    }
-  });
-
-  // Upload visitor photo (admin only)
-  app.post("/api/photos", requireAdmin, async (req, res) => {
-    try {
-      const validatedData = insertVisitorPhotoSchema.parse(req.body);
-      const photo = await storage.createVisitorPhoto(validatedData);
-      res.status(201).json(photo);
-    } catch (error) {
-      console.error("Error creating visitor photo:", error);
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ 
-          message: "Invalid photo data", 
-          errors: error.errors 
-        });
-      }
-      res.status(500).json({ message: "Failed to create photo" });
-    }
-  });
-
-  // Update photo print status
-  app.patch("/api/photos/:id/print", requireAdmin, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const { isPrinted } = req.body;
-      
-      const updatedPhoto = await storage.updateVisitorPhotoStatus(id, isPrinted);
-      
-      if (!updatedPhoto) {
-        return res.status(404).json({ message: "Photo not found" });
-      }
-      
-      res.json(updatedPhoto);
-    } catch (error) {
-      console.error("Error updating photo status:", error);
-      res.status(500).json({ message: "Failed to update photo status" });
-    }
-  });
-
-  // Delete visitor photo
-  app.delete("/api/photos/:id", requireAdmin, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const deleted = await storage.deleteVisitorPhoto(id);
-      
-      if (!deleted) {
-        return res.status(404).json({ message: "Photo not found" });
-      }
-      
-      res.json({ message: "Photo deleted successfully" });
-    } catch (error) {
-      console.error("Error deleting photo:", error);
-      res.status(500).json({ message: "Failed to delete photo" });
-    }
-  });
-
   // Get customer names from bookings for photo selection
   app.get("/api/photos/customers/list", requireAdmin, async (req, res) => {
     try {
@@ -1079,45 +998,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const cdParts = [
         {
           partName: "front",
-          partLabel: "Front Cover",
-          prompt: `Using this person's face and likeness, create a professional K-pop single album front cover design. The image must be a perfect 1:1 square format. Design it as a real K-pop CD album cover with:
-- The person's face prominently featured as the main subject, in a stylish artistic pose
-- Professional studio lighting and cinematic mood (dramatic shadows, bokeh, or gradient background)
-- The artist name "${customerName}" displayed prominently in bold modern typography at the bottom
-- A song title like "STAY" or "DREAM" or "SHINE" in stylish font
-- "RECORDER'S CAFE" as the label name in small text
-- A "SINGLE NEW" badge in the corner
-- Overall sleek, modern K-pop album aesthetic similar to BLACKPINK, BTS, or IU album covers
-- High contrast, professional color grading
-The design should look like an actual commercial K-pop album cover you'd see on Melon or Spotify.`
+          partLabel: "Album Cover (8×4cm)",
+          prompt: `Using this person's face and likeness, create a professional K-pop single album COVER design. This is a LANDSCAPE image (ratio 2:1, width is double the height) that will be folded in half to form the front and back of a mini CD jewel case cover.
+
+IMPORTANT LAYOUT - The image has TWO halves:
+LEFT HALF (becomes the BACK of the cover when folded):
+- Artistic abstract or gradient background matching the right half's style
+- A UPC/EAN barcode graphic in the bottom-left area (mandatory - real CDs always have barcodes)
+- Small text: "Recording Café" label, "© ${new Date().getFullYear()} Recording Café Seoul"
+- Track listing: "01. ${customerName}'s Recording  02. Instrumental Ver."
+- Elegant minimal layout
+
+RIGHT HALF (becomes the FRONT cover when folded):
+- The person's face prominently featured as the main subject, styled like a K-pop idol
+- Professional studio lighting, cinematic mood with dramatic shadows or bokeh
+- Artist name "${customerName}" displayed prominently in bold modern typography
+- "Recording Café" as the label name in stylish small text
+- A song title like "FIRST TAKE" or "DREAM" in stylish font
+
+UNIFIED DESIGN: Both halves must share the same color palette, background style, and overall aesthetic so the cover looks cohesive when opened flat. Think of it as one continuous design. High contrast, professional K-pop album aesthetic similar to BLACKPINK, BTS, or IU album covers.`
         },
         {
           partName: "back",
-          partLabel: "Back Inlay",
-          prompt: `Create a K-pop album back cover/inlay card design. This is for a mini CD case inlay (landscape format, slightly wider than tall, ratio about 5:3.9). Design it with:
-- An artistic wide-angle or panoramic version of a recording studio or dreamy K-pop aesthetic background
-- Track listing on one side: "01. ${customerName}'s Recording  02. Instrumental Ver.  03. Acoustic Ver."
-- "${customerName}" as artist name
-- "RECORDER'S CAFE" as the label
-- "Produced by Recording Cafe Seoul" in small text
-- A barcode graphic in one corner
-- Copyright text "© ${new Date().getFullYear()} RC Entertainment"
-- Elegant, minimal layout with professional typography
-- Color scheme that complements a K-pop single album
-Make it look like a real commercial CD back cover.`
+          partLabel: "Back Panel (5×3.9cm)",
+          prompt: `Create a K-pop album BACK PANEL insert design. This image (ratio about 5:3.9, slightly wider than tall) will be folded in half vertically to create a two-sided insert that sits behind the CD disc.
+
+IMPORTANT LAYOUT - The image has TWO halves:
+LEFT HALF (one visible side when folded):
+- Artistic background: dreamy K-pop aesthetic, recording studio vibe, or abstract gradient
+- Artist name "${customerName}" in elegant typography
+- "Recording Café" label branding
+- A realistic UPC/EAN barcode in the bottom area (mandatory)
+- Small copyright text: "© ${new Date().getFullYear()} Recording Café Seoul"
+
+RIGHT HALF (other visible side when folded):
+- Track listing styled like a real CD liner: "01. ${customerName}'s Recording  02. Instrumental Ver.  03. Acoustic Ver."
+- "Produced by Recording Café, Seoul, Korea" in small text
+- "Recording Café" logo/text
+- Credits section in small elegant text
+
+UNIFIED DESIGN: Both halves must share the same color palette and aesthetic for visual unity. The design should complement the album cover style. Professional typography, elegant minimal layout, premium feel.`
         },
         {
           partName: "disc",
-          partLabel: "Disc Label",
-          prompt: `Create a circular CD disc label design for a K-pop single album. The design must be perfectly circular. Include:
-- "${customerName}" as the artist name in stylish curved text around the disc
+          partLabel: "Disc Label (⌀4cm)",
+          prompt: `Create a perfectly CIRCULAR CD disc label design for a K-pop single album. The design must be a perfect circle. Include:
+- "${customerName}" as the artist name in stylish curved text around the upper portion of the disc
+- "Recording Café" label text curved along the lower portion
 - "SINGLE ALBUM" text
-- "RECORDER'S CAFE" label text
-- A small center hole area (clear/white circle in the very center)
-- Artistic abstract or gradient design in the background (galaxy, holographic, or K-pop aesthetic)
+- A small white/clear center hole circle in the very center (like a real CD hub)
+- A realistic UPC/EAN barcode placed along the inner ring area (mandatory - real CDs always have barcodes on the disc)
+- Artistic abstract or holographic gradient design in the background (galaxy, holographic rainbow, or premium K-pop aesthetic)
 - Professional disc label typography and layout
-- The overall design should look like a real K-pop CD disc label
-Make it circular and visually striking like a real music CD.`
+- The overall design should look like a real premium K-pop CD disc label
+Make it perfectly circular and visually striking. Color scheme should be cohesive and premium.`
         }
       ];
       
