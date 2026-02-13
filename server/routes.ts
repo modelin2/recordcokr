@@ -999,29 +999,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         {
           partName: "front",
           partLabel: "Album Cover (8×4cm)",
-          prompt: `Using ALL people's faces and likeness from this photo, create a K-pop album COVER. If there are multiple people, ALL must appear together.
+          prompt: `Using ALL people's faces and likeness from this photo, create a K-pop album COVER. If there are multiple people, ALL must appear in BOTH halves.
 
-This LANDSCAPE image (ratio 2:1) will be FOLDED IN HALF at the vertical center. Think of it as TWO separate square pages side by side:
+This LANDSCAPE image (ratio 2:1) will be CUT IN HALF at the vertical center and each half used separately. Design it as TWO INDEPENDENT square designs placed side by side — each half must be a COMPLETE standalone design with its own background, its own copy of ALL the people, and its own text.
 
-■ RIGHT SQUARE (becomes FRONT COVER):
-- Feature ALL people from the photo as K-pop idols, full face visible (never cropped)
-- Professional studio lighting, cinematic bokeh background
-- "${customerName}" in large bold text at the BOTTOM CENTER (not overlapping faces)
-- "Recording Café" in small text at top-right corner
-- A small decorative barcode graphic in the bottom-right corner
-
-■ LEFT SQUARE (becomes BACK COVER):
-- Artistic gradient/abstract background matching the right side's color scheme
+■ LEFT SQUARE (becomes BACK COVER — shown separately after cutting):
+- ALL people from the photo styled as K-pop idols, shown from a DIFFERENT angle or artistic style than the right square
+- Artistic/gradient background
 - "Recording Café" in stylish text
-- A barcode graphic in bottom-left corner
-- Decorative design elements (stars, lines, patterns)
+- A small decorative barcode graphic in bottom area
+- Decorative design elements (stars, patterns)
 
-IMPORTANT:
-- There must be a visible thin line or subtle fold mark at the exact vertical center
-- "${customerName}" must be spelled EXACTLY as shown — copy each character precisely
-- Text must have generous margins from all edges — NEVER cut off or cropped
-- Keep faces fully visible — do not crop or obscure with text
-- Use rich, premium K-pop aesthetic with professional typography`
+■ RIGHT SQUARE (becomes FRONT COVER — shown separately after cutting):
+- ALL people from the photo styled as K-pop idols, FULL FACE clearly visible, different pose or angle from left square
+- Professional studio lighting, cinematic bokeh background
+- "${customerName}" in large bold text at BOTTOM CENTER (not overlapping faces)
+- "Recording Café" in small text at top corner
+- A small decorative barcode graphic in bottom corner
+
+CRITICAL:
+- Each square must contain ALL people from the source photo — never show only one person in either half
+- Each square is a COMPLETE independent design — imagine cutting the image in half and using each piece alone
+- A visible thin line at the exact vertical center to mark the cut/fold
+- "${customerName}" spelled EXACTLY as shown — copy each character precisely
+- Text must have generous margins — NEVER cut off at edges
+- Faces must be fully visible in both halves — never cropped
+- Rich, premium K-pop aesthetic`
         },
         {
           partName: "back",
