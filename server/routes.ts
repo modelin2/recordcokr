@@ -769,7 +769,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
       
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-image",
+        model: "gemini-3-pro-image-preview",
         contents: [{ 
           role: "user", 
           parts: [
@@ -841,7 +841,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         try {
           const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-image",
+            model: "gemini-3-pro-image-preview",
             contents: [{ 
               role: "user", 
               parts: [
@@ -924,7 +924,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       try {
         const response = await ai.models.generateContent({
-          model: "gemini-2.5-flash-image",
+          model: "gemini-3-pro-image-preview",
           contents: [{ 
             role: "user", 
             parts: [
@@ -1089,7 +1089,7 @@ REQUIREMENTS:
       for (const part of cdParts) {
         try {
           const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-image",
+            model: "gemini-3-pro-image-preview",
             contents: [{ 
               role: "user", 
               parts: [
@@ -1163,7 +1163,7 @@ REQUIREMENTS:
       }
       
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-image",
+        model: "gemini-3-pro-image-preview",
         contents: [{ 
           role: "user", 
           parts: [
