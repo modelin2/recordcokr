@@ -178,6 +178,17 @@ Changelog:
   - Removed all Stripe and TossPayments related code and dependencies
   - Deleted payment pages (payment.tsx, payment-success.tsx, payment-fail.tsx)
   - Simplified booking flow without external payment integration
+- February 13, 2026. **NFT Digital Keyring System**:
+  - Created nft_pages table for customer-specific private pages
+  - Auto-generates NFT page (with unique UUID token) when CD keyring is created
+  - Customer page at /nft/:token shows album cover, recording download, and additional service requests
+  - Audio download auto-deletes file from server after download (saves storage)
+  - Additional services match /menu pricing: mixing (basic/AI/expert), video, album release (standard/pro), LP
+  - Admin NFT tab in /admin for managing pages, uploading audio files, deleting files, and processing service requests
+  - Private page with clear "비공개" indicator - only accessible via unique link
+  - Customer filtering excludes [klook] names and cancelled/deleted bookings from photo page
+  - Updated CD back panel prompt to generate realistic CD inlay (tracklist, barcode, credits)
+  - Fixed CD image sizing with aspectRatio CSS for proper responsive scaling
 ```
 
 ## User Preferences

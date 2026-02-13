@@ -46,13 +46,225 @@ const statusIcons = {
   cancelled: XCircle
 };
 
+function NftManagement() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [uploadingId, setUploadingId] = useState<number | null>(null);
+
+  const { data: nftPages = [], isLoading } = useQuery({
+    queryKey: ["/api/admin/nft-pages"],
+  });
+
+  const uploadAudioMutation = useMutation({
+    mutationFn: async ({ id, file }: { id: number; file: File }) => {
+      return new Promise<void>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          try {
+            const base64 = (reader.result as string).split(",")[1];
+            await apiRequest("POST", `/api/admin/nft-pages/${id}/upload-audio`, {
+              fileName: file.name,
+              fileData: base64,
+            });
+            resolve();
+          } catch (e) { reject(e); }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/nft-pages"] });
+      toast({ title: "음원 업로드 완료" });
+      setUploadingId(null);
+    },
+    onError: () => {
+      toast({ title: "업로드 실패", variant: "destructive" });
+    },
+  });
+
+  const deleteAudioMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/admin/nft-pages/${id}/audio`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/nft-pages"] });
+      toast({ title: "음원 삭제 완료" });
+    },
+  });
+
+  const deletePageMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/admin/nft-pages/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/nft-pages"] });
+      toast({ title: "NFT 페이지 삭제 완료" });
+    },
+  });
+
+  const updateServiceMutation = useMutation({
+    mutationFn: async ({ id, requestId, status }: { id: number; requestId: number; status: string }) => {
+      await apiRequest("PATCH", `/api/admin/nft-pages/${id}/service-request`, { requestId, status });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/nft-pages"] });
+      toast({ title: "서비스 상태 업데이트 완료" });
+    },
+  });
+
+  const handleFileSelect = (id: number) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "audio/*,.mp3,.wav,.m4a,.flac";
+    input.onchange = (e: any) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setUploadingId(id);
+        uploadAudioMutation.mutate({ id, file });
+      }
+    };
+    input.click();
+  };
+
+  if (isLoading) return <div className="text-center py-8 text-gray-400">Loading...</div>;
+
+  return (
+    <div className="space-y-4">
+      <Card className="glass border-white/20">
+        <CardHeader>
+          <CardTitle className="text-white text-lg">NFT 키링 페이지 관리</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {(nftPages as any[]).length === 0 ? (
+            <p className="text-gray-400 text-center py-8">생성된 NFT 페이지가 없습니다. CD 키링을 생성하면 자동으로 생성됩니다.</p>
+          ) : (
+            <div className="space-y-4">
+              {(nftPages as any[]).map((page: any) => {
+                const serviceRequests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
+                const pendingRequests = serviceRequests.filter((r: any) => r.status === "pending");
+                return (
+                  <div key={page.id} className="border border-white/10 rounded-lg p-4 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="text-white font-bold text-lg">
+                          {page.customerName}
+                          {page.koreanName && <span className="text-gray-400 text-sm ml-2">({page.koreanName})</span>}
+                        </h3>
+                        <p className="text-gray-500 text-xs">{page.recordingDate}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge className={
+                          page.audioStatus === "ready" ? "bg-green-500/20 text-green-300" :
+                          page.audioStatus === "downloaded" ? "bg-blue-500/20 text-blue-300" :
+                          "bg-yellow-500/20 text-yellow-300"
+                        }>
+                          {page.audioStatus === "ready" ? "다운로드 가능" :
+                           page.audioStatus === "downloaded" ? "다운로드 완료" : "후반작업 중"}
+                        </Badge>
+                        {pendingRequests.length > 0 && (
+                          <Badge className="bg-red-500/20 text-red-300">서비스 신청 {pendingRequests.length}건</Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-gray-500">NFT URL:</span>
+                      <code className="text-yellow-400 bg-white/5 px-2 py-0.5 rounded text-xs">
+                        /nft/{page.token}
+                      </code>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 px-2 text-xs text-gray-400 hover:text-white"
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/nft/${page.token}`);
+                          toast({ title: "URL 복사됨" });
+                        }}
+                      >
+                        <Copy className="w-3 h-3" />
+                      </Button>
+                    </div>
+
+                    <div className="flex gap-2 flex-wrap">
+                      <Button
+                        size="sm"
+                        onClick={() => handleFileSelect(page.id)}
+                        disabled={uploadAudioMutation.isPending && uploadingId === page.id}
+                        className="bg-green-600 hover:bg-green-700 text-white text-xs h-8"
+                      >
+                        <Music className="w-3 h-3 mr-1" />
+                        {uploadAudioMutation.isPending && uploadingId === page.id ? "업로드중..." : "음원 업로드"}
+                      </Button>
+                      {page.hasAudioFile && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => deleteAudioMutation.mutate(page.id)}
+                          disabled={deleteAudioMutation.isPending}
+                          className="text-xs h-8"
+                        >
+                          <Trash2 className="w-3 h-3 mr-1" /> 음원 삭제
+                        </Button>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => deletePageMutation.mutate(page.id)}
+                        disabled={deletePageMutation.isPending}
+                        className="text-xs h-8 text-red-400 hover:text-red-300"
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" /> 페이지 삭제
+                      </Button>
+                    </div>
+
+                    {serviceRequests.length > 0 && (
+                      <div className="border-t border-white/10 pt-3 mt-3">
+                        <p className="text-gray-400 text-xs font-bold mb-2">추가 서비스 신청</p>
+                        {serviceRequests.map((req: any) => (
+                          <div key={req.id} className="flex items-center justify-between text-xs bg-white/5 rounded p-2 mb-1">
+                            <div>
+                              <span className="text-gray-300">
+                                {req.services?.map((s: any) => s.name || s.nameEn).join(", ")}
+                              </span>
+                              <span className="text-gray-600 ml-2">{new Date(req.requestedAt).toLocaleDateString("ko-KR")}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge className={req.status === "pending" ? "bg-yellow-500/20 text-yellow-300" : "bg-green-500/20 text-green-300"}>
+                                {req.status === "pending" ? "대기" : "완료"}
+                              </Badge>
+                              {req.status === "pending" && (
+                                <Button
+                                  size="sm"
+                                  className="h-6 px-2 text-xs bg-green-600 hover:bg-green-700"
+                                  onClick={() => updateServiceMutation.mutate({ id: page.id, requestId: req.id, status: "completed" })}
+                                >
+                                  완료처리
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [emailSubject, setEmailSubject] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
-  const [activeTab, setActiveTab] = useState<"bookings" | "visit-reservations" | "hotel-bookings" | "calendar">("bookings");
+  const [activeTab, setActiveTab] = useState<"bookings" | "visit-reservations" | "hotel-bookings" | "calendar" | "nft">("bookings");
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
@@ -796,8 +1008,8 @@ Recording Cafe Team`
         </Card>
 
         {/* Main Content Tabs */}
-        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations" | "hotel-bookings" | "calendar")} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-white/10 mb-6">
+        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations" | "hotel-bookings" | "calendar" | "nft")} className="w-full">
+          <TabsList className="grid w-full grid-cols-5 bg-white/10 mb-6">
             <TabsTrigger value="bookings" className="text-white data-[state=active]:bg-white/20">
               📋 메뉴 선택
             </TabsTrigger>
@@ -815,6 +1027,9 @@ Recording Cafe Team`
             </TabsTrigger>
             <TabsTrigger value="calendar" className="text-white data-[state=active]:bg-white/20">
               📅 캘린더
+            </TabsTrigger>
+            <TabsTrigger value="nft" className="text-white data-[state=active]:bg-white/20">
+              💿 NFT 키링
             </TabsTrigger>
           </TabsList>
 
@@ -1669,6 +1884,10 @@ Recording Cafe Team`
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="nft">
+            <NftManagement />
           </TabsContent>
         </Tabs>
 

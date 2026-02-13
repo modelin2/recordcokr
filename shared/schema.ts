@@ -420,7 +420,7 @@ export const insertNftPageSchema = createInsertSchema(nftPages).omit({
   albumCoverImage: z.string().optional().nullable(),
   audioFileName: z.string().optional().nullable(),
   audioFileData: z.string().optional().nullable(),
-  audioStatus: z.enum(["pending", "ready"]).default("pending"),
+  audioStatus: z.enum(["pending", "ready", "downloaded"]).default("pending"),
   serviceRequests: z.string().optional().nullable(),
 });
 

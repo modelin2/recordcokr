@@ -54,6 +54,7 @@ export default function PhotoPage() {
   const [cdAlbumImages, setCdAlbumImages] = useState<{partName: string; partLabel: string; imageData: string | null; success: boolean}[]>([]);
   const [regeneratingCdPart, setRegeneratingCdPart] = useState<string>("");
   const [isGeneratingCd, setIsGeneratingCd] = useState(false);
+  const [nftUrl, setNftUrl] = useState<string | null>(null);
   const [imagePositions, setImagePositions] = useState<ImagePositions>({
     main: { x: 50, y: 0, scale: 1 },
     infancy: { x: 50, y: 0, scale: 1 },
@@ -293,6 +294,7 @@ export default function PhotoPage() {
         const cdResult = results[1];
         if (cdResult.status === "fulfilled" && cdResult.value.results) {
           setCdAlbumImages(cdResult.value.results);
+          if (cdResult.value.nftUrl) setNftUrl(cdResult.value.nftUrl);
           const successCount = cdResult.value.results.filter((r: any) => r.success).length;
           if (successCount > 0) {
             toast({
@@ -438,6 +440,7 @@ export default function PhotoPage() {
       
       if (data.results) {
         setCdAlbumImages(data.results);
+        if (data.nftUrl) setNftUrl(data.nftUrl);
         const successCount = data.results.filter((r: any) => r.success).length;
         if (successCount > 0) {
           toast({
@@ -992,6 +995,27 @@ export default function PhotoPage() {
                     <><RefreshCw className="w-4 h-4 mr-1" /> CD 앨범 아트 재생성</>
                   )}
                 </Button>
+                {nftUrl && (
+                  <div className="mt-3 p-3 bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-300 rounded-lg">
+                    <p className="text-xs font-bold text-yellow-800 mb-1">💿 NFT 키링 페이지 생성됨</p>
+                    <div className="flex items-center gap-2">
+                      <code className="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded flex-1 truncate">
+                        {window.location.origin}{nftUrl}
+                      </code>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 text-xs border-yellow-400 text-yellow-700 hover:bg-yellow-100"
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}${nftUrl}`);
+                          toast({ title: "NFT URL 복사됨" });
+                        }}
+                      >
+                        복사
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}

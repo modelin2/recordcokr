@@ -1149,9 +1149,36 @@ REQUIREMENTS:
       }
       
       const successCount = results.filter(r => r.success).length;
+      
+      let nftToken = null;
+      if (successCount > 0) {
+        const frontCover = results.find(r => r.partName === "front" && r.success);
+        const { randomUUID } = await import("crypto");
+        nftToken = randomUUID();
+        try {
+          await storage.createNftPage({
+            token: nftToken,
+            customerName,
+            koreanName: koreanName || null,
+            bookingId: null,
+            recordingDate: new Date().toISOString().split("T")[0],
+            albumCoverImage: frontCover?.imageData || null,
+            audioFileName: null,
+            audioFileData: null,
+            audioStatus: "pending",
+            serviceRequests: null,
+          });
+        } catch (nftError) {
+          console.error("Error creating NFT page:", nftError);
+          nftToken = null;
+        }
+      }
+
       res.json({ 
         success: successCount > 0, 
         results,
+        nftToken,
+        nftUrl: nftToken ? `/nft/${nftToken}` : null,
         message: successCount === 0 ? "All image generations failed" : undefined
       });
     } catch (error: any) {
@@ -2202,6 +2229,176 @@ REQUIREMENTS:
     } catch (error) {
       console.error("Error fetching booked times:", error);
       res.status(500).json({ message: "Failed to fetch booked times" });
+    }
+  });
+
+  // ============ NFT PAGE ROUTES ============
+
+  app.get("/api/nft/:token", async (req, res) => {
+    try {
+      const page = await storage.getNftPageByToken(req.params.token);
+      if (!page) {
+        return res.status(404).json({ message: "Page not found" });
+      }
+      const { audioFileData, ...safeData } = page;
+      res.json({ ...safeData, hasAudioFile: !!audioFileData });
+    } catch (error) {
+      console.error("Error fetching NFT page:", error);
+      res.status(500).json({ message: "Failed to fetch page" });
+    }
+  });
+
+  app.get("/api/nft/:token/download", async (req, res) => {
+    try {
+      const page = await storage.getNftPageByToken(req.params.token);
+      if (!page || !page.audioFileData || page.audioStatus !== "ready") {
+        return res.status(404).json({ message: "File not available" });
+      }
+
+      const buffer = Buffer.from(page.audioFileData, "base64");
+      const fileName = page.audioFileName || "recording.mp3";
+
+      res.setHeader("Content-Type", "application/octet-stream");
+      res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+      res.setHeader("Content-Length", buffer.length);
+      res.send(buffer);
+
+      await storage.updateNftPage(page.id, {
+        audioFileData: null,
+        audioFileName: null,
+        audioStatus: "downloaded",
+      } as any);
+    } catch (error) {
+      console.error("Error downloading audio:", error);
+      res.status(500).json({ message: "Failed to download file" });
+    }
+  });
+
+  app.post("/api/nft/:token/request-service", async (req, res) => {
+    try {
+      const page = await storage.getNftPageByToken(req.params.token);
+      if (!page) {
+        return res.status(404).json({ message: "Page not found" });
+      }
+
+      const { services } = req.body;
+      if (!services || !Array.isArray(services)) {
+        return res.status(400).json({ message: "Services array required" });
+      }
+
+      const existingRequests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
+      const newRequest = {
+        id: Date.now(),
+        services,
+        requestedAt: new Date().toISOString(),
+        status: "pending",
+      };
+      existingRequests.push(newRequest);
+
+      await storage.updateNftPage(page.id, {
+        serviceRequests: JSON.stringify(existingRequests),
+      } as any);
+
+      res.json({ message: "Service request submitted", request: newRequest });
+    } catch (error) {
+      console.error("Error requesting service:", error);
+      res.status(500).json({ message: "Failed to submit request" });
+    }
+  });
+
+  app.get("/api/admin/nft-pages", requireAdmin, async (req, res) => {
+    try {
+      const pages = await storage.getAllNftPages();
+      const safePagesData = pages.map(p => {
+        const { audioFileData, ...safe } = p;
+        return { ...safe, hasAudioFile: !!audioFileData };
+      });
+      res.json(safePagesData);
+    } catch (error) {
+      console.error("Error fetching NFT pages:", error);
+      res.status(500).json({ message: "Failed to fetch NFT pages" });
+    }
+  });
+
+  app.post("/api/admin/nft-pages/:id/upload-audio", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { fileName, fileData } = req.body;
+      if (!fileName || !fileData) {
+        return res.status(400).json({ message: "fileName and fileData (base64) required" });
+      }
+
+      const updated = await storage.updateNftPage(id, {
+        audioFileName: fileName,
+        audioFileData: fileData,
+        audioStatus: "ready",
+      } as any);
+
+      if (!updated) {
+        return res.status(404).json({ message: "NFT page not found" });
+      }
+      res.json({ message: "Audio uploaded", audioStatus: "ready" });
+    } catch (error) {
+      console.error("Error uploading audio:", error);
+      res.status(500).json({ message: "Failed to upload audio" });
+    }
+  });
+
+  app.delete("/api/admin/nft-pages/:id/audio", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updated = await storage.updateNftPage(id, {
+        audioFileName: null,
+        audioFileData: null,
+        audioStatus: "pending",
+      } as any);
+
+      if (!updated) {
+        return res.status(404).json({ message: "NFT page not found" });
+      }
+      res.json({ message: "Audio deleted" });
+    } catch (error) {
+      console.error("Error deleting audio:", error);
+      res.status(500).json({ message: "Failed to delete audio" });
+    }
+  });
+
+  app.delete("/api/admin/nft-pages/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteNftPage(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "NFT page not found" });
+      }
+      res.json({ message: "NFT page deleted" });
+    } catch (error) {
+      console.error("Error deleting NFT page:", error);
+      res.status(500).json({ message: "Failed to delete NFT page" });
+    }
+  });
+
+  app.patch("/api/admin/nft-pages/:id/service-request", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { requestId, status } = req.body;
+      const page = await storage.getNftPage(id);
+      if (!page) {
+        return res.status(404).json({ message: "NFT page not found" });
+      }
+
+      const requests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
+      const updated = requests.map((r: any) =>
+        r.id === requestId ? { ...r, status } : r
+      );
+
+      await storage.updateNftPage(id, {
+        serviceRequests: JSON.stringify(updated),
+      } as any);
+
+      res.json({ message: "Service request updated" });
+    } catch (error) {
+      console.error("Error updating service request:", error);
+      res.status(500).json({ message: "Failed to update request" });
     }
   });
 
