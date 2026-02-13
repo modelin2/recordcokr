@@ -1,5 +1,5 @@
 import { 
-  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations, hotelBookings, hotelAdmins, announcements, adminSchedules,
+  users, packages, addons, partnerAddons, bookings, timeSlots, paymentOrders, visitorPhotos, visitReservations, hotelBookings, hotelAdmins, announcements, adminSchedules, nftPages,
   type User, type InsertUser, type InsertAdmin,
   type Package, type InsertPackage,
   type Addon, type InsertAddon,
@@ -12,7 +12,8 @@ import {
   type HotelBooking, type InsertHotelBooking,
   type HotelAdmin, type InsertHotelAdmin,
   type Announcement, type InsertAnnouncement,
-  type AdminSchedule, type InsertAdminSchedule
+  type AdminSchedule, type InsertAdminSchedule,
+  type NftPage, type InsertNftPage
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -89,6 +90,14 @@ export interface IStorage {
   getAllAdminSchedules(): Promise<AdminSchedule[]>;
   createAdminSchedule(schedule: InsertAdminSchedule): Promise<AdminSchedule>;
   deleteAdminSchedule(id: number): Promise<boolean>;
+
+  // NFT Page operations
+  getAllNftPages(): Promise<NftPage[]>;
+  getNftPageByToken(token: string): Promise<NftPage | undefined>;
+  getNftPage(id: number): Promise<NftPage | undefined>;
+  createNftPage(page: InsertNftPage): Promise<NftPage>;
+  updateNftPage(id: number, updates: Partial<NftPage>): Promise<NftPage | undefined>;
+  deleteNftPage(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -670,6 +679,30 @@ export class MemStorage implements IStorage {
   async deleteAdminSchedule(id: number): Promise<boolean> {
     return false;
   }
+
+  async getAllNftPages(): Promise<NftPage[]> {
+    return [];
+  }
+
+  async getNftPageByToken(token: string): Promise<NftPage | undefined> {
+    return undefined;
+  }
+
+  async getNftPage(id: number): Promise<NftPage | undefined> {
+    return undefined;
+  }
+
+  async createNftPage(page: InsertNftPage): Promise<NftPage> {
+    throw new Error("NFT pages are not supported in MemStorage");
+  }
+
+  async updateNftPage(id: number, updates: Partial<NftPage>): Promise<NftPage | undefined> {
+    return undefined;
+  }
+
+  async deleteNftPage(id: number): Promise<boolean> {
+    return false;
+  }
 }
 
 // Database Storage Implementation
@@ -1065,6 +1098,35 @@ export class DatabaseStorage implements IStorage {
 
   async deleteAdminSchedule(id: number): Promise<boolean> {
     const result = await db.delete(adminSchedules).where(eq(adminSchedules.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async getAllNftPages(): Promise<NftPage[]> {
+    return await db.select().from(nftPages).orderBy(desc(nftPages.createdAt));
+  }
+
+  async getNftPageByToken(token: string): Promise<NftPage | undefined> {
+    const [page] = await db.select().from(nftPages).where(eq(nftPages.token, token));
+    return page;
+  }
+
+  async getNftPage(id: number): Promise<NftPage | undefined> {
+    const [page] = await db.select().from(nftPages).where(eq(nftPages.id, id));
+    return page;
+  }
+
+  async createNftPage(page: InsertNftPage): Promise<NftPage> {
+    const [newPage] = await db.insert(nftPages).values(page).returning();
+    return newPage;
+  }
+
+  async updateNftPage(id: number, updates: Partial<NftPage>): Promise<NftPage | undefined> {
+    const [updated] = await db.update(nftPages).set(updates).where(eq(nftPages.id, id)).returning();
+    return updated;
+  }
+
+  async deleteNftPage(id: number): Promise<boolean> {
+    const result = await db.delete(nftPages).where(eq(nftPages.id, id));
     return (result.rowCount || 0) > 0;
   }
 }

@@ -392,3 +392,37 @@ export const insertAdminScheduleSchema = createInsertSchema(adminSchedules).omit
 
 export type AdminSchedule = typeof adminSchedules.$inferSelect;
 export type InsertAdminSchedule = z.infer<typeof insertAdminScheduleSchema>;
+
+export const nftPages = pgTable("nft_pages", {
+  id: serial("id").primaryKey(),
+  token: text("token").notNull().unique(),
+  customerName: text("customer_name").notNull(),
+  koreanName: text("korean_name"),
+  bookingId: integer("booking_id"),
+  recordingDate: text("recording_date"),
+  albumCoverImage: text("album_cover_image"),
+  audioFileName: text("audio_file_name"),
+  audioFileData: text("audio_file_data"),
+  audioStatus: text("audio_status").notNull().default("pending"),
+  serviceRequests: text("service_requests"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertNftPageSchema = createInsertSchema(nftPages).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  token: z.string().min(1),
+  customerName: z.string().min(1),
+  koreanName: z.string().optional().nullable(),
+  bookingId: z.number().optional().nullable(),
+  recordingDate: z.string().optional().nullable(),
+  albumCoverImage: z.string().optional().nullable(),
+  audioFileName: z.string().optional().nullable(),
+  audioFileData: z.string().optional().nullable(),
+  audioStatus: z.enum(["pending", "ready"]).default("pending"),
+  serviceRequests: z.string().optional().nullable(),
+});
+
+export type NftPage = typeof nftPages.$inferSelect;
+export type InsertNftPage = z.infer<typeof insertNftPageSchema>;
