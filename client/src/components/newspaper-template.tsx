@@ -534,15 +534,15 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         <div className="col-span-2 border-l-2 border-black pl-4 flex flex-col">
           {/* Award Photo */}
           {futureImage?.imageData && (
-            <div className="mb-2">
+            <div className="mb-2 flex-1 flex flex-col">
               <div className="bg-black print-bg-black p-1 mb-1">
                 <div className="text-[10px] font-black text-center tracking-wider text-white print-text-white">
                   ★ {futureYear} AGI 한류 홍보대사 대상 ★
                 </div>
               </div>
               <div 
-                className="border-2 border-black overflow-hidden flex items-center justify-center bg-purple-50 relative cursor-move print:cursor-default" 
-                style={{ aspectRatio: "3/4", width: "100%" }}
+                className="border-2 border-black overflow-hidden flex items-center justify-center bg-purple-50 relative cursor-move print:cursor-default flex-1" 
+                style={{ width: "100%", minHeight: "120px" }}
                 onMouseDown={(e) => handleMouseDown("future", e)}
                 onWheel={(e) => handleWheel("future", e)}
                 title="드래그: 위치 조정 / 휠: 확대/축소"
@@ -550,7 +550,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 <img 
                   src={futureImage.imageData} 
                   alt="한복 시상식"
-                  className="h-full object-cover select-none"
+                  className="w-full h-full object-cover select-none"
                   style={{
                     objectPosition: `${imagePositions.future.x}% ${imagePositions.future.y}%`,
                     transform: `scale(${imagePositions.future.scale || 1})`,
@@ -570,7 +570,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
 
           {/* Advertisement / CD Keyring Section */}
           {cdAlbumImages.length > 0 && cdAlbumImages.some(img => img.imageData) ? (
-            <div className="border-2 border-dashed border-gray-400 p-1 flex-1">
+            <div className="border-2 border-dashed border-gray-400 p-1">
               <div className="text-[6px] font-black text-center border-b border-gray-400 pb-0.5 mb-0.5">
                 ✂ MINI CD KEYRING — CUT ALONG DOTTED LINE ✂
               </div>

@@ -999,67 +999,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
         {
           partName: "front",
           partLabel: "Album Cover (8×4cm)",
-          prompt: `Using ALL people's faces and likeness from this photo, create a professional K-pop single album COVER design. If there are multiple people in the photo, ALL of them must appear together on the album cover — do NOT exclude anyone. This is a LANDSCAPE image (ratio 2:1, width is exactly double the height) that will be folded in half to form the front and back of a mini CD jewel case cover.
+          prompt: `Using ALL people's faces and likeness from this photo, create a professional K-pop single album COVER design. If there are multiple people in the photo, ALL of them must appear together — do NOT exclude anyone.
 
-IMPORTANT LAYOUT - The image has TWO halves:
-LEFT HALF (becomes the BACK of the cover when folded):
-- Artistic abstract or gradient background that continues seamlessly from the right half
-- "Recording Café" in small stylish text somewhere in this half
+THIS IMAGE WILL BE PHYSICALLY FOLDED IN HALF along the vertical center line. Design it as a LANDSCAPE image (ratio exactly 2:1). When folded, the RIGHT half becomes the visible FRONT COVER and the LEFT half becomes the visible BACK COVER.
 
-RIGHT HALF (becomes the FRONT cover when folded):
-- ALL people from the source photo prominently featured together as the main subjects, styled like K-pop idols
-- Professional studio lighting, cinematic mood with dramatic shadows or bokeh
-- "${customerName}" displayed in bold modern typography — positioned so it does NOT heavily cover anyone's face (place at bottom or top edge)
-- "Recording Café" as a small label text
+DESIGN LAYOUT:
+- Draw a subtle thin vertical line or visual divider at the exact center to indicate the fold
+- RIGHT HALF (FRONT COVER when folded): ALL people styled as K-pop idols, professional lighting, cinematic. "${customerName}" in bold typography at the bottom area. "Recording Café" as small label text.
+- LEFT HALF (BACK COVER when folded): Artistic abstract/gradient background matching right half's color scheme. "Recording Café" in small text.
+- Each half should look complete and beautiful on its own when the card is folded
 
-CRITICAL TEXT RULES:
-- ONLY these two text elements are allowed in the entire image: "${customerName}" and "Recording Café"
-- The name must be spelled EXACTLY as "${customerName}" — copy each character precisely, do NOT change or approximate any characters
-- NO other text whatsoever — no song titles, no track listings, no copyright, no dates, no barcodes, no badges
-- Text must NOT heavily obscure anyone's face — keep text at edges or corners
+TEXT RULES:
+- ONLY allowed text: "${customerName}" and "Recording Café" — nothing else
+- Spell "${customerName}" EXACTLY — copy each character precisely
+- ALL text must be placed well INSIDE the image with generous margins — never near any edge. Text must be fully visible and never cut off or cropped
+- Text must NOT cover faces — place at bottom or corners
 
-UNIFIED DESIGN: Both halves share the same color palette and background style as one continuous design. High contrast, professional K-pop album aesthetic.`
+STYLE: Both halves share the same color palette as one continuous panoramic design. Premium K-pop album aesthetic.`
         },
         {
           partName: "back",
           partLabel: "Back Panel (10×3.9cm)",
-          prompt: `Create a K-pop album BACK PANEL insert design. This is a LANDSCAPE image (ratio about 10:3.9, wide and short) that will be folded in half vertically to create a two-sided insert that sits behind the CD disc.
+          prompt: `Create a K-pop album BACK PANEL insert design. This is a LANDSCAPE image (ratio about 10:3.9, very wide and short).
 
-IMPORTANT LAYOUT - The image has TWO halves (each half becomes 5×3.9cm when folded):
-LEFT HALF:
-- Artistic background: dreamy K-pop aesthetic, recording studio vibe, or abstract gradient
-- "${customerName}" in elegant typography
-- "Recording Café" label branding
+THIS IMAGE WILL BE PHYSICALLY FOLDED IN HALF along the vertical center line. When folded, each half becomes a separate 5×3.9cm visible panel.
 
-RIGHT HALF:
-- Complementary artistic design continuing from the left half
-- "Recording Café" text
-- "${customerName}" can appear again in a different style
+DESIGN LAYOUT:
+- Draw a subtle thin vertical line or visual divider at the exact center to indicate the fold
+- LEFT HALF (one panel when folded): Dreamy K-pop aesthetic background, "${customerName}" in elegant typography, "Recording Café" label branding
+- RIGHT HALF (other panel when folded): Complementary artistic design continuing from left half, "Recording Café" text, "${customerName}" can appear in different style
+- Each half should look complete and balanced on its own when folded
 
-CRITICAL TEXT RULES:
-- ONLY these two text elements are allowed: "${customerName}" and "Recording Café"
-- The name must be spelled EXACTLY as "${customerName}" — copy each character precisely, do NOT change or approximate any characters
-- NO other text whatsoever — no track listings, no copyright, no dates, no barcodes, no credits, no production notes
-- Keep it visually artistic with minimal text
+TEXT RULES:
+- ONLY allowed text: "${customerName}" and "Recording Café" — nothing else
+- Spell "${customerName}" EXACTLY — copy each character precisely
+- ALL text must be placed well INSIDE the image with generous margins — never near any edge. Text must be fully visible and never cut off
+- No track listings, copyright, barcodes, credits, or any other text
 
-UNIFIED DESIGN: Both halves share the same color palette and aesthetic. Professional, elegant, premium feel. The design should look like a high-end K-pop album insert.`
+STYLE: Both halves share the same color palette and aesthetic. Premium, elegant feel like a high-end K-pop album insert.`
         },
         {
           partName: "disc",
           partLabel: "Disc Label (⌀4cm)",
-          prompt: `Create a perfectly CIRCULAR CD disc label design for a K-pop single album. If the source photo has multiple people, this is a group/duo album. The design must be a perfect circle. Include:
-- "${customerName}" as the artist name in stylish curved text around the upper portion of the disc
+          prompt: `Create a perfectly CIRCULAR CD disc label design for a K-pop single album. If the source photo has multiple people, this is a group/duo album. The design must be a perfect circle.
+
+DESIGN:
+- "${customerName}" as artist name in stylish curved text around the upper portion
 - "Recording Café" label text curved along the lower portion
-- A white/clear center hole circle in the very center of the disc — the hole diameter should be about 17.5% of the total disc diameter (7mm on a 4cm disc). This center hole is important and must be clearly visible.
-- Artistic abstract or holographic gradient design in the background (galaxy, holographic rainbow, or premium K-pop aesthetic)
+- A clearly visible white/clear center hole in the very center — diameter about 17.5% of the total disc (7mm on 4cm disc)
+- Artistic holographic/galaxy gradient background
 
-CRITICAL TEXT RULES:
-- ONLY these two text elements are allowed: "${customerName}" and "Recording Café"
-- The name must be spelled EXACTLY as "${customerName}" — copy each character precisely, do NOT change or approximate any characters
-- NO other text whatsoever — no "SINGLE ALBUM", no barcodes, no dates, no copyright
-- Keep the design clean, artistic, and visually striking
+TEXT RULES:
+- ONLY allowed text: "${customerName}" and "Recording Café" — nothing else
+- Spell "${customerName}" EXACTLY — copy each character precisely
+- ALL text must be fully visible within the circle, not cut off at edges
+- No other text — no "SINGLE ALBUM", no barcodes, no dates
 
-Make it perfectly circular with a cohesive premium color scheme like a real K-pop CD disc.`
+Make it perfectly circular with a cohesive premium color scheme.`
         }
       ];
       
