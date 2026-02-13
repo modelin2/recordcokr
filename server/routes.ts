@@ -999,7 +999,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         {
           partName: "front",
           partLabel: "Album Cover (8×4cm)",
-          prompt: `Using this person's face and likeness, create a professional K-pop single album COVER design. This is a LANDSCAPE image (ratio 2:1, width is exactly double the height) that will be folded in half to form the front and back of a mini CD jewel case cover.
+          prompt: `Using ALL people's faces and likeness from this photo, create a professional K-pop single album COVER design. If there are multiple people in the photo, ALL of them must appear together on the album cover — do NOT exclude anyone. This is a LANDSCAPE image (ratio 2:1, width is exactly double the height) that will be folded in half to form the front and back of a mini CD jewel case cover.
 
 IMPORTANT LAYOUT - The image has TWO halves:
 LEFT HALF (becomes the BACK of the cover when folded):
@@ -1007,15 +1007,16 @@ LEFT HALF (becomes the BACK of the cover when folded):
 - "Recording Café" in small stylish text somewhere in this half
 
 RIGHT HALF (becomes the FRONT cover when folded):
-- The person's face prominently featured as the main subject, styled like a K-pop idol
+- ALL people from the source photo prominently featured together as the main subjects, styled like K-pop idols
 - Professional studio lighting, cinematic mood with dramatic shadows or bokeh
-- "${customerName}" displayed in bold modern typography — positioned so it does NOT heavily cover the person's face (place at bottom or top edge)
+- "${customerName}" displayed in bold modern typography — positioned so it does NOT heavily cover anyone's face (place at bottom or top edge)
 - "Recording Café" as a small label text
 
 CRITICAL TEXT RULES:
 - ONLY these two text elements are allowed in the entire image: "${customerName}" and "Recording Café"
+- The name must be spelled EXACTLY as "${customerName}" — copy each character precisely, do NOT change or approximate any characters
 - NO other text whatsoever — no song titles, no track listings, no copyright, no dates, no barcodes, no badges
-- Text must NOT heavily obscure the person's face — keep text at edges or corners
+- Text must NOT heavily obscure anyone's face — keep text at edges or corners
 
 UNIFIED DESIGN: Both halves share the same color palette and background style as one continuous design. High contrast, professional K-pop album aesthetic.`
         },
@@ -1037,6 +1038,7 @@ RIGHT HALF:
 
 CRITICAL TEXT RULES:
 - ONLY these two text elements are allowed: "${customerName}" and "Recording Café"
+- The name must be spelled EXACTLY as "${customerName}" — copy each character precisely, do NOT change or approximate any characters
 - NO other text whatsoever — no track listings, no copyright, no dates, no barcodes, no credits, no production notes
 - Keep it visually artistic with minimal text
 
@@ -1045,7 +1047,7 @@ UNIFIED DESIGN: Both halves share the same color palette and aesthetic. Professi
         {
           partName: "disc",
           partLabel: "Disc Label (⌀4cm)",
-          prompt: `Create a perfectly CIRCULAR CD disc label design for a K-pop single album. The design must be a perfect circle. Include:
+          prompt: `Create a perfectly CIRCULAR CD disc label design for a K-pop single album. If the source photo has multiple people, this is a group/duo album. The design must be a perfect circle. Include:
 - "${customerName}" as the artist name in stylish curved text around the upper portion of the disc
 - "Recording Café" label text curved along the lower portion
 - A white/clear center hole circle in the very center of the disc — the hole diameter should be about 17.5% of the total disc diameter (7mm on a 4cm disc). This center hole is important and must be clearly visible.
@@ -1053,6 +1055,7 @@ UNIFIED DESIGN: Both halves share the same color palette and aesthetic. Professi
 
 CRITICAL TEXT RULES:
 - ONLY these two text elements are allowed: "${customerName}" and "Recording Café"
+- The name must be spelled EXACTLY as "${customerName}" — copy each character precisely, do NOT change or approximate any characters
 - NO other text whatsoever — no "SINGLE ALBUM", no barcodes, no dates, no copyright
 - Keep the design clean, artistic, and visually striking
 
