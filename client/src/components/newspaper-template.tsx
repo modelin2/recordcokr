@@ -573,12 +573,12 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               <div className="text-[6px] font-black text-center border-b border-gray-400 pb-0.5 mb-0.5">
                 ✂ MINI CD KEYRING — CUT ALONG DOTTED LINE ✂
               </div>
-              <div className="flex flex-col items-center gap-0.5">
+              <div className="flex flex-col items-center gap-0.5" style={{ width: "10cm", maxWidth: "100%" }}>
                 {cdAlbumImages.find(img => img.partName === "front")?.imageData && (
-                  <div className="text-center">
+                  <div className="text-center w-full">
                     <div 
-                      className="border border-dashed border-gray-400 overflow-hidden"
-                      style={{ width: "8cm", height: "4cm" }}
+                      className="border border-dashed border-gray-400 overflow-hidden mx-auto"
+                      style={{ width: "8cm", maxWidth: "100%", aspectRatio: "8 / 4" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "front")!.imageData!}
@@ -591,10 +591,10 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 )}
 
                 {cdAlbumImages.find(img => img.partName === "back")?.imageData && (
-                  <div className="text-center">
+                  <div className="text-center w-full">
                     <div 
-                      className="border border-dashed border-gray-400 overflow-hidden"
-                      style={{ width: "10cm", height: "3.9cm" }}
+                      className="border border-dashed border-gray-400 overflow-hidden mx-auto"
+                      style={{ width: "10cm", maxWidth: "100%", aspectRatio: "10 / 3.9" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "back")!.imageData!}
@@ -607,10 +607,10 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 )}
 
                 {cdAlbumImages.find(img => img.partName === "disc")?.imageData && (
-                  <div className="text-center relative">
+                  <div className="text-center">
                     <div 
-                      className="border border-dashed border-gray-400 overflow-hidden relative"
-                      style={{ width: "4cm", height: "4cm", borderRadius: "50%" }}
+                      className="border border-dashed border-gray-400 overflow-hidden relative mx-auto"
+                      style={{ width: "4cm", maxWidth: "100%", aspectRatio: "1 / 1", borderRadius: "50%" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "disc")!.imageData!}

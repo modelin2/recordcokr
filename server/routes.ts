@@ -732,15 +732,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/photos/customers/list", requireAdmin, async (req, res) => {
     try {
       const bookings = await storage.getAllBookings();
-      const customers = bookings.map(b => ({
-        id: b.id,
-        name: b.name,
-        bookingDate: b.bookingDate,
-        bookingTime: b.bookingTime,
-        selectedDrink: b.selectedDrink,
-        drinkTemperature: b.drinkTemperature,
-        createdAt: b.createdAt
-      }));
+      const customers = bookings
+        .filter(b => {
+          if (!b.name) return false;
+          const nameLower = b.name.toLowerCase();
+          if (nameLower.includes('[klook]') || nameLower.includes('klook')) return false;
+          if (b.status === 'cancelled' || b.status === 'canceled' || b.status === 'deleted') return false;
+          return true;
+        })
+        .map(b => ({
+          id: b.id,
+          name: b.name,
+          bookingDate: b.bookingDate,
+          bookingTime: b.bookingTime,
+          selectedDrink: b.selectedDrink,
+          drinkTemperature: b.drinkTemperature,
+          createdAt: b.createdAt
+        }));
       res.json(customers);
     } catch (error) {
       console.error("Error fetching customers:", error);
@@ -1022,31 +1030,39 @@ ${koreanName ? `- Korean text "${koreanName}" — copy EXACTLY character by char
       {
         partName: "back",
         partLabel: "Back Panel (10×3.9cm)",
-        prompt: `Generate a WIDE LANDSCAPE image (ratio approximately 2.5:1, very wide). This is a K-pop album back insert panel.
+        prompt: `Generate a WIDE LANDSCAPE image (ratio approximately 2.5:1 — much wider than tall, like 2000×780px). This is the BACK INSERT / INLAY of a real K-pop mini CD jewel case.
 
-Style: minimalist luxury — think BLACKPINK or BTS album packaging. Clean typography, muted colors, NO childish elements.
+Reference: Look at the back panel of actual K-pop CD cases — BTS, BLACKPINK, aespa, IVE. It typically contains:
+- Track listing (song titles with track numbers)
+- Production credits in small text
+- Album title and artist name
+- Barcode
+- Record label logo area
 
-This image will be FOLDED IN HALF at the vertical center into two panels:
+This panel will be FOLDED IN HALF at the vertical center:
 
-■ LEFT PANEL (when folded):
-- Dark elegant background (matte black, deep navy, or charcoal gradient)
-- "${customerName}" in refined sans-serif typography, centered${koreanName ? `\n- Korean name: ${koreanCharSpacing} (copy EXACTLY)` : ""}
-- "Recording Café" in small elegant text
-- Tiny barcode in bottom-left corner
-- Minimal geometric accent lines
+■ LEFT HALF (becomes inner side when folded):
+- Dark or gradient background (black, deep navy, dark purple)
+- Fictional K-pop track list (3-5 song titles) in small clean font:
+  01. First Light  02. Midnight Seoul  03. Recording Café  04. Neon Dreams
+- "${customerName}" as the artist name in stylish typography${koreanName ? `\n- Korean name: ${koreanCharSpacing} (copy EXACTLY as given)` : ""}
+- "Recording Café" as the record label
+- Small production credit text
 
-■ RIGHT PANEL (when folded):
-- Complementary design with slightly different tone
-- "Recording Café" in different weight/style
-- "${customerName}" can repeat in alternative layout${koreanName ? `\n- Korean: ${koreanCharSpacing} (copy EXACTLY)` : ""}
-- Tiny barcode in bottom-right corner
-- Clean, sophisticated design
+■ RIGHT HALF (becomes outer back when folded):
+- Continuation of tracklist or credits
+- "${customerName}" album title area${koreanName ? `\n- Korean: ${koreanCharSpacing} (copy EXACTLY)` : ""}
+- Barcode in bottom-right corner (realistic CD barcode style)
+- "Recording Café Records" as label
+- Small copyright text: "© Recording Café"
 
 REQUIREMENTS:
+- Must look like a REAL CD back panel/inlay — NOT an invitation card, NOT a poster
 - Thin vertical fold line at exact center
-- "${customerName}" spelled EXACTLY as shown — do NOT modify
-${koreanName ? `- Korean "${koreanName}" must be exact: ${koreanCharSpacing}` : ""}
-- Premium luxury aesthetic — muted tones, clean lines, NO bright colors or childish graphics`
+- Dark, professional layout with small clean typography — like actual K-pop album packaging
+- "${customerName}" spelled EXACTLY as shown
+${koreanName ? `- Korean "${koreanName}" exact: ${koreanCharSpacing}` : ""}
+- Barcode must be realistic (standard UPC/EAN barcode graphic)`
       },
       {
         partName: "disc",
