@@ -334,7 +334,6 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       className="bg-white w-full text-black print-container flex flex-col"
       style={{ 
         fontFamily: "'Times New Roman', 'Nanum Myeongjo', serif",
-        minHeight: "100vh",
         padding: "16px",
       }}
       onMouseMove={handleMouseMove}
@@ -680,7 +679,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       </div>
 
       {/* Footer */}
-      <div className="mt-4 pt-3 border-t-2 border-black flex justify-between items-center text-[11px] font-medium">
+      <div className="mt-2 pt-2 border-t-2 border-black flex justify-between items-center text-[11px] font-medium">
         <span>www.recordingcafe.com</span>
         <span>© {futureYear} Recording Cafe</span>
         <span>@recordingcafe</span>

@@ -52,6 +52,7 @@ export default function PhotoPage() {
   const [generatingStage, setGeneratingStage] = useState<string>("");
   const [regeneratingStage, setRegeneratingStage] = useState<string>("");
   const [cdAlbumImages, setCdAlbumImages] = useState<{partName: string; partLabel: string; imageData: string | null; success: boolean}[]>([]);
+  const [regeneratingCdPart, setRegeneratingCdPart] = useState<string>("");
   const [isGeneratingCd, setIsGeneratingCd] = useState(false);
   const [imagePositions, setImagePositions] = useState<ImagePositions>({
     main: { x: 50, y: 0, scale: 1 },
@@ -264,6 +265,7 @@ export default function PhotoPage() {
           apiRequest("POST", "/api/photos/generate-cd-album", {
             sourceImageBase64: imageToSend,
             customerName: cdName,
+            koreanName: koreanName || undefined,
             gender: selectedGender !== "auto" ? selectedGender : undefined
           }).then(r => r.json())
         );
@@ -428,6 +430,7 @@ export default function PhotoPage() {
       const response = await apiRequest("POST", "/api/photos/generate-cd-album", {
         sourceImageBase64: imageToSend,
         customerName: selectedCustomerName || "Guest",
+        koreanName: koreanName || undefined,
         gender: selectedGender !== "auto" ? selectedGender : undefined
       });
       
@@ -459,6 +462,48 @@ export default function PhotoPage() {
       });
     } finally {
       setIsGeneratingCd(false);
+    }
+  };
+
+  const handleRegenerateSingleCdPart = async (partName: string) => {
+    if (!selectedPhoto) {
+      toast({ title: "사진 필요", description: "재생성을 위해 사진이 필요합니다.", variant: "destructive" });
+      return;
+    }
+
+    setRegeneratingCdPart(partName);
+    const partLabels: Record<string, string> = { front: "앨범 커버", back: "뒷면 패널", disc: "디스크 라벨" };
+
+    try {
+      let imageToSend = selectedPhoto;
+      const base64Size = (selectedPhoto.length * 3) / 4;
+      const sizeKB = Math.round(base64Size / 1024);
+      if (sizeKB > 2000) {
+        imageToSend = await compressUntilSmallEnough(selectedPhoto, 2000);
+      }
+
+      toast({ title: `${partLabels[partName]} 재생성 중...`, description: "잠시만 기다려주세요." });
+
+      const response = await apiRequest("POST", "/api/photos/generate-cd-single", {
+        sourceImageBase64: imageToSend,
+        customerName: selectedCustomerName || "Guest",
+        koreanName: koreanName || undefined,
+        gender: selectedGender !== "auto" ? selectedGender : undefined,
+        partName
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.result) {
+        setCdAlbumImages(prev => prev.map(img => img.partName === partName ? data.result : img));
+        toast({ title: "재생성 완료", description: `${partLabels[partName]}이(가) 재생성되었습니다.` });
+      } else {
+        toast({ title: "재생성 실패", description: "이미지 생성에 실패했습니다.", variant: "destructive" });
+      }
+    } catch (error: any) {
+      toast({ title: "재생성 실패", description: error.message || "오류가 발생했습니다.", variant: "destructive" });
+    } finally {
+      setRegeneratingCdPart("");
     }
   };
 
@@ -896,6 +941,19 @@ export default function PhotoPage() {
                             className={`w-full object-cover rounded-lg shadow-md border-4 border-white ${img.partName === "disc" ? "rounded-full aspect-square" : img.partName === "front" ? "aspect-[2/1]" : "aspect-[5/3.9]"}`}
                           />
                           <p className="text-xs font-medium text-violet-800">{img.partLabel}</p>
+                          <Button
+                            onClick={() => handleRegenerateSingleCdPart(img.partName)}
+                            disabled={isGeneratingCd || regeneratingCdPart !== ""}
+                            size="sm"
+                            variant="outline"
+                            className="w-full mt-1 border-violet-300 text-violet-600 hover:bg-violet-50 text-xs h-7"
+                          >
+                            {regeneratingCdPart === img.partName ? (
+                              <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> 재생성 중...</>
+                            ) : (
+                              <><RefreshCw className="w-3 h-3 mr-1" /> 재생성</>
+                            )}
+                          </Button>
                         </div>
                       ) : (
                         <div className="space-y-1">
@@ -903,6 +961,19 @@ export default function PhotoPage() {
                             <p className="text-xs text-gray-500 p-2">생성 실패</p>
                           </div>
                           <p className="text-xs text-gray-600">{img.partLabel}</p>
+                          <Button
+                            onClick={() => handleRegenerateSingleCdPart(img.partName)}
+                            disabled={isGeneratingCd || regeneratingCdPart !== ""}
+                            size="sm"
+                            variant="outline"
+                            className="w-full mt-1 border-red-300 text-red-600 hover:bg-red-50 text-xs h-7"
+                          >
+                            {regeneratingCdPart === img.partName ? (
+                              <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> 재생성 중...</>
+                            ) : (
+                              <><RefreshCw className="w-3 h-3 mr-1" /> 다시 생성</>
+                            )}
+                          </Button>
                         </div>
                       )}
                     </div>

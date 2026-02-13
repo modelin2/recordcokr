@@ -986,11 +986,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate CD album art images (front cover, back inlay, disc label) for mini CD keyring
   app.post("/api/photos/generate-cd-album", requireAdmin, async (req, res) => {
     try {
-      const { sourceImageBase64, customerName, gender } = req.body;
+      const { sourceImageBase64, customerName, koreanName, gender } = req.body;
       
       if (!sourceImageBase64 || !customerName) {
         return res.status(400).json({ message: "Source image and customer name are required" });
       }
+      
+      const nameDisplay = koreanName ? `${customerName} (${koreanName})` : customerName;
+      const koreanLine = koreanName ? `\n- "${koreanName}" in Korean text must also appear clearly` : "";
       
       const base64Data = sourceImageBase64.replace(/^data:image\/\w+;base64,/, '');
       const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
@@ -1013,7 +1016,7 @@ This LANDSCAPE image (ratio 2:1) will be CUT IN HALF at the vertical center and 
 ■ RIGHT SQUARE (becomes FRONT COVER — shown separately after cutting):
 - ALL people from the photo styled as K-pop idols, FULL FACE clearly visible, different pose or angle from left square
 - Professional studio lighting, cinematic bokeh background
-- "${customerName}" in large bold text at BOTTOM CENTER (not overlapping faces)
+- "${nameDisplay}" in large bold text at BOTTOM CENTER (not overlapping faces)${koreanLine}
 - "Recording Café" in small text at top corner
 - A small decorative barcode graphic in bottom corner
 
@@ -1021,7 +1024,7 @@ CRITICAL:
 - Each square must contain ALL people from the source photo — never show only one person in either half
 - Each square is a COMPLETE independent design — imagine cutting the image in half and using each piece alone
 - A visible thin line at the exact vertical center to mark the cut/fold
-- "${customerName}" spelled EXACTLY as shown — copy each character precisely
+- "${nameDisplay}" spelled EXACTLY as shown — copy each character precisely, especially any Korean characters like "${koreanName || customerName}"
 - Text must have generous margins — NEVER cut off at edges
 - Faces must be fully visible in both halves — never cropped
 - Rich, premium K-pop aesthetic`
@@ -1033,7 +1036,7 @@ CRITICAL:
 
 ■ LEFT PANEL (5×3.9cm when folded):
 - Dreamy K-pop aesthetic or recording studio atmosphere background
-- "${customerName}" in elegant typography at center
+- "${nameDisplay}" in elegant typography at center${koreanLine}
 - "Recording Café" branding text
 - A small decorative barcode in the bottom-left area
 - Artistic decorative elements (geometric lines, subtle patterns)
@@ -1041,13 +1044,13 @@ CRITICAL:
 ■ RIGHT PANEL (5×3.9cm when folded):
 - Complementary artistic design continuing from left panel
 - "Recording Café" text in different style
-- "${customerName}" can appear again in an alternative font style
+- "${nameDisplay}" can appear again in an alternative font style${koreanLine}
 - A small barcode graphic in the bottom-right area
 - Decorative design elements
 
 IMPORTANT:
 - There must be a visible thin line or subtle fold mark at the exact vertical center
-- "${customerName}" must be spelled EXACTLY as shown — copy each character precisely  
+- "${nameDisplay}" must be spelled EXACTLY as shown — copy each character precisely, especially Korean characters like "${koreanName || customerName}"
 - Text must have generous margins — NEVER near edges, NEVER cut off
 - Both panels should look complete individually when folded
 - Premium, elegant K-pop aesthetic with rich visual design`
@@ -1058,7 +1061,7 @@ IMPORTANT:
           prompt: `Create a CIRCULAR CD disc label for a K-pop album. If the source photo has multiple people, this is a duo/group album.
 
 DESIGN (perfect circle):
-- "${customerName}" in stylish curved text around the upper arc
+- "${nameDisplay}" in stylish curved text around the upper arc${koreanLine}
 - "Recording Café" curved along the lower arc
 - Center hole: white circle, diameter = 15% of total disc (6mm on 4cm disc)
 - Background: holographic/galaxy gradient with rich colors
@@ -1066,7 +1069,7 @@ DESIGN (perfect circle):
 - Decorative elements: stars, light streaks, or abstract patterns
 
 IMPORTANT:
-- "${customerName}" must be spelled EXACTLY as shown — copy each character precisely
+- "${nameDisplay}" must be spelled EXACTLY as shown — copy each character precisely, especially Korean characters like "${koreanName || customerName}"
 - ALL text must be fully visible inside the circle with margins — never cut off at edges
 - Rich, premium visual design — not minimalist, include decorative elements
 - Perfect circle shape`
@@ -1130,6 +1133,140 @@ IMPORTANT:
     } catch (error: any) {
       console.error("Error generating CD album art:", error);
       res.status(500).json({ message: "Failed to generate CD album art", error: error.message });
+    }
+  });
+
+  // Generate a single CD part (front/back/disc) for regeneration
+  app.post("/api/photos/generate-cd-single", requireAdmin, async (req, res) => {
+    try {
+      const { sourceImageBase64, customerName, koreanName, gender, partName } = req.body;
+      
+      if (!sourceImageBase64 || !customerName || !partName) {
+        return res.status(400).json({ message: "Source image, customer name, and part name are required" });
+      }
+      
+      const nameDisplay = koreanName ? `${customerName} (${koreanName})` : customerName;
+      const koreanLine = koreanName ? `\n- "${koreanName}" in Korean text must also appear clearly` : "";
+      
+      const base64Data = sourceImageBase64.replace(/^data:image\/\w+;base64,/, '');
+      const mimeType = sourceImageBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg';
+      
+      const prompts: Record<string, { partLabel: string; prompt: string }> = {
+        front: {
+          partLabel: "Album Cover (8×4cm)",
+          prompt: `Using ALL people's faces and likeness from this photo, create a K-pop album COVER. If there are multiple people, ALL must appear in BOTH halves.
+
+This LANDSCAPE image (ratio 2:1) will be CUT IN HALF at the vertical center and each half used separately. Design it as TWO INDEPENDENT square designs placed side by side — each half must be a COMPLETE standalone design with its own background, its own copy of ALL the people, and its own text.
+
+■ LEFT SQUARE (becomes BACK COVER — shown separately after cutting):
+- ALL people from the photo styled as K-pop idols, shown from a DIFFERENT angle or artistic style than the right square
+- Artistic/gradient background
+- "Recording Café" in stylish text
+- A small decorative barcode graphic in bottom area
+- Decorative design elements (stars, patterns)
+
+■ RIGHT SQUARE (becomes FRONT COVER — shown separately after cutting):
+- ALL people from the photo styled as K-pop idols, FULL FACE clearly visible, different pose or angle from left square
+- Professional studio lighting, cinematic bokeh background
+- "${nameDisplay}" in large bold text at BOTTOM CENTER (not overlapping faces)${koreanLine}
+- "Recording Café" in small text at top corner
+- A small decorative barcode graphic in bottom corner
+
+CRITICAL:
+- Each square must contain ALL people from the source photo — never show only one person in either half
+- Each square is a COMPLETE independent design — imagine cutting the image in half and using each piece alone
+- A visible thin line at the exact vertical center to mark the cut/fold
+- "${nameDisplay}" spelled EXACTLY as shown — copy each character precisely, especially any Korean characters like "${koreanName || customerName}"
+- Text must have generous margins — NEVER cut off at edges
+- Faces must be fully visible in both halves — never cropped
+- Rich, premium K-pop aesthetic`
+        },
+        back: {
+          partLabel: "Back Panel (10×3.9cm)",
+          prompt: `Create a K-pop album BACK INSERT. This LANDSCAPE image (ratio 10:3.9, very wide) will be FOLDED IN HALF at the vertical center. Think of it as TWO separate panels side by side:
+
+■ LEFT PANEL (5×3.9cm when folded):
+- Dreamy K-pop aesthetic or recording studio atmosphere background
+- "${nameDisplay}" in elegant typography at center${koreanLine}
+- "Recording Café" branding text
+- A small decorative barcode in the bottom-left area
+- Artistic decorative elements (geometric lines, subtle patterns)
+
+■ RIGHT PANEL (5×3.9cm when folded):
+- Complementary artistic design continuing from left panel
+- "Recording Café" text in different style
+- "${nameDisplay}" can appear again in an alternative font style${koreanLine}
+- A small barcode graphic in the bottom-right area
+- Decorative design elements
+
+IMPORTANT:
+- There must be a visible thin line or subtle fold mark at the exact vertical center
+- "${nameDisplay}" must be spelled EXACTLY as shown — copy each character precisely, especially Korean characters like "${koreanName || customerName}"
+- Text must have generous margins — NEVER near edges, NEVER cut off
+- Both panels should look complete individually when folded
+- Premium, elegant K-pop aesthetic with rich visual design`
+        },
+        disc: {
+          partLabel: "Disc Label (⌀4cm)",
+          prompt: `Create a CIRCULAR CD disc label for a K-pop album. If the source photo has multiple people, this is a duo/group album.
+
+DESIGN (perfect circle):
+- "${nameDisplay}" in stylish curved text around the upper arc${koreanLine}
+- "Recording Café" curved along the lower arc
+- Center hole: white circle, diameter = 15% of total disc (6mm on 4cm disc)
+- Background: holographic/galaxy gradient with rich colors
+- Small barcode graphic along the inner ring
+- Decorative elements: stars, light streaks, or abstract patterns
+
+IMPORTANT:
+- "${nameDisplay}" must be spelled EXACTLY as shown — copy each character precisely, especially Korean characters like "${koreanName || customerName}"
+- ALL text must be fully visible inside the circle with margins — never cut off at edges
+- Rich, premium visual design — not minimalist, include decorative elements
+- Perfect circle shape`
+        }
+      };
+      
+      const partConfig = prompts[partName];
+      if (!partConfig) {
+        return res.status(400).json({ message: "Invalid part name. Must be front, back, or disc." });
+      }
+      
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash-image",
+        contents: [{ 
+          role: "user", 
+          parts: [
+            { inlineData: { mimeType, data: base64Data } },
+            { text: partConfig.prompt }
+          ] 
+        }],
+        config: {
+          responseModalities: [Modality.TEXT, Modality.IMAGE],
+        }
+      });
+      
+      let imageData = null;
+      
+      if (response.candidates && response.candidates[0]?.content?.parts) {
+        for (const p of response.candidates[0].content.parts) {
+          if (p.inlineData?.mimeType?.startsWith("image/")) {
+            imageData = `data:${p.inlineData.mimeType};base64,${p.inlineData.data}`;
+          }
+        }
+      }
+      
+      res.json({
+        success: !!imageData,
+        result: {
+          partName,
+          partLabel: partConfig.partLabel,
+          imageData,
+          success: !!imageData
+        }
+      });
+    } catch (error: any) {
+      console.error("Error generating single CD part:", error);
+      res.status(500).json({ message: "Failed to generate CD part", error: error.message });
     }
   });
 
