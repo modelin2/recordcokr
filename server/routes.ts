@@ -1030,35 +1030,35 @@ ${koreanName ? `- Korean text "${koreanName}" — copy EXACTLY character by char
       {
         partName: "back",
         partLabel: "Back Panel (10×3.9cm)",
-        prompt: `Generate a WIDE LANDSCAPE image (ratio approximately 2.5:1 — much wider than tall, like 2000×780px). This is the BACK INSERT / INLAY of a real K-pop mini CD jewel case.
+        prompt: `Generate a WIDE LANDSCAPE image (ratio approximately 2.5:1 — much wider than tall, like 2000×780px). This is a FLAT PRINTED GRAPHIC for the back insert of a K-pop mini CD jewel case.
 
-Reference: Look at the back panel of actual K-pop CD cases — BTS, BLACKPINK, aespa, IVE. It typically contains:
-- Track listing (song titles with track numbers)
-- Production credits in small text
-- Album title and artist name
-- Barcode
-- Record label logo area
+CRITICAL LAYOUT RULES:
+- The design must FILL THE ENTIRE IMAGE edge to edge — NO gray border, NO margin, NO empty space around it
+- This is a FLAT 2D print design — absolutely NO 3D perspective, NO depth, NO shadow, NO book spine effect, NO thickness illusion
+- Do NOT render it as a photo of a physical object — render it as the PRINT FILE ITSELF, completely flat
+- NO fold line, NO crease, NO guideline marks
 
-This panel will be FOLDED IN HALF at the vertical center:
+The image is divided into LEFT HALF and RIGHT HALF:
 
-■ LEFT HALF (becomes inner side when folded):
-- Dark or gradient background (black, deep navy, dark purple)
-- Fictional K-pop track list (3-5 song titles) in small clean font:
+■ LEFT HALF:
+- Dark gradient background (deep navy to dark purple)
+- Fictional K-pop track list in small clean font at the top:
   01. First Light  02. Midnight Seoul  03. Recording Café  04. Neon Dreams
-- "${customerName}" as the artist name in stylish typography${koreanName ? `\n- Korean name: ${koreanCharSpacing} (copy EXACTLY as given)` : ""}
-- "Recording Café" as the record label
-- Small production credit text
+- "${customerName}" as the artist name in elegant typography, centered${koreanName ? `\n- Korean name: ${koreanCharSpacing} (copy EXACTLY as given)` : ""}
+- "Recording Café" as the record label at bottom
+- Small production credit text at very bottom
 
-■ RIGHT HALF (becomes outer back when folded):
-- Continuation of tracklist or credits
-- "${customerName}" album title area${koreanName ? `\n- Korean: ${koreanCharSpacing} (copy EXACTLY)` : ""}
+■ RIGHT HALF:
+- Same dark gradient background, seamless continuation
+- "${customerName}" as album title in stylish font${koreanName ? `\n- Korean: ${koreanCharSpacing} (copy EXACTLY)` : ""}
+- Production credits in small text
 - Barcode in bottom-right corner (realistic CD barcode style)
-- "Recording Café Records" as label
+- "Recording Café Records" label text
 - Small copyright text: "© Recording Café"
 
 REQUIREMENTS:
-- Must look like a REAL CD back panel/inlay — NOT an invitation card, NOT a poster
-- Thin vertical fold line at exact center
+- Must look like a REAL CD back panel print — NOT a 3D render, NOT a mockup photo
+- Completely FLAT design filling 100% of the image canvas
 - Dark, professional layout with small clean typography — like actual K-pop album packaging
 - "${customerName}" spelled EXACTLY as shown
 ${koreanName ? `- Korean "${koreanName}" exact: ${koreanCharSpacing}` : ""}
@@ -1069,17 +1069,23 @@ ${koreanName ? `- Korean "${koreanName}" exact: ${koreanCharSpacing}` : ""}
         partLabel: "Disc Label (⌀4cm)",
         prompt: `Create a CIRCULAR CD disc label for a premium K-pop album. Style: sleek, dark, sophisticated — like SM or HYBE album discs.
 
-DESIGN (perfect circle):
-- "${customerName}" in clean modern font curved along the upper arc${koreanName ? `\n- Korean name: ${koreanCharSpacing} (copy these EXACT characters)` : ""}
-- "Recording Café" curved along the lower arc  
-- Center hole: white/transparent circle, about 15% of disc diameter
+CRITICAL — CENTER HOLE AWARENESS:
+- The disc has a CENTER HOLE (white/transparent circle, about 15-18% of disc diameter)
+- ALL text and design elements must be placed OUTSIDE the center hole area
+- Keep a clear empty ring around the center hole (inner 25% radius should have NO text)
+- Place all text in the OUTER ring area (between 30%-85% of the disc radius from center)
+
+TEXT PLACEMENT:
+- "${customerName}" in clean modern font curved along the UPPER ARC of the outer ring${koreanName ? `\n- Korean name: ${koreanCharSpacing} (copy these EXACT characters) — placed in the MIDDLE ring area, between artist name and bottom text, well away from center hole` : ""}
+- "Recording Café" curved along the LOWER ARC of the outer ring
 - Background: dark gradient (black to deep purple or midnight blue) with subtle metallic sheen
-- Tiny barcode along inner ring
+- Tiny barcode along the outer edge (NOT near center)
 - Minimal elegant accents — NO sparkles, NO stars, NO childish decorations
 
 REQUIREMENTS:
 - "${customerName}" spelled EXACTLY as shown${koreanName ? `\n- Korean "${koreanName}" must be exact: ${koreanCharSpacing}` : ""}
-- All text fully visible inside circle with margins
+- ALL text must be fully visible and NOT overlapping or cut off by the center hole
+- No text, barcode, or important elements within the inner 25% radius
 - Sophisticated, premium disc design — dark and elegant
 - Perfect circle shape`
       }
