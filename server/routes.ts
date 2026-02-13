@@ -999,45 +999,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
         {
           partName: "front",
           partLabel: "Album Cover (8×4cm)",
-          prompt: `Using this person's face and likeness, create a professional K-pop single album COVER design. This is a LANDSCAPE image (ratio 2:1, width is double the height) that will be folded in half to form the front and back of a mini CD jewel case cover.
+          prompt: `Using this person's face and likeness, create a professional K-pop single album COVER design. This is a LANDSCAPE image (ratio 2:1, width is exactly double the height) that will be folded in half to form the front and back of a mini CD jewel case cover.
 
 IMPORTANT LAYOUT - The image has TWO halves:
 LEFT HALF (becomes the BACK of the cover when folded):
-- Artistic abstract or gradient background matching the right half's style
-- A UPC/EAN barcode graphic in the bottom-left area (mandatory - real CDs always have barcodes)
-- Small text: "Recording Café" label, "© ${new Date().getFullYear()} Recording Café Seoul"
-- Track listing: "01. ${customerName}'s Recording  02. Instrumental Ver."
-- Elegant minimal layout
+- Artistic abstract or gradient background that continues seamlessly from the right half
+- "Recording Café" in small stylish text somewhere in this half
 
 RIGHT HALF (becomes the FRONT cover when folded):
 - The person's face prominently featured as the main subject, styled like a K-pop idol
 - Professional studio lighting, cinematic mood with dramatic shadows or bokeh
-- Artist name "${customerName}" displayed prominently in bold modern typography
-- "Recording Café" as the label name in stylish small text
-- A song title like "FIRST TAKE" or "DREAM" in stylish font
+- "${customerName}" displayed in bold modern typography — positioned so it does NOT heavily cover the person's face (place at bottom or top edge)
+- "Recording Café" as a small label text
 
-UNIFIED DESIGN: Both halves must share the same color palette, background style, and overall aesthetic so the cover looks cohesive when opened flat. Think of it as one continuous design. High contrast, professional K-pop album aesthetic similar to BLACKPINK, BTS, or IU album covers.`
+CRITICAL TEXT RULES:
+- ONLY these two text elements are allowed in the entire image: "${customerName}" and "Recording Café"
+- NO other text whatsoever — no song titles, no track listings, no copyright, no dates, no barcodes, no badges
+- Text must NOT heavily obscure the person's face — keep text at edges or corners
+
+UNIFIED DESIGN: Both halves share the same color palette and background style as one continuous design. High contrast, professional K-pop album aesthetic.`
         },
         {
           partName: "back",
-          partLabel: "Back Panel (5×3.9cm)",
-          prompt: `Create a K-pop album BACK PANEL insert design. This image (ratio about 5:3.9, slightly wider than tall) will be folded in half vertically to create a two-sided insert that sits behind the CD disc.
+          partLabel: "Back Panel (10×3.9cm)",
+          prompt: `Create a K-pop album BACK PANEL insert design. This is a LANDSCAPE image (ratio about 10:3.9, wide and short) that will be folded in half vertically to create a two-sided insert that sits behind the CD disc.
 
-IMPORTANT LAYOUT - The image has TWO halves:
-LEFT HALF (one visible side when folded):
+IMPORTANT LAYOUT - The image has TWO halves (each half becomes 5×3.9cm when folded):
+LEFT HALF:
 - Artistic background: dreamy K-pop aesthetic, recording studio vibe, or abstract gradient
-- Artist name "${customerName}" in elegant typography
+- "${customerName}" in elegant typography
 - "Recording Café" label branding
-- A realistic UPC/EAN barcode in the bottom area (mandatory)
-- Small copyright text: "© ${new Date().getFullYear()} Recording Café Seoul"
 
-RIGHT HALF (other visible side when folded):
-- Track listing styled like a real CD liner: "01. ${customerName}'s Recording  02. Instrumental Ver.  03. Acoustic Ver."
-- "Produced by Recording Café, Seoul, Korea" in small text
-- "Recording Café" logo/text
-- Credits section in small elegant text
+RIGHT HALF:
+- Complementary artistic design continuing from the left half
+- "Recording Café" text
+- "${customerName}" can appear again in a different style
 
-UNIFIED DESIGN: Both halves must share the same color palette and aesthetic for visual unity. The design should complement the album cover style. Professional typography, elegant minimal layout, premium feel.`
+CRITICAL TEXT RULES:
+- ONLY these two text elements are allowed: "${customerName}" and "Recording Café"
+- NO other text whatsoever — no track listings, no copyright, no dates, no barcodes, no credits, no production notes
+- Keep it visually artistic with minimal text
+
+UNIFIED DESIGN: Both halves share the same color palette and aesthetic. Professional, elegant, premium feel. The design should look like a high-end K-pop album insert.`
         },
         {
           partName: "disc",
@@ -1045,13 +1048,15 @@ UNIFIED DESIGN: Both halves must share the same color palette and aesthetic for 
           prompt: `Create a perfectly CIRCULAR CD disc label design for a K-pop single album. The design must be a perfect circle. Include:
 - "${customerName}" as the artist name in stylish curved text around the upper portion of the disc
 - "Recording Café" label text curved along the lower portion
-- "SINGLE ALBUM" text
-- A small white/clear center hole circle in the very center (like a real CD hub)
-- A realistic UPC/EAN barcode placed along the inner ring area (mandatory - real CDs always have barcodes on the disc)
+- A white/clear center hole circle in the very center of the disc — the hole diameter should be about 17.5% of the total disc diameter (7mm on a 4cm disc). This center hole is important and must be clearly visible.
 - Artistic abstract or holographic gradient design in the background (galaxy, holographic rainbow, or premium K-pop aesthetic)
-- Professional disc label typography and layout
-- The overall design should look like a real premium K-pop CD disc label
-Make it perfectly circular and visually striking. Color scheme should be cohesive and premium.`
+
+CRITICAL TEXT RULES:
+- ONLY these two text elements are allowed: "${customerName}" and "Recording Café"
+- NO other text whatsoever — no "SINGLE ALBUM", no barcodes, no dates, no copyright
+- Keep the design clean, artistic, and visually striking
+
+Make it perfectly circular with a cohesive premium color scheme like a real K-pop CD disc.`
         }
       ];
       

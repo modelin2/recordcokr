@@ -570,12 +570,11 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
 
           {/* Advertisement / CD Keyring Section */}
           {cdAlbumImages.length > 0 && cdAlbumImages.some(img => img.imageData) ? (
-            <div className="border-2 border-dashed border-gray-400 p-1.5 flex-1">
-              <div className="text-[8px] font-black text-center border-b border-gray-400 pb-0.5 mb-1.5">
+            <div className="border-2 border-dashed border-gray-400 p-1 flex-1">
+              <div className="text-[7px] font-black text-center border-b border-gray-400 pb-0.5 mb-1">
                 ✂ MINI CD KEYRING — CUT ALONG DOTTED LINE ✂
               </div>
-              <div className="flex items-start justify-center gap-3">
-                {/* Front Cover - 8x4cm (landscape, folds in half for front+back cover) */}
+              <div className="flex flex-col items-center gap-1">
                 {cdAlbumImages.find(img => img.partName === "front")?.imageData && (
                   <div className="text-center">
                     <div 
@@ -588,16 +587,15 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="text-[6px] text-gray-400 mt-0.5">COVER 8×4cm (fold in half)</p>
+                    <p className="text-[5px] text-gray-400 mt-0.5">COVER 8×4cm (fold in half → 4×4)</p>
                   </div>
                 )}
 
-                {/* Back Panel - 5x3.9cm (folds in half for back insert) */}
                 {cdAlbumImages.find(img => img.partName === "back")?.imageData && (
                   <div className="text-center">
                     <div 
                       className="border border-dashed border-gray-400 overflow-hidden"
-                      style={{ width: "5cm", height: "3.9cm" }}
+                      style={{ width: "10cm", height: "3.9cm" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "back")!.imageData!}
@@ -605,15 +603,14 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="text-[6px] text-gray-400 mt-0.5">BACK 5×3.9cm (fold in half)</p>
+                    <p className="text-[5px] text-gray-400 mt-0.5">BACK 10×3.9cm (fold in half → 5×3.9)</p>
                   </div>
                 )}
 
-                {/* Disc Label - 4cm diameter circular */}
                 {cdAlbumImages.find(img => img.partName === "disc")?.imageData && (
-                  <div className="text-center">
+                  <div className="text-center relative">
                     <div 
-                      className="border border-dashed border-gray-400 overflow-hidden"
+                      className="border border-dashed border-gray-400 overflow-hidden relative"
                       style={{ width: "4cm", height: "4cm", borderRadius: "50%" }}
                     >
                       <img 
@@ -622,8 +619,15 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         className="w-full h-full object-cover"
                         style={{ borderRadius: "50%" }}
                       />
+                      <div 
+                        className="absolute bg-white border border-dashed border-gray-400"
+                        style={{ 
+                          width: "7mm", height: "7mm", borderRadius: "50%",
+                          top: "50%", left: "50%", transform: "translate(-50%, -50%)"
+                        }}
+                      />
                     </div>
-                    <p className="text-[6px] text-gray-400 mt-0.5">DISC ⌀4cm</p>
+                    <p className="text-[5px] text-gray-400 mt-0.5">DISC ⌀4cm (center hole ⌀7mm)</p>
                   </div>
                 )}
               </div>
