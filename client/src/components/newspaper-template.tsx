@@ -406,7 +406,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       </div>
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-5 gap-5 text-xs leading-relaxed flex-1">
+      <div className="grid grid-cols-5 gap-4 text-xs leading-relaxed flex-1">
         {/* Left Column: Main Photo + Article (3 cols) */}
         <div className="col-span-3 flex flex-col">
           {/* Main Photo */}
@@ -436,30 +436,30 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           </p>
           
           {/* Article - Expanded */}
-          <div className="mt-3 columns-2 gap-5 text-xs leading-relaxed" style={{ columnRule: "1px solid #333" }}>
-            <p className="mb-3">
+          <div className="mt-3 columns-2 gap-4 text-xs leading-snug" style={{ columnRule: "1px solid #333" }}>
+            <p className="mb-2">
               <span className="font-bold text-sm">[서울=SMT뉴스]</span> 최근 'AGI 한류 홍보대사 대상'을 수상하며 글로벌 셀럽으로 우뚝 선 {displayName}의 10년 전 기념 사진이 발굴되어 화제다. 당시 무명이었던 {displayName}이 서울 서초구 '레코딩카페'에서 첫 녹음을 하기 위해 방문했을 당시 찍은 이 사진은 현재 팬들 사이에서 '전설의 시작'으로 불리며 뜨거운 관심을 받고 있다.
             </p>
-            <p className="mb-3">
+            <p className="mb-2">
               당시 녹음을 담당했던 엔지니어는 "처음 스튜디오에 들어올 때만 해도 수줍어하던 모습이었는데, 마이크 앞에 서자마자 완전히 다른 사람처럼 변했다"며 "목소리에서 특별한 무언가가 느껴졌다"고 회상했다. 레코딩카페 관계자 역시 "그날 녹음한 파일을 아직도 보관하고 있다"며 "당시에도 '이 친구는 뭔가 다르다'는 생각이 들었다"고 전했다.
             </p>
-            <p className="mb-3">
+            <p className="mb-2">
               첫 녹음 이후 {displayName}은 레코딩카페의 'GLOBAL MUSIC DISTRIBUTION' 서비스를 통해 자신의 음악을 Spotify, Apple, YouTube, Instagram, TikTok 등 전 세계 플랫폼에 배포하기 시작했다. 케이팝 가수와 동일한 로열티를 평생 받을 수 있다는 점이 큰 매력이었다고. 이를 통해 쌓은 해외 팬층과 저작권료는 훗날 글로벌 셀럽으로 도약하는 발판이 되었다는 분석이다.
             </p>
-            <p className="mb-3">
+            <p className="mb-2">
               데뷔 3년차였던 2028년, {displayName}은 'KOREA BUSINESS SETUP' 서비스를 활용해 자신의 패션 브랜드를 런칭했다. 중요한 지점은 한국에 회사를 설립했다는 점이다. 법인 설립부터 사업자 주소 서비스까지 원스톱으로 제공받았다. 이 브랜드는 현재 '메이드 인 코리아' 로열티로 세계적인 인기를 끌고 있으며, 이번 AGI 한류 홍보대사 대상 수상의 주요 배경이 되었다.
             </p>
           </div>
 
           {/* Childhood Album Section */}
           {(infancyImage || middleschoolImage) && (
-            <div className="mt-5 pt-4 border-t-2 border-black">
-              <div className="grid grid-cols-2 gap-5">
+            <div className="mt-3 pt-3 border-t-2 border-black">
+              <div className="grid grid-cols-2 gap-4">
                 {infancyImage?.imageData && (
                   <div>
                     <div 
                       className="border-2 border-black overflow-hidden relative cursor-move print:cursor-default" 
-                      style={{ height: "180px" }}
+                      style={{ height: "160px" }}
                       onMouseDown={(e) => handleMouseDown("infancy", e)}
                       title="드래그하여 사진 위치 조정"
                     >
@@ -486,7 +486,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                   <div>
                     <div 
                       className="border-2 border-black overflow-hidden relative cursor-move print:cursor-default" 
-                      style={{ height: "180px" }}
+                      style={{ height: "160px" }}
                       onMouseDown={(e) => handleMouseDown("middleschool", e)}
                       title="드래그하여 사진 위치 조정"
                     >
@@ -514,7 +514,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
           )}
 
           {/* Article Continuation after photos */}
-          <div className="mt-4 columns-2 gap-5 text-xs leading-relaxed" style={{ columnRule: "1px solid #333" }}>
+          <div className="mt-3 columns-2 gap-4 text-xs leading-snug" style={{ columnRule: "1px solid #333" }}>
             <p className="mb-3">
               관계자들은 {displayName}의 성공 요인 중 하나로 철저한 자기관리를 꼽는다. 'K-BEAUTY & PLASTIC SURGERY' 서비스를 통해 국내 최고 피부과와 성형외과에서 연예인 할인 혜택을 꾸준히 받아 관리해온 것으로 알려졌다. 한 관계자는 "K-뷰티의 본고장에서 체계적으로 관리받은 것이 글로벌 무대에서도 빛을 발했다"고 평가했다.
             </p>
@@ -531,18 +531,18 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
         </div>
 
         {/* Right Column: Sidebar + Future Image (2 cols) */}
-        <div className="col-span-2 border-l-2 border-black pl-5 flex flex-col">
+        <div className="col-span-2 border-l-2 border-black pl-4 flex flex-col">
           {/* Award Photo */}
           {futureImage?.imageData && (
-            <div className="mb-4">
-              <div className="bg-black print-bg-black p-2 mb-2">
-                <div className="text-xs font-black text-center tracking-wider text-white print-text-white">
+            <div className="mb-2">
+              <div className="bg-black print-bg-black p-1 mb-1">
+                <div className="text-[10px] font-black text-center tracking-wider text-white print-text-white">
                   ★ {futureYear} AGI 한류 홍보대사 대상 ★
                 </div>
               </div>
               <div 
                 className="border-2 border-black overflow-hidden flex items-center justify-center bg-purple-50 relative cursor-move print:cursor-default" 
-                style={{ aspectRatio: "9/16", width: "100%" }}
+                style={{ aspectRatio: "3/4", width: "100%" }}
                 onMouseDown={(e) => handleMouseDown("future", e)}
                 onWheel={(e) => handleWheel("future", e)}
                 title="드래그: 위치 조정 / 휠: 확대/축소"
@@ -550,7 +550,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 <img 
                   src={futureImage.imageData} 
                   alt="한복 시상식"
-                  className="h-full object-contain select-none"
+                  className="h-full object-cover select-none"
                   style={{
                     objectPosition: `${imagePositions.future.x}% ${imagePositions.future.y}%`,
                     transform: `scale(${imagePositions.future.scale || 1})`,
@@ -561,7 +561,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                   ↔ 드래그 / 🔍 휠
                 </div>
               </div>
-              <p className="text-[11px] mt-2 text-justify leading-snug">
+              <p className="text-[10px] mt-1 text-justify leading-tight">
                 ▲ 지난달 열린 '{futureYear} AGI 한류 홍보대사 대상'에서 대상을 수상한 <span className="font-bold">{displayName}</span>이 관객들에게 손을 흔들고 있다. 
                 한류를 전 세계에 알린 공로를 인정받아 한국 AGI 재단 설립 위원회로부터 수상했다.
               </p>
@@ -570,16 +570,16 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
 
           {/* Advertisement / CD Keyring Section */}
           {cdAlbumImages.length > 0 && cdAlbumImages.some(img => img.imageData) ? (
-            <div className="border-2 border-dashed border-gray-400 p-1 flex-1 overflow-hidden">
-              <div className="text-[6px] font-black text-center border-b border-gray-400 pb-0.5 mb-1">
-                ✂ MINI CD KEYRING ✂
+            <div className="border-2 border-dashed border-gray-400 p-1 flex-1">
+              <div className="text-[6px] font-black text-center border-b border-gray-400 pb-0.5 mb-0.5">
+                ✂ MINI CD KEYRING — CUT ALONG DOTTED LINE ✂
               </div>
               <div className="flex flex-col items-center gap-0.5">
                 {cdAlbumImages.find(img => img.partName === "front")?.imageData && (
-                  <div className="text-center w-full">
+                  <div className="text-center">
                     <div 
-                      className="border border-dashed border-gray-400 overflow-hidden mx-auto"
-                      style={{ width: "100%", aspectRatio: "2/1" }}
+                      className="border border-dashed border-gray-400 overflow-hidden"
+                      style={{ width: "8cm", height: "4cm" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "front")!.imageData!}
@@ -587,15 +587,15 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="text-[5px] text-gray-400">COVER 8×4cm (fold → 4×4)</p>
+                    <p className="text-[5px] text-gray-400 leading-none">COVER 8×4cm (fold → 4×4)</p>
                   </div>
                 )}
 
                 {cdAlbumImages.find(img => img.partName === "back")?.imageData && (
-                  <div className="text-center w-full">
+                  <div className="text-center">
                     <div 
-                      className="border border-dashed border-gray-400 overflow-hidden mx-auto"
-                      style={{ width: "100%", aspectRatio: "10/3.9" }}
+                      className="border border-dashed border-gray-400 overflow-hidden"
+                      style={{ width: "10cm", height: "3.9cm" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "back")!.imageData!}
@@ -603,15 +603,15 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="text-[5px] text-gray-400">BACK 10×3.9cm (fold → 5×3.9)</p>
+                    <p className="text-[5px] text-gray-400 leading-none">BACK 10×3.9cm (fold → 5×3.9)</p>
                   </div>
                 )}
 
                 {cdAlbumImages.find(img => img.partName === "disc")?.imageData && (
                   <div className="text-center relative">
                     <div 
-                      className="border border-dashed border-gray-400 overflow-hidden relative mx-auto"
-                      style={{ width: "3.5cm", height: "3.5cm", borderRadius: "50%" }}
+                      className="border border-dashed border-gray-400 overflow-hidden relative"
+                      style={{ width: "4cm", height: "4cm", borderRadius: "50%" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "disc")!.imageData!}
@@ -622,12 +622,12 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       <div 
                         className="absolute bg-white border border-dashed border-gray-400"
                         style={{ 
-                          width: "6mm", height: "6mm", borderRadius: "50%",
+                          width: "7mm", height: "7mm", borderRadius: "50%",
                           top: "50%", left: "50%", transform: "translate(-50%, -50%)"
                         }}
                       />
                     </div>
-                    <p className="text-[5px] text-gray-400">DISC ⌀4cm (hole ⌀7mm)</p>
+                    <p className="text-[5px] text-gray-400 leading-none">DISC ⌀4cm (hole ⌀7mm)</p>
                   </div>
                 )}
               </div>
