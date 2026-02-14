@@ -46,6 +46,190 @@ const statusIcons = {
   cancelled: XCircle
 };
 
+function PromoManagement() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: coupons = [], isLoading } = useQuery<any[]>({
+    queryKey: ["/api/admin/promo-coupons"],
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, status, couponAmount, adminNote }: { id: number; status: string; couponAmount?: number; adminNote?: string }) => {
+      const res = await apiRequest("PATCH", `/api/admin/promo-coupons/${id}`, { status, couponAmount, adminNote });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/promo-coupons"] });
+      toast({ title: "쿠폰 상태 업데이트 완료" });
+    },
+  });
+
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editAmount, setEditAmount] = useState("");
+  const [editNote, setEditNote] = useState("");
+
+  const pendingCoupons = coupons.filter((c: any) => c.status === "pending");
+  const processedCoupons = coupons.filter((c: any) => c.status !== "pending");
+
+  const handleApprove = (id: number) => {
+    const amount = parseInt(editAmount);
+    if (!amount || amount < 10000 || amount > 500000) {
+      toast({ title: "쿠폰 금액을 확인해주세요", description: "₩10,000 ~ ₩500,000 범위로 입력", variant: "destructive" });
+      return;
+    }
+    updateMutation.mutate({ id, status: "approved", couponAmount: amount, adminNote: editNote });
+    setEditingId(null);
+    setEditAmount("");
+    setEditNote("");
+  };
+
+  const handleReject = (id: number) => {
+    updateMutation.mutate({ id, status: "rejected", adminNote: editNote });
+    setEditingId(null);
+    setEditAmount("");
+    setEditNote("");
+  };
+
+  if (isLoading) return <div className="text-white text-center py-8">로딩 중...</div>;
+
+  return (
+    <div className="space-y-6">
+      <Card className="glass border-white/20">
+        <CardHeader>
+          <CardTitle className="text-white text-lg flex items-center gap-2">
+            🎁 SNS 후기 쿠폰 관리
+            {pendingCoupons.length > 0 && (
+              <Badge className="bg-yellow-500 text-black font-bold">{pendingCoupons.length}건 대기</Badge>
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-sm text-blue-300">
+            <p className="font-bold mb-2">📋 운영 프로세스</p>
+            <ol className="list-decimal list-inside space-y-1 text-xs text-blue-200">
+              <li>고객이 NFT 키링 페이지에서 SNS 후기 URL을 제출합니다</li>
+              <li>아래 목록에 "대기중" 상태로 표시됩니다</li>
+              <li>링크를 클릭하여 후기 내용과 영향력을 확인합니다</li>
+              <li>쿠폰 금액(₩10,000~₩500,000)을 입력하고 승인 또는 반려합니다</li>
+              <li>승인된 쿠폰은 고객의 NFT 페이지에 자동으로 표시됩니다</li>
+              <li>고객이 추가 서비스 신청 시 쿠폰을 사용할 수 있습니다</li>
+            </ol>
+          </div>
+
+          {pendingCoupons.length === 0 && processedCoupons.length === 0 && (
+            <p className="text-gray-400 text-center py-8">아직 제출된 후기가 없습니다</p>
+          )}
+
+          {pendingCoupons.length > 0 && (
+            <div>
+              <h3 className="text-yellow-400 font-bold text-sm mb-3">⏳ 검토 대기</h3>
+              <div className="space-y-3">
+                {pendingCoupons.map((c: any) => (
+                  <div key={c.id} className="bg-yellow-500/5 border border-yellow-500/20 rounded-lg p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-white font-bold text-sm">{c.customerName}</span>
+                          <Badge className="text-[10px] bg-gray-700">{c.snsPlatform}</Badge>
+                        </div>
+                        <a
+                          href={c.snsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-yellow-400 hover:text-yellow-300 text-xs break-all underline"
+                        >
+                          {c.snsUrl}
+                        </a>
+                        <p className="text-gray-500 text-[11px] mt-1">{new Date(c.createdAt).toLocaleString("ko-KR")}</p>
+                      </div>
+                    </div>
+
+                    {editingId === c.id ? (
+                      <div className="mt-3 space-y-2 bg-black/30 rounded-lg p-3">
+                        <div>
+                          <Label className="text-xs text-gray-400">쿠폰 금액 (₩)</Label>
+                          <Input
+                            type="number"
+                            min="10000"
+                            max="500000"
+                            step="10000"
+                            value={editAmount}
+                            onChange={(e) => setEditAmount(e.target.value)}
+                            placeholder="예: 50000"
+                            className="bg-gray-800 border-gray-600 text-white mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-gray-400">관리자 메모 (선택)</Label>
+                          <Input
+                            value={editNote}
+                            onChange={(e) => setEditNote(e.target.value)}
+                            placeholder="메모 입력..."
+                            className="bg-gray-800 border-gray-600 text-white mt-1"
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <Button size="sm" onClick={() => handleApprove(c.id)} className="bg-green-600 hover:bg-green-700 text-white flex-1">
+                            ✅ 승인
+                          </Button>
+                          <Button size="sm" onClick={() => handleReject(c.id)} className="bg-red-600 hover:bg-red-700 text-white flex-1">
+                            ❌ 반려
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => setEditingId(null)} className="text-gray-400 border-gray-600">
+                            취소
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-2">
+                        <Button size="sm" onClick={() => setEditingId(c.id)} className="bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 border border-yellow-500/30">
+                          검토하기
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {processedCoupons.length > 0 && (
+            <div>
+              <h3 className="text-gray-400 font-bold text-sm mb-3">📜 처리 완료</h3>
+              <div className="space-y-2">
+                {processedCoupons.map((c: any) => (
+                  <div key={c.id} className="bg-white/5 border border-white/10 rounded-lg p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-white text-sm font-medium">{c.customerName}</span>
+                        <Badge className="text-[10px] bg-gray-700">{c.snsPlatform}</Badge>
+                        <a href={c.snsUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+                          <Copy className="w-3 h-3" />
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {c.status === "approved" && c.couponAmount && (
+                          <span className="text-green-400 font-bold text-sm">₩{c.couponAmount.toLocaleString()}</span>
+                        )}
+                        <Badge className={c.status === "approved" ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}>
+                          {c.status === "approved" ? "승인" : "반려"}
+                        </Badge>
+                      </div>
+                    </div>
+                    {c.adminNote && <p className="text-gray-500 text-xs mt-1">메모: {c.adminNote}</p>}
+                    <p className="text-gray-600 text-[11px] mt-1">{new Date(c.createdAt).toLocaleString("ko-KR")}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function NftManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -264,7 +448,7 @@ export default function AdminPage() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [emailSubject, setEmailSubject] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
-  const [activeTab, setActiveTab] = useState<"bookings" | "visit-reservations" | "hotel-bookings" | "calendar" | "nft">("bookings");
+  const [activeTab, setActiveTab] = useState<"bookings" | "visit-reservations" | "hotel-bookings" | "calendar" | "nft" | "promo">("bookings");
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
@@ -1008,8 +1192,8 @@ Recording Cafe Team`
         </Card>
 
         {/* Main Content Tabs */}
-        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations" | "hotel-bookings" | "calendar" | "nft")} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 bg-white/10 mb-6">
+        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations" | "hotel-bookings" | "calendar" | "nft" | "promo")} className="w-full">
+          <TabsList className="grid w-full grid-cols-6 bg-white/10 mb-6">
             <TabsTrigger value="bookings" className="text-white data-[state=active]:bg-white/20">
               📋 메뉴 선택
             </TabsTrigger>
@@ -1030,6 +1214,9 @@ Recording Cafe Team`
             </TabsTrigger>
             <TabsTrigger value="nft" className="text-white data-[state=active]:bg-white/20">
               💿 NFT 키링
+            </TabsTrigger>
+            <TabsTrigger value="promo" className="text-white data-[state=active]:bg-white/20">
+              🎁 쿠폰
             </TabsTrigger>
           </TabsList>
 
@@ -1888,6 +2075,10 @@ Recording Cafe Team`
 
           <TabsContent value="nft">
             <NftManagement />
+          </TabsContent>
+
+          <TabsContent value="promo">
+            <PromoManagement />
           </TabsContent>
         </Tabs>
 

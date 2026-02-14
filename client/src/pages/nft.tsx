@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -60,7 +60,7 @@ const translations = {
     promoAnyPlatform: "전 세계 어떤 SNS 플랫폼이든 OK!",
     promoReward: "최대 ₩500,000 쿠폰",
     promoRewardRange: "₩10,000 ~ ₩500,000",
-    promoRewardDetail: "후기 퀄리티에 따라 쿠폰 금액이 결정됩니다",
+    promoRewardDetail: "후기와 영향력에 따라 쿠폰 금액이 결정됩니다",
     promoUseDetail: "추가 서비스(옵션) 결제 시 사용 가능",
     promoSnsUrl: "게시물 URL을 붙여넣기 해주세요",
     promoSnsUrlPlaceholder: "https://...",
@@ -119,7 +119,7 @@ const translations = {
     promoAnyPlatform: "Any social media platform worldwide is OK!",
     promoReward: "Up to ₩500,000 Coupon",
     promoRewardRange: "₩10,000 ~ ₩500,000",
-    promoRewardDetail: "Coupon value depends on review quality",
+    promoRewardDetail: "Coupon value depends on review quality and influence",
     promoUseDetail: "Usable for additional services (options) only",
     promoSnsUrl: "Paste your post URL here",
     promoSnsUrlPlaceholder: "https://...",
@@ -178,7 +178,7 @@ const translations = {
     promoAnyPlatform: "世界中のどのSNSでもOK！",
     promoReward: "最大₩500,000クーポン",
     promoRewardRange: "₩10,000 ~ ₩500,000",
-    promoRewardDetail: "レビューのクオリティによりクーポン金額が決まります",
+    promoRewardDetail: "レビューのクオリティと影響力によりクーポン金額が決まります",
     promoUseDetail: "追加サービス（オプション）にのみ使用可能",
     promoSnsUrl: "投稿URLを貼り付けてください",
     promoSnsUrlPlaceholder: "https://...",
@@ -237,7 +237,7 @@ const translations = {
     promoAnyPlatform: "全球任何社交平台均可！",
     promoReward: "最高₩500,000优惠券",
     promoRewardRange: "₩10,000 ~ ₩500,000",
-    promoRewardDetail: "优惠券金额根据评价质量确定",
+    promoRewardDetail: "优惠券金额根据评价质量和影响力确定",
     promoUseDetail: "仅可用于附加服务（选项）",
     promoSnsUrl: "请粘贴帖子链接",
     promoSnsUrlPlaceholder: "https://...",
@@ -265,13 +265,15 @@ interface ServiceItem {
   desc: Record<Language, string>;
   isFree?: boolean;
   sampleVideoUrl?: string;
+  sampleAudioUrl?: string;
+  sampleAudioLabel?: Record<Language, string>;
 }
 
 const services: Record<string, ServiceItem[]> = {
   mixing: [
-    { id: "basic", name: { ko: "기본 (Basic)", en: "Basic Mixing", ja: "基本ミキシング", zh: "基本混音" }, price: 0, desc: { ko: "베스트 구간 편집 + 음량 조절 + 에코 효과 추가", en: "Best section editing + volume control + echo effects", ja: "ベスト区間編集 + 音量調整 + エコー効果追加", zh: "最佳片段编辑 + 音量调节 + 回声效果" }, isFree: true },
-    { id: "ai", name: { ko: "기본 + AI 보정", en: "Basic + AI Correction", ja: "基本 + AI補正", zh: "基本 + AI修正" }, price: 20000, desc: { ko: "틀린 음정을 AI로 자동 수정", en: "Auto-correct pitch with AI", ja: "音程をAIで自動修正", zh: "AI自动修正音准" } },
-    { id: "engineer", name: { ko: "기본 + 전문가 보정", en: "Basic + Expert Correction", ja: "基本 + 専門家補正", zh: "基本 + 专家修正" }, price: 100000, desc: { ko: "틀린 음정을 전문가가 수작업으로 수정", en: "Expert manual pitch correction", ja: "専門家が手作業で音程を修正", zh: "专家手动修正音准" } },
+    { id: "basic", name: { ko: "기본 (Basic)", en: "Basic Mixing", ja: "基本ミキシング", zh: "基本混音" }, price: 0, desc: { ko: "베스트 구간 편집 + 음량 조절 + 에코 효과 추가", en: "Best section editing + volume control + echo effects", ja: "ベスト区間編集 + 音量調整 + エコー効果追加", zh: "最佳片段编辑 + 音量调节 + 回声效果" }, isFree: true, sampleAudioUrl: "/samples/vocal-not-tuned.wav", sampleAudioLabel: { ko: "보정 전 샘플", en: "Before correction", ja: "補正前サンプル", zh: "校正前样本" } },
+    { id: "ai", name: { ko: "기본 + AI 보정", en: "Basic + AI Correction", ja: "基本 + AI補正", zh: "基本 + AI修正" }, price: 20000, desc: { ko: "틀린 음정을 AI로 자동 수정", en: "Auto-correct pitch with AI", ja: "音程をAIで自動修正", zh: "AI自动修正音准" }, sampleAudioUrl: "/samples/vocal-auto-tuned.wav", sampleAudioLabel: { ko: "AI 보정 샘플", en: "AI corrected sample", ja: "AI補正サンプル", zh: "AI校正样本" } },
+    { id: "engineer", name: { ko: "기본 + 전문가 보정", en: "Basic + Expert Correction", ja: "基本 + 専門家補正", zh: "基本 + 专家修正" }, price: 100000, desc: { ko: "틀린 음정을 전문가가 수작업으로 수정", en: "Expert manual pitch correction", ja: "専門家が手作業で音程を修正", zh: "专家手动修正音准" }, sampleAudioUrl: "/samples/vocal-pro-tuned.wav", sampleAudioLabel: { ko: "전문가 보정 샘플", en: "Expert corrected sample", ja: "専門家補正サンプル", zh: "专家校正样本" } },
   ],
   video: [
     { id: "self", name: { ko: "셀프 촬영", en: "Self Recording", ja: "セルフ撮影", zh: "自拍录制" }, price: 0, desc: { ko: "셀피용 스탠드 제공", en: "Selfie stand provided", ja: "セルフィースタンド提供", zh: "提供自拍支架" }, isFree: true },
@@ -302,6 +304,24 @@ export default function NftPage() {
   const [promoUrl, setPromoUrl] = useState("");
   const [promoPlatform, setPromoPlatform] = useState("");
   const [promoSubmitted, setPromoSubmitted] = useState(false);
+  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const toggleAudioPlay = (url: string) => {
+    if (playingAudio === url) {
+      audioRef.current?.pause();
+      setPlayingAudio(null);
+    } else {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      const audio = new Audio(url);
+      audio.onended = () => setPlayingAudio(null);
+      audio.play();
+      audioRef.current = audio;
+      setPlayingAudio(url);
+    }
+  };
 
   const tx = translations[lang];
 
@@ -464,6 +484,34 @@ export default function NftPage() {
             >
               <Play className="w-3 h-3" />
               {tx.viewSample}
+            </button>
+          )}
+          {s.sampleAudioUrl && (
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleAudioPlay(s.sampleAudioUrl!); }}
+              className={`inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 text-xs font-bold rounded-full transition-all ${
+                playingAudio === s.sampleAudioUrl
+                  ? "bg-yellow-500 text-black"
+                  : "bg-gray-700 hover:bg-gray-600 text-white"
+              }`}
+            >
+              {playingAudio === s.sampleAudioUrl ? (
+                <>
+                  <div className="flex gap-0.5 items-end h-3">
+                    <div className="w-0.5 bg-black rounded-full animate-pulse" style={{ height: "8px", animationDelay: "0ms" }} />
+                    <div className="w-0.5 bg-black rounded-full animate-pulse" style={{ height: "12px", animationDelay: "150ms" }} />
+                    <div className="w-0.5 bg-black rounded-full animate-pulse" style={{ height: "6px", animationDelay: "300ms" }} />
+                    <div className="w-0.5 bg-black rounded-full animate-pulse" style={{ height: "10px", animationDelay: "100ms" }} />
+                  </div>
+                  {s.sampleAudioLabel?.[lang]}
+                </>
+              ) : (
+                <>
+                  <Headphones className="w-3 h-3" />
+                  {s.sampleAudioLabel?.[lang]}
+                </>
+              )}
             </button>
           )}
         </div>
@@ -770,6 +818,9 @@ export default function NftPage() {
                     { name: "X", icon: <SiX className="w-3 h-3" /> },
                     { name: "Facebook", icon: <SiFacebook className="w-3.5 h-3.5" /> },
                     { name: "小红书", icon: <span className="text-[10px] font-bold">RED</span> },
+                    { name: "抖音(Douyin)", icon: <span className="text-[10px] font-bold">DY</span> },
+                    { name: "LINE", icon: <span className="text-[10px] font-bold">L</span> },
+                    { name: "Ameba", icon: <span className="text-[10px] font-bold">A</span> },
                     { name: "Naver", icon: <SiNaver className="w-3 h-3" /> },
                     { name: "Blog", icon: <FaBlog className="w-3 h-3" /> },
                     { name: "Other", icon: <FaGlobe className="w-3 h-3" /> },

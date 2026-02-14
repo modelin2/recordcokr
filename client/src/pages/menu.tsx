@@ -616,6 +616,21 @@ export default function MenuPage() {
   const [wantsProAlbum, setWantsProAlbum] = useState(false);
   const [wantsLP, setWantsLP] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
+  const menuAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  const toggleMenuAudio = (url: string) => {
+    if (playingAudio === url) {
+      menuAudioRef.current?.pause();
+      setPlayingAudio(null);
+    } else {
+      if (menuAudioRef.current) menuAudioRef.current.pause();
+      const audio = new Audio(url);
+      audio.onended = () => setPlayingAudio(null);
+      audio.play();
+      menuAudioRef.current = audio;
+      setPlayingAudio(url);
+    }
+  };
   const [isComplete, setIsComplete] = useState(false);
   const [detailModal, setDetailModal] = useState<{ title: string; desc: string } | null>(null);
   const [paypalLoaded, setPaypalLoaded] = useState(false);
@@ -1282,14 +1297,22 @@ export default function MenuPage() {
             </motion.div>
           )}
 
-          {step === 5 && (
+          {step === 5 && (() => {
+            const mixingSamples: Record<string, { url: string; label: Record<Language, string> }> = {
+              basic: { url: "/samples/vocal-not-tuned.wav", label: { ko: "보정 전 샘플", en: "Before correction", ja: "補正前サンプル", zh: "校正前样本" } },
+              ai: { url: "/samples/vocal-auto-tuned.wav", label: { ko: "AI 보정 샘플", en: "AI corrected", ja: "AI補正サンプル", zh: "AI校正样本" } },
+              engineer: { url: "/samples/vocal-pro-tuned.wav", label: { ko: "전문가 보정 샘플", en: "Expert corrected", ja: "専門家補正サンプル", zh: "专家校正样本" } },
+            };
+            return (
             <motion.div key="mixing" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
               <div className="text-center mb-4">
                 <h1 className="text-xl font-bold text-gray-800">{t.mixingService}</h1>
                 <p className="text-xs text-gray-500 mt-1">{t.selectOne}</p>
               </div>
               <div className="space-y-3">
-                {t.mixingOptions.map((opt) => (
+                {t.mixingOptions.map((opt) => {
+                  const sample = mixingSamples[opt.id];
+                  return (
                   <Card key={opt.id} className={`cursor-pointer transition-all ${selectedMixing === opt.id ? "border-2 border-cyan-500 bg-cyan-50 shadow-lg" : "bg-white/80 border-2 border-gray-200 hover:shadow-md hover:border-cyan-300"}`} onClick={() => setSelectedMixing(opt.id)}>
                     <CardContent className="p-4 flex items-start gap-3">
                       <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all mt-0.5 ${selectedMixing === opt.id ? "border-cyan-500 bg-cyan-500" : "border-gray-300 bg-white"}`}>
@@ -1301,13 +1324,42 @@ export default function MenuPage() {
                           <p className={`text-lg font-bold flex-shrink-0 ${opt.price === 0 ? "text-green-600" : "text-pink-600"}`}>{formatPrice(opt.price)}</p>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">{opt.desc}</p>
+                        {sample && (
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); toggleMenuAudio(sample.url); }}
+                            className={`inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 text-xs font-bold rounded-full transition-all ${
+                              playingAudio === sample.url
+                                ? "bg-cyan-500 text-white"
+                                : "bg-gray-100 hover:bg-gray-200 text-gray-600"
+                            }`}
+                          >
+                            {playingAudio === sample.url ? (
+                              <>
+                                <div className="flex gap-0.5 items-end h-3">
+                                  <div className="w-0.5 bg-white rounded-full animate-pulse" style={{ height: "8px", animationDelay: "0ms" }} />
+                                  <div className="w-0.5 bg-white rounded-full animate-pulse" style={{ height: "12px", animationDelay: "150ms" }} />
+                                  <div className="w-0.5 bg-white rounded-full animate-pulse" style={{ height: "6px", animationDelay: "300ms" }} />
+                                  <div className="w-0.5 bg-white rounded-full animate-pulse" style={{ height: "10px", animationDelay: "100ms" }} />
+                                </div>
+                                {language && sample.label[language]}
+                              </>
+                            ) : (
+                              <>
+                                <Headphones className="w-3 h-3" />
+                                {language && sample.label[language]}
+                              </>
+                            )}
+                          </button>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
-          )}
+          );})()}
 
           {step === 6 && (
             <motion.div key="video" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md px-4">
