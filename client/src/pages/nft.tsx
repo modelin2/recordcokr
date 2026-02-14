@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, Download, Music, Video, Disc3, Headphones, Loader2, Check, AlertCircle, CheckCircle2, Play, X, Gift, Send, Star, ExternalLink, Sparkles } from "lucide-react";
+import { Lock, Download, Music, Video, Disc3, Headphones, Loader2, Check, AlertCircle, CheckCircle2, Play, X, Gift, Send, Star, ExternalLink, Sparkles, Camera, Link, ArrowRight } from "lucide-react";
+import { SiInstagram, SiTiktok, SiYoutube, SiFacebook, SiX, SiNaver, SiPinterest, SiThreads, SiWechat } from "react-icons/si";
+import { FaBlog, FaGlobe } from "react-icons/fa";
 
 type Language = "ko" | "en" | "ja" | "zh";
 
@@ -53,14 +55,16 @@ const translations = {
     requestToastTitle: "신청 완료",
     requestToastDesc: "추가 서비스 신청이 접수되었습니다.",
     viewSample: "샘플 보기",
-    promoTitle: "🎉 SNS 후기 이벤트",
-    promoDesc: "SNS에 레코딩 카페 체험 후기를 올려주세요!",
-    promoReward: "₩10,000 ~ ₩500,000 쿠폰 지급",
-    promoRewardDetail: "후기 내용과 퀄리티에 따라 쿠폰 금액이 결정됩니다",
-    promoUseDetail: "쿠폰은 추가 서비스(옵션)에만 사용 가능합니다",
-    promoSnsUrl: "SNS 게시물 URL",
-    promoSnsUrlPlaceholder: "https://instagram.com/p/...",
-    promoSelectPlatform: "SNS 플랫폼 선택",
+    promoTitle: "SNS 후기 이벤트",
+    promoDesc: "레코딩 카페 체험 후기를 SNS에 올려주세요!",
+    promoAnyPlatform: "전 세계 어떤 SNS 플랫폼이든 OK!",
+    promoReward: "최대 ₩500,000 쿠폰",
+    promoRewardRange: "₩10,000 ~ ₩500,000",
+    promoRewardDetail: "후기 퀄리티에 따라 쿠폰 금액이 결정됩니다",
+    promoUseDetail: "추가 서비스(옵션) 결제 시 사용 가능",
+    promoSnsUrl: "게시물 URL을 붙여넣기 해주세요",
+    promoSnsUrlPlaceholder: "https://...",
+    promoSelectPlatform: "플랫폼 선택 (기타도 가능)",
     promoSubmit: "후기 제출하기",
     promoSubmitted: "제출 완료! 확인 후 쿠폰을 지급해 드립니다.",
     promoHistory: "제출 내역",
@@ -68,6 +72,12 @@ const translations = {
     promoStatusApproved: "쿠폰 지급 완료",
     promoStatusRejected: "반려",
     promoCouponAmount: "지급 쿠폰",
+    promoStep1: "SNS에 후기 게시",
+    promoStep1Desc: "사진/영상과 함께 체험 후기를 올려주세요",
+    promoStep2: "URL 제출",
+    promoStep2Desc: "아래에 게시물 링크를 붙여넣기",
+    promoStep3: "검토 후 쿠폰 지급",
+    promoStep3Desc: "1~2일 내 확인 후 쿠폰 발급",
   },
   en: {
     privatePage: "This is a",
@@ -104,14 +114,16 @@ const translations = {
     requestToastTitle: "Request Submitted",
     requestToastDesc: "Your service request has been submitted.",
     viewSample: "View Sample",
-    promoTitle: "🎉 SNS Review Event",
-    promoDesc: "Share your Recording Café experience on SNS!",
-    promoReward: "₩10,000 ~ ₩500,000 Coupon",
-    promoRewardDetail: "Coupon value depends on review quality and content",
-    promoUseDetail: "Coupons can only be used for additional services (options)",
-    promoSnsUrl: "SNS Post URL",
-    promoSnsUrlPlaceholder: "https://instagram.com/p/...",
-    promoSelectPlatform: "Select SNS Platform",
+    promoTitle: "SNS Review Event",
+    promoDesc: "Share your Recording Café experience on social media!",
+    promoAnyPlatform: "Any social media platform worldwide is OK!",
+    promoReward: "Up to ₩500,000 Coupon",
+    promoRewardRange: "₩10,000 ~ ₩500,000",
+    promoRewardDetail: "Coupon value depends on review quality",
+    promoUseDetail: "Usable for additional services (options) only",
+    promoSnsUrl: "Paste your post URL here",
+    promoSnsUrlPlaceholder: "https://...",
+    promoSelectPlatform: "Select platform (others OK too)",
     promoSubmit: "Submit Review",
     promoSubmitted: "Submitted! We'll review and issue your coupon.",
     promoHistory: "Submission History",
@@ -119,6 +131,12 @@ const translations = {
     promoStatusApproved: "Coupon Issued",
     promoStatusRejected: "Declined",
     promoCouponAmount: "Coupon Value",
+    promoStep1: "Post Your Review",
+    promoStep1Desc: "Share photos/videos of your experience on SNS",
+    promoStep2: "Submit URL",
+    promoStep2Desc: "Paste your post link below",
+    promoStep3: "Get Your Coupon",
+    promoStep3Desc: "Reviewed & issued within 1-2 days",
   },
   ja: {
     privatePage: "このページは",
@@ -155,14 +173,16 @@ const translations = {
     requestToastTitle: "申請完了",
     requestToastDesc: "追加サービスの申請が受け付けられました。",
     viewSample: "サンプル視聴",
-    promoTitle: "🎉 SNSレビューイベント",
+    promoTitle: "SNSレビューイベント",
     promoDesc: "レコーディングカフェの体験をSNSでシェアしてください！",
-    promoReward: "₩10,000 ~ ₩500,000 クーポン進呈",
-    promoRewardDetail: "レビュー内容とクオリティによりクーポン金額が決まります",
-    promoUseDetail: "クーポンは追加サービス（オプション）のみ使用可能です",
-    promoSnsUrl: "SNS投稿URL",
-    promoSnsUrlPlaceholder: "https://instagram.com/p/...",
-    promoSelectPlatform: "SNSプラットフォーム選択",
+    promoAnyPlatform: "世界中のどのSNSでもOK！",
+    promoReward: "最大₩500,000クーポン",
+    promoRewardRange: "₩10,000 ~ ₩500,000",
+    promoRewardDetail: "レビューのクオリティによりクーポン金額が決まります",
+    promoUseDetail: "追加サービス（オプション）にのみ使用可能",
+    promoSnsUrl: "投稿URLを貼り付けてください",
+    promoSnsUrlPlaceholder: "https://...",
+    promoSelectPlatform: "プラットフォーム選択（その他もOK）",
     promoSubmit: "レビューを提出する",
     promoSubmitted: "提出完了！確認後クーポンをお届けします。",
     promoHistory: "提出履歴",
@@ -170,6 +190,12 @@ const translations = {
     promoStatusApproved: "クーポン発行完了",
     promoStatusRejected: "却下",
     promoCouponAmount: "発行クーポン",
+    promoStep1: "SNSにレビュー投稿",
+    promoStep1Desc: "写真/動画と一緒に体験レビューを投稿",
+    promoStep2: "URLを提出",
+    promoStep2Desc: "下記に投稿リンクを貼り付け",
+    promoStep3: "クーポン発行",
+    promoStep3Desc: "1〜2日以内に確認後発行",
   },
   zh: {
     privatePage: "此页面是",
@@ -206,14 +232,16 @@ const translations = {
     requestToastTitle: "申请完成",
     requestToastDesc: "附加服务申请已提交。",
     viewSample: "查看样品",
-    promoTitle: "🎉 SNS评价活动",
-    promoDesc: "请在SNS上分享您的录音咖啡体验！",
-    promoReward: "₩10,000 ~ ₩500,000 优惠券",
-    promoRewardDetail: "优惠券金额根据评价内容和质量确定",
-    promoUseDetail: "优惠券仅可用于附加服务（选项）",
-    promoSnsUrl: "SNS帖子链接",
-    promoSnsUrlPlaceholder: "https://instagram.com/p/...",
-    promoSelectPlatform: "选择SNS平台",
+    promoTitle: "SNS评价活动",
+    promoDesc: "请在社交媒体上分享您的录音咖啡体验！",
+    promoAnyPlatform: "全球任何社交平台均可！",
+    promoReward: "最高₩500,000优惠券",
+    promoRewardRange: "₩10,000 ~ ₩500,000",
+    promoRewardDetail: "优惠券金额根据评价质量确定",
+    promoUseDetail: "仅可用于附加服务（选项）",
+    promoSnsUrl: "请粘贴帖子链接",
+    promoSnsUrlPlaceholder: "https://...",
+    promoSelectPlatform: "选择平台（其他也可以）",
     promoSubmit: "提交评价",
     promoSubmitted: "已提交！审核后将发放优惠券。",
     promoHistory: "提交记录",
@@ -221,6 +249,12 @@ const translations = {
     promoStatusApproved: "优惠券已发放",
     promoStatusRejected: "未通过",
     promoCouponAmount: "优惠券金额",
+    promoStep1: "在SNS发布评价",
+    promoStep1Desc: "上传照片/视频分享您的体验",
+    promoStep2: "提交链接",
+    promoStep2Desc: "在下方粘贴帖子链接",
+    promoStep3: "获取优惠券",
+    promoStep3Desc: "1-2天内审核后发放",
   },
 };
 
@@ -662,66 +696,115 @@ export default function NftPage() {
           </Card>
         )}
 
-        <Card className="bg-gradient-to-br from-amber-900/30 via-yellow-900/20 to-orange-900/30 border-yellow-700/40 mb-6 overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/5 rounded-full -translate-y-8 translate-x-8" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-500/5 rounded-full translate-y-8 -translate-x-8" />
-          <CardHeader className="pb-2 relative z-10">
-            <CardTitle className="text-lg flex items-center gap-2 text-white">
-              <div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg p-1.5">
-                <Gift className="w-5 h-5 text-black" />
+        <div className="mb-6 rounded-2xl overflow-hidden border-2 border-dashed border-yellow-500/60 bg-gradient-to-b from-yellow-500/10 via-transparent to-transparent">
+          <div className="bg-yellow-500 text-black text-center py-3 px-4">
+            <div className="flex items-center justify-center gap-2">
+              <Gift className="w-5 h-5" />
+              <span className="font-black text-lg tracking-wide">{tx.promoTitle}</span>
+              <Gift className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="p-5 space-y-5">
+            <div className="text-center space-y-2">
+              <p className="text-white text-sm font-medium">{tx.promoDesc}</p>
+              <div className="inline-block bg-yellow-500/20 border border-yellow-500/40 rounded-full px-5 py-2">
+                <span className="text-yellow-400 font-black text-xl">{tx.promoReward}</span>
               </div>
-              {tx.promoTitle}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="relative z-10 space-y-4">
-            <div className="bg-black/30 rounded-xl p-4 border border-yellow-600/20">
-              <p className="text-gray-300 text-sm mb-3">{tx.promoDesc}</p>
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-5 h-5 text-yellow-400" />
-                <span className="text-yellow-400 font-black text-lg">{tx.promoReward}</span>
-              </div>
+              <p className="text-yellow-500/70 text-xs font-medium">{tx.promoRewardRange}</p>
               <p className="text-gray-500 text-xs">{tx.promoRewardDetail}</p>
-              <p className="text-orange-400/70 text-xs mt-1 flex items-center gap-1">
-                <Star className="w-3 h-3" />
-                {tx.promoUseDetail}
-              </p>
+              <p className="text-gray-600 text-[11px]">* {tx.promoUseDetail}</p>
             </div>
 
-            <div className="space-y-3">
+            <div className="text-center space-y-2">
+              <p className="text-gray-400 text-xs font-semibold">{tx.promoAnyPlatform}</p>
+              <div className="flex items-center justify-center gap-3 flex-wrap px-2">
+                <SiInstagram className="w-5 h-5 text-pink-400" />
+                <SiTiktok className="w-5 h-5 text-white" />
+                <SiYoutube className="w-5 h-5 text-red-500" />
+                <SiX className="w-4 h-4 text-white" />
+                <SiFacebook className="w-5 h-5 text-blue-500" />
+                <SiThreads className="w-5 h-5 text-white" />
+                <SiNaver className="w-5 h-5 text-green-500" />
+                <SiWechat className="w-5 h-5 text-green-400" />
+                <span className="text-red-500 font-black text-[10px] leading-none border border-red-500/40 rounded px-1 py-0.5">RED</span>
+                <SiPinterest className="w-5 h-5 text-red-600" />
+                <FaBlog className="w-4 h-4 text-orange-400" />
+                <span className="text-gray-500 text-xs font-medium">etc.</span>
+              </div>
+            </div>
+
+            <div className="bg-black/40 rounded-xl p-4 border border-gray-800/60">
+              <div className="flex items-stretch gap-1">
+                {[
+                  { step: "1", icon: <Camera className="w-4 h-4" />, title: tx.promoStep1, desc: tx.promoStep1Desc },
+                  { step: "2", icon: <Link className="w-4 h-4" />, title: tx.promoStep2, desc: tx.promoStep2Desc },
+                  { step: "3", icon: <Gift className="w-4 h-4" />, title: tx.promoStep3, desc: tx.promoStep3Desc },
+                ].map((s, i) => (
+                  <div key={s.step} className="flex items-stretch flex-1">
+                    <div className="text-center flex-1">
+                      <div className="w-8 h-8 rounded-full bg-yellow-500 text-black flex items-center justify-center mx-auto mb-1.5 text-sm font-black">
+                        {s.icon}
+                      </div>
+                      <p className="text-white text-[11px] font-bold leading-tight">{s.title}</p>
+                      <p className="text-gray-500 text-[10px] mt-0.5 leading-tight">{s.desc}</p>
+                    </div>
+                    {i < 2 && (
+                      <div className="flex items-center px-0.5">
+                        <ArrowRight className="w-3 h-3 text-yellow-600/60" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3 bg-gray-900/60 rounded-xl p-4 border border-gray-800/40">
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">{tx.promoSelectPlatform}</label>
+                <label className="text-xs text-gray-400 mb-2 block font-medium">{tx.promoSelectPlatform}</label>
                 <div className="flex gap-2 flex-wrap">
-                  {["Instagram", "TikTok", "YouTube", "X (Twitter)", "Facebook", "Blog"].map((p) => (
+                  {[
+                    { name: "Instagram", icon: <SiInstagram className="w-3.5 h-3.5" /> },
+                    { name: "TikTok", icon: <SiTiktok className="w-3.5 h-3.5" /> },
+                    { name: "YouTube", icon: <SiYoutube className="w-3.5 h-3.5" /> },
+                    { name: "X", icon: <SiX className="w-3 h-3" /> },
+                    { name: "Facebook", icon: <SiFacebook className="w-3.5 h-3.5" /> },
+                    { name: "小红书", icon: <span className="text-[10px] font-bold">RED</span> },
+                    { name: "Naver", icon: <SiNaver className="w-3 h-3" /> },
+                    { name: "Blog", icon: <FaBlog className="w-3 h-3" /> },
+                    { name: "Other", icon: <FaGlobe className="w-3 h-3" /> },
+                  ].map((p) => (
                     <button
-                      key={p}
-                      onClick={() => setPromoPlatform(p)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                        promoPlatform === p
-                          ? "bg-yellow-600 text-black"
-                          : "bg-gray-800/80 text-gray-400 hover:bg-gray-700"
+                      key={p.name}
+                      onClick={() => setPromoPlatform(p.name)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
+                        promoPlatform === p.name
+                          ? "bg-yellow-500 text-black border-yellow-400 shadow-lg shadow-yellow-500/20"
+                          : "bg-gray-800/80 text-gray-400 border-gray-700/50 hover:border-gray-600 hover:bg-gray-700/80"
                       }`}
                     >
-                      {p}
+                      {p.icon}
+                      {p.name}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">{tx.promoSnsUrl}</label>
+                <label className="text-xs text-gray-400 mb-1.5 block font-medium">{tx.promoSnsUrl}</label>
                 <input
                   type="url"
                   value={promoUrl}
                   onChange={(e) => setPromoUrl(e.target.value)}
                   placeholder={tx.promoSnsUrlPlaceholder}
-                  className="w-full bg-gray-900/80 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:border-yellow-500 focus:outline-none focus:ring-1 focus:ring-yellow-500/50 transition-all"
+                  className="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/30 transition-all"
                 />
               </div>
 
               <Button
                 onClick={() => promoMutation.mutate()}
                 disabled={!promoUrl || !promoPlatform || promoMutation.isPending}
-                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold py-3 disabled:opacity-40"
+                className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-3 text-base rounded-xl disabled:opacity-30 shadow-lg shadow-yellow-500/20 transition-all"
               >
                 {promoMutation.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -733,21 +816,24 @@ export default function NftPage() {
             </div>
 
             {promoSubmitted && (
-              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 text-center">
-                <Check className="w-5 h-5 mx-auto mb-1 text-green-500" />
-                <p className="text-green-400 text-sm">{tx.promoSubmitted}</p>
+              <div className="bg-green-500/15 border border-green-500/40 rounded-xl p-4 text-center">
+                <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-green-400" />
+                <p className="text-green-400 text-sm font-semibold">{tx.promoSubmitted}</p>
               </div>
             )}
 
             {page?.promoCoupons && page.promoCoupons.length > 0 && (
-              <div className="border-t border-yellow-800/30 pt-4">
-                <h4 className="text-xs text-gray-400 mb-2 font-semibold">{tx.promoHistory}</h4>
+              <div className="border-t border-gray-800 pt-4">
+                <h4 className="text-xs text-gray-400 mb-3 font-semibold flex items-center gap-1.5">
+                  <Star className="w-3.5 h-3.5 text-yellow-500" />
+                  {tx.promoHistory}
+                </h4>
                 <div className="space-y-2">
                   {page.promoCoupons.map((c: any) => (
-                    <div key={c.id} className="bg-black/30 border border-gray-800 rounded-lg p-3">
+                    <div key={c.id} className="bg-black/40 border border-gray-800/60 rounded-xl p-3">
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-2">
-                          <Badge className="text-xs" variant="outline">{c.snsPlatform}</Badge>
+                          <Badge className="text-xs bg-gray-800 border-gray-700" variant="outline">{c.snsPlatform}</Badge>
                           <a
                             href={c.snsUrl}
                             target="_blank"
@@ -770,14 +856,14 @@ export default function NftPage() {
                         </Badge>
                       </div>
                       {c.status === "approved" && c.couponAmount && (
-                        <div className="flex items-center gap-1 mt-2">
-                          <Gift className="w-3.5 h-3.5 text-yellow-500" />
-                          <span className="text-yellow-500 font-bold text-sm">
+                        <div className="flex items-center gap-1.5 mt-2 bg-yellow-500/10 rounded-lg px-3 py-1.5">
+                          <Gift className="w-4 h-4 text-yellow-500" />
+                          <span className="text-yellow-400 font-black text-sm">
                             {tx.promoCouponAmount}: {formatPrice(c.couponAmount)}
                           </span>
                         </div>
                       )}
-                      <p className="text-gray-600 text-xs mt-1">
+                      <p className="text-gray-600 text-xs mt-1.5">
                         {new Date(c.createdAt).toLocaleDateString("ko-KR")}
                       </p>
                     </div>
@@ -785,8 +871,8 @@ export default function NftPage() {
                 </div>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <div className="text-center text-gray-700 text-xs mt-12 pb-8">
           <p>{tx.copyright}</p>
