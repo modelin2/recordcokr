@@ -2282,7 +2282,8 @@ REQUIREMENTS:
         return res.status(404).json({ message: "Page not found" });
       }
       const { audioFileData, ...safeData } = page;
-      res.json({ ...safeData, hasAudioFile: !!audioFileData });
+      const coupons = await storage.getPromoCouponsByToken(req.params.token);
+      res.json({ ...safeData, hasAudioFile: !!audioFileData, promoCoupons: coupons });
     } catch (error) {
       console.error("Error fetching NFT page:", error);
       res.status(500).json({ message: "Failed to fetch page" });
@@ -2344,6 +2345,57 @@ REQUIREMENTS:
     } catch (error) {
       console.error("Error requesting service:", error);
       res.status(500).json({ message: "Failed to submit request" });
+    }
+  });
+
+  app.post("/api/nft/:token/submit-promo", async (req, res) => {
+    try {
+      const page = await storage.getNftPageByToken(req.params.token);
+      if (!page) {
+        return res.status(404).json({ message: "Page not found" });
+      }
+
+      const { snsUrl, snsPlatform } = req.body;
+      if (!snsUrl || !snsPlatform) {
+        return res.status(400).json({ message: "SNS URL and platform required" });
+      }
+
+      const coupon = await storage.createPromoCoupon({
+        nftToken: req.params.token,
+        customerName: page.customerName,
+        snsUrl,
+        snsPlatform,
+        status: "pending",
+        couponAmount: null,
+        adminNote: null,
+      });
+
+      res.json({ message: "Promo submission received", coupon });
+    } catch (error) {
+      console.error("Error submitting promo:", error);
+      res.status(500).json({ message: "Failed to submit promo" });
+    }
+  });
+
+  app.get("/api/admin/promo-coupons", requireAdmin, async (req, res) => {
+    try {
+      const coupons = await storage.getAllPromoCoupons();
+      res.json(coupons);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch coupons" });
+    }
+  });
+
+  app.patch("/api/admin/promo-coupons/:id", requireAdmin, async (req, res) => {
+    try {
+      const { status, couponAmount, adminNote } = req.body;
+      const updated = await storage.updatePromoCoupon(parseInt(req.params.id), {
+        status, couponAmount, adminNote,
+      });
+      if (!updated) return res.status(404).json({ message: "Coupon not found" });
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update coupon" });
     }
   });
 

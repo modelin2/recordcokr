@@ -13,7 +13,8 @@ import {
   type HotelAdmin, type InsertHotelAdmin,
   type Announcement, type InsertAnnouncement,
   type AdminSchedule, type InsertAdminSchedule,
-  type NftPage, type InsertNftPage
+  type NftPage, type InsertNftPage,
+  promoCoupons, type PromoCoupon, type InsertPromoCoupon
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -98,6 +99,12 @@ export interface IStorage {
   createNftPage(page: InsertNftPage): Promise<NftPage>;
   updateNftPage(id: number, updates: Partial<NftPage>): Promise<NftPage | undefined>;
   deleteNftPage(id: number): Promise<boolean>;
+
+  // Promo coupon operations
+  getAllPromoCoupons(): Promise<PromoCoupon[]>;
+  getPromoCouponsByToken(nftToken: string): Promise<PromoCoupon[]>;
+  createPromoCoupon(coupon: InsertPromoCoupon): Promise<PromoCoupon>;
+  updatePromoCoupon(id: number, updates: Partial<PromoCoupon>): Promise<PromoCoupon | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -703,6 +710,22 @@ export class MemStorage implements IStorage {
   async deleteNftPage(id: number): Promise<boolean> {
     return false;
   }
+
+  async getAllPromoCoupons(): Promise<PromoCoupon[]> {
+    return [];
+  }
+
+  async getPromoCouponsByToken(nftToken: string): Promise<PromoCoupon[]> {
+    return [];
+  }
+
+  async createPromoCoupon(coupon: InsertPromoCoupon): Promise<PromoCoupon> {
+    throw new Error("Promo coupons are not supported in MemStorage");
+  }
+
+  async updatePromoCoupon(id: number, updates: Partial<PromoCoupon>): Promise<PromoCoupon | undefined> {
+    return undefined;
+  }
 }
 
 // Database Storage Implementation
@@ -1128,6 +1151,24 @@ export class DatabaseStorage implements IStorage {
   async deleteNftPage(id: number): Promise<boolean> {
     const result = await db.delete(nftPages).where(eq(nftPages.id, id));
     return (result.rowCount || 0) > 0;
+  }
+
+  async getAllPromoCoupons(): Promise<PromoCoupon[]> {
+    return await db.select().from(promoCoupons).orderBy(desc(promoCoupons.createdAt));
+  }
+
+  async getPromoCouponsByToken(nftToken: string): Promise<PromoCoupon[]> {
+    return await db.select().from(promoCoupons).where(eq(promoCoupons.nftToken, nftToken)).orderBy(desc(promoCoupons.createdAt));
+  }
+
+  async createPromoCoupon(coupon: InsertPromoCoupon): Promise<PromoCoupon> {
+    const [newCoupon] = await db.insert(promoCoupons).values(coupon).returning();
+    return newCoupon;
+  }
+
+  async updatePromoCoupon(id: number, updates: Partial<PromoCoupon>): Promise<PromoCoupon | undefined> {
+    const [updated] = await db.update(promoCoupons).set(updates).where(eq(promoCoupons.id, id)).returning();
+    return updated;
   }
 }
 

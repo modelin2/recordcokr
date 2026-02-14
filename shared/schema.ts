@@ -426,3 +426,31 @@ export const insertNftPageSchema = createInsertSchema(nftPages).omit({
 
 export type NftPage = typeof nftPages.$inferSelect;
 export type InsertNftPage = z.infer<typeof insertNftPageSchema>;
+
+export const promoCoupons = pgTable("promo_coupons", {
+  id: serial("id").primaryKey(),
+  nftToken: text("nft_token").notNull(),
+  customerName: text("customer_name").notNull(),
+  snsUrl: text("sns_url").notNull(),
+  snsPlatform: text("sns_platform").notNull(),
+  status: text("status").notNull().default("pending"),
+  couponAmount: integer("coupon_amount"),
+  adminNote: text("admin_note"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPromoCouponSchema = createInsertSchema(promoCoupons).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  nftToken: z.string().min(1),
+  customerName: z.string().min(1),
+  snsUrl: z.string().url(),
+  snsPlatform: z.string().min(1),
+  status: z.enum(["pending", "approved", "rejected"]).default("pending"),
+  couponAmount: z.number().optional().nullable(),
+  adminNote: z.string().optional().nullable(),
+});
+
+export type PromoCoupon = typeof promoCoupons.$inferSelect;
+export type InsertPromoCoupon = z.infer<typeof insertPromoCouponSchema>;

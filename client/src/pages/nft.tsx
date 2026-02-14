@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, Download, Music, Video, Disc3, Headphones, Loader2, Check, AlertCircle, CheckCircle2, Play, X } from "lucide-react";
+import { Lock, Download, Music, Video, Disc3, Headphones, Loader2, Check, AlertCircle, CheckCircle2, Play, X, Gift, Send, Star, ExternalLink, Sparkles } from "lucide-react";
 
 type Language = "ko" | "en" | "ja" | "zh";
 
@@ -53,6 +53,21 @@ const translations = {
     requestToastTitle: "신청 완료",
     requestToastDesc: "추가 서비스 신청이 접수되었습니다.",
     viewSample: "샘플 보기",
+    promoTitle: "🎉 SNS 후기 이벤트",
+    promoDesc: "SNS에 레코딩 카페 체험 후기를 올려주세요!",
+    promoReward: "₩10,000 ~ ₩500,000 쿠폰 지급",
+    promoRewardDetail: "후기 내용과 퀄리티에 따라 쿠폰 금액이 결정됩니다",
+    promoUseDetail: "쿠폰은 추가 서비스(옵션)에만 사용 가능합니다",
+    promoSnsUrl: "SNS 게시물 URL",
+    promoSnsUrlPlaceholder: "https://instagram.com/p/...",
+    promoSelectPlatform: "SNS 플랫폼 선택",
+    promoSubmit: "후기 제출하기",
+    promoSubmitted: "제출 완료! 확인 후 쿠폰을 지급해 드립니다.",
+    promoHistory: "제출 내역",
+    promoStatusPending: "검토 중",
+    promoStatusApproved: "쿠폰 지급 완료",
+    promoStatusRejected: "반려",
+    promoCouponAmount: "지급 쿠폰",
   },
   en: {
     privatePage: "This is a",
@@ -89,6 +104,21 @@ const translations = {
     requestToastTitle: "Request Submitted",
     requestToastDesc: "Your service request has been submitted.",
     viewSample: "View Sample",
+    promoTitle: "🎉 SNS Review Event",
+    promoDesc: "Share your Recording Café experience on SNS!",
+    promoReward: "₩10,000 ~ ₩500,000 Coupon",
+    promoRewardDetail: "Coupon value depends on review quality and content",
+    promoUseDetail: "Coupons can only be used for additional services (options)",
+    promoSnsUrl: "SNS Post URL",
+    promoSnsUrlPlaceholder: "https://instagram.com/p/...",
+    promoSelectPlatform: "Select SNS Platform",
+    promoSubmit: "Submit Review",
+    promoSubmitted: "Submitted! We'll review and issue your coupon.",
+    promoHistory: "Submission History",
+    promoStatusPending: "Under Review",
+    promoStatusApproved: "Coupon Issued",
+    promoStatusRejected: "Declined",
+    promoCouponAmount: "Coupon Value",
   },
   ja: {
     privatePage: "このページは",
@@ -125,6 +155,21 @@ const translations = {
     requestToastTitle: "申請完了",
     requestToastDesc: "追加サービスの申請が受け付けられました。",
     viewSample: "サンプル視聴",
+    promoTitle: "🎉 SNSレビューイベント",
+    promoDesc: "レコーディングカフェの体験をSNSでシェアしてください！",
+    promoReward: "₩10,000 ~ ₩500,000 クーポン進呈",
+    promoRewardDetail: "レビュー内容とクオリティによりクーポン金額が決まります",
+    promoUseDetail: "クーポンは追加サービス（オプション）のみ使用可能です",
+    promoSnsUrl: "SNS投稿URL",
+    promoSnsUrlPlaceholder: "https://instagram.com/p/...",
+    promoSelectPlatform: "SNSプラットフォーム選択",
+    promoSubmit: "レビューを提出する",
+    promoSubmitted: "提出完了！確認後クーポンをお届けします。",
+    promoHistory: "提出履歴",
+    promoStatusPending: "審査中",
+    promoStatusApproved: "クーポン発行完了",
+    promoStatusRejected: "却下",
+    promoCouponAmount: "発行クーポン",
   },
   zh: {
     privatePage: "此页面是",
@@ -161,6 +206,21 @@ const translations = {
     requestToastTitle: "申请完成",
     requestToastDesc: "附加服务申请已提交。",
     viewSample: "查看样品",
+    promoTitle: "🎉 SNS评价活动",
+    promoDesc: "请在SNS上分享您的录音咖啡体验！",
+    promoReward: "₩10,000 ~ ₩500,000 优惠券",
+    promoRewardDetail: "优惠券金额根据评价内容和质量确定",
+    promoUseDetail: "优惠券仅可用于附加服务（选项）",
+    promoSnsUrl: "SNS帖子链接",
+    promoSnsUrlPlaceholder: "https://instagram.com/p/...",
+    promoSelectPlatform: "选择SNS平台",
+    promoSubmit: "提交评价",
+    promoSubmitted: "已提交！审核后将发放优惠券。",
+    promoHistory: "提交记录",
+    promoStatusPending: "审核中",
+    promoStatusApproved: "优惠券已发放",
+    promoStatusRejected: "未通过",
+    promoCouponAmount: "优惠券金额",
   },
 };
 
@@ -182,7 +242,7 @@ const services: Record<string, ServiceItem[]> = {
   video: [
     { id: "self", name: { ko: "셀프 촬영", en: "Self Recording", ja: "セルフ撮影", zh: "自拍录制" }, price: 0, desc: { ko: "셀피용 스탠드 제공", en: "Selfie stand provided", ja: "セルフィースタンド提供", zh: "提供自拍支架" }, isFree: true },
     { id: "cameraman", name: { ko: "셀프 + 촬영기사", en: "Self + Cameraman", ja: "セルフ + カメラマン", zh: "自拍 + 摄影师" }, price: 20000, desc: { ko: "DSLR카메라로 촬영 (원본 파일 제공)", en: "DSLR filming (raw files provided)", ja: "DSLRカメラで撮影（原本ファイル提供）", zh: "DSLR拍摄（提供原始文件）" } },
-    { id: "full", name: { ko: "AI 숏폼 뮤직비디오", en: "AI Short-form Music Video", ja: "AIショートMV", zh: "AI短视频MV" }, price: 100000, desc: { ko: "AI로 제작하는 숏폼 뮤직비디오", en: "AI-powered short-form music video", ja: "AIで制作するショートMV", zh: "AI制作短视频MV" }, sampleVideoUrl: "https://youtube.com/shorts/1ahalbJaGFk" },
+    { id: "full", name: { ko: "AI 숏폼 뮤직비디오", en: "AI Short-form Music Video", ja: "AIショートMV", zh: "AI短视频MV" }, price: 100000, desc: { ko: "1분 이내의 인공지능으로 생성한 숏폼 뮤직비디오", en: "AI-generated short-form music video under 1 minute", ja: "1分以内のAI生成ショートミュージックビデオ", zh: "1分钟以内AI生成的短视频音乐MV" }, sampleVideoUrl: "https://youtube.com/shorts/1ahalbJaGFk" },
   ],
   release: [
     { id: "standard", name: { ko: "앨범 발매", en: "Album Release", ja: "アルバムリリース", zh: "专辑发行" }, price: 200000, desc: { ko: "전세계 음원 사이트에 발매 (반주 제작 + 앨범 자켓 + 저작권료)", en: "Release on all streaming platforms worldwide", ja: "全世界の音楽サイトでリリース", zh: "在全球音乐平台发行" } },
@@ -205,6 +265,9 @@ export default function NftPage() {
   const [submitted, setSubmitted] = useState(false);
   const [lang, setLang] = useState<Language>("en");
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [promoUrl, setPromoUrl] = useState("");
+  const [promoPlatform, setPromoPlatform] = useState("");
+  const [promoSubmitted, setPromoSubmitted] = useState(false);
 
   const tx = translations[lang];
 
@@ -258,6 +321,26 @@ export default function NftPage() {
       setSelectedServices([]);
       queryClient.invalidateQueries({ queryKey: ["/api/nft", token] });
       toast({ title: tx.requestToastTitle, description: tx.requestToastDesc });
+    },
+    onError: () => {
+      toast({ title: "Error", description: tx.errorToast, variant: "destructive" });
+    },
+  });
+
+  const promoMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/nft/${token}/submit-promo`, {
+        snsUrl: promoUrl,
+        snsPlatform: promoPlatform,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      setPromoSubmitted(true);
+      setPromoUrl("");
+      setPromoPlatform("");
+      queryClient.invalidateQueries({ queryKey: ["/api/nft", token] });
+      toast({ title: tx.promoSubmitted });
     },
     onError: () => {
       toast({ title: "Error", description: tx.errorToast, variant: "destructive" });
@@ -367,7 +450,7 @@ export default function NftPage() {
             </button>
             <div className="relative w-full" style={{ paddingBottom: "177.78%" }}>
               <iframe
-                src="https://www.youtube.com/embed/1ahalbJaGFk"
+                src="https://www.youtube.com/embed/1ahalbJaGFk?autoplay=1&mute=0"
                 className="absolute inset-0 w-full h-full rounded-xl"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -578,6 +661,132 @@ export default function NftPage() {
             </CardContent>
           </Card>
         )}
+
+        <Card className="bg-gradient-to-br from-amber-900/30 via-yellow-900/20 to-orange-900/30 border-yellow-700/40 mb-6 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/5 rounded-full -translate-y-8 translate-x-8" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-500/5 rounded-full translate-y-8 -translate-x-8" />
+          <CardHeader className="pb-2 relative z-10">
+            <CardTitle className="text-lg flex items-center gap-2 text-white">
+              <div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg p-1.5">
+                <Gift className="w-5 h-5 text-black" />
+              </div>
+              {tx.promoTitle}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="relative z-10 space-y-4">
+            <div className="bg-black/30 rounded-xl p-4 border border-yellow-600/20">
+              <p className="text-gray-300 text-sm mb-3">{tx.promoDesc}</p>
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-5 h-5 text-yellow-400" />
+                <span className="text-yellow-400 font-black text-lg">{tx.promoReward}</span>
+              </div>
+              <p className="text-gray-500 text-xs">{tx.promoRewardDetail}</p>
+              <p className="text-orange-400/70 text-xs mt-1 flex items-center gap-1">
+                <Star className="w-3 h-3" />
+                {tx.promoUseDetail}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs text-gray-400 mb-1 block">{tx.promoSelectPlatform}</label>
+                <div className="flex gap-2 flex-wrap">
+                  {["Instagram", "TikTok", "YouTube", "X (Twitter)", "Facebook", "Blog"].map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => setPromoPlatform(p)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                        promoPlatform === p
+                          ? "bg-yellow-600 text-black"
+                          : "bg-gray-800/80 text-gray-400 hover:bg-gray-700"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-400 mb-1 block">{tx.promoSnsUrl}</label>
+                <input
+                  type="url"
+                  value={promoUrl}
+                  onChange={(e) => setPromoUrl(e.target.value)}
+                  placeholder={tx.promoSnsUrlPlaceholder}
+                  className="w-full bg-gray-900/80 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:border-yellow-500 focus:outline-none focus:ring-1 focus:ring-yellow-500/50 transition-all"
+                />
+              </div>
+
+              <Button
+                onClick={() => promoMutation.mutate()}
+                disabled={!promoUrl || !promoPlatform || promoMutation.isPending}
+                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold py-3 disabled:opacity-40"
+              >
+                {promoMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <Send className="w-4 h-4 mr-2" />
+                )}
+                {tx.promoSubmit}
+              </Button>
+            </div>
+
+            {promoSubmitted && (
+              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 text-center">
+                <Check className="w-5 h-5 mx-auto mb-1 text-green-500" />
+                <p className="text-green-400 text-sm">{tx.promoSubmitted}</p>
+              </div>
+            )}
+
+            {page?.promoCoupons && page.promoCoupons.length > 0 && (
+              <div className="border-t border-yellow-800/30 pt-4">
+                <h4 className="text-xs text-gray-400 mb-2 font-semibold">{tx.promoHistory}</h4>
+                <div className="space-y-2">
+                  {page.promoCoupons.map((c: any) => (
+                    <div key={c.id} className="bg-black/30 border border-gray-800 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2">
+                          <Badge className="text-xs" variant="outline">{c.snsPlatform}</Badge>
+                          <a
+                            href={c.snsUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-yellow-500 hover:text-yellow-400 transition-colors"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        </div>
+                        <Badge className={`text-xs ${
+                          c.status === "approved"
+                            ? "bg-green-600/20 text-green-400 border-green-600/30"
+                            : c.status === "rejected"
+                            ? "bg-red-600/20 text-red-400 border-red-600/30"
+                            : "bg-yellow-600/20 text-yellow-400 border-yellow-600/30"
+                        }`}>
+                          {c.status === "approved" ? tx.promoStatusApproved
+                            : c.status === "rejected" ? tx.promoStatusRejected
+                            : tx.promoStatusPending}
+                        </Badge>
+                      </div>
+                      {c.status === "approved" && c.couponAmount && (
+                        <div className="flex items-center gap-1 mt-2">
+                          <Gift className="w-3.5 h-3.5 text-yellow-500" />
+                          <span className="text-yellow-500 font-bold text-sm">
+                            {tx.promoCouponAmount}: {formatPrice(c.couponAmount)}
+                          </span>
+                        </div>
+                      )}
+                      <p className="text-gray-600 text-xs mt-1">
+                        {new Date(c.createdAt).toLocaleDateString("ko-KR")}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         <div className="text-center text-gray-700 text-xs mt-12 pb-8">
           <p>{tx.copyright}</p>
