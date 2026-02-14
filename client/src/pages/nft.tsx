@@ -60,6 +60,8 @@ const translations = {
     alreadyProvided: "기본 제공됨",
     downloadToastTitle: "다운로드 완료",
     downloadToastDesc: "파일이 서버에서 삭제되었습니다.",
+    fileDownloadWarning: "다운로드 후 파일이 서버에서 삭제됩니다. 계속하시겠습니까?",
+    fileAlreadyDownloaded: "다운로드 완료 (재전송 요청 가능)",
     errorToast: "오류가 발생했습니다.",
     requestToastTitle: "신청 완료",
     requestToastDesc: "추가 서비스 신청이 접수되었습니다.",
@@ -128,6 +130,8 @@ const translations = {
     alreadyProvided: "Included",
     downloadToastTitle: "Download Complete",
     downloadToastDesc: "File has been removed from server.",
+    fileDownloadWarning: "The file will be deleted from server after download. Continue?",
+    fileAlreadyDownloaded: "Downloaded (request resend if needed)",
     errorToast: "An error occurred.",
     requestToastTitle: "Request Submitted",
     requestToastDesc: "Your service request has been submitted.",
@@ -196,6 +200,8 @@ const translations = {
     alreadyProvided: "基本提供",
     downloadToastTitle: "ダウンロード完了",
     downloadToastDesc: "ファイルはサーバーから削除されました。",
+    fileDownloadWarning: "ダウンロード後、ファイルはサーバーから削除されます。続行しますか？",
+    fileAlreadyDownloaded: "ダウンロード済み（再送信リクエスト可能）",
     errorToast: "エラーが発生しました。",
     requestToastTitle: "申請完了",
     requestToastDesc: "追加サービスの申請が受け付けられました。",
@@ -264,6 +270,8 @@ const translations = {
     alreadyProvided: "已包含",
     downloadToastTitle: "下载完成",
     downloadToastDesc: "文件已从服务器删除。",
+    fileDownloadWarning: "下载后文件将从服务器删除，是否继续？",
+    fileAlreadyDownloaded: "已下载（可请求重新发送）",
     errorToast: "发生错误。",
     requestToastTitle: "申请完成",
     requestToastDesc: "附加服务申请已提交。",
@@ -882,15 +890,31 @@ export default function NftPage() {
                         </p>
                         <div className="space-y-1">
                           {req.deliveryFiles.map((f: any, fi: number) => (
-                            <a
-                              key={fi}
-                              href={`/api/nft/${token}/service-file/${req.id}/${fi}`}
-                              download={f.name}
-                              className="flex items-center gap-2 p-2 rounded bg-blue-900/20 border border-blue-800/30 hover:bg-blue-900/40 transition-colors"
-                            >
-                              <Download className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                              <span className="text-blue-300 text-xs truncate">{f.name}</span>
-                            </a>
+                            f.downloaded ? (
+                              <div key={fi} className="flex items-center gap-2 p-2 rounded bg-gray-800/50 border border-gray-700/30 opacity-60">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />
+                                <span className="text-gray-500 text-xs truncate">{f.name}</span>
+                                <span className="text-gray-600 text-[10px] ml-auto">{tx.fileAlreadyDownloaded}</span>
+                              </div>
+                            ) : (
+                              <button
+                                key={fi}
+                                onClick={() => {
+                                  if (window.confirm(tx.fileDownloadWarning)) {
+                                    const a = document.createElement("a");
+                                    a.href = `/api/nft/${token}/service-file/${req.id}/${fi}`;
+                                    a.download = f.name;
+                                    a.click();
+                                    toast({ title: tx.downloadToastTitle, description: tx.downloadToastDesc });
+                                    setTimeout(() => queryClient.invalidateQueries({ queryKey: ["/api/nft", token] }), 2000);
+                                  }
+                                }}
+                                className="flex items-center gap-2 p-2 rounded bg-blue-900/20 border border-blue-800/30 hover:bg-blue-900/40 transition-colors w-full text-left"
+                              >
+                                <Download className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                                <span className="text-blue-300 text-xs truncate">{f.name}</span>
+                              </button>
+                            )
                           ))}
                         </div>
                       </div>

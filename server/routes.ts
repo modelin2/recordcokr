@@ -2398,7 +2398,7 @@ REQUIREMENTS:
           const requests = JSON.parse(cleanServiceRequests);
           const cleaned = requests.map((r: any) => ({
             ...r,
-            deliveryFiles: r.deliveryFiles?.map((f: any) => ({ name: f.name, uploadedAt: f.uploadedAt })),
+            deliveryFiles: r.deliveryFiles?.map((f: any) => ({ name: f.name, uploadedAt: f.uploadedAt, downloaded: f.downloaded || false })),
           }));
           cleanServiceRequests = JSON.stringify(cleaned);
         } catch (e) {}
@@ -2549,7 +2549,7 @@ REQUIREMENTS:
       const pages = await storage.getAllNftPages();
       const safePagesData = pages.map(p => {
         const { audioFileData, ...safe } = p;
-        return { ...safe, hasAudioFile: !!audioFileData };
+        return { ...safe, hasAudioFile: !!audioFileData, audioFileName: p.audioFileName };
       });
       res.json(safePagesData);
     } catch (error) {
@@ -2711,11 +2711,32 @@ REQUIREMENTS:
       if (!file) {
         return res.status(404).json({ message: "File not found" });
       }
+      if (!file.data || file.downloaded) {
+        return res.status(410).json({ message: "File already downloaded and removed from server" });
+      }
       const buffer = Buffer.from(file.data, "base64");
       res.setHeader("Content-Type", "application/octet-stream");
       res.setHeader("Content-Disposition", `attachment; filename="${encodeURIComponent(file.name)}"`);
       res.setHeader("Content-Length", buffer.length);
       res.send(buffer);
+
+      // Auto-delete file data after download (keep metadata)
+      try {
+        const allRequests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
+        const updatedRequests = allRequests.map((r: any) => {
+          if (r.id === parseInt(req.params.requestId) && r.deliveryFiles) {
+            const files = [...r.deliveryFiles];
+            if (files[fileIndex]) {
+              files[fileIndex] = { name: files[fileIndex].name, uploadedAt: files[fileIndex].uploadedAt, downloaded: true, data: null };
+            }
+            return { ...r, deliveryFiles: files };
+          }
+          return r;
+        });
+        await storage.updateNftPage(page.id, { serviceRequests: JSON.stringify(updatedRequests) });
+      } catch (e) {
+        console.error("Error auto-deleting delivery file after download:", e);
+      }
     } catch (error) {
       console.error("Error downloading delivery file:", error);
       res.status(500).json({ message: "Failed to download file" });

@@ -404,20 +404,14 @@ function NftManagement() {
 
                     <div className="flex items-center gap-2 text-xs">
                       <span className="text-gray-500">NFT URL:</span>
-                      <code className="text-yellow-400 bg-white/5 px-2 py-0.5 rounded text-xs">
-                        /nft/{page.token}
-                      </code>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-6 px-2 text-xs text-gray-400 hover:text-white"
-                        onClick={() => {
-                          navigator.clipboard.writeText(`${window.location.origin}/nft/${page.token}`);
-                          toast({ title: "URL 복사됨" });
-                        }}
+                      <a
+                        href={`/nft/${page.token}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-yellow-400 bg-white/5 px-2 py-0.5 rounded text-xs hover:text-yellow-300 hover:underline cursor-pointer"
                       >
-                        <Copy className="w-3 h-3" />
-                      </Button>
+                        /nft/{page.token} ↗
+                      </a>
                     </div>
 
                     <div className="flex gap-2 flex-wrap">
@@ -431,15 +425,20 @@ function NftManagement() {
                         {uploadAudioMutation.isPending && uploadingId === page.id ? "업로드중..." : "음원 업로드"}
                       </Button>
                       {page.hasAudioFile && (
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => deleteAudioMutation.mutate(page.id)}
-                          disabled={deleteAudioMutation.isPending}
-                          className="text-xs h-8"
-                        >
-                          <Trash2 className="w-3 h-3 mr-1" /> 음원 삭제
-                        </Button>
+                        <>
+                          <span className="text-green-400 text-xs flex items-center gap-1">
+                            <Music className="w-3 h-3" /> {page.audioFileName || "recording.mp3"}
+                          </span>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => deleteAudioMutation.mutate(page.id)}
+                            disabled={deleteAudioMutation.isPending}
+                            className="text-xs h-8"
+                          >
+                            <Trash2 className="w-3 h-3 mr-1" /> 음원 삭제
+                          </Button>
+                        </>
                       )}
                       <Button
                         size="sm"
@@ -501,8 +500,9 @@ function NftManagement() {
                                 📁 {uploadDeliveryMutation.isPending ? "업로드중..." : "파일 전달"}
                               </Button>
                               {req.deliveryFiles?.map((f: any, fi: number) => (
-                                <div key={fi} className="flex items-center gap-1 bg-blue-900/30 rounded px-2 py-0.5 text-[11px]">
-                                  <span className="text-blue-300 truncate max-w-[120px]">{f.name}</span>
+                                <div key={fi} className={`flex items-center gap-1 rounded px-2 py-0.5 text-[11px] ${f.downloaded ? "bg-gray-700/30" : "bg-blue-900/30"}`}>
+                                  <span className={`truncate max-w-[120px] ${f.downloaded ? "text-gray-500 line-through" : "text-blue-300"}`}>{f.name}</span>
+                                  {f.downloaded && <span className="text-green-500 text-[10px]">✓수신</span>}
                                   <button
                                     onClick={() => deleteDeliveryFileMutation.mutate({ pageId: page.id, requestId: req.id, fileIndex: fi })}
                                     className="text-red-400 hover:text-red-300 ml-1"
