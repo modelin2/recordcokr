@@ -297,6 +297,56 @@ function NftManagement() {
     },
   });
 
+  const uploadDeliveryMutation = useMutation({
+    mutationFn: async ({ pageId, requestId, file }: { pageId: number; requestId: number; file: File }) => {
+      return new Promise<void>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          try {
+            const base64 = (reader.result as string).split(",")[1];
+            await apiRequest("POST", `/api/admin/nft-pages/${pageId}/service-request/${requestId}/upload-file`, {
+              fileName: file.name,
+              fileData: base64,
+            });
+            resolve();
+          } catch (e) { reject(e); }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/nft-pages"] });
+      toast({ title: "파일 전달 완료" });
+    },
+    onError: () => {
+      toast({ title: "파일 업로드 실패", variant: "destructive" });
+    },
+  });
+
+  const deleteDeliveryFileMutation = useMutation({
+    mutationFn: async ({ pageId, requestId, fileIndex }: { pageId: number; requestId: number; fileIndex: number }) => {
+      await apiRequest("DELETE", `/api/admin/nft-pages/${pageId}/service-request/${requestId}/file/${fileIndex}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/nft-pages"] });
+      toast({ title: "전달 파일 삭제 완료" });
+    },
+  });
+
+  const handleDeliveryFileSelect = (pageId: number, requestId: number) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "audio/*,video/*,.mp3,.wav,.m4a,.flac,.mp4,.mov,.zip";
+    input.onchange = (e: any) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        uploadDeliveryMutation.mutate({ pageId, requestId, file });
+      }
+    };
+    input.click();
+  };
+
   const handleFileSelect = (id: number) => {
     const input = document.createElement("input");
     input.type = "file";
@@ -406,7 +456,7 @@ function NftManagement() {
                       <div className="border-t border-white/10 pt-3 mt-3">
                         <p className="text-gray-400 text-xs font-bold mb-2">추가 서비스 신청</p>
                         {serviceRequests.map((req: any) => (
-                          <div key={req.id} className="bg-white/5 rounded p-2 mb-1">
+                          <div key={req.id} className="bg-white/5 rounded p-2 mb-2">
                             <div className="flex items-center justify-between text-xs">
                               <div>
                                 <span className="text-gray-300">
@@ -436,6 +486,30 @@ function NftManagement() {
                                 <span className="text-yellow-400 font-bold">→ ₩{Math.max(0, (req.services?.reduce((sum: number, s: any) => sum + (s.price || 0), 0) || 0) - req.couponApplied).toLocaleString()}</span>
                               </div>
                             )}
+                            {req.paypalOrderId && (
+                              <div className="flex items-center gap-1 mt-1 text-[11px] text-blue-400">
+                                <span>💳 PayPal 결제: {req.paypalOrderId}</span>
+                              </div>
+                            )}
+                            <div className="mt-2 flex items-center gap-2 flex-wrap">
+                              <Button
+                                size="sm"
+                                className="h-6 px-2 text-xs bg-blue-600 hover:bg-blue-700"
+                                onClick={() => handleDeliveryFileSelect(page.id, req.id)}
+                                disabled={uploadDeliveryMutation.isPending}
+                              >
+                                📁 {uploadDeliveryMutation.isPending ? "업로드중..." : "파일 전달"}
+                              </Button>
+                              {req.deliveryFiles?.map((f: any, fi: number) => (
+                                <div key={fi} className="flex items-center gap-1 bg-blue-900/30 rounded px-2 py-0.5 text-[11px]">
+                                  <span className="text-blue-300 truncate max-w-[120px]">{f.name}</span>
+                                  <button
+                                    onClick={() => deleteDeliveryFileMutation.mutate({ pageId: page.id, requestId: req.id, fileIndex: fi })}
+                                    className="text-red-400 hover:text-red-300 ml-1"
+                                  >×</button>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         ))}
                       </div>

@@ -189,6 +189,12 @@ Changelog:
   - Customer filtering excludes [klook] names and cancelled/deleted bookings from photo page
   - Updated CD back panel prompt to generate realistic CD inlay (tracklist, barcode, credits)
   - Fixed CD image sizing with aspectRatio CSS for proper responsive scaling
+- February 14, 2026. **NFT Service Request Enhancements**:
+  - Replaced video sample modal with inline embedded YouTube player (parses shorts/watch/embed URLs, auto aspect ratio)
+  - Added file delivery system: admin uploads completed files per service request, customers download from NFT page
+  - Added PayPal payment for non-Korean users (en/ja/zh) when service request total > 0 after coupons
+  - Server-side PayPal enforcement: validates language and paypalOrderId to prevent payment bypass
+  - Added translations for file delivery and PayPal features in all 4 languages (ko/en/ja/zh)
 ```
 
 ## User Preferences

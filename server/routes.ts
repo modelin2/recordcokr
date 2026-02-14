@@ -1474,6 +1474,115 @@ REQUIREMENTS:
     }
   });
 
+  app.post("/api/nft/:token/create-paypal-order", async (req, res) => {
+    try {
+      const page = await storage.getNftPageByToken(req.params.token);
+      if (!page) {
+        return res.status(404).json({ error: "Page not found" });
+      }
+      const { services, couponApplied } = req.body;
+      if (!services || !Array.isArray(services)) {
+        return res.status(400).json({ error: "Services required" });
+      }
+      const totalKRW = services.reduce((sum: number, s: any) => sum + (s.price || 0), 0);
+      const afterCoupon = Math.max(0, totalKRW - (couponApplied || 0));
+      if (afterCoupon <= 0) {
+        return res.status(400).json({ error: "No payment needed" });
+      }
+      const totalUSD = Math.ceil(afterCoupon / 1400 * 100) / 100;
+
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+      if (!clientId || !clientSecret) {
+        return res.status(500).json({ error: "PayPal credentials not configured" });
+      }
+
+      const authResponse = await fetch("https://api-m.paypal.com/v1/oauth2/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`
+        },
+        body: "grant_type=client_credentials"
+      });
+      if (!authResponse.ok) {
+        return res.status(500).json({ error: "Failed to authenticate with PayPal" });
+      }
+      const authData = await authResponse.json();
+
+      const orderResponse = await fetch("https://api-m.paypal.com/v2/checkout/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authData.access_token}`
+        },
+        body: JSON.stringify({
+          intent: "CAPTURE",
+          purchase_units: [{
+            amount: { currency_code: "USD", value: totalUSD.toFixed(2) },
+            description: `Recording Cafe Additional Services (₩${afterCoupon.toLocaleString()})`
+          }]
+        })
+      });
+      if (!orderResponse.ok) {
+        return res.status(500).json({ error: "Failed to create PayPal order" });
+      }
+      const orderData = await orderResponse.json();
+      res.json({ id: orderData.id, totalUSD: totalUSD.toFixed(2) });
+    } catch (error: any) {
+      console.error("NFT PayPal create order error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/nft/:token/capture-paypal-order", async (req, res) => {
+    try {
+      const page = await storage.getNftPageByToken(req.params.token);
+      if (!page) {
+        return res.status(404).json({ error: "Page not found" });
+      }
+      const { orderId } = req.body;
+      if (!orderId) {
+        return res.status(400).json({ error: "Order ID required" });
+      }
+
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+      if (!clientId || !clientSecret) {
+        return res.status(500).json({ error: "PayPal credentials not configured" });
+      }
+
+      const authResponse = await fetch("https://api-m.paypal.com/v1/oauth2/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`
+        },
+        body: "grant_type=client_credentials"
+      });
+      if (!authResponse.ok) {
+        return res.status(500).json({ error: "Failed to authenticate with PayPal" });
+      }
+      const authData = await authResponse.json();
+
+      const captureResponse = await fetch(`https://api-m.paypal.com/v2/checkout/orders/${orderId}/capture`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authData.access_token}`
+        }
+      });
+      if (!captureResponse.ok) {
+        return res.status(500).json({ error: "Failed to capture PayPal order" });
+      }
+      const captureData = await captureResponse.json();
+      res.json({ status: captureData.status });
+    } catch (error: any) {
+      console.error("NFT PayPal capture error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Get PayPal Client ID for frontend
   app.get("/api/paypal/client-id", (req, res) => {
     const clientId = process.env.PAYPAL_CLIENT_ID;
@@ -2283,7 +2392,18 @@ REQUIREMENTS:
       }
       const { audioFileData, ...safeData } = page;
       const coupons = await storage.getPromoCouponsByToken(req.params.token);
-      res.json({ ...safeData, hasAudioFile: !!audioFileData, promoCoupons: coupons });
+      let cleanServiceRequests = safeData.serviceRequests;
+      if (cleanServiceRequests) {
+        try {
+          const requests = JSON.parse(cleanServiceRequests);
+          const cleaned = requests.map((r: any) => ({
+            ...r,
+            deliveryFiles: r.deliveryFiles?.map((f: any) => ({ name: f.name, uploadedAt: f.uploadedAt })),
+          }));
+          cleanServiceRequests = JSON.stringify(cleaned);
+        } catch (e) {}
+      }
+      res.json({ ...safeData, serviceRequests: cleanServiceRequests, hasAudioFile: !!audioFileData, promoCoupons: coupons });
     } catch (error) {
       console.error("Error fetching NFT page:", error);
       res.status(500).json({ message: "Failed to fetch page" });
@@ -2323,7 +2443,7 @@ REQUIREMENTS:
         return res.status(404).json({ message: "Page not found" });
       }
 
-      const { services, couponApplied } = req.body;
+      const { services, couponApplied, paypalOrderId, language } = req.body;
       if (!services || !Array.isArray(services)) {
         return res.status(400).json({ message: "Services array required" });
       }
@@ -2342,6 +2462,12 @@ REQUIREMENTS:
         validatedCoupon = Math.min(couponApplied, availableCoupon, totalServicePrice);
       }
 
+      const totalServicePrice = services.reduce((sum: number, s: any) => sum + (s.price || 0), 0);
+      const finalAmount = Math.max(0, totalServicePrice - validatedCoupon);
+      if (language && language !== "ko" && finalAmount > 0 && !paypalOrderId) {
+        return res.status(400).json({ message: "PayPal payment required for international customers" });
+      }
+
       const newRequest: any = {
         id: Date.now(),
         services,
@@ -2350,6 +2476,9 @@ REQUIREMENTS:
       };
       if (validatedCoupon > 0) {
         newRequest.couponApplied = validatedCoupon;
+      }
+      if (paypalOrderId) {
+        newRequest.paypalOrderId = paypalOrderId;
       }
       existingRequests.push(newRequest);
 
@@ -2508,6 +2637,88 @@ REQUIREMENTS:
     } catch (error) {
       console.error("Error updating service request:", error);
       res.status(500).json({ message: "Failed to update request" });
+    }
+  });
+
+  app.post("/api/admin/nft-pages/:id/service-request/:requestId/upload-file", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const requestId = parseInt(req.params.requestId);
+      const { fileName, fileData } = req.body;
+      if (!fileName || !fileData) {
+        return res.status(400).json({ message: "fileName and fileData required" });
+      }
+      const page = await storage.getNftPage(id);
+      if (!page) {
+        return res.status(404).json({ message: "NFT page not found" });
+      }
+      const requests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
+      const updated = requests.map((r: any) => {
+        if (r.id === requestId) {
+          const files = r.deliveryFiles || [];
+          files.push({ name: fileName, data: fileData, uploadedAt: new Date().toISOString() });
+          return { ...r, deliveryFiles: files };
+        }
+        return r;
+      });
+      await storage.updateNftPage(id, { serviceRequests: JSON.stringify(updated) } as any);
+      res.json({ message: "File uploaded" });
+    } catch (error) {
+      console.error("Error uploading delivery file:", error);
+      res.status(500).json({ message: "Failed to upload file" });
+    }
+  });
+
+  app.delete("/api/admin/nft-pages/:id/service-request/:requestId/file/:fileIndex", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const requestId = parseInt(req.params.requestId);
+      const fileIndex = parseInt(req.params.fileIndex);
+      const page = await storage.getNftPage(id);
+      if (!page) {
+        return res.status(404).json({ message: "NFT page not found" });
+      }
+      const requests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
+      const updated = requests.map((r: any) => {
+        if (r.id === requestId && r.deliveryFiles) {
+          const files = [...r.deliveryFiles];
+          files.splice(fileIndex, 1);
+          return { ...r, deliveryFiles: files };
+        }
+        return r;
+      });
+      await storage.updateNftPage(id, { serviceRequests: JSON.stringify(updated) } as any);
+      res.json({ message: "File deleted" });
+    } catch (error) {
+      console.error("Error deleting delivery file:", error);
+      res.status(500).json({ message: "Failed to delete file" });
+    }
+  });
+
+  app.get("/api/nft/:token/service-file/:requestId/:fileIndex", async (req, res) => {
+    try {
+      const page = await storage.getNftPageByToken(req.params.token);
+      if (!page) {
+        return res.status(404).json({ message: "Page not found" });
+      }
+      const requests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
+      const request = requests.find((r: any) => r.id === parseInt(req.params.requestId));
+      if (!request || !request.deliveryFiles) {
+        return res.status(404).json({ message: "File not found" });
+      }
+      const fileIndex = parseInt(req.params.fileIndex);
+      const file = request.deliveryFiles[fileIndex];
+      if (!file) {
+        return res.status(404).json({ message: "File not found" });
+      }
+      const buffer = Buffer.from(file.data, "base64");
+      res.setHeader("Content-Type", "application/octet-stream");
+      res.setHeader("Content-Disposition", `attachment; filename="${encodeURIComponent(file.name)}"`);
+      res.setHeader("Content-Length", buffer.length);
+      res.send(buffer);
+    } catch (error) {
+      console.error("Error downloading delivery file:", error);
+      res.status(500).json({ message: "Failed to download file" });
     }
   });
 

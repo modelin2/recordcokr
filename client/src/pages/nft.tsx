@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -42,6 +42,11 @@ const translations = {
     couponDiscount: "쿠폰 할인",
     finalTotal: "최종 금액",
     couponUsed: "쿠폰 사용",
+    deliveredFiles: "전달된 파일",
+    paypalRequired: "해외 결제는 PayPal로 진행됩니다",
+    paypalPayAndRequest: "PayPal 결제 후 신청",
+    paypalProcessing: "결제 처리 중...",
+    paymentCompleted: "결제 완료",
     requestServices: "서비스 신청하기",
     requestSubmitted: "신청이 접수되었습니다!",
     requestSubmittedSub: "확인 후 연락드리겠습니다.",
@@ -105,6 +110,11 @@ const translations = {
     couponDiscount: "Coupon Discount",
     finalTotal: "Final Total",
     couponUsed: "Coupon Used",
+    deliveredFiles: "Delivered Files",
+    paypalRequired: "International payment via PayPal",
+    paypalPayAndRequest: "Pay with PayPal & Request",
+    paypalProcessing: "Processing payment...",
+    paymentCompleted: "Payment Complete",
     requestServices: "Request Services",
     requestSubmitted: "Request Submitted!",
     requestSubmittedSub: "We will contact you after review.",
@@ -168,6 +178,11 @@ const translations = {
     couponDiscount: "クーポン割引",
     finalTotal: "最終金額",
     couponUsed: "クーポン使用",
+    deliveredFiles: "納品ファイル",
+    paypalRequired: "海外決済はPayPalで行います",
+    paypalPayAndRequest: "PayPal決済して申請",
+    paypalProcessing: "決済処理中...",
+    paymentCompleted: "決済完了",
     requestServices: "サービスを申請する",
     requestSubmitted: "申請が受け付けられました！",
     requestSubmittedSub: "確認後ご連絡いたします。",
@@ -231,6 +246,11 @@ const translations = {
     couponDiscount: "优惠券折扣",
     finalTotal: "最终金额",
     couponUsed: "优惠券已使用",
+    deliveredFiles: "交付文件",
+    paypalRequired: "海外支付通过PayPal进行",
+    paypalPayAndRequest: "PayPal支付后申请",
+    paypalProcessing: "支付处理中...",
+    paymentCompleted: "支付完成",
     requestServices: "申请服务",
     requestSubmitted: "申请已提交！",
     requestSubmittedSub: "审核后我们会联系您。",
@@ -314,11 +334,18 @@ export default function NftPage() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [lang, setLang] = useState<Language>("en");
-  const [showVideoModal, setShowVideoModal] = useState(false);
   const [promoUrl, setPromoUrl] = useState("");
   const [promoPlatform, setPromoPlatform] = useState("");
   const [promoSubmitted, setPromoSubmitted] = useState(false);
+  const [paypalLoaded, setPaypalLoaded] = useState(false);
+  const [paypalProcessing, setPaypalProcessing] = useState(false);
+  const paypalButtonRef = useRef<HTMLDivElement>(null);
   const tx = translations[lang];
+
+  const { data: paypalConfig } = useQuery<{ clientId: string }>({
+    queryKey: ['/api/paypal/client-id'],
+    enabled: lang !== "ko",
+  });
 
   const { data: page, isLoading, error } = useQuery({
     queryKey: ["/api/nft", token],
@@ -368,6 +395,7 @@ export default function NftPage() {
       const res = await apiRequest("POST", `/api/nft/${token}/request-service`, {
         services: serviceDetails,
         couponApplied: appliedCoupon > 0 ? appliedCoupon : undefined,
+        language: lang,
       });
       return res.json();
     },
@@ -408,6 +436,112 @@ export default function NftPage() {
     );
   };
 
+  useEffect(() => {
+    if (lang !== "ko" && paypalConfig?.clientId && !paypalLoaded) {
+      const existingScript = document.querySelector('script[src*="paypal.com/sdk"]');
+      if (existingScript) {
+        setPaypalLoaded(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=USD&disable-funding=card,credit`;
+      script.async = true;
+      script.onload = () => setPaypalLoaded(true);
+      document.body.appendChild(script);
+    }
+  }, [lang, paypalConfig, paypalLoaded]);
+
+  const getServiceDetails = (serviceIds: string[]) => {
+    return serviceIds.map(id => {
+      for (const category of Object.values(services)) {
+        const found = category.find(s => s.id === id);
+        if (found) return { id: found.id, name: found.name.ko, nameEn: found.name.en, price: found.price };
+      }
+      return null;
+    }).filter(Boolean);
+  };
+
+  const existingRequests = page?.serviceRequests ? JSON.parse(page.serviceRequests) : [];
+  const approvedCoupons = (page?.promoCoupons || []).filter((c: any) => c.status === "approved" && c.couponAmount > 0);
+  const totalCouponAmount = approvedCoupons.reduce((sum: number, c: any) => sum + (c.couponAmount || 0), 0);
+  const usedCouponAmount = existingRequests.reduce((sum: number, r: any) => sum + (r.couponApplied || 0), 0);
+  const availableCoupon = Math.max(0, totalCouponAmount - usedCouponAmount);
+
+  const totalSelected = selectedServices.reduce((sum, id) => {
+    for (const category of Object.values(services)) {
+      const found = category.find(s => s.id === id);
+      if (found) return sum + found.price;
+    }
+    return sum;
+  }, 0);
+  const couponToApply = Math.min(availableCoupon, totalSelected);
+  const finalTotal = totalSelected - couponToApply;
+
+  useEffect(() => {
+    if (lang === "ko" || !paypalLoaded || !paypalButtonRef.current || !(window as any).paypal || selectedServices.length === 0 || finalTotal <= 0) {
+      if (paypalButtonRef.current) paypalButtonRef.current.innerHTML = '';
+      return;
+    }
+
+    paypalButtonRef.current.innerHTML = '';
+    const serviceDetails = getServiceDetails(selectedServices);
+    const appliedCoupon = Math.min(availableCoupon, totalSelected);
+
+    (window as any).paypal.Buttons({
+      style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal', height: 45 },
+      createOrder: async () => {
+        setPaypalProcessing(true);
+        try {
+          const res = await fetch(`/api/nft/${token}/create-paypal-order`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ services: serviceDetails, couponApplied: appliedCoupon > 0 ? appliedCoupon : undefined }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error);
+          return data.id;
+        } catch (err) {
+          setPaypalProcessing(false);
+          toast({ title: "Error", description: tx.errorToast, variant: "destructive" });
+          throw err;
+        }
+      },
+      onApprove: async (data: any) => {
+        try {
+          const captureRes = await fetch(`/api/nft/${token}/capture-paypal-order`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: data.orderID }),
+          });
+          if (!captureRes.ok) throw new Error("Capture failed");
+
+          await apiRequest("POST", `/api/nft/${token}/request-service`, {
+            services: serviceDetails,
+            couponApplied: appliedCoupon > 0 ? appliedCoupon : undefined,
+            paypalOrderId: data.orderID,
+            language: lang,
+          });
+
+          setSubmitted(true);
+          setSelectedServices([]);
+          queryClient.invalidateQueries({ queryKey: ["/api/nft", token] });
+          toast({ title: tx.paymentCompleted, description: tx.requestToastDesc });
+        } catch (err) {
+          toast({ title: "Error", description: tx.errorToast, variant: "destructive" });
+        } finally {
+          setPaypalProcessing(false);
+        }
+      },
+      onError: () => {
+        setPaypalProcessing(false);
+        toast({ title: "Error", description: tx.errorToast, variant: "destructive" });
+      },
+      onCancel: () => {
+        setPaypalProcessing(false);
+      },
+    }).render(paypalButtonRef.current);
+  }, [lang, paypalLoaded, selectedServices, finalTotal, totalSelected, availableCoupon]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -427,23 +561,6 @@ export default function NftPage() {
       </div>
     );
   }
-
-  const existingRequests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
-
-  const approvedCoupons = (page.promoCoupons || []).filter((c: any) => c.status === "approved" && c.couponAmount > 0);
-  const totalCouponAmount = approvedCoupons.reduce((sum: number, c: any) => sum + (c.couponAmount || 0), 0);
-  const usedCouponAmount = existingRequests.reduce((sum: number, r: any) => sum + (r.couponApplied || 0), 0);
-  const availableCoupon = Math.max(0, totalCouponAmount - usedCouponAmount);
-
-  const totalSelected = selectedServices.reduce((sum, id) => {
-    for (const category of Object.values(services)) {
-      const found = category.find(s => s.id === id);
-      if (found) return sum + found.price;
-    }
-    return sum;
-  }, 0);
-  const couponToApply = Math.min(availableCoupon, totalSelected);
-  const finalTotal = totalSelected - couponToApply;
 
   const renderServiceItem = (s: ServiceItem) => {
     if (s.isFree) {
@@ -485,16 +602,30 @@ export default function NftPage() {
             <span className="text-yellow-500 text-sm font-bold">{formatPrice(s.price)}</span>
           </div>
           <p className="text-xs text-gray-500 mt-0.5">{s.desc[lang]}</p>
-          {s.sampleVideoUrl && (
-            <button
-              type="button"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowVideoModal(true); }}
-              className="inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-full transition-all"
-            >
-              <Play className="w-3 h-3" />
-              {tx.viewSample}
-            </button>
-          )}
+          {s.sampleVideoUrl && (() => {
+            let embedId = "";
+            try {
+              const url = s.sampleVideoUrl!;
+              if (url.includes("shorts/")) embedId = url.split("shorts/")[1].split(/[?&]/)[0];
+              else if (url.includes("youtu.be/")) embedId = url.split("youtu.be/")[1].split(/[?&]/)[0];
+              else if (url.includes("v=")) embedId = url.split("v=")[1].split(/[?&]/)[0];
+              else if (url.includes("embed/")) embedId = url.split("embed/")[1].split(/[?&]/)[0];
+            } catch {}
+            if (!embedId) return null;
+            const isShort = s.sampleVideoUrl!.includes("shorts/");
+            return (
+              <div className="mt-2 rounded-lg overflow-hidden border border-gray-700" onClick={(e) => e.stopPropagation()}>
+                <div className="relative w-full" style={{ paddingBottom: isShort ? "177.78%" : "56.25%" }}>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${embedId}`}
+                    className="absolute inset-0 w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </label>
     );
@@ -502,27 +633,6 @@ export default function NftPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black text-white">
-      {showVideoModal && (
-        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={() => setShowVideoModal(false)}>
-          <div className="relative w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setShowVideoModal(false)}
-              className="absolute top-2 right-2 z-10 bg-black/70 rounded-full p-1.5 text-white hover:text-gray-300 transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <div className="relative w-full" style={{ paddingBottom: "177.78%" }}>
-              <iframe
-                src="https://www.youtube.com/embed/1ahalbJaGFk?autoplay=1&mute=0"
-                className="absolute inset-0 w-full h-full rounded-xl"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="flex justify-center gap-2 mb-6">
           {languageOptions.map((l) => (
@@ -688,18 +798,37 @@ export default function NftPage() {
                     </div>
                   </>
                 )}
-                <Button
-                  onClick={() => requestMutation.mutate(selectedServices)}
-                  disabled={requestMutation.isPending}
-                  className="w-full bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-black font-bold py-3"
-                >
-                  {requestMutation.isPending ? (
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  ) : (
-                    <Music className="w-4 h-4 mr-2" />
-                  )}
-                  {tx.requestServices}
-                </Button>
+                {lang !== "ko" && finalTotal > 0 ? (
+                  <div className="space-y-3">
+                    <p className="text-xs text-center text-gray-400">{tx.paypalRequired}</p>
+                    {paypalProcessing && (
+                      <div className="flex items-center justify-center gap-2 py-3">
+                        <Loader2 className="w-4 h-4 animate-spin text-yellow-500" />
+                        <span className="text-sm text-gray-400">{tx.paypalProcessing}</span>
+                      </div>
+                    )}
+                    <div ref={paypalButtonRef} className="w-full" />
+                    {!paypalLoaded && (
+                      <div className="flex items-center justify-center py-3">
+                        <Loader2 className="w-4 h-4 animate-spin text-gray-500 mr-2" />
+                        <span className="text-xs text-gray-500">Loading PayPal...</span>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Button
+                    onClick={() => requestMutation.mutate(selectedServices)}
+                    disabled={requestMutation.isPending}
+                    className="w-full bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-black font-bold py-3"
+                  >
+                    {requestMutation.isPending ? (
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    ) : (
+                      <Music className="w-4 h-4 mr-2" />
+                    )}
+                    {tx.requestServices}
+                  </Button>
+                )}
               </div>
             )}
 
@@ -746,6 +875,26 @@ export default function NftPage() {
                         </div>
                       )}
                     </div>
+                    {req.deliveryFiles && req.deliveryFiles.length > 0 && (
+                      <div className="mt-2 pt-2 border-t border-gray-800">
+                        <p className="text-xs text-blue-400 font-bold mb-1.5 flex items-center gap-1">
+                          <Download className="w-3 h-3" /> {tx.deliveredFiles}
+                        </p>
+                        <div className="space-y-1">
+                          {req.deliveryFiles.map((f: any, fi: number) => (
+                            <a
+                              key={fi}
+                              href={`/api/nft/${token}/service-file/${req.id}/${fi}`}
+                              download={f.name}
+                              className="flex items-center gap-2 p-2 rounded bg-blue-900/20 border border-blue-800/30 hover:bg-blue-900/40 transition-colors"
+                            >
+                              <Download className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                              <span className="text-blue-300 text-xs truncate">{f.name}</span>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
