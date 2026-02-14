@@ -573,39 +573,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               <div className="text-[6px] font-black text-center border-b border-gray-400 pb-0.5 mb-0.5">
                 ✂ MINI CD KEYRING — CUT ALONG DOTTED LINE ✂
               </div>
-              <div className="flex flex-col items-center gap-0.5" style={{ width: "10cm", maxWidth: "100%" }}>
-                {cdAlbumImages.find(img => img.partName === "front")?.imageData && (
-                  <div className="text-center w-full">
-                    <div 
-                      className="border border-dashed border-gray-400 overflow-hidden mx-auto"
-                      style={{ width: "8cm", maxWidth: "100%", aspectRatio: "8 / 4" }}
-                    >
-                      <img 
-                        src={cdAlbumImages.find(img => img.partName === "front")!.imageData!}
-                        alt="Front Cover"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <p className="text-[5px] text-gray-400 leading-none">COVER 8×4cm (fold → 4×4)</p>
-                  </div>
-                )}
-
-                {cdAlbumImages.find(img => img.partName === "back")?.imageData && (
-                  <div className="text-center w-full">
-                    <div 
-                      className="border border-dashed border-gray-400 overflow-hidden mx-auto"
-                      style={{ width: "10cm", maxWidth: "100%", aspectRatio: "10 / 3.9" }}
-                    >
-                      <img 
-                        src={cdAlbumImages.find(img => img.partName === "back")!.imageData!}
-                        alt="Back Panel"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <p className="text-[5px] text-gray-400 leading-none">BACK 10×3.9cm (fold → 5×3.9)</p>
-                  </div>
-                )}
-
+              <div className="flex flex-col items-center gap-1.5" style={{ width: "10cm", maxWidth: "100%" }}>
                 {cdAlbumImages.find(img => img.partName === "disc")?.imageData && (
                   <div className="text-center">
                     <div 
@@ -626,7 +594,39 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         }}
                       />
                     </div>
-                    <p className="text-[5px] text-gray-400 leading-none">DISC ⌀4cm (hole ⌀6mm)</p>
+                    <p className="text-[5px] text-gray-400 leading-none mt-0.5">DISC ⌀4cm (hole ⌀6mm)</p>
+                  </div>
+                )}
+
+                {cdAlbumImages.find(img => img.partName === "front")?.imageData && (
+                  <div className="text-center w-full">
+                    <div 
+                      className="border border-dashed border-gray-400 overflow-hidden mx-auto"
+                      style={{ width: "8cm", maxWidth: "100%", aspectRatio: "8 / 4" }}
+                    >
+                      <img 
+                        src={cdAlbumImages.find(img => img.partName === "front")!.imageData!}
+                        alt="Front Cover"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="text-[5px] text-gray-400 leading-none mt-0.5">COVER 8×4cm (fold → 4×4)</p>
+                  </div>
+                )}
+
+                {cdAlbumImages.find(img => img.partName === "back")?.imageData && (
+                  <div className="text-center w-full">
+                    <div 
+                      className="border border-dashed border-gray-400 overflow-hidden mx-auto"
+                      style={{ width: "10cm", maxWidth: "100%", aspectRatio: "10 / 3.9" }}
+                    >
+                      <img 
+                        src={cdAlbumImages.find(img => img.partName === "back")!.imageData!}
+                        alt="Back Panel"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="text-[5px] text-gray-400 leading-none mt-0.5">BACK 10×3.9cm (fold → 5×3.9)</p>
                   </div>
                 )}
               </div>
