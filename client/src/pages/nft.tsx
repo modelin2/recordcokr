@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useParams } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -38,6 +38,10 @@ const translations = {
     videoService: "영상 서비스",
     albumRelease: "음원 발매",
     selected: "선택된 서비스",
+    couponAvailable: "사용 가능한 쿠폰",
+    couponDiscount: "쿠폰 할인",
+    finalTotal: "최종 금액",
+    couponUsed: "쿠폰 사용",
     requestServices: "서비스 신청하기",
     requestSubmitted: "신청이 접수되었습니다!",
     requestSubmittedSub: "확인 후 연락드리겠습니다.",
@@ -97,6 +101,10 @@ const translations = {
     videoService: "Video Service",
     albumRelease: "Album Release",
     selected: "Selected",
+    couponAvailable: "Available Coupon",
+    couponDiscount: "Coupon Discount",
+    finalTotal: "Final Total",
+    couponUsed: "Coupon Used",
     requestServices: "Request Services",
     requestSubmitted: "Request Submitted!",
     requestSubmittedSub: "We will contact you after review.",
@@ -156,6 +164,10 @@ const translations = {
     videoService: "映像サービス",
     albumRelease: "アルバムリリース",
     selected: "選択済み",
+    couponAvailable: "利用可能なクーポン",
+    couponDiscount: "クーポン割引",
+    finalTotal: "最終金額",
+    couponUsed: "クーポン使用",
     requestServices: "サービスを申請する",
     requestSubmitted: "申請が受け付けられました！",
     requestSubmittedSub: "確認後ご連絡いたします。",
@@ -215,6 +227,10 @@ const translations = {
     videoService: "视频服务",
     albumRelease: "专辑发行",
     selected: "已选择",
+    couponAvailable: "可用优惠券",
+    couponDiscount: "优惠券折扣",
+    finalTotal: "最终金额",
+    couponUsed: "优惠券已使用",
     requestServices: "申请服务",
     requestSubmitted: "申请已提交！",
     requestSubmittedSub: "审核后我们会联系您。",
@@ -265,15 +281,13 @@ interface ServiceItem {
   desc: Record<Language, string>;
   isFree?: boolean;
   sampleVideoUrl?: string;
-  sampleAudioUrl?: string;
-  sampleAudioLabel?: Record<Language, string>;
 }
 
 const services: Record<string, ServiceItem[]> = {
   mixing: [
-    { id: "basic", name: { ko: "기본 (Basic)", en: "Basic Mixing", ja: "基本ミキシング", zh: "基本混音" }, price: 0, desc: { ko: "베스트 구간 편집 + 음량 조절 + 에코 효과 추가", en: "Best section editing + volume control + echo effects", ja: "ベスト区間編集 + 音量調整 + エコー効果追加", zh: "最佳片段编辑 + 音量调节 + 回声效果" }, isFree: true, sampleAudioUrl: "/samples/vocal-not-tuned.wav", sampleAudioLabel: { ko: "보정 전 샘플", en: "Before correction", ja: "補正前サンプル", zh: "校正前样本" } },
-    { id: "ai", name: { ko: "기본 + AI 보정", en: "Basic + AI Correction", ja: "基本 + AI補正", zh: "基本 + AI修正" }, price: 20000, desc: { ko: "틀린 음정을 AI로 자동 수정", en: "Auto-correct pitch with AI", ja: "音程をAIで自動修正", zh: "AI自动修正音准" }, sampleAudioUrl: "/samples/vocal-auto-tuned.wav", sampleAudioLabel: { ko: "AI 보정 샘플", en: "AI corrected sample", ja: "AI補正サンプル", zh: "AI校正样本" } },
-    { id: "engineer", name: { ko: "기본 + 전문가 보정", en: "Basic + Expert Correction", ja: "基本 + 専門家補正", zh: "基本 + 专家修正" }, price: 100000, desc: { ko: "틀린 음정을 전문가가 수작업으로 수정", en: "Expert manual pitch correction", ja: "専門家が手作業で音程を修正", zh: "专家手动修正音准" }, sampleAudioUrl: "/samples/vocal-pro-tuned.wav", sampleAudioLabel: { ko: "전문가 보정 샘플", en: "Expert corrected sample", ja: "専門家補正サンプル", zh: "专家校正样本" } },
+    { id: "basic", name: { ko: "기본 (Basic)", en: "Basic Mixing", ja: "基本ミキシング", zh: "基本混音" }, price: 0, desc: { ko: "베스트 구간 편집 + 음량 조절 + 에코 효과 추가", en: "Best section editing + volume control + echo effects", ja: "ベスト区間編集 + 音量調整 + エコー効果追加", zh: "最佳片段编辑 + 音量调节 + 回声效果" }, isFree: true },
+    { id: "ai", name: { ko: "기본 + AI 보정", en: "Basic + AI Correction", ja: "基本 + AI補正", zh: "基本 + AI修正" }, price: 20000, desc: { ko: "틀린 음정을 AI로 자동 수정", en: "Auto-correct pitch with AI", ja: "音程をAIで自動修正", zh: "AI自动修正音准" } },
+    { id: "engineer", name: { ko: "기본 + 전문가 보정", en: "Basic + Expert Correction", ja: "基本 + 専門家補正", zh: "基本 + 专家修正" }, price: 100000, desc: { ko: "틀린 음정을 전문가가 수작업으로 수정", en: "Expert manual pitch correction", ja: "専門家が手作業で音程を修正", zh: "专家手动修正音准" } },
   ],
   video: [
     { id: "self", name: { ko: "셀프 촬영", en: "Self Recording", ja: "セルフ撮影", zh: "自拍录制" }, price: 0, desc: { ko: "셀피용 스탠드 제공", en: "Selfie stand provided", ja: "セルフィースタンド提供", zh: "提供自拍支架" }, isFree: true },
@@ -304,25 +318,6 @@ export default function NftPage() {
   const [promoUrl, setPromoUrl] = useState("");
   const [promoPlatform, setPromoPlatform] = useState("");
   const [promoSubmitted, setPromoSubmitted] = useState(false);
-  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const toggleAudioPlay = (url: string) => {
-    if (playingAudio === url) {
-      audioRef.current?.pause();
-      setPlayingAudio(null);
-    } else {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      const audio = new Audio(url);
-      audio.onended = () => setPlayingAudio(null);
-      audio.play();
-      audioRef.current = audio;
-      setPlayingAudio(url);
-    }
-  };
-
   const tx = translations[lang];
 
   const { data: page, isLoading, error } = useQuery({
@@ -367,7 +362,13 @@ export default function NftPage() {
         return null;
       }).filter(Boolean);
 
-      const res = await apiRequest("POST", `/api/nft/${token}/request-service`, { services: serviceDetails });
+      const totalPrice = serviceDetails.reduce((sum, s: any) => sum + (s?.price || 0), 0);
+      const appliedCoupon = Math.min(availableCoupon, totalPrice);
+
+      const res = await apiRequest("POST", `/api/nft/${token}/request-service`, {
+        services: serviceDetails,
+        couponApplied: appliedCoupon > 0 ? appliedCoupon : undefined,
+      });
       return res.json();
     },
     onSuccess: () => {
@@ -428,6 +429,12 @@ export default function NftPage() {
   }
 
   const existingRequests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
+
+  const approvedCoupons = (page.promoCoupons || []).filter((c: any) => c.status === "approved" && c.couponAmount > 0);
+  const totalCouponAmount = approvedCoupons.reduce((sum: number, c: any) => sum + (c.couponAmount || 0), 0);
+  const usedCouponAmount = existingRequests.reduce((sum: number, r: any) => sum + (r.couponApplied || 0), 0);
+  const availableCoupon = Math.max(0, totalCouponAmount - usedCouponAmount);
+
   const totalSelected = selectedServices.reduce((sum, id) => {
     for (const category of Object.values(services)) {
       const found = category.find(s => s.id === id);
@@ -435,6 +442,8 @@ export default function NftPage() {
     }
     return sum;
   }, 0);
+  const couponToApply = Math.min(availableCoupon, totalSelected);
+  const finalTotal = totalSelected - couponToApply;
 
   const renderServiceItem = (s: ServiceItem) => {
     if (s.isFree) {
@@ -484,34 +493,6 @@ export default function NftPage() {
             >
               <Play className="w-3 h-3" />
               {tx.viewSample}
-            </button>
-          )}
-          {s.sampleAudioUrl && (
-            <button
-              type="button"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleAudioPlay(s.sampleAudioUrl!); }}
-              className={`inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 text-xs font-bold rounded-full transition-all ${
-                playingAudio === s.sampleAudioUrl
-                  ? "bg-yellow-500 text-black"
-                  : "bg-gray-700 hover:bg-gray-600 text-white"
-              }`}
-            >
-              {playingAudio === s.sampleAudioUrl ? (
-                <>
-                  <div className="flex gap-0.5 items-end h-3">
-                    <div className="w-0.5 bg-black rounded-full animate-pulse" style={{ height: "8px", animationDelay: "0ms" }} />
-                    <div className="w-0.5 bg-black rounded-full animate-pulse" style={{ height: "12px", animationDelay: "150ms" }} />
-                    <div className="w-0.5 bg-black rounded-full animate-pulse" style={{ height: "6px", animationDelay: "300ms" }} />
-                    <div className="w-0.5 bg-black rounded-full animate-pulse" style={{ height: "10px", animationDelay: "100ms" }} />
-                  </div>
-                  {s.sampleAudioLabel?.[lang]}
-                </>
-              ) : (
-                <>
-                  <Headphones className="w-3 h-3" />
-                  {s.sampleAudioLabel?.[lang]}
-                </>
-              )}
             </button>
           )}
         </div>
@@ -679,12 +660,34 @@ export default function NftPage() {
               </div>
             </div>
 
-            {selectedServices.length > 0 && (
-              <div className="border-t border-gray-800 pt-4">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-gray-400">{tx.selected}</span>
-                  <span className="text-lg font-black text-yellow-500">{formatPrice(totalSelected)}</span>
+            {availableCoupon > 0 && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-green-900/20 border border-green-700/30">
+                <Gift className="w-4 h-4 text-green-400 flex-shrink-0" />
+                <div className="flex-1">
+                  <span className="text-green-400 text-xs font-bold">{tx.couponAvailable}</span>
+                  <span className="text-green-300 text-sm font-black ml-2">{formatPrice(availableCoupon)}</span>
                 </div>
+              </div>
+            )}
+
+            {selectedServices.length > 0 && (
+              <div className="border-t border-gray-800 pt-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-400">{tx.selected}</span>
+                  <span className={`text-sm font-bold ${couponToApply > 0 ? "text-gray-500 line-through" : "text-yellow-500 text-lg font-black"}`}>{formatPrice(totalSelected)}</span>
+                </div>
+                {couponToApply > 0 && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-green-400 flex items-center gap-1"><Gift className="w-3 h-3" /> {tx.couponDiscount}</span>
+                      <span className="text-green-400 text-sm font-bold">-{formatPrice(couponToApply)}</span>
+                    </div>
+                    <div className="flex items-center justify-between border-t border-gray-700 pt-2">
+                      <span className="text-sm text-white font-bold">{tx.finalTotal}</span>
+                      <span className="text-lg font-black text-yellow-500">{formatPrice(finalTotal)}</span>
+                    </div>
+                  </>
+                )}
                 <Button
                   onClick={() => requestMutation.mutate(selectedServices)}
                   disabled={requestMutation.isPending}
@@ -736,6 +739,12 @@ export default function NftPage() {
                           <span className="text-yellow-500 text-xs">{formatPrice(s.price || 0)}</span>
                         </div>
                       ))}
+                      {req.couponApplied > 0 && (
+                        <div className="flex items-center justify-between text-sm border-t border-gray-800 pt-1 mt-1">
+                          <span className="text-green-400 text-xs flex items-center gap-1"><Gift className="w-3 h-3" /> {tx.couponUsed}</span>
+                          <span className="text-green-400 text-xs font-bold">-{formatPrice(req.couponApplied)}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

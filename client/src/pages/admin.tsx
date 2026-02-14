@@ -406,27 +406,36 @@ function NftManagement() {
                       <div className="border-t border-white/10 pt-3 mt-3">
                         <p className="text-gray-400 text-xs font-bold mb-2">추가 서비스 신청</p>
                         {serviceRequests.map((req: any) => (
-                          <div key={req.id} className="flex items-center justify-between text-xs bg-white/5 rounded p-2 mb-1">
-                            <div>
-                              <span className="text-gray-300">
-                                {req.services?.map((s: any) => s.name || s.nameEn).join(", ")}
-                              </span>
-                              <span className="text-gray-600 ml-2">{new Date(req.requestedAt).toLocaleDateString("ko-KR")}</span>
+                          <div key={req.id} className="bg-white/5 rounded p-2 mb-1">
+                            <div className="flex items-center justify-between text-xs">
+                              <div>
+                                <span className="text-gray-300">
+                                  {req.services?.map((s: any) => s.name || s.nameEn).join(", ")}
+                                </span>
+                                <span className="text-gray-600 ml-2">{new Date(req.requestedAt).toLocaleDateString("ko-KR")}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge className={req.status === "pending" ? "bg-yellow-500/20 text-yellow-300" : "bg-green-500/20 text-green-300"}>
+                                  {req.status === "pending" ? "대기" : "완료"}
+                                </Badge>
+                                {req.status === "pending" && (
+                                  <Button
+                                    size="sm"
+                                    className="h-6 px-2 text-xs bg-green-600 hover:bg-green-700"
+                                    onClick={() => updateServiceMutation.mutate({ id: page.id, requestId: req.id, status: "completed" })}
+                                  >
+                                    완료처리
+                                  </Button>
+                                )}
+                              </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Badge className={req.status === "pending" ? "bg-yellow-500/20 text-yellow-300" : "bg-green-500/20 text-green-300"}>
-                                {req.status === "pending" ? "대기" : "완료"}
-                              </Badge>
-                              {req.status === "pending" && (
-                                <Button
-                                  size="sm"
-                                  className="h-6 px-2 text-xs bg-green-600 hover:bg-green-700"
-                                  onClick={() => updateServiceMutation.mutate({ id: page.id, requestId: req.id, status: "completed" })}
-                                >
-                                  완료처리
-                                </Button>
-                              )}
-                            </div>
+                            {req.couponApplied > 0 && (
+                              <div className="flex items-center gap-1 mt-1 text-[11px] text-green-400">
+                                <span>🎁 쿠폰 적용: ₩{req.couponApplied.toLocaleString()}</span>
+                                <span className="text-gray-600">| 합계: ₩{(req.services?.reduce((sum: number, s: any) => sum + (s.price || 0), 0) || 0).toLocaleString()}</span>
+                                <span className="text-yellow-400 font-bold">→ ₩{Math.max(0, (req.services?.reduce((sum: number, s: any) => sum + (s.price || 0), 0) || 0) - req.couponApplied).toLocaleString()}</span>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>

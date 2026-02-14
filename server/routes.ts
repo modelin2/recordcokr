@@ -2323,18 +2323,34 @@ REQUIREMENTS:
         return res.status(404).json({ message: "Page not found" });
       }
 
-      const { services } = req.body;
+      const { services, couponApplied } = req.body;
       if (!services || !Array.isArray(services)) {
         return res.status(400).json({ message: "Services array required" });
       }
 
       const existingRequests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
-      const newRequest = {
+
+      let validatedCoupon = 0;
+      if (couponApplied && couponApplied > 0) {
+        const coupons = await storage.getPromoCouponsByToken(req.params.token);
+        const totalCouponAmount = coupons
+          .filter((c: any) => c.status === "approved" && c.couponAmount && c.couponAmount > 0)
+          .reduce((sum: number, c: any) => sum + c.couponAmount, 0);
+        const usedCouponAmount = existingRequests.reduce((sum: number, r: any) => sum + (r.couponApplied || 0), 0);
+        const availableCoupon = Math.max(0, totalCouponAmount - usedCouponAmount);
+        const totalServicePrice = services.reduce((sum: number, s: any) => sum + (s.price || 0), 0);
+        validatedCoupon = Math.min(couponApplied, availableCoupon, totalServicePrice);
+      }
+
+      const newRequest: any = {
         id: Date.now(),
         services,
         requestedAt: new Date().toISOString(),
         status: "pending",
       };
+      if (validatedCoupon > 0) {
+        newRequest.couponApplied = validatedCoupon;
+      }
       existingRequests.push(newRequest);
 
       await storage.updateNftPage(page.id, {
