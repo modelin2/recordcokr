@@ -1162,17 +1162,52 @@ REQUIREMENTS:
         const { randomUUID } = await import("crypto");
         nftToken = randomUUID();
         try {
+          let matchedBookingId: number | null = null;
+          let initialServiceRequests: string | null = null;
+          
+          const allBookings = await storage.getAllBookings();
+          const cleanName = customerName.replace(/\[.*?\]\s*/g, "").trim();
+          const matchedBooking = allBookings
+            .filter((b: any) => b.status !== "cancelled" && b.status !== "deleted")
+            .reverse()
+            .find((b: any) => {
+              const bCleanName = (b.name || "").replace(/\[.*?\]\s*/g, "").trim();
+              return bCleanName === cleanName;
+            });
+          
+          if (matchedBooking) {
+            matchedBookingId = matchedBooking.id;
+            if (matchedBooking.selectedServices) {
+              try {
+                const bookedServices = JSON.parse(matchedBooking.selectedServices);
+                if (bookedServices.length > 0) {
+                  initialServiceRequests = JSON.stringify([{
+                    id: Date.now(),
+                    services: bookedServices.map((s: any) => ({
+                      id: s.id || s.name,
+                      name: s.name,
+                      nameEn: s.nameEn || s.name,
+                      price: s.price || 0,
+                    })),
+                    status: "booked",
+                    requestedAt: matchedBooking.createdAt || new Date().toISOString(),
+                  }]);
+                }
+              } catch {}
+            }
+          }
+
           await storage.createNftPage({
             token: nftToken,
             customerName,
             koreanName: koreanName || null,
-            bookingId: null,
-            recordingDate: new Date().toISOString().split("T")[0],
+            bookingId: matchedBookingId,
+            recordingDate: matchedBooking?.bookingDate || new Date().toISOString().split("T")[0],
             albumCoverImage: frontCover?.imageData || null,
             audioFileName: null,
             audioFileData: null,
             audioStatus: "pending",
-            serviceRequests: null,
+            serviceRequests: initialServiceRequests,
           });
         } catch (nftError) {
           console.error("Error creating NFT page:", nftError);

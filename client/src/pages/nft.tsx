@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, Download, Music, Video, Disc3, Headphones, Loader2, Check, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Lock, Download, Music, Video, Disc3, Headphones, Loader2, Check, AlertCircle, CheckCircle2, Play, X } from "lucide-react";
 
 type Language = "ko" | "en" | "ja" | "zh";
 
@@ -17,7 +17,7 @@ const languageOptions = [
   { code: "ko" as Language, name: "한국어", flag: "🇰🇷" },
 ];
 
-const t = {
+const translations = {
   ko: {
     privatePage: "이 페이지는",
     private: "비공개",
@@ -42,6 +42,7 @@ const t = {
     requestHistory: "신청 내역",
     pending: "대기중",
     completed: "완료",
+    booked: "예약 시 선택",
     copyright: "© Recording Café. All rights reserved.",
     pageNotFound: "페이지를 찾을 수 없습니다",
     pageNotFoundSub: "유효하지 않은 링크입니다",
@@ -51,6 +52,7 @@ const t = {
     errorToast: "오류가 발생했습니다.",
     requestToastTitle: "신청 완료",
     requestToastDesc: "추가 서비스 신청이 접수되었습니다.",
+    viewSample: "샘플 보기",
   },
   en: {
     privatePage: "This is a",
@@ -76,6 +78,7 @@ const t = {
     requestHistory: "Request History",
     pending: "Pending",
     completed: "Completed",
+    booked: "Booked",
     copyright: "© Recording Café. All rights reserved.",
     pageNotFound: "Page not found",
     pageNotFoundSub: "Invalid link",
@@ -85,6 +88,7 @@ const t = {
     errorToast: "An error occurred.",
     requestToastTitle: "Request Submitted",
     requestToastDesc: "Your service request has been submitted.",
+    viewSample: "View Sample",
   },
   ja: {
     privatePage: "このページは",
@@ -110,6 +114,7 @@ const t = {
     requestHistory: "申請履歴",
     pending: "待機中",
     completed: "完了",
+    booked: "予約時選択",
     copyright: "© Recording Café. All rights reserved.",
     pageNotFound: "ページが見つかりません",
     pageNotFoundSub: "無効なリンクです",
@@ -119,6 +124,7 @@ const t = {
     errorToast: "エラーが発生しました。",
     requestToastTitle: "申請完了",
     requestToastDesc: "追加サービスの申請が受け付けられました。",
+    viewSample: "サンプル視聴",
   },
   zh: {
     privatePage: "此页面是",
@@ -144,6 +150,7 @@ const t = {
     requestHistory: "申请记录",
     pending: "待处理",
     completed: "已完成",
+    booked: "预约时选择",
     copyright: "© Recording Café. All rights reserved.",
     pageNotFound: "未找到页面",
     pageNotFoundSub: "无效链接",
@@ -153,6 +160,7 @@ const t = {
     errorToast: "发生错误。",
     requestToastTitle: "申请完成",
     requestToastDesc: "附加服务申请已提交。",
+    viewSample: "查看样品",
   },
 };
 
@@ -162,6 +170,7 @@ interface ServiceItem {
   price: number;
   desc: Record<Language, string>;
   isFree?: boolean;
+  sampleVideoUrl?: string;
 }
 
 const services: Record<string, ServiceItem[]> = {
@@ -173,7 +182,7 @@ const services: Record<string, ServiceItem[]> = {
   video: [
     { id: "self", name: { ko: "셀프 촬영", en: "Self Recording", ja: "セルフ撮影", zh: "自拍录制" }, price: 0, desc: { ko: "셀피용 스탠드 제공", en: "Selfie stand provided", ja: "セルフィースタンド提供", zh: "提供自拍支架" }, isFree: true },
     { id: "cameraman", name: { ko: "셀프 + 촬영기사", en: "Self + Cameraman", ja: "セルフ + カメラマン", zh: "自拍 + 摄影师" }, price: 20000, desc: { ko: "DSLR카메라로 촬영 (원본 파일 제공)", en: "DSLR filming (raw files provided)", ja: "DSLRカメラで撮影（原本ファイル提供）", zh: "DSLR拍摄（提供原始文件）" } },
-    { id: "full", name: { ko: "셀프 + 촬영기사 + 편집", en: "Self + Cameraman + Editing", ja: "セルフ + カメラマン + 編集", zh: "自拍 + 摄影师 + 编辑" }, price: 100000, desc: { ko: "뮤직비디오 완성", en: "Complete music video", ja: "ミュージックビデオ完成", zh: "完成MV制作" } },
+    { id: "full", name: { ko: "AI 숏폼 뮤직비디오", en: "AI Short-form Music Video", ja: "AIショートMV", zh: "AI短视频MV" }, price: 100000, desc: { ko: "AI로 제작하는 숏폼 뮤직비디오", en: "AI-powered short-form music video", ja: "AIで制作するショートMV", zh: "AI制作短视频MV" }, sampleVideoUrl: "https://youtube.com/shorts/1ahalbJaGFk" },
   ],
   release: [
     { id: "standard", name: { ko: "앨범 발매", en: "Album Release", ja: "アルバムリリース", zh: "专辑发行" }, price: 200000, desc: { ko: "전세계 음원 사이트에 발매 (반주 제작 + 앨범 자켓 + 저작권료)", en: "Release on all streaming platforms worldwide", ja: "全世界の音楽サイトでリリース", zh: "在全球音乐平台发行" } },
@@ -195,8 +204,9 @@ export default function NftPage() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [lang, setLang] = useState<Language>("en");
+  const [showVideoModal, setShowVideoModal] = useState(false);
 
-  const tx = t[lang];
+  const tx = translations[lang];
 
   const { data: page, isLoading, error } = useQuery({
     queryKey: ["/api/nft", token],
@@ -329,6 +339,16 @@ export default function NftPage() {
             <span className="text-yellow-500 text-sm font-bold">{formatPrice(s.price)}</span>
           </div>
           <p className="text-xs text-gray-500 mt-0.5">{s.desc[lang]}</p>
+          {s.sampleVideoUrl && (
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowVideoModal(true); }}
+              className="inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-full transition-all"
+            >
+              <Play className="w-3 h-3" />
+              {tx.viewSample}
+            </button>
+          )}
         </div>
       </label>
     );
@@ -336,6 +356,27 @@ export default function NftPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black text-white">
+      {showVideoModal && (
+        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={() => setShowVideoModal(false)}>
+          <div className="relative w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setShowVideoModal(false)}
+              className="absolute top-2 right-2 z-10 bg-black/70 rounded-full p-1.5 text-white hover:text-gray-300 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <div className="relative w-full" style={{ paddingBottom: "177.78%" }}>
+              <iframe
+                src="https://www.youtube.com/embed/1ahalbJaGFk"
+                className="absolute inset-0 w-full h-full rounded-xl"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="flex justify-center gap-2 mb-6">
           {languageOptions.map((l) => (
@@ -393,7 +434,14 @@ export default function NftPage() {
           <CardContent>
             {page.audioStatus === "pending" && (
               <div className="text-center py-6">
-                <Loader2 className="w-10 h-10 mx-auto mb-3 text-gray-600 animate-pulse" />
+                <div className="relative w-16 h-16 mx-auto mb-4">
+                  <div className="absolute inset-0 rounded-full border-4 border-gray-800" />
+                  <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-yellow-500 animate-spin" />
+                  <div className="absolute inset-2 rounded-full border-4 border-transparent border-b-purple-500 animate-spin" style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Music className="w-5 h-5 text-yellow-500 animate-pulse" />
+                  </div>
+                </div>
                 <p className="text-gray-400 font-medium">{tx.postProduction}</p>
                 <p className="text-gray-600 text-xs mt-2">{tx.postProductionSub}</p>
               </div>
@@ -510,8 +558,10 @@ export default function NftPage() {
                       <span className="text-xs text-gray-500">
                         {new Date(req.requestedAt).toLocaleDateString("ko-KR")}
                       </span>
-                      <Badge variant={req.status === "pending" ? "secondary" : req.status === "completed" ? "default" : "outline"}>
-                        {req.status === "pending" ? tx.pending : req.status === "completed" ? tx.completed : req.status}
+                      <Badge variant={req.status === "booked" ? "default" : req.status === "pending" ? "secondary" : req.status === "completed" ? "default" : "outline"}
+                        className={req.status === "booked" ? "bg-blue-600/20 text-blue-400 border-blue-600/30" : ""}
+                      >
+                        {req.status === "booked" ? tx.booked : req.status === "pending" ? tx.pending : req.status === "completed" ? tx.completed : req.status}
                       </Badge>
                     </div>
                     <div className="space-y-1">
