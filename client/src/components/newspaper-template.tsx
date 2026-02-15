@@ -583,7 +583,8 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "disc")!.imageData!}
                         alt="Disc Label"
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="absolute w-full h-full object-cover"
+                        style={{ inset: "-2%", width: "104%", height: "104%" }}
                       />
                       <div 
                         className="absolute bg-white"
