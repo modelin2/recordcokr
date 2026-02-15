@@ -948,19 +948,17 @@ export default function NftPage() {
 
             <div className="text-center space-y-2">
               <p className="text-gray-400 text-xs font-semibold">{tx.promoAnyPlatform}</p>
-              <div className="flex items-center justify-center gap-3 flex-wrap px-2">
-                <SiInstagram className="w-5 h-5 text-pink-400" />
-                <SiTiktok className="w-5 h-5 text-white" />
-                <SiYoutube className="w-5 h-5 text-red-500" />
-                <SiX className="w-4 h-4 text-white" />
-                <SiFacebook className="w-5 h-5 text-blue-500" />
-                <SiThreads className="w-5 h-5 text-white" />
-                <SiNaver className="w-5 h-5 text-green-500" />
-                <SiWechat className="w-5 h-5 text-green-400" />
-                <span className="text-red-500 font-black text-[10px] leading-none border border-red-500/40 rounded px-1 py-0.5">RED</span>
-                <SiPinterest className="w-5 h-5 text-red-600" />
-                <FaBlog className="w-4 h-4 text-orange-400" />
-                <span className="text-gray-500 text-xs font-medium">etc.</span>
+              <div className="flex items-center justify-center gap-1.5 flex-wrap px-1">
+                <SiInstagram className="w-4 h-4 text-pink-400" />
+                <SiTiktok className="w-4 h-4 text-white" />
+                <SiYoutube className="w-4 h-4 text-red-500" />
+                <SiX className="w-3.5 h-3.5 text-white" />
+                <SiFacebook className="w-4 h-4 text-blue-500" />
+                <SiThreads className="w-4 h-4 text-white" />
+                <SiNaver className="w-4 h-4 text-green-500" />
+                <SiWechat className="w-4 h-4 text-green-400" />
+                <FaBlog className="w-3.5 h-3.5 text-orange-400" />
+                <span className="text-gray-500 text-[10px] font-medium">etc.</span>
               </div>
             </div>
 
@@ -991,39 +989,6 @@ export default function NftPage() {
 
             <div className="space-y-3 bg-gray-900/60 rounded-xl p-4 border border-gray-800/40">
               <div>
-                <label className="text-xs text-gray-400 mb-2 block font-medium">{tx.promoSelectPlatform}</label>
-                <div className="flex gap-2 flex-wrap">
-                  {[
-                    { name: "Instagram", icon: <SiInstagram className="w-3.5 h-3.5" /> },
-                    { name: "TikTok", icon: <SiTiktok className="w-3.5 h-3.5" /> },
-                    { name: "YouTube", icon: <SiYoutube className="w-3.5 h-3.5" /> },
-                    { name: "X", icon: <SiX className="w-3 h-3" /> },
-                    { name: "Facebook", icon: <SiFacebook className="w-3.5 h-3.5" /> },
-                    { name: "小红书", icon: <span className="text-[10px] font-bold">RED</span> },
-                    { name: "抖音(Douyin)", icon: <span className="text-[10px] font-bold">DY</span> },
-                    { name: "LINE", icon: <span className="text-[10px] font-bold">L</span> },
-                    { name: "Ameba", icon: <span className="text-[10px] font-bold">A</span> },
-                    { name: "Naver", icon: <SiNaver className="w-3 h-3" /> },
-                    { name: "Blog", icon: <FaBlog className="w-3 h-3" /> },
-                    { name: "Other", icon: <FaGlobe className="w-3 h-3" /> },
-                  ].map((p) => (
-                    <button
-                      key={p.name}
-                      onClick={() => setPromoPlatform(p.name)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
-                        promoPlatform === p.name
-                          ? "bg-yellow-500 text-black border-yellow-400 shadow-lg shadow-yellow-500/20"
-                          : "bg-gray-800/80 text-gray-400 border-gray-700/50 hover:border-gray-600 hover:bg-gray-700/80"
-                      }`}
-                    >
-                      {p.icon}
-                      {p.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
                 <label className="text-xs text-gray-400 mb-1.5 block font-medium">{tx.promoSnsUrl}</label>
                 <input
                   type="url"
@@ -1036,7 +1001,7 @@ export default function NftPage() {
 
               <Button
                 onClick={() => promoMutation.mutate()}
-                disabled={!promoUrl || !promoPlatform || promoMutation.isPending}
+                disabled={!promoUrl || promoMutation.isPending}
                 className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-3 text-base rounded-xl disabled:opacity-30 shadow-lg shadow-yellow-500/20 transition-all"
               >
                 {promoMutation.isPending ? (
