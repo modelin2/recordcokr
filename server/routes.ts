@@ -737,6 +737,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (!b.name) return false;
           const nameLower = b.name.toLowerCase();
           if (nameLower.includes('[klook]') || nameLower.includes('klook')) return false;
+          if (nameLower.includes('[데이트팝]') || nameLower.includes('데이트팝')) return false;
           if (b.status === 'cancelled' || b.status === 'canceled' || b.status === 'deleted') return false;
           return true;
         })

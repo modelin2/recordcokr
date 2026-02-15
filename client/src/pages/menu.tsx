@@ -251,7 +251,7 @@ const translations: Record<Language, {
     videoOptions: [
       { id: "self", name: "셀프 촬영", price: 0, desc: "셀피용 스탠드 제공, 자신의 휴대폰으로 직접 촬영" },
       { id: "cameraman", name: "셀프 + 촬영기사 촬영", price: 20000, desc: "촬영기사가 당신이 노래하는 모습을 DSLR카메라로 촬영\n(원본 파일 제공)" },
-      { id: "full", name: "셀프 + 촬영기사 + 편집", price: 100000, desc: "촬영기사 촬영 후 편집까지 완료하여 뮤직비디오를 완성\n(원본파일 + 완성파일 제공)" },
+      { id: "full", name: "AI 숏폼 뮤직비디오", price: 100000, desc: "1분 이내의 인공지능으로 생성한 숏폼 뮤직비디오" },
     ],
     albumOption: { 
       name: "앨범 발매", 
@@ -356,7 +356,7 @@ const translations: Record<Language, {
     videoOptions: [
       { id: "self", name: "Self Recording", price: 0, desc: "Selfie stand provided, record with your own phone" },
       { id: "cameraman", name: "Self + Cameraman", price: 20000, desc: "Cameraman films you singing with DSLR camera\n(Original files provided)" },
-      { id: "full", name: "Self + Cameraman + Editing", price: 100000, desc: "Cameraman filming + editing to complete your music video\n(Original + Finished files provided)" },
+      { id: "full", name: "AI Short-form Music Video", price: 100000, desc: "AI-generated short-form music video under 1 minute" },
     ],
     albumOption: { 
       name: "Album Release", 
@@ -461,7 +461,7 @@ const translations: Record<Language, {
     videoOptions: [
       { id: "self", name: "セルフ撮影", price: 0, desc: "セルフィースタンド提供、ご自身のスマホで撮影" },
       { id: "cameraman", name: "セルフ + カメラマン撮影", price: 20000, desc: "カメラマンがあなたの歌う姿をDSLRカメラで撮影\n(オリジナルファイル提供)" },
-      { id: "full", name: "セルフ + カメラマン + 編集", price: 100000, desc: "カメラマン撮影後、編集まで完了してミュージックビデオを制作\n(オリジナル + 完成ファイル提供)" },
+      { id: "full", name: "AIショートフォームMV", price: 100000, desc: "1分以内のAI生成ショートフォームミュージックビデオ" },
     ],
     albumOption: { 
       name: "アルバムリリース", 
@@ -566,7 +566,7 @@ const translations: Record<Language, {
     videoOptions: [
       { id: "self", name: "自拍", price: 0, desc: "提供自拍支架，用自己的手机拍摄" },
       { id: "cameraman", name: "自拍 + 摄影师", price: 20000, desc: "摄影师用DSLR相机拍摄您唱歌的样子\n(提供原始文件)" },
-      { id: "full", name: "自拍 + 摄影师 + 剪辑", price: 100000, desc: "摄影师拍摄后完成剪辑，制作您的音乐视频\n(提供原始文件 + 完成文件)" },
+      { id: "full", name: "AI短视频MV", price: 100000, desc: "1分钟以内AI生成的短视频音乐MV" },
     ],
     albumOption: { 
       name: "专辑发行", 
@@ -1328,6 +1328,18 @@ export default function MenuPage() {
                           <p className={`text-lg font-bold flex-shrink-0 ${opt.price === 0 ? "text-green-600" : "text-pink-600"}`}>{formatPrice(opt.price)}</p>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">{opt.desc}</p>
+                        {opt.id === "full" && (
+                          <div className="mt-2 rounded-lg overflow-hidden border border-gray-200" onClick={(e) => e.stopPropagation()}>
+                            <div className="relative w-full" style={{ paddingBottom: "177.78%" }}>
+                              <iframe
+                                src="https://www.youtube.com/embed/1ahalbJaGFk"
+                                className="absolute inset-0 w-full h-full"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
