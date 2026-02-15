@@ -569,12 +569,13 @@ export default function PhotoPage() {
           }
           .print-container {
             width: 100%;
-            min-height: 420mm;
-            max-height: 420mm;
+            height: 400mm;
+            max-height: 400mm;
             page-break-inside: avoid;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            overflow: hidden;
           }
         }
       `}</style>

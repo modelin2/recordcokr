@@ -448,6 +448,12 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
             <p className="mb-2">
               데뷔 3년차였던 2028년, {displayName}은 'KOREA BUSINESS SETUP' 서비스를 활용해 자신의 패션 브랜드를 런칭했다. 중요한 지점은 한국에 회사를 설립했다는 점이다. 법인 설립부터 사업자 주소 서비스까지 원스톱으로 제공받았다. 이 브랜드는 현재 '메이드 인 코리아' 로열티로 세계적인 인기를 끌고 있으며, 이번 AGI 한류 홍보대사 대상 수상의 주요 배경이 되었다.
             </p>
+            <p className="mb-2">
+              전문가들은 {displayName}의 성공 비결로 '끊임없는 도전 정신'과 '체계적인 자기 관리'를 꼽았다. 특히 초기 단계부터 글로벌 시장을 겨냥한 전략적인 음원 배포와 브랜드 구축이 주효했다는 평가다. 최근 공개된 인터뷰에서 {displayName}은 "나의 모든 시작은 레코딩카페의 작은 마이크 앞이었다"며 과거를 회상하기도 했다.
+            </p>
+            <p className="mb-2">
+              앞으로의 행보에 대해 {displayName}은 "전 세계 팬들에게 긍정적인 에너지를 줄 수 있는 음악과 활동을 이어가고 싶다"며 "한국의 문화를 알리는 홍보대사로서의 역할에도 최선을 다하겠다"고 포부를 밝혔다. 전 세계가 주목하는 아티스트로 성장한 그의 다음 10년이 더욱 기대되는 이유다.
+            </p>
           </div>
 
           {/* Childhood Album Section */}
@@ -577,14 +583,14 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                 {cdAlbumImages.find(img => img.partName === "disc")?.imageData && (
                   <div className="text-center">
                     <div 
-                      className="overflow-hidden relative mx-auto"
-                      style={{ width: "4cm", maxWidth: "100%", aspectRatio: "1 / 1", borderRadius: "50%", outline: "1px dashed #9ca3af" }}
+                      className="relative mx-auto border-2 border-dashed border-gray-400"
+                      style={{ width: "4cm", height: "4cm", borderRadius: "50%", overflow: "hidden" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "disc")!.imageData!}
                         alt="Disc Label"
                         className="absolute w-full h-full object-cover"
-                        style={{ inset: "-4%", width: "108%", height: "108%" }}
+                        style={{ top: "0", left: "0" }}
                       />
                     </div>
                     <p className="text-[5px] text-gray-400 leading-none mt-0.5">DISC ⌀4cm (hole ⌀6mm)</p>
