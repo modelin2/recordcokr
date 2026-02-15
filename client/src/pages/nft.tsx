@@ -420,6 +420,10 @@ export default function NftPage() {
 
   const promoMutation = useMutation({
     mutationFn: async () => {
+      if (!promoUrl) {
+        toast({ title: tx.promoSnsUrl, variant: "destructive" });
+        return;
+      }
       const res = await apiRequest("POST", `/api/nft/${token}/submit-promo`, {
         snsUrl: promoUrl,
         snsPlatform: promoPlatform,
@@ -1001,8 +1005,8 @@ export default function NftPage() {
 
               <Button
                 onClick={() => promoMutation.mutate()}
-                disabled={!promoUrl || promoMutation.isPending}
-                className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-3 text-base rounded-xl disabled:opacity-30 shadow-lg shadow-yellow-500/20 transition-all"
+                disabled={promoMutation.isPending}
+                className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-3 text-base rounded-xl shadow-lg shadow-yellow-500/20 transition-all"
               >
                 {promoMutation.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
