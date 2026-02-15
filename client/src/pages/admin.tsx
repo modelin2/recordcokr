@@ -412,6 +412,19 @@ function NftManagement() {
                       >
                         /nft/{page.token} ↗
                       </a>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-gray-400 hover:text-white hover:bg-white/10"
+                        onClick={() => {
+                          const fullUrl = `${window.location.origin}/nft/${page.token}`;
+                          navigator.clipboard.writeText(fullUrl);
+                          toast({ title: "주소가 복사되었습니다" });
+                        }}
+                      >
+                        <Copy className="w-3 h-3 mr-1" />
+                        주소 복사
+                      </Button>
                     </div>
 
                     <div className="flex gap-2 flex-wrap">
