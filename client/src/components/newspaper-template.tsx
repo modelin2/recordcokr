@@ -334,7 +334,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       className="bg-white w-full text-black print-container flex flex-col"
       style={{ 
         fontFamily: "'Times New Roman', 'Nanum Myeongjo', serif",
-        padding: "16px",
+        padding: "16px 16px 8px 16px",
       }}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -573,24 +573,24 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
               <div className="text-[6px] font-black text-center border-b border-gray-400 pb-0.5 mb-0.5">
                 ✂ MINI CD KEYRING — CUT ALONG DOTTED LINE ✂
               </div>
-              <div className="flex flex-col items-center gap-1.5" style={{ width: "10cm", maxWidth: "100%" }}>
+              <div className="flex flex-col items-center gap-1" style={{ width: "10cm", maxWidth: "100%" }}>
                 {cdAlbumImages.find(img => img.partName === "disc")?.imageData && (
                   <div className="text-center">
                     <div 
-                      className="border border-dashed border-gray-400 overflow-hidden relative mx-auto"
-                      style={{ width: "4cm", maxWidth: "100%", aspectRatio: "1 / 1", borderRadius: "50%" }}
+                      className="overflow-hidden relative mx-auto"
+                      style={{ width: "4cm", maxWidth: "100%", aspectRatio: "1 / 1", borderRadius: "50%", outline: "1px dashed #9ca3af" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "disc")!.imageData!}
                         alt="Disc Label"
-                        className="w-full h-full object-cover"
-                        style={{ borderRadius: "50%" }}
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
                       <div 
-                        className="absolute bg-white border border-dashed border-gray-400"
+                        className="absolute bg-white"
                         style={{ 
                           width: "6mm", height: "6mm", borderRadius: "50%",
-                          top: "50%", left: "50%", transform: "translate(-50%, -50%)"
+                          top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+                          outline: "1px dashed #9ca3af"
                         }}
                       />
                     </div>
@@ -602,7 +602,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                   <div className="text-center w-full">
                     <div 
                       className="border border-dashed border-gray-400 overflow-hidden mx-auto"
-                      style={{ width: "8cm", maxWidth: "100%", aspectRatio: "8 / 4" }}
+                      style={{ width: "8.1cm", maxWidth: "100%", aspectRatio: "8.1 / 4.1" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "front")!.imageData!}
@@ -610,7 +610,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="text-[5px] text-gray-400 leading-none mt-0.5">COVER 8×4cm (fold → 4×4)</p>
+                    <p className="text-[5px] text-gray-400 leading-none mt-0.5">COVER 8.1×4.1cm (fold → 4.05×4.1)</p>
                   </div>
                 )}
 
@@ -679,7 +679,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       </div>
 
       {/* Footer */}
-      <div className="mt-2 pt-2 border-t-2 border-black flex justify-between items-center text-[11px] font-medium">
+      <div className="mt-1 pt-1 border-t-2 border-black flex justify-between items-center text-[11px] font-medium">
         <span>www.recordingcafe.com</span>
         <span>© {futureYear} Recording Cafe</span>
         <span>@recordingcafe</span>
