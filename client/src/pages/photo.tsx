@@ -569,8 +569,8 @@ export default function PhotoPage() {
           }
           .print-container {
             width: 100%;
-            min-height: 410mm;
-            max-height: 410mm;
+            min-height: 420mm;
+            max-height: 420mm;
             page-break-inside: avoid;
             display: flex;
             flex-direction: column;

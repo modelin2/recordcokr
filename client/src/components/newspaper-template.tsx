@@ -584,7 +584,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         src={cdAlbumImages.find(img => img.partName === "disc")!.imageData!}
                         alt="Disc Label"
                         className="absolute w-full h-full object-cover"
-                        style={{ inset: "-2%", width: "104%", height: "104%" }}
+                        style={{ inset: "-4%", width: "108%", height: "108%" }}
                       />
                     </div>
                     <p className="text-[5px] text-gray-400 leading-none mt-0.5">DISC ⌀4cm (hole ⌀6mm)</p>
@@ -595,7 +595,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                   <div className="text-center w-full">
                     <div 
                       className="border border-dashed border-gray-400 overflow-hidden mx-auto"
-                      style={{ width: "8.1cm", maxWidth: "100%", aspectRatio: "8.1 / 4.1" }}
+                      style={{ width: "8.1cm", maxWidth: "100%", aspectRatio: "8.1 / 4.1", marginRight: "1mm" }}
                     >
                       <img 
                         src={cdAlbumImages.find(img => img.partName === "front")!.imageData!}
