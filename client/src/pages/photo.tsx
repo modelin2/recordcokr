@@ -663,7 +663,8 @@ export default function PhotoPage() {
                   <Select 
                     value={selectedCustomerName} 
                     onValueChange={(name) => {
-                      setSelectedCustomerName(name);
+                      const cleanName = name.replace(/\[데이트팝\]\s*/, "");
+                      setSelectedCustomerName(cleanName);
                       const customer = customers.find(c => c.name === name);
                       if (customer) {
                         setSelectedDrink(customer.selectedDrink || "");
