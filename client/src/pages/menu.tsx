@@ -251,7 +251,7 @@ const translations: Record<Language, {
     videoOptions: [
       { id: "self", name: "셀프 촬영", price: 0, desc: "셀피용 스탠드 제공, 자신의 휴대폰으로 직접 촬영" },
       { id: "cameraman", name: "셀프 + 촬영기사 촬영", price: 20000, desc: "촬영기사가 당신이 노래하는 모습을 DSLR카메라로 촬영\n(원본 파일 제공)" },
-      { id: "full", name: "셀프 + 촬영기사 + 편집", price: 100000, desc: "촬영기사 촬영 후 편집까지 완료하여 뮤직비디오를 완성\n(원본파일 + 완성파일 제공)" },
+      { id: "full", name: "셀프 + 촬영기사 + 편집 -> AI 숏폼 뮤직비디오", price: 100000, desc: "촬영기사 촬영 후 편집까지 완료하여 뮤직비디오를 완성 (원본파일 + 완성파일 제공)-> 1분 이내의 인공지능으로 생성한 숏폼 뮤직비디오" },
     ],
     albumOption: { 
       name: "앨범 발매", 
@@ -356,7 +356,7 @@ const translations: Record<Language, {
     videoOptions: [
       { id: "self", name: "Self Recording", price: 0, desc: "Selfie stand provided, record with your own phone" },
       { id: "cameraman", name: "Self + Cameraman", price: 20000, desc: "Cameraman films you singing with DSLR camera\n(Original files provided)" },
-      { id: "full", name: "Self + Cameraman + Editing", price: 100000, desc: "Cameraman filming + editing to complete your music video\n(Original + Finished files provided)" },
+      { id: "full", name: "Self + Cameraman + Editing -> AI Short-form Music Video", price: 100000, desc: "Cameraman filming + editing to complete your music video (Original + Finished files provided)-> AI-generated short-form music video under 1 minute" },
     ],
     albumOption: { 
       name: "Album Release", 
