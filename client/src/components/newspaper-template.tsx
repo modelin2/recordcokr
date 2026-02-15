@@ -334,7 +334,7 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
       className="bg-white w-full text-black print-container flex flex-col"
       style={{ 
         fontFamily: "'Times New Roman', 'Nanum Myeongjo', serif",
-        padding: "16px 16px 8px 16px",
+        padding: "16px",
       }}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -585,14 +585,6 @@ export default function NewspaperTemplate({ customerName, koreanName, photoData,
                         alt="Disc Label"
                         className="absolute w-full h-full object-cover"
                         style={{ inset: "-2%", width: "104%", height: "104%" }}
-                      />
-                      <div 
-                        className="absolute bg-white"
-                        style={{ 
-                          width: "6mm", height: "6mm", borderRadius: "50%",
-                          top: "50%", left: "50%", transform: "translate(-50%, -50%)",
-                          outline: "1px dashed #9ca3af"
-                        }}
                       />
                     </div>
                     <p className="text-[5px] text-gray-400 leading-none mt-0.5">DISC ⌀4cm (hole ⌀6mm)</p>
