@@ -1276,32 +1276,34 @@ Recording Cafe Team`
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "bookings" | "visit-reservations" | "hotel-bookings" | "calendar" | "nft" | "promo")} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 bg-white/10 mb-6">
-            <TabsTrigger value="bookings" className="text-white data-[state=active]:bg-white/20">
-              📋 메뉴 선택
-            </TabsTrigger>
-            <TabsTrigger value="visit-reservations" className="text-white data-[state=active]:bg-white/20">
-              🎯 홈페이지 예약
-              {visitReservations.length > 0 && (
-                <Badge className="ml-2 bg-pink-500/50 text-white">{visitReservations.length}</Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="hotel-bookings" className="text-white data-[state=active]:bg-white/20">
-              🏨 제휴사 예약
-              {hotelBookings.length > 0 && (
-                <Badge className="ml-2 bg-blue-500/50 text-white">{hotelBookings.length}</Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="calendar" className="text-white data-[state=active]:bg-white/20">
-              📅 캘린더
-            </TabsTrigger>
-            <TabsTrigger value="nft" className="text-white data-[state=active]:bg-white/20">
-              💿 NFT 키링
-            </TabsTrigger>
-            <TabsTrigger value="promo" className="text-white data-[state=active]:bg-white/20">
-              🎁 쿠폰
-            </TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto pb-2 mb-6 scrollbar-hide">
+            <TabsList className="flex w-max min-w-full bg-white/10 p-1">
+              <TabsTrigger value="bookings" className="flex-1 text-white data-[state=active]:bg-white/20 whitespace-nowrap px-4">
+                📋 메뉴 선택
+              </TabsTrigger>
+              <TabsTrigger value="visit-reservations" className="flex-1 text-white data-[state=active]:bg-white/20 whitespace-nowrap px-4">
+                🎯 홈페이지 예약
+                {visitReservations.length > 0 && (
+                  <Badge className="ml-2 bg-pink-500/50 text-white">{visitReservations.length}</Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="hotel-bookings" className="flex-1 text-white data-[state=active]:bg-white/20 whitespace-nowrap px-4">
+                🏨 제휴사 예약
+                {hotelBookings.length > 0 && (
+                  <Badge className="ml-2 bg-blue-500/50 text-white">{hotelBookings.length}</Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="calendar" className="flex-1 text-white data-[state=active]:bg-white/20 whitespace-nowrap px-4">
+                📅 캘린더
+              </TabsTrigger>
+              <TabsTrigger value="nft" className="flex-1 text-white data-[state=active]:bg-white/20 whitespace-nowrap px-4">
+                💿 NFT 키링
+              </TabsTrigger>
+              <TabsTrigger value="promo" className="flex-1 text-white data-[state=active]:bg-white/20 whitespace-nowrap px-4">
+                🎁 쿠폰
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="bookings">
             {/* Filters */}
