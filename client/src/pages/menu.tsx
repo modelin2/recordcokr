@@ -43,7 +43,7 @@ const drinkCatalog = [
   { id: "earl-grey", hasTemp: true, hotOnly: false },
   { id: "peppermint", hasTemp: true, hotOnly: false },
   { id: "chamomile", hasTemp: true, hotOnly: false },
-  { id: "hot-chocolate", hasTemp: false, hotOnly: true },
+  // { id: "hot-chocolate", hasTemp: false, hotOnly: true },
   { id: "lemonade", hasTemp: false, hotOnly: false },
   { id: "strawberry-ade", hasTemp: false, hotOnly: false },
   { id: "orange-ade", hasTemp: false, hotOnly: false },
