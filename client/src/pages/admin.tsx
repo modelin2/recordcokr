@@ -235,9 +235,13 @@ function NftManagement() {
   const queryClient = useQueryClient();
   const [uploadingId, setUploadingId] = useState<number | null>(null);
 
-  const { data: nftPages = [], isLoading } = useQuery({
+  const { data: nftPages, isLoading, isError, refetch } = useQuery({
     queryKey: ["/api/admin/nft-pages"],
+    retry: 2,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
+  const nftPagesList = Array.isArray(nftPages) ? nftPages : [];
 
   const uploadAudioMutation = useMutation({
     mutationFn: async ({ id, file }: { id: number; file: File }) => {
@@ -363,18 +367,31 @@ function NftManagement() {
 
   if (isLoading) return <div className="text-center py-8 text-gray-400">Loading...</div>;
 
+  if (isError) return (
+    <div className="text-center py-8 space-y-3">
+      <p className="text-red-400">데이터를 불러오지 못했습니다. 세션이 만료됐을 수 있습니다.</p>
+      <button onClick={() => refetch()} className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700">새로고침</button>
+    </div>
+  );
+
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <button onClick={() => refetch()} className="px-3 py-1 bg-white/10 text-white rounded text-xs hover:bg-white/20">↻ 새로고침</button>
+      </div>
       <Card className="glass border-white/20">
         <CardHeader>
           <CardTitle className="text-white text-lg">NFT 키링 페이지 관리</CardTitle>
         </CardHeader>
         <CardContent>
-          {(nftPages as any[]).length === 0 ? (
-            <p className="text-gray-400 text-center py-8">생성된 NFT 페이지가 없습니다. CD 키링을 생성하면 자동으로 생성됩니다.</p>
+          {nftPagesList.length === 0 ? (
+            <div className="text-center py-8 space-y-3">
+              <p className="text-gray-400">생성된 NFT 페이지가 없습니다. CD 키링을 생성하면 자동으로 생성됩니다.</p>
+              <button onClick={() => refetch()} className="px-4 py-2 bg-white/10 text-white rounded-lg text-sm hover:bg-white/20">↻ 새로고침</button>
+            </div>
           ) : (
             <div className="space-y-4">
-              {(nftPages as any[]).map((page: any) => {
+              {nftPagesList.map((page: any) => {
                 const serviceRequests = page.serviceRequests ? JSON.parse(page.serviceRequests) : [];
                 const pendingRequests = serviceRequests.filter((r: any) => r.status === "pending");
                 return (
