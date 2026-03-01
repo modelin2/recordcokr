@@ -1128,6 +1128,21 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(nftPages).orderBy(desc(nftPages.createdAt));
   }
 
+  async getAllNftPagesLight() {
+    return await db.select({
+      id: nftPages.id,
+      token: nftPages.token,
+      customerName: nftPages.customerName,
+      koreanName: nftPages.koreanName,
+      bookingId: nftPages.bookingId,
+      recordingDate: nftPages.recordingDate,
+      audioFileName: nftPages.audioFileName,
+      audioStatus: nftPages.audioStatus,
+      serviceRequests: nftPages.serviceRequests,
+      createdAt: nftPages.createdAt,
+    }).from(nftPages).orderBy(desc(nftPages.createdAt));
+  }
+
   async getNftPageByToken(token: string): Promise<NftPage | undefined> {
     const [page] = await db.select().from(nftPages).where(eq(nftPages.token, token));
     return page;

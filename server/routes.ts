@@ -2547,10 +2547,27 @@ REQUIREMENTS:
 
   app.get("/api/admin/nft-pages", requireAdmin, async (req, res) => {
     try {
-      const pages = await storage.getAllNftPages();
+      const pages = await storage.getAllNftPagesLight();
       const safePagesData = pages.map(p => {
-        const { audioFileData, ...safe } = p;
-        return { ...safe, hasAudioFile: !!audioFileData, audioFileName: p.audioFileName };
+        let serviceRequests = p.serviceRequests;
+        if (serviceRequests) {
+          try {
+            const parsed = JSON.parse(serviceRequests);
+            const light = parsed.map((r: any) => ({
+              ...r,
+              deliveryFiles: r.deliveryFiles ? r.deliveryFiles.map((f: any) => ({
+                fileName: f.fileName,
+                uploadedAt: f.uploadedAt,
+              })) : undefined,
+            }));
+            serviceRequests = JSON.stringify(light);
+          } catch {}
+        }
+        return {
+          ...p,
+          serviceRequests,
+          hasAudioFile: !!p.audioFileName,
+        };
       });
       res.json(safePagesData);
     } catch (error) {
