@@ -20,8 +20,6 @@ import LaCasaPage from "@/pages/lacasa";
 import RiverAdminPage from "@/pages/riveradmin";
 import LaCasaAdminPage from "@/pages/lacasaadmin";
 import NftPage from "@/pages/nft";
-import ExperiencePage from "@/pages/experience";
-import ProPage from "@/pages/pro";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "@/components/protected-route";
 
@@ -57,8 +55,6 @@ function Router() {
       <Route path="/riveradmin" component={RiverAdminPage} />
       <Route path="/lacasaadmin" component={LaCasaAdminPage} />
       <Route path="/nft/:token" component={NftPage} />
-      <Route path="/experience" component={ExperiencePage} />
-      <Route path="/pro" component={ProPage} />
       <Route component={NotFound} />
     </Switch>
   );
